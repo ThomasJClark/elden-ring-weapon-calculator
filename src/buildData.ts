@@ -6,7 +6,7 @@ import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
 import { cwd, argv } from "process";
 import {
-  damageTypes,
+  allDamageTypes,
   Affinity,
   WeaponType,
   Weapon,
@@ -193,7 +193,10 @@ const loadWeapons = (): Weapon[] => {
       const attributeScaling = attributeScalingByLevel[upgradeLevel];
 
       const weapon = {
-        name: `${weaponNameWithoutUpgradeLevel} +${upgradeLevel}`,
+        name:
+          upgradeLevel > 0
+            ? `${weaponNameWithoutUpgradeLevel} +${upgradeLevel}`
+            : weaponNameWithoutUpgradeLevel,
         metadata: { ...metadata, upgradeLevel },
         requirements,
         attack,
@@ -202,7 +205,7 @@ const loadWeapons = (): Weapon[] => {
         damageScalingCurves: { ...damageScalingCurves },
       };
 
-      damageTypes.forEach((damageType) => {
+      allDamageTypes.forEach((damageType) => {
         if (damageType in weapon.damageScalingAttributes) {
           // Only include attributes that this weapon actually scales with
           weapon.damageScalingAttributes[damageType] = weapon.damageScalingAttributes[

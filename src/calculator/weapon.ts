@@ -1,4 +1,4 @@
-import type { Affinity, Attribute, DamageType, WeaponType } from "./utils";
+import type { Affinity, Attribute, DamageType, MaxUpgradeLevel, WeaponType } from "./utils";
 
 export interface Weapon {
   /**
@@ -42,7 +42,7 @@ export type WeaponScalingCurve = 0 | 1 | 2 | 4 | 7 | 8 | 12 | 14 | 15 | 16;
 export interface WeaponMetadata {
   weight: number;
   upgradeLevel: number;
-  maxUpgradeLevel: 10 | 25;
+  maxUpgradeLevel: MaxUpgradeLevel;
   weaponName: string;
   affinity: Affinity;
   weaponType: WeaponType;

@@ -1,4 +1,4 @@
-import { damageTypes, DamageType, Attribute } from "./utils";
+import { allDamageTypes, DamageType, Attribute } from "./utils";
 import { Weapon } from "./weapon";
 import scalingCurves from "./scalingCurves";
 
@@ -6,7 +6,7 @@ export type Attributes = Record<Attribute, number>;
 
 interface WeaponAttackOptions {
   weapon: Weapon;
-  attributes: Record<Attribute, number>;
+  attributes: Attributes;
 }
 
 export interface WeaponAttackPower {
@@ -52,7 +52,7 @@ export default function getWeaponAttack({
   attributes,
 }: WeaponAttackOptions): Partial<Record<DamageType, WeaponAttackPower>> {
   const weaponAttack: Partial<Record<DamageType, WeaponAttackPower>> = {};
-  for (const damageType of damageTypes) {
+  for (const damageType of allDamageTypes) {
     if (damageType in weapon.attack) {
       weaponAttack[damageType] = {
         baseAttackPower: weapon.attack[damageType] ?? 0,

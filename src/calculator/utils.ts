@@ -1,8 +1,8 @@
-export const damageTypes = ["physical", "magic", "fire", "lightning", "holy"] as const;
+export const allDamageTypes = ["physical", "magic", "fire", "lightning", "holy"] as const;
 
-export const attributes = ["str", "dex", "int", "fai", "arc"] as const;
+export const allAttributes = ["str", "dex", "int", "fai", "arc"] as const;
 
-export const affinities = [
+export const allAffinities = [
   "None",
   "Heavy",
   "Keen",
@@ -18,7 +18,7 @@ export const affinities = [
   "Occult",
 ] as const;
 
-export const weaponTypes = [
+export const allWeaponTypes = [
   "Axe",
   "Ballista",
   "Bow",
@@ -55,10 +55,15 @@ export const weaponTypes = [
   "Whip",
 ] as const;
 
-export type DamageType = typeof damageTypes[number];
-export type Attribute = typeof attributes[number];
-export type Affinity = typeof affinities[number];
-export type WeaponType = typeof weaponTypes[number];
+export const maxRegularUpgradeLevel = 25 as const;
+
+export const maxSpecialUpgradeLevel = 10 as const;
+
+export type DamageType = typeof allDamageTypes[number];
+export type Attribute = typeof allAttributes[number];
+export type Affinity = typeof allAffinities[number];
+export type WeaponType = typeof allWeaponTypes[number];
+export type MaxUpgradeLevel = typeof maxSpecialUpgradeLevel | typeof maxRegularUpgradeLevel;
 
 export function getDamageTypeLabel(damageType: DamageType) {
   switch (damageType) {
