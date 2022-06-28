@@ -5,8 +5,13 @@
 import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
 import { cwd, argv } from "process";
-import { Weapon, WeaponScalingCurve } from "./calculator/weapon";
-import { damageTypes, Affinity, WeaponType } from "./calculator/utils";
+import {
+  damageTypes,
+  Affinity,
+  WeaponType,
+  Weapon,
+  WeaponScalingCurve,
+} from "./calculator/calculator";
 
 /**
  * Load a map from a spreadsheet where the first column is the key
