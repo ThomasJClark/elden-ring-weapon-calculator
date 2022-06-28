@@ -14,7 +14,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "rebuildWeaponData": "ts-node src/buildData.ts public/weaponData.json"
   },
   "eslintConfig": {
     "extends": [
