@@ -61,54 +61,18 @@ export const maxSpecialUpgradeLevel = 10 as const;
 
 export type DamageType = typeof allDamageTypes[number];
 export type Attribute = typeof allAttributes[number];
+export type Attributes = Record<Attribute, number>;
 export type Affinity = typeof allAffinities[number];
 export type WeaponType = typeof allWeaponTypes[number];
 export type MaxUpgradeLevel = typeof maxSpecialUpgradeLevel | typeof maxRegularUpgradeLevel;
 
-export function getDamageTypeLabel(damageType: DamageType) {
-  switch (damageType) {
-    case "physical":
-      return "Physical";
-    case "magic":
-      return "Magic";
-    case "fire":
-      return "Fire";
-    case "lightning":
-      return "Lightning";
-    case "holy":
-      return "Holy";
-  }
-}
-
-export function getAttributeLabel(attribute: Attribute) {
-  switch (attribute) {
-    case "str":
-      return "Strength";
-    case "dex":
-      return "Dexterity";
-    case "int":
-      return "Intelligence";
-    case "fai":
-      return "Faith";
-    case "arc":
-      return "Arcane";
-  }
-}
-
-export function getScalingLabel(scaling: number) {
-  if (scaling > 1.75) {
-    return "S";
-  } else if (scaling >= 1.4) {
-    return "A";
-  } else if (scaling >= 0.9) {
-    return "B";
-  } else if (scaling >= 0.6) {
-    return "C";
-  } else if (scaling >= 0.25) {
-    return "D";
-  } else if (scaling > 0) {
-    return "E";
-  } else {
-    return "-";
-  }
+/**
+ * Adjust a set of character attributes to take into account the 50% Strength bonus when two
+ * handing a weapon
+ */
+export function adjustAttributesForTwoHanding({ str, ...attributes }: Attributes) {
+  return {
+    str: Math.floor(str * 1.5),
+    ...attributes,
+  };
 }

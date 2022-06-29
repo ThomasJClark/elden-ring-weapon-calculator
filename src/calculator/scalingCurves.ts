@@ -55,7 +55,7 @@ const scalingCurves: Record<WeaponScalingCurve, (attributeValue: number) => numb
     } else if (attributeValue > 60) {
       return 0.75 + 0.15 * ((attributeValue - 60) / 20);
     } else if (attributeValue > 20) {
-      return 0.35 + 0.4 / (1 - (1 - (attributeValue - 20) / 40) ** 1.2);
+      return 0.35 + 0.4 * (1 - (1 - (attributeValue - 20) / 40) ** 1.2);
     } else {
       return 0.35 * ((attributeValue - 1) / 19) ** 1.2;
     }
@@ -66,7 +66,7 @@ const scalingCurves: Record<WeaponScalingCurve, (attributeValue: number) => numb
     } else if (attributeValue > 60) {
       return 0.75 + 0.15 * ((attributeValue - 60) / 20);
     } else if (attributeValue > 16) {
-      return 0.25 + 0.5 / (1 - (1 - (attributeValue - 16) / 44) ** 1.2);
+      return 0.25 + 0.5 * (1 - (1 - (attributeValue - 16) / 44) ** 1.2);
     } else {
       return 0.25 * ((attributeValue - 1) / 15) ** 1.2;
     }

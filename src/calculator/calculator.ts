@@ -1,8 +1,6 @@
-import { allDamageTypes, DamageType, Attribute } from "./utils";
+import { allDamageTypes, DamageType, Attributes } from "./utils";
 import { Weapon } from "./weapon";
 import scalingCurves from "./scalingCurves";
-
-export type Attributes = Record<Attribute, number>;
 
 interface WeaponAttackOptions {
   weapon: Weapon;

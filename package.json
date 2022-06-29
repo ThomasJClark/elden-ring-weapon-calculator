@@ -3,6 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "11.9.3",
+    "@emotion/styled": "11.9.3",
+    "@mui/icons-material": "5.8.4",
+    "@mui/material": "5.8.6",
+    "@mui/system": "5.8.6",
+    "@mui/x-data-grid": "5.12.3",
     "@types/node": "18.0.0",
     "@types/react": "18.0.14",
     "@types/react-dom": "18.0.5",
@@ -28,6 +34,6 @@
     "last 3 safari version"
   ],
   "devDependencies": {
-    "ts-node": "^10.8.1"
+    "ts-node": "10.8.1"
   }
 }
