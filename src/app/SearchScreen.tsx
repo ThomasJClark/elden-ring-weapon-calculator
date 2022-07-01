@@ -8,6 +8,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Switch,
   TextField,
 } from "@mui/material";
 import getWeaponAttack, {
@@ -66,6 +67,7 @@ function useMemoThrottled<T>(factory: () => T, timeoutMs: number, dependencies: 
 /* eslint-enable react-hooks/exhaustive-deps */
 
 interface Props {
+  darkMode: boolean;
   weapons: Map<string, Weapon>;
   attributes: Attributes;
   twoHanding: boolean;
@@ -74,6 +76,7 @@ interface Props {
   affinities: readonly Affinity[];
   maxWeight: number;
   effectiveWithCurrentAttributes: boolean;
+  onDarkModeChanged(darkMode: boolean): void;
   onAttributesChanged(attributes: Attributes): void;
   onTwoHandingChanged(twoHanding: boolean): void;
   onUpgradeLevelChanged(upgradeLevel: number): void;
@@ -88,6 +91,7 @@ interface Props {
  * requirements, etc. in a table.
  */
 const SearchScreen = ({
+  darkMode,
   weapons,
   attributes,
   twoHanding,
@@ -96,6 +100,7 @@ const SearchScreen = ({
   affinities,
   maxWeight,
   effectiveWithCurrentAttributes,
+  onDarkModeChanged,
   onAttributesChanged,
   onTwoHandingChanged,
   onUpgradeLevelChanged,
@@ -151,7 +156,7 @@ const SearchScreen = ({
           sx={{
             display: "grid",
             gap: 2,
-            gridTemplateColumns: { xs: "1fr", md: "384px 128px auto 1fr" },
+            gridTemplateColumns: { xs: "1fr", md: "384px 128px auto auto 1fr" },
             alignItems: "start",
             py: 2,
           }}
@@ -236,6 +241,17 @@ const SearchScreen = ({
                 onChange={(evt) =>
                   onEffectiveWithCurrentAttributesChanged(evt.currentTarget.checked)
                 }
+              />
+            }
+          />
+
+          <FormControlLabel
+            label="Dark Mode"
+            sx={{ justifySelf: "end" }}
+            control={
+              <Switch
+                checked={darkMode}
+                onChange={(evt) => onDarkModeChanged(evt.currentTarget.checked)}
               />
             }
           />

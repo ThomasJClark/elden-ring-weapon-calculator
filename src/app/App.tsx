@@ -20,6 +20,7 @@ const App = () => {
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <SearchScreen
+        darkMode={darkMode}
         weapons={weapons}
         attributes={attributes}
         twoHanding={twoHanding}
@@ -28,6 +29,7 @@ const App = () => {
         affinities={affinities}
         maxWeight={maxWeight}
         effectiveWithCurrentAttributes={effectiveWithCurrentAttributes}
+        onDarkModeChanged={setDarkMode}
         onAttributesChanged={setAttributes}
         onTwoHandingChanged={setTwoHanding}
         onUpgradeLevelChanged={setUpgradeLevel}
@@ -35,13 +37,6 @@ const App = () => {
         onAffinitiesChanged={setAffinities}
         onMaxWeightChanged={setMaxWeight}
         onEffectiveWithCurrentAttributesChanged={setEffectiveWithCurrentAttributes}
-      />
-
-      <FormControlLabel
-        control={
-          <Switch checked={darkMode} onChange={(evt) => setDarkMode(evt.currentTarget.checked)} />
-        }
-        label="Dark Mode"
       />
     </ThemeProvider>
   );
