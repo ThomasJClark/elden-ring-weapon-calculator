@@ -1,16 +1,13 @@
 import { useState } from "react";
-import { Box, CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, FormControlLabel, Switch, ThemeProvider } from "@mui/material";
 import { Affinity, WeaponType } from "../calculator/calculator";
 import SearchScreen from "./SearchScreen";
-import theme from "./theme";
+import { darkTheme, lightTheme } from "./theme";
 import useWeapons from "./useWeapons";
-import backgroundXs from "./backgroundXs.webp";
-import backgroundSm from "./backgroundSm.webp";
-import backgroundMd from "./backgroundMd.webp";
-import backgroundLg from "./backgroundLg.webp";
-import backgroundXl from "./backgroundXl.webp";
 
 const App = () => {
+  const [darkMode, setDarkMode] = useState(true);
+
   const weapons = useWeapons();
   const [attributes, setAttributes] = useState({ str: 30, dex: 30, int: 30, fai: 30, arc: 30 });
   const [twoHanding, setTwoHanding] = useState(false);
@@ -21,43 +18,32 @@ const App = () => {
   const [effectiveWithCurrentAttributes, setEffectiveWithCurrentAttributes] = useState(false);
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
+      <SearchScreen
+        weapons={weapons}
+        attributes={attributes}
+        twoHanding={twoHanding}
+        upgradeLevel={upgradeLevel}
+        weaponTypes={weaponTypes}
+        affinities={affinities}
+        maxWeight={maxWeight}
+        effectiveWithCurrentAttributes={effectiveWithCurrentAttributes}
+        onAttributesChanged={setAttributes}
+        onTwoHandingChanged={setTwoHanding}
+        onUpgradeLevelChanged={setUpgradeLevel}
+        onWeaponTypesChanged={setWeaponTypes}
+        onAffinitiesChanged={setAffinities}
+        onMaxWeightChanged={setMaxWeight}
+        onEffectiveWithCurrentAttributesChanged={setEffectiveWithCurrentAttributes}
+      />
 
-      <Box
-        sx={{
-          minHeight: "100vh",
-          backgroundColor: (theme) => theme.palette.background.paper,
-          backgroundImage: {
-            xs: `url(${backgroundXs})`,
-            sm: `url(${backgroundSm})`,
-            md: `url(${backgroundMd})`,
-            lg: `url(${backgroundLg})`,
-            xl: `url(${backgroundXl})`,
-          },
-          backgroundPosition: "center top",
-          backgroundSize: "100% auto",
-          backgroundRepeat: `no-repeat`,
-        }}
-      >
-        <SearchScreen
-          weapons={weapons}
-          attributes={attributes}
-          twoHanding={twoHanding}
-          upgradeLevel={upgradeLevel}
-          weaponTypes={weaponTypes}
-          affinities={affinities}
-          maxWeight={maxWeight}
-          effectiveWithCurrentAttributes={effectiveWithCurrentAttributes}
-          onAttributesChanged={setAttributes}
-          onTwoHandingChanged={setTwoHanding}
-          onUpgradeLevelChanged={setUpgradeLevel}
-          onWeaponTypesChanged={setWeaponTypes}
-          onAffinitiesChanged={setAffinities}
-          onMaxWeightChanged={setMaxWeight}
-          onEffectiveWithCurrentAttributesChanged={setEffectiveWithCurrentAttributes}
-        />
-      </Box>
+      <FormControlLabel
+        control={
+          <Switch checked={darkMode} onChange={(evt) => setDarkMode(evt.currentTarget.checked)} />
+        }
+        label="Dark Mode"
+      />
     </ThemeProvider>
   );
 };

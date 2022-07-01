@@ -3,7 +3,6 @@ import {
   Box,
   Checkbox,
   Container,
-  Divider,
   FormControl,
   FormControlLabel,
   InputLabel,
