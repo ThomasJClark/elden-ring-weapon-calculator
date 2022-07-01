@@ -6,9 +6,8 @@ import { darkTheme, lightTheme } from "./theme";
 import useWeapons from "./useWeapons";
 
 const App = () => {
-  const [darkMode, setDarkMode] = useState(true);
-
   const weapons = useWeapons();
+  const [darkMode, setDarkMode] = useState(true);
   const [attributes, setAttributes] = useState({ str: 30, dex: 30, int: 30, fai: 30, arc: 30 });
   const [twoHanding, setTwoHanding] = useState(false);
   const [upgradeLevel, setUpgradeLevel] = useState(25);

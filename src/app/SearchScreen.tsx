@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useRef, useState } from "react";
 import {
   Box,
   Checkbox,
@@ -22,6 +22,48 @@ import getWeaponAttack, {
 import filterWeapons, { toSpecialUpgradeLevel } from "../search/filterWeapons";
 import WeaponTable, { WeaponTableRow } from "./WeaponTable";
 import { getAttributeLabel } from "./uiUtils";
+
+/* eslint-disable react-hooks/exhaustive-deps */
+function useMemoThrottled<T>(factory: () => T, timeoutMs: number, dependencies: unknown[]): T {
+  const [, update] = useState(0);
+  const value = useRef<T>();
+  const lastEvaluateTimeMs = useRef(0);
+  const timeoutHandle = useRef<NodeJS.Timeout>();
+  const lastDependencies = useRef<unknown[]>();
+
+  if (
+    lastDependencies.current === undefined ||
+    lastDependencies.current.length !== dependencies.length ||
+    lastDependencies.current.some((value, index) => value !== dependencies[index])
+  ) {
+    lastDependencies.current = dependencies;
+
+    const currentTimeMs = Date.now();
+    const nextEvaluateTimeMs = lastEvaluateTimeMs.current + timeoutMs;
+
+    if (currentTimeMs > nextEvaluateTimeMs) {
+      console.log(`updating immediately`);
+      lastEvaluateTimeMs.current = currentTimeMs;
+      value.current = factory();
+    } else {
+      console.log(`updating in ${nextEvaluateTimeMs - currentTimeMs}ms...`);
+      clearTimeout(timeoutHandle.current);
+      timeoutHandle.current = setTimeout(() => {
+        console.log(`updating deferred`);
+        lastEvaluateTimeMs.current = nextEvaluateTimeMs;
+        value.current = factory();
+        update((prev) => prev + 1);
+      }, nextEvaluateTimeMs - currentTimeMs);
+    }
+  }
+
+  if (value.current === undefined) {
+    value.current = factory();
+  }
+
+  return value.current!;
+}
+/* eslint-enable react-hooks/exhaustive-deps */
 
 interface Props {
   weapons: Map<string, Weapon>;
@@ -62,32 +104,39 @@ const SearchScreen = ({
   onMaxWeightChanged,
   onEffectiveWithCurrentAttributesChanged,
 }: Props) => {
-  const weaponTableRows = useMemo<WeaponTableRow[]>(() => {
-    // Apply the two handing bonus if selected
-    const adjustedAttributes = twoHanding ? adjustAttributesForTwoHanding(attributes) : attributes;
+  const weaponTableRows = useMemoThrottled<WeaponTableRow[]>(
+    () => {
+      // console.log(attributes.str);
+      // Apply the two handing bonus if selected
+      const adjustedAttributes = twoHanding
+        ? adjustAttributesForTwoHanding(attributes)
+        : attributes;
 
-    const filteredWeapons = filterWeapons(weapons.values(), {
+      const filteredWeapons = filterWeapons(weapons.values(), {
+        upgradeLevel,
+        weaponTypes,
+        affinities,
+        maxWeight,
+        effectiveWithAttributes: effectiveWithCurrentAttributes ? adjustedAttributes : undefined,
+      });
+
+      return filteredWeapons.map((weapon) => [
+        weapon,
+        getWeaponAttack({ weapon, attributes: adjustedAttributes }),
+      ]);
+    },
+    100,
+    [
+      attributes,
+      twoHanding,
+      weapons,
       upgradeLevel,
       weaponTypes,
       affinities,
       maxWeight,
-      effectiveWithAttributes: effectiveWithCurrentAttributes ? adjustedAttributes : undefined,
-    });
-
-    return filteredWeapons.map((weapon) => [
-      weapon,
-      getWeaponAttack({ weapon, attributes: adjustedAttributes }),
-    ]);
-  }, [
-    attributes,
-    twoHanding,
-    weapons,
-    upgradeLevel,
-    weaponTypes,
-    affinities,
-    maxWeight,
-    effectiveWithCurrentAttributes,
-  ]);
+      effectiveWithCurrentAttributes,
+    ],
+  );
 
   return (
     <>
