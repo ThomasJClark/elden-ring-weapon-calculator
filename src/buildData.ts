@@ -207,10 +207,12 @@ const loadWeapons = (): Weapon[] => {
 
       allDamageTypes.forEach((damageType) => {
         if (damageType in weapon.damageScalingAttributes) {
-          // Only include attributes that this weapon actually scales with
+          // Only include attributes that affect the weapon's attack power
           weapon.damageScalingAttributes[damageType] = weapon.damageScalingAttributes[
             damageType
-          ]!.filter((attribute) => weapon.attributeScaling[attribute]);
+          ]!.filter(
+            (attribute) => weapon.attributeScaling[attribute] || weapon.requirements[attribute],
+          );
 
           // Do not include any scaling information if this weapon doesn't deal this damage type,
           // or the damage type doesn't scale with any attributes.
