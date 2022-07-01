@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { CssBaseline, FormControlLabel, Switch, ThemeProvider } from "@mui/material";
+import { Container, CssBaseline, LinearProgress, ThemeProvider } from "@mui/material";
 import { Affinity, WeaponType } from "../calculator/calculator";
 import SearchScreen from "./SearchScreen";
 import { darkTheme, lightTheme } from "./theme";
 import useWeapons from "./useWeapons";
 
 const App = () => {
-  const weapons = useWeapons();
+  const { weapons, loading, error } = useWeapons();
   const [darkMode, setDarkMode] = useState(true);
   const [attributes, setAttributes] = useState({ str: 30, dex: 30, int: 30, fai: 30, arc: 30 });
   const [twoHanding, setTwoHanding] = useState(false);
@@ -19,25 +19,40 @@ const App = () => {
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <CssBaseline />
-      <SearchScreen
-        darkMode={darkMode}
-        weapons={weapons}
-        attributes={attributes}
-        twoHanding={twoHanding}
-        upgradeLevel={upgradeLevel}
-        weaponTypes={weaponTypes}
-        affinities={affinities}
-        maxWeight={maxWeight}
-        effectiveWithCurrentAttributes={effectiveWithCurrentAttributes}
-        onDarkModeChanged={setDarkMode}
-        onAttributesChanged={setAttributes}
-        onTwoHandingChanged={setTwoHanding}
-        onUpgradeLevelChanged={setUpgradeLevel}
-        onWeaponTypesChanged={setWeaponTypes}
-        onAffinitiesChanged={setAffinities}
-        onMaxWeightChanged={setMaxWeight}
-        onEffectiveWithCurrentAttributesChanged={setEffectiveWithCurrentAttributes}
-      />
+
+      {loading && (
+        <Container
+          sx={{
+            py: 6,
+            textAlign: "center",
+          }}
+        >
+          Loading weapon data...
+          <LinearProgress sx={{ mt: 3 }} />
+        </Container>
+      )}
+
+      {!loading && !error && (
+        <SearchScreen
+          darkMode={darkMode}
+          weapons={weapons}
+          attributes={attributes}
+          twoHanding={twoHanding}
+          upgradeLevel={upgradeLevel}
+          weaponTypes={weaponTypes}
+          affinities={affinities}
+          maxWeight={maxWeight}
+          effectiveWithCurrentAttributes={effectiveWithCurrentAttributes}
+          onDarkModeChanged={setDarkMode}
+          onAttributesChanged={setAttributes}
+          onTwoHandingChanged={setTwoHanding}
+          onUpgradeLevelChanged={setUpgradeLevel}
+          onWeaponTypesChanged={setWeaponTypes}
+          onAffinitiesChanged={setAffinities}
+          onMaxWeightChanged={setMaxWeight}
+          onEffectiveWithCurrentAttributesChanged={setEffectiveWithCurrentAttributes}
+        />
+      )}
     </ThemeProvider>
   );
 };
