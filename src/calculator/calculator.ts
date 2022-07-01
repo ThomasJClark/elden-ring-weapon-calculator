@@ -1,45 +1,20 @@
-import { allDamageTypes, DamageType, Attributes } from "./utils";
+import { allDamageTypes, DamageType, Attributes, Attribute } from "./utils";
 import { Weapon } from "./weapon";
 import scalingCurves from "./scalingCurves";
 
-interface WeaponAttackOptions {
+export interface WeaponAttackOptions {
   weapon: Weapon;
   attributes: Attributes;
 }
 
-export interface WeaponAttackPower {
+export interface AttackPower {
   baseAttackPower: number;
   scalingAttackPower: number;
 }
 
-/**
- * Calculate the amount of scaling damage for the given damage type
- */
-function getScalingAttackPower(weapon: Weapon, attributes: Attributes, damageType: DamageType) {
-  const scalingAttributes = weapon.damageScalingAttributes[damageType] ?? [];
-
-  // If the requirements are not met, a 40% penalty is substracted from the attack rating instead
-  // of a scaling bonus being added
-  if (
-    scalingAttributes.some((attribute) => {
-      const requirement = weapon.requirements[attribute];
-      return requirement != null && attributes[attribute] < requirement;
-    })
-  ) {
-    return -0.4 * (weapon.attack[damageType] ?? 0);
-  }
-
-  // Otherwise, the attack rating scaling is equal to the product of the base attack rating, the
-  // scaling for the relevant attribute, and the value of the relevant attribute on a curve.
-  // If this damage type scales with multiple attributes, the products are added together.
-  let scalingAttack = 0;
-  for (const attribute of scalingAttributes) {
-    const baseAttack = weapon.attack[damageType] ?? 0;
-    const scaling = weapon.attributeScaling[attribute] ?? 0;
-    const scalingCurve = scalingCurves[weapon.damageScalingCurves[damageType] ?? 0];
-    scalingAttack += scalingCurve(attributes[attribute]) * baseAttack * scaling;
-  }
-  return scalingAttack;
+export interface WeaponAttackResult {
+  attackRating: Partial<Record<DamageType, AttackPower>>;
+  ineffectiveAttributes: Attribute[];
 }
 
 /**
@@ -48,17 +23,44 @@ function getScalingAttackPower(weapon: Weapon, attributes: Attributes, damageTyp
 export default function getWeaponAttack({
   weapon,
   attributes,
-}: WeaponAttackOptions): Partial<Record<DamageType, WeaponAttackPower>> {
-  const weaponAttack: Partial<Record<DamageType, WeaponAttackPower>> = {};
+}: WeaponAttackOptions): WeaponAttackResult {
+  const ineffectiveAttributes = (Object.entries(weapon.requirements) as [Attribute, number][])
+    .filter(([attribute, requirement]) => attributes[attribute] < requirement)
+    .map(([attribute]) => attribute);
+
+  const attackRating: Partial<Record<DamageType, AttackPower>> = {};
   for (const damageType of allDamageTypes) {
     if (damageType in weapon.attack) {
-      weaponAttack[damageType] = {
-        baseAttackPower: weapon.attack[damageType] ?? 0,
-        scalingAttackPower: getScalingAttackPower(weapon, attributes, damageType),
+      const baseAttackPower = weapon.attack[damageType] ?? 0;
+      const scalingAttributes = weapon.damageScalingAttributes[damageType] ?? [];
+      const scalingCurve = scalingCurves[weapon.damageScalingCurves[damageType] ?? 0];
+
+      let scalingMultiplier = 0;
+
+      if (ineffectiveAttributes.some((attribute) => scalingAttributes.includes(attribute))) {
+        // If the requirements for this damage type are not met, a 40% penalty is subtracted instead
+        // of a scaling bonus being added;
+        scalingMultiplier = -0.4;
+      } else {
+        // Otherwise, scaling multiplier is equal to the product of the scaling for the relevant
+        // attribute, and the current value of that attribute a curve. If this damage type scales
+        // with multiple attributes, the products are added together.
+        for (const attribute of scalingAttributes) {
+          const scaling = weapon.attributeScaling[attribute] ?? 0;
+          scalingMultiplier += scalingCurve(attributes[attribute]) * scaling;
+        }
+      }
+
+      attackRating[damageType] = {
+        baseAttackPower,
+        scalingAttackPower: scalingMultiplier * baseAttackPower,
       };
     }
   }
-  return weaponAttack;
+  return {
+    attackRating,
+    ineffectiveAttributes,
+  };
 }
 
 export * from "./utils";

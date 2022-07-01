@@ -1,7 +1,13 @@
-import { Box, Button, Tooltip } from "@mui/material";
+import { Box, Button, Tooltip, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { allAttributes, DamageType, Weapon, WeaponAttackPower } from "../calculator/calculator";
+import {
+  allAttributes,
+  AttackPower,
+  DamageType,
+  Weapon,
+  WeaponAttackResult,
+} from "../calculator/calculator";
 import {
   getAttributeLabel,
   getDamageTypeIcon,
@@ -9,7 +15,7 @@ import {
   getScalingLabel,
 } from "./uiUtils";
 
-export type WeaponTableRow = [Weapon, Partial<Record<DamageType, WeaponAttackPower>>];
+export type WeaponTableRow = [Weapon, WeaponAttackResult];
 
 const getRowId = ([weapon]: WeaponTableRow) => weapon.name;
 
@@ -41,14 +47,14 @@ const columns: GridColDef<WeaponTableRow>[] = [
     field: "attackPower",
     width: 256,
     sortingOrder: ["desc", "asc"],
-    valueGetter: ({ row: [, attackRating] }) =>
+    valueGetter: ({ row: [, { attackRating }] }) =>
       Object.values(attackRating).reduce(
         (sum, attackPower) => sum + attackPower.baseAttackPower + attackPower.scalingAttackPower,
         0,
       ),
-    renderCell: ({ row: [, attackRating] }) => (
+    renderCell: ({ row: [, { attackRating }] }) => (
       <Box display="grid" width="100%" sx={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
-        {(Object.entries(attackRating) as [DamageType, WeaponAttackPower][]).map(
+        {(Object.entries(attackRating) as [DamageType, AttackPower][]).map(
           ([damageType, { baseAttackPower, scalingAttackPower }]) => {
             const damageTypeLabel = getDamageTypeLabel(damageType);
             const damageTypeIcon = getDamageTypeIcon(damageType);
@@ -110,8 +116,25 @@ const columns: GridColDef<WeaponTableRow>[] = [
           <span>{attribute}</span>
         </Tooltip>
       ),
-      renderCell: ({ value }) =>
-        value === 0 ? <RemoveIcon color="disabled" fontSize="small" /> : value,
+      renderCell: ({ value, row: [, { ineffectiveAttributes }] }) => {
+        if (value === 0) {
+          return <RemoveIcon color="disabled" fontSize="small" />;
+        }
+
+        if (ineffectiveAttributes.includes(attribute)) {
+          return (
+            <Tooltip
+              title={`Unable to wield this weapon effectively with present ${getAttributeLabel(
+                attribute,
+              )} stat`}
+            >
+              <Typography sx={{ color: (theme) => theme.palette.error.main }}>{value}</Typography>
+            </Tooltip>
+          );
+        }
+
+        return value;
+      },
     }),
   ),
 ];

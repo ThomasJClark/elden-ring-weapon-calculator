@@ -43,14 +43,11 @@ function useMemoThrottled<T>(factory: () => T, timeoutMs: number, dependencies: 
     const nextEvaluateTimeMs = lastEvaluateTimeMs.current + timeoutMs;
 
     if (currentTimeMs > nextEvaluateTimeMs) {
-      console.log(`updating immediately`);
       lastEvaluateTimeMs.current = currentTimeMs;
       value.current = factory();
     } else {
-      console.log(`updating in ${nextEvaluateTimeMs - currentTimeMs}ms...`);
       clearTimeout(timeoutHandle.current);
       timeoutHandle.current = setTimeout(() => {
-        console.log(`updating deferred`);
         lastEvaluateTimeMs.current = nextEvaluateTimeMs;
         value.current = factory();
         update((prev) => prev + 1);
@@ -111,7 +108,6 @@ const SearchScreen = ({
 }: Props) => {
   const weaponTableRows = useMemoThrottled<WeaponTableRow[]>(
     () => {
-      // console.log(attributes.str);
       // Apply the two handing bonus if selected
       const adjustedAttributes = twoHanding
         ? adjustAttributesForTwoHanding(attributes)
@@ -271,15 +267,7 @@ const SearchScreen = ({
           },
         }}
       >
-        <Box
-          sx={
-            {
-              // mx: { xs: -2, sm: -2, md: 0 },
-            }
-          }
-        >
-          <WeaponTable rows={weaponTableRows} />
-        </Box>
+        <WeaponTable rows={weaponTableRows} />
       </Container>
     </>
   );
