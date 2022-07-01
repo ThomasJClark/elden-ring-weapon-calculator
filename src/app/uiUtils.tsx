@@ -1,9 +1,9 @@
 import { Attribute, DamageType } from "../calculator/calculator";
-import standardIcon from "./standard.png";
-import magicIcon from "./magic.png";
-import fireIcon from "./fire.png";
-import lightningIcon from "./lightning.png";
-import sacredIcon from "./sacred.png";
+import standardIcon from "./img/standard.png";
+import magicIcon from "./img/magic.png";
+import fireIcon from "./img/fire.png";
+import lightningIcon from "./img/lightning.png";
+import sacredIcon from "./img/sacred.png";
 
 export function getDamageTypeLabel(damageType: DamageType) {
   switch (damageType) {
