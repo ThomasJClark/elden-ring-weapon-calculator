@@ -1,10 +1,43 @@
-import { useState } from "react";
+import { createContext, useState } from "react";
 import { Box, Container, CssBaseline, LinearProgress, ThemeProvider } from "@mui/material";
-import { Affinity, WeaponType } from "../calculator/calculator";
+import { Affinity, Attributes, WeaponType } from "../calculator/calculator";
 import WeaponListSettings from "./WeaponListSettings";
 import SearchResults from "./SearchResults";
 import { darkTheme, lightTheme } from "./theme";
 import useWeapons from "./useWeapons";
+
+interface AppState {
+  readonly darkMode: boolean;
+  readonly attributes: Attributes;
+  readonly twoHanding: boolean;
+  readonly upgradeLevel: number;
+  readonly weaponTypes: readonly WeaponType[];
+  readonly affinities: readonly Affinity[];
+  readonly maxWeight: number;
+  readonly effectiveWithCurrentAttributes: boolean;
+}
+
+const defaultAppState: AppState = {
+  darkMode: true,
+  attributes: {
+    str: 30,
+    dex: 30,
+    int: 30,
+    fai: 30,
+    arc: 30,
+  },
+  twoHanding: false,
+  upgradeLevel: 25,
+  weaponTypes: [],
+  affinities: [],
+  maxWeight: 30,
+  effectiveWithCurrentAttributes: false,
+};
+
+const AppContext = createContext<[AppState, (appState: Partial<AppState>) => void]>([
+  defaultAppState,
+  () => {},
+]);
 
 const App = () => {
   const { weapons, loading, error } = useWeapons();
