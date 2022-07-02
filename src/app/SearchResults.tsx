@@ -1,14 +1,9 @@
 import { useRef, useState } from "react";
 import { Container } from "@mui/material";
-import getWeaponAttack, {
-  adjustAttributesForTwoHanding,
-  Affinity,
-  Attributes,
-  Weapon,
-  WeaponType,
-} from "../calculator/calculator";
+import getWeaponAttack, { adjustAttributesForTwoHanding, Weapon } from "../calculator/calculator";
 import filterWeapons from "../search/filterWeapons";
 import WeaponTable, { WeaponTableRow } from "./WeaponTable";
+import { useAppState } from "./AppState";
 
 /* eslint-disable react-hooks/exhaustive-deps */
 function useMemoThrottled<T>(factory: () => T, timeoutMs: number, dependencies: unknown[]): T {
@@ -51,28 +46,22 @@ function useMemoThrottled<T>(factory: () => T, timeoutMs: number, dependencies: 
 
 interface Props {
   weapons: Map<string, Weapon>;
-  attributes: Attributes;
-  twoHanding: boolean;
-  upgradeLevel: number;
-  weaponTypes: readonly WeaponType[];
-  affinities: readonly Affinity[];
-  maxWeight: number;
-  effectiveWithCurrentAttributes: boolean;
 }
 
 /**
  * Displays a table of weapons based on the selected search criteria
  */
-const SearchScreen = ({
-  weapons,
-  attributes,
-  twoHanding,
-  upgradeLevel,
-  weaponTypes,
-  affinities,
-  maxWeight,
-  effectiveWithCurrentAttributes,
-}: Props) => {
+const SearchScreen = ({ weapons }: Props) => {
+  const {
+    attributes,
+    twoHanding,
+    upgradeLevel,
+    weaponTypes,
+    affinities,
+    maxWeight,
+    effectiveOnly,
+  } = useAppState();
+
   const weaponTableRows = useMemoThrottled<WeaponTableRow[]>(
     () => {
       // Apply the two handing bonus if selected
@@ -85,7 +74,7 @@ const SearchScreen = ({
         weaponTypes,
         affinities,
         maxWeight,
-        effectiveWithAttributes: effectiveWithCurrentAttributes ? adjustedAttributes : undefined,
+        effectiveWithAttributes: effectiveOnly ? adjustedAttributes : undefined,
       });
 
       return filteredWeapons.map((weapon) => [
@@ -102,7 +91,7 @@ const SearchScreen = ({
       weaponTypes,
       affinities,
       maxWeight,
-      effectiveWithCurrentAttributes,
+      effectiveOnly,
     ],
   );
 
