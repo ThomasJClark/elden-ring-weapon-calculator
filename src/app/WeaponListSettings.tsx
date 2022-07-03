@@ -6,7 +6,6 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  Switch,
   TextField,
 } from "@mui/material";
 import { allAttributes, maxRegularUpgradeLevel } from "../calculator/calculator";
@@ -20,13 +19,11 @@ import { getAttributeLabel } from "./uiUtils";
  */
 const WeaponListSettings = () => {
   const {
-    darkMode,
     attributes,
     twoHanding,
     upgradeLevel,
     maxWeight,
     effectiveOnly,
-    onDarkModeChanged,
     onAttributesChanged,
     onTwoHandingChanged,
     onUpgradeLevelChanged,
@@ -41,6 +38,7 @@ const WeaponListSettings = () => {
         gap: 2,
         gridTemplateColumns: { xs: "1fr", md: "384px 128px auto auto 1fr" },
         alignItems: "start",
+        pt: 1,
       }}
     >
       <Box display="grid" sx={{ gap: 2, gridTemplateColumns: "1fr 1fr 1fr" }}>
@@ -115,17 +113,6 @@ const WeaponListSettings = () => {
             checked={effectiveOnly}
             name="Effective only"
             onChange={(evt) => onEffectiveOnlyChanged(evt.currentTarget.checked)}
-          />
-        }
-      />
-
-      <FormControlLabel
-        label="Dark Mode"
-        sx={{ justifySelf: "end" }}
-        control={
-          <Switch
-            checked={darkMode}
-            onChange={(evt) => onDarkModeChanged(evt.currentTarget.checked)}
           />
         }
       />

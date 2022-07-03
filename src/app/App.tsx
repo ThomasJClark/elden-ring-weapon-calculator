@@ -3,7 +3,9 @@ import {
   Box,
   Container,
   CssBaseline,
+  FormControlLabel,
   LinearProgress,
+  Switch,
   ThemeProvider,
   Typography,
 } from "@mui/material";
@@ -17,6 +19,23 @@ import WeaponListFilters from "./WeaponListFilters";
 const AppThemeProvider = ({ children }: { children: ReactNode }) => {
   const { darkMode } = useAppState();
   return <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>{children}</ThemeProvider>;
+};
+
+const DarkModeToggle = () => {
+  const { darkMode, onDarkModeChanged } = useAppState();
+  return (
+    <FormControlLabel
+      label="Dark Mode"
+      sx={{ justifySelf: "end" }}
+      control={
+        <Switch
+          size="small"
+          checked={darkMode}
+          onChange={(evt) => onDarkModeChanged(evt.currentTarget.checked)}
+        />
+      }
+    />
+  );
 };
 
 const App = () => {
@@ -39,11 +58,12 @@ const App = () => {
           }}
         >
           <Box>
-            <Typography variant="h5">
+            <Typography variant="h6" sx={{ mb: 1 }}>
               Elden Ring Weapon
               <br />
               Attack Calculator
             </Typography>
+            <DarkModeToggle />
           </Box>
 
           <WeaponListSettings />
