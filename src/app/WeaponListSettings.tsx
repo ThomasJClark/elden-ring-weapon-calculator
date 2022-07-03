@@ -1,7 +1,6 @@
 import {
   Box,
   Checkbox,
-  Container,
   FormControl,
   FormControlLabel,
   InputLabel,
@@ -36,14 +35,12 @@ const WeaponListSettings = () => {
   } = useAppState();
 
   return (
-    <Container
-      maxWidth="xl"
+    <Box
+      display="grid"
       sx={{
-        display: "grid",
         gap: 2,
         gridTemplateColumns: { xs: "1fr", md: "384px 128px auto auto 1fr" },
         alignItems: "start",
-        pt: 3,
       }}
     >
       <Box display="grid" sx={{ gap: 2, gridTemplateColumns: "1fr 1fr 1fr" }}>
@@ -132,7 +129,7 @@ const WeaponListSettings = () => {
           />
         }
       />
-    </Container>
+    </Box>
   );
 };
 

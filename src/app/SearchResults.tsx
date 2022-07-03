@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { Container } from "@mui/material";
 import getWeaponAttack, { adjustAttributesForTwoHanding, Weapon } from "../calculator/calculator";
 import filterWeapons from "../search/filterWeapons";
 import WeaponTable, { WeaponTableRow } from "./WeaponTable";
@@ -95,20 +94,7 @@ const SearchScreen = ({ weapons }: Props) => {
     ],
   );
 
-  return (
-    <Container
-      maxWidth="xl"
-      sx={{
-        display: "grid",
-        alignContent: "start",
-        gap: 2,
-        py: 2,
-        px: { xs: 0, lg: 3 },
-      }}
-    >
-      <WeaponTable rows={weaponTableRows} />
-    </Container>
-  );
+  return <WeaponTable rows={weaponTableRows} />;
 };
 
 export default SearchScreen;

@@ -155,7 +155,7 @@ const WeaponTable = ({ rows }: Props) => (
     disableColumnSelector
     disableDensitySelector
     autoHeight
-    pageSize={25}
+    pageSize={50}
   />
 );
 
