@@ -13,6 +13,7 @@ import {
 import { allAttributes, maxRegularUpgradeLevel } from "../calculator/calculator";
 import { toSpecialUpgradeLevel } from "../search/filterWeapons";
 import { useAppState } from "./AppState";
+import NumberTextField from "./NumberTextField";
 import { getAttributeLabel } from "./uiUtils";
 
 /**
@@ -42,25 +43,21 @@ const WeaponListSettings = () => {
         gap: 2,
         gridTemplateColumns: { xs: "1fr", md: "384px 128px auto auto 1fr" },
         alignItems: "start",
-        py: 2,
+        pt: 3,
       }}
     >
       <Box display="grid" sx={{ gap: 2, gridTemplateColumns: "1fr 1fr 1fr" }}>
         {allAttributes.map((attribute) => (
-          <TextField
+          <NumberTextField
             key={attribute}
             label={getAttributeLabel(attribute)}
             size="small"
             variant="outlined"
-            inputProps={{
-              type: "number",
-              min: 1,
-              max: 99,
-              step: 1,
-            }}
             value={attributes[attribute]}
-            onChange={(evt) => {
-              onAttributesChanged({ ...attributes, [attribute]: +evt.currentTarget.value });
+            min={1}
+            max={99}
+            onChange={(value) => {
+              onAttributesChanged({ ...attributes, [attribute]: value });
             }}
           />
         ))}

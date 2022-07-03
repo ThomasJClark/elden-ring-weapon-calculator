@@ -1,9 +1,46 @@
-import { Attribute, DamageType } from "../calculator/calculator";
-import standardIcon from "./img/standard.png";
-import magicIcon from "./img/magic.png";
-import fireIcon from "./img/fire.png";
-import lightningIcon from "./img/lightning.png";
-import sacredIcon from "./img/sacred.png";
+import { Affinity, Attribute, DamageType } from "../calculator/calculator";
+import noAffinityIcon from "./img/noAffinity.webp";
+import heavyAffinityIcon from "./img/heavyAffinity.webp";
+import keenAffinityIcon from "./img/keenAffinity.webp";
+import qualityAffinityIcon from "./img/qualityAffinity.webp";
+import magicAffinityIcon from "./img/magicAffinity.webp";
+import coldAffinityIcon from "./img/coldAffinity.webp";
+import fireAffinityIcon from "./img/fireAffinity.webp";
+import lightningAffinityIcon from "./img/lightningAffinity.webp";
+import sacredAffinityIcon from "./img/sacredAffinity.webp";
+import poisonAffinityIcon from "./img/poisonAffinity.webp";
+import bloodAffinityIcon from "./img/bloodAffinity.webp";
+import occultAffinityIcon from "./img/occultAffinity.webp";
+
+export function getAffinityIcon(affinity: Affinity) {
+  switch (affinity) {
+    case "None":
+      return noAffinityIcon;
+    case "Heavy":
+      return heavyAffinityIcon;
+    case "Keen":
+      return keenAffinityIcon;
+    case "Quality":
+      return qualityAffinityIcon;
+    case "Magic":
+      return magicAffinityIcon;
+    case "Cold":
+      return coldAffinityIcon;
+    case "Fire":
+    case "Flame Art":
+      return fireAffinityIcon;
+    case "Lightning":
+      return lightningAffinityIcon;
+    case "Sacred":
+      return sacredAffinityIcon;
+    case "Poison":
+      return poisonAffinityIcon;
+    case "Blood":
+      return bloodAffinityIcon;
+    case "Occult":
+      return occultAffinityIcon;
+  }
+}
 
 export function getDamageTypeLabel(damageType: DamageType) {
   switch (damageType) {
@@ -23,15 +60,15 @@ export function getDamageTypeLabel(damageType: DamageType) {
 export function getDamageTypeIcon(damageType: DamageType) {
   switch (damageType) {
     case "physical":
-      return standardIcon;
+      return noAffinityIcon;
     case "magic":
-      return magicIcon;
+      return magicAffinityIcon;
     case "fire":
-      return fireIcon;
+      return fireAffinityIcon;
     case "lightning":
-      return lightningIcon;
+      return lightningAffinityIcon;
     case "holy":
-      return sacredIcon;
+      return sacredAffinityIcon;
   }
 }
 

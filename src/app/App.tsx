@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Box, Container, CssBaseline, LinearProgress, ThemeProvider } from "@mui/material";
+import { Container, CssBaseline, LinearProgress, ThemeProvider } from "@mui/material";
 import WeaponListSettings from "./WeaponListSettings";
 import SearchResults from "./SearchResults";
 import { darkTheme, lightTheme } from "./theme";
@@ -18,22 +18,10 @@ const App = () => {
       <AppThemeProvider>
         <CssBaseline />
 
-        <Box
-          sx={{
-            backgroundColor: (theme) => theme.palette.background.paper,
-            borderBottom: (theme) => `solid 1px ${theme.palette.divider}`,
-          }}
-        >
-          <WeaponListSettings />
-        </Box>
+        <WeaponListSettings />
 
         {loading && (
-          <Container
-            sx={{
-              py: 6,
-              textAlign: "center",
-            }}
-          >
+          <Container sx={{ py: 6, textAlign: "center" }}>
             Loading weapon data...
             <LinearProgress sx={{ mt: 3 }} />
           </Container>

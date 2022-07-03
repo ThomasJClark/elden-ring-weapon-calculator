@@ -1,44 +1,34 @@
-import { createTheme } from "@mui/material/styles";
-import { alpha } from "@mui/system";
-import backgroundDark600 from "./img/backgroundDark600.webp";
-import backgroundDark900 from "./img/backgroundDark900.webp";
-import backgroundDark1200 from "./img/backgroundDark1200.webp";
-import backgroundDark1536 from "./img/backgroundDark1536.webp";
-import backgroundDark1920 from "./img/backgroundDark1920.webp";
-import backgroundLight600 from "./img/backgroundLight600.webp";
-import backgroundLight900 from "./img/backgroundLight900.webp";
-import backgroundLight1200 from "./img/backgroundLight1200.webp";
-import backgroundLight1536 from "./img/backgroundLight1536.webp";
-import backgroundLight1920 from "./img/backgroundLight1920.webp";
+import { createTheme, alpha } from "@mui/material/styles";
+import { OverridesStyleRules } from "@mui/material/styles/overrides";
+import { GridClasses, DataGridProps } from "@mui/x-data-grid";
 
 declare module "@mui/material/styles/components" {
   export interface Components {
-    MuiDataGrid?: Components["MuiTable"];
+    MuiDataGrid?: {
+      defaultProps?: Partial<DataGridProps>;
+      styleOverrides?: Partial<OverridesStyleRules<keyof GridClasses>>;
+    };
   }
 }
 
-const primaryMainDark = "#f5bd63";
-const secondaryMainDark = "#cf8563";
-const backgroundPaperDark = alpha("#121617", 0.9);
-const backgroundDefaultDark = "#0e120e";
-
-const primaryMainLight = "#895602";
-const secondaryMainLight = "#cf8563";
-const backgroundPaperLight = alpha("#ffffff", 0.75);
-const backgroundDefaultLight = "#edf0f2";
+const backgroundPaperDark = "#121617";
 
 export const darkTheme = createTheme({
   palette: {
     mode: "dark",
+    divider: "#5c5c50",
+    text: {
+      primary: "#f2f2f2",
+    },
     primary: {
-      main: primaryMainDark,
+      main: "#f5bd63",
     },
     secondary: {
-      main: secondaryMainDark,
+      main: "#cf8563",
     },
     background: {
       paper: backgroundPaperDark,
-      default: backgroundDefaultDark,
+      default: "#0e120e",
     },
   },
   typography: {
@@ -51,33 +41,56 @@ export const darkTheme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          backgroundColor: alpha(backgroundPaperDark, 1),
-          backgroundPosition: "center top",
-          backgroundSize: "auto",
-          backgroundRepeat: `no-repeat`,
-          backgroundImage: `url(${backgroundDark600})`,
-          "@media(min-width: 601px)": {
-            backgroundImage: `url(${backgroundDark900})`,
-          },
-          "@media(min-width: 901px)": {
-            backgroundImage: `url(${backgroundDark1200})`,
-          },
-          "@media(min-width: 1201px)": {
-            backgroundImage: `url(${backgroundDark1536})`,
-          },
-          "@media(min-width: 1537px)": {
-            backgroundImage: `url(${backgroundDark1920})`,
-          },
-          "@media(min-width: 1920px)": {
-            backgroundSize: "100% auto",
-          },
+          minHeight: "100vh",
+          background: `
+            radial-gradient(
+              circle at 50% 50%,
+              ${alpha("#1f1d17", 0)} 0%,
+              ${alpha("#1f1d17", 0)} 60%,
+              ${alpha("#1f1d17", 0.2)} 80%,
+              ${alpha("#1f1d17", 0.6)} 100%
+            ),
+            linear-gradient(
+              to right,
+              ${alpha("#3a3a30", 0.3)} 0%,
+              ${alpha("#3a3a30", 0)} 20%,
+              ${alpha("#3a3a30", 0)} 80%,
+              ${alpha("#3a3a30", 0.3)} 100%
+            ),
+            linear-gradient(
+              to bottom,
+              #0c0c09 0%,
+              #1f1d17 40%,
+              #353328 60%,
+              #454536 75%,
+              #4d4d3d 80%,
+              #59584a 85%,
+              #4d4d3d 90%,
+              #3a3a30 95%,
+              #2f2f28 100%
+            )
+          `,
         },
       },
     },
     MuiDataGrid: {
       styleOverrides: {
         root: {
-          backgroundColor: backgroundPaperDark,
+          backgroundColor: alpha(backgroundPaperDark, 0),
+          borderColor: "#655e46",
+        },
+        cell: {
+          borderColor: "#655e46",
+        },
+        footerContainer: {
+          borderColor: "#655e46",
+        },
+        columnHeaders: {
+          borderColor: "#655e46",
+          userSelect: "none",
+        },
+        columnSeparator: {
+          display: "none",
         },
       },
     },
@@ -87,15 +100,17 @@ export const darkTheme = createTheme({
 export const lightTheme = createTheme({
   palette: {
     mode: "light",
+    text: {
+      primary: "#111",
+    },
     primary: {
-      main: primaryMainLight,
+      main: "#895602",
     },
     secondary: {
-      main: secondaryMainLight,
+      main: "#cf8563",
     },
     background: {
-      paper: backgroundPaperLight,
-      default: backgroundDefaultLight,
+      default: "#edf0f2",
     },
   },
   typography: {
@@ -108,33 +123,54 @@ export const lightTheme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          backgroundColor: alpha(backgroundPaperLight, 1),
-          backgroundPosition: "center top",
-          backgroundSize: "auto",
-          backgroundRepeat: `no-repeat`,
-          backgroundImage: `url(${backgroundLight600})`,
-          "@media(min-width: 601px)": {
-            backgroundImage: `url(${backgroundLight900})`,
-          },
-          "@media(min-width: 901px)": {
-            backgroundImage: `url(${backgroundLight1200})`,
-          },
-          "@media(min-width: 1201px)": {
-            backgroundImage: `url(${backgroundLight1536})`,
-          },
-          "@media(min-width: 1537px)": {
-            backgroundImage: `url(${backgroundLight1920})`,
-          },
-          "@media(min-width: 1920px)": {
-            backgroundSize: "100% auto",
-          },
+          minHeight: "100vh",
+          background: `
+            radial-gradient(
+              circle at 50% 50%,
+              ${alpha("#59584a", 0)} 0%,
+              ${alpha("#59584a", 0)} 60%,
+              ${alpha("#59584a", 0.05)} 80%,
+              ${alpha("#59584a", 0.1)} 100%
+            ),
+            linear-gradient(
+              to right,
+              ${alpha("#3a3a30", 0.05)} 0%,
+              ${alpha("#3a3a30", 0)} 10%,
+              ${alpha("#3a3a30", 0)} 90%,
+              ${alpha("#3a3a30", 0.05)} 100%
+            ),
+            linear-gradient(
+              to bottom,
+              #f7f7f5 0%,
+              #f7f7f5 60%,
+              #f3f3df 80%,
+              #fdfadf 85%,
+              #f3f3df 90%,
+              #edece0 95%,
+              #e8e8df 100%
+            )
+          `,
         },
       },
     },
     MuiDataGrid: {
       styleOverrides: {
         root: {
-          backgroundColor: backgroundPaperLight,
+          backgroundColor: alpha("#fff", 0.25),
+          borderColor: "#aaa89b",
+        },
+        cell: {
+          borderColor: "#aaa89b",
+        },
+        footerContainer: {
+          borderColor: "#aaa89b",
+        },
+        columnHeaders: {
+          borderColor: "#aaa89b",
+          userSelect: "none",
+        },
+        columnSeparator: {
+          display: "none",
         },
       },
     },
