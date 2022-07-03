@@ -6,7 +6,6 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField,
 } from "@mui/material";
 import { allAttributes, maxRegularUpgradeLevel } from "../calculator/calculator";
 import { toSpecialUpgradeLevel } from "../search/filterWeapons";
@@ -76,18 +75,15 @@ const WeaponListSettings = () => {
           </Select>
         </FormControl>
 
-        <TextField
+        <NumberTextField
           label="Weight Limit"
           size="small"
           variant="outlined"
-          inputProps={{
-            type: "number",
-            min: 0,
-            max: 30,
-            step: 0.5,
-          }}
+          min={0}
+          max={30}
+          step={0.5}
           value={maxWeight}
-          onChange={(evt) => onMaxWeightChanged(+evt.currentTarget.value)}
+          onChange={(value) => onMaxWeightChanged(value)}
         />
       </Box>
 

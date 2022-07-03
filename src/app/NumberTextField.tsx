@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useCallback } from "react";
+import { ChangeEvent, KeyboardEvent, useCallback, useState } from "react";
 import type { TextFieldProps } from "@mui/material";
 import { TextField } from "@mui/material";
 
@@ -21,6 +21,8 @@ const NumberTextField = ({
   onChange,
   ...props
 }: Props) => {
+  const [valueStr, setValueStr] = useState(value.toString());
+
   const handleKeyDown = useCallback(
     (evt: KeyboardEvent<HTMLInputElement>) => {
       if (
@@ -50,48 +52,59 @@ const NumberTextField = ({
       }
 
       if (evt.key === "ArrowUp") {
-        onChange(value + step, evt);
+        const newValue = Math.min(Math.max(Math.floor(value / step + 1) * step, min), max);
+        onChange(newValue, evt);
+        setValueStr(newValue.toString());
         evt.preventDefault();
         return;
       }
 
       if (evt.key === "ArrowDown") {
-        onChange(value - step, evt);
-        evt.preventDefault();
+        const newValue = Math.min(Math.max(Math.ceil(value / step - 1) * step, min), max);
+        onChange(newValue, evt);
+        setValueStr(newValue.toString());
         return;
       }
 
       evt.preventDefault();
     },
-    [value, step, onChange],
+    [value, min, max, step, onChange],
   );
 
   const handleChange = useCallback(
-    (evt: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = evt.currentTarget.value;
+    (evt: ChangeEvent<HTMLInputElement>) => {
+      const newValueStr = evt.currentTarget.value;
 
-      if (newValue === "") {
-        onChange?.(0, evt);
+      if (newValueStr === "") {
+        setValueStr("");
+        onChange?.(min, evt);
         return;
       }
 
-      const n = +newValue.replace(/[,.]/g, "");
-      if (!isNaN(n)) {
-        const truncated = Math.floor(Math.min(Math.max(n, min), max) / step) * step;
-        evt.currentTarget.value = truncated.toString();
-        onChange?.(truncated, evt);
+      const newValue = +newValueStr;
+      if (isNaN(newValue)) {
+        return;
       }
+
+      const clamped = Math.min(Math.max(newValue, min), max);
+      setValueStr(newValue === clamped ? newValueStr : clamped.toString());
+      onChange?.(clamped, evt);
     },
-    [onChange, step, min, max],
+    [onChange, min, max],
   );
+
+  const handleBlur = useCallback(() => {
+    setValueStr(value.toString());
+  }, [value]);
 
   return (
     <TextField
       {...props}
-      inputMode={step < 1 ? "decimal" : "numeric"}
+      inputProps={{ inputMode: "decimal" }}
       onKeyDown={handleKeyDown}
       onChange={handleChange}
-      value={value}
+      onBlur={handleBlur}
+      value={valueStr}
     />
   );
 };
