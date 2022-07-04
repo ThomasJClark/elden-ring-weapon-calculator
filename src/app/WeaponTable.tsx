@@ -38,7 +38,7 @@ const columns: GridColDef<WeaponTableRow>[] = [
         target="_blank"
         rel="noopener noreferrer"
       >
-        {weapon.name}
+        {weapon.name.replace("Epee", "Épée")}
       </Button>
     ),
   },
