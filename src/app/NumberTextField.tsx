@@ -2,6 +2,8 @@ import { ChangeEvent, KeyboardEvent, useCallback, useState } from "react";
 import type { TextFieldProps } from "@mui/material";
 import { TextField } from "@mui/material";
 
+const clampValue = (x: number, min: number, max: number) => Math.min(Math.max(x, min), max);
+
 interface Props extends Omit<TextFieldProps, "value" | "inputMode" | "onKeyDown" | "onChange"> {
   value: number;
   min?: number;
@@ -25,48 +27,42 @@ const NumberTextField = ({
 
   const handleKeyDown = useCallback(
     (evt: KeyboardEvent<HTMLInputElement>) => {
+      // Allow typing numbers or using built-in keyboard shortcuts normally
       if (
         evt.altKey ||
         evt.ctrlKey ||
         evt.shiftKey ||
-        [
-          "0",
-          "1",
-          "2",
-          "3",
-          "4",
-          "5",
-          "6",
-          "7",
-          "8",
-          "9",
-          ".",
-          "ArrowLeft",
-          "ArrowRight",
-          "Backspace",
-          "Enter",
-          "Tab",
-        ].includes(evt.key)
+        evt.key.match(/^[0-9]$/) ||
+        evt.key.match(/^F[0-9]{1,2}$/) ||
+        [".", "ArrowLeft", "ArrowRight", "Backspace", "Enter", "Tab"].includes(evt.key)
       ) {
         return;
       }
 
-      if (evt.key === "ArrowUp") {
-        const newValue = Math.min(Math.max(Math.floor(value / step + 1) * step, min), max);
-        onChange(newValue, evt);
-        setValueStr(newValue.toString());
-        evt.preventDefault();
-        return;
-      }
-
-      if (evt.key === "ArrowDown") {
-        const newValue = Math.min(Math.max(Math.ceil(value / step - 1) * step, min), max);
-        onChange(newValue, evt);
-        setValueStr(newValue.toString());
-        return;
-      }
-
       evt.preventDefault();
+
+      let newValue = value;
+
+      // Custom keyboard shortcuts: Up/Down increment/decrement by one step, Page Up/Down by 10
+      // steps, and Home/End set the value to the minimum or maximum
+      if (evt.key === "ArrowUp") {
+        newValue = clampValue(Math.floor(value / step + 1) * step, min, max);
+      } else if (evt.key === "ArrowDown") {
+        newValue = clampValue(Math.ceil(value / step - 1) * step, min, max);
+      } else if (evt.key === "PageUp") {
+        newValue = clampValue(Math.floor(value / step + 10) * step, min, max);
+      } else if (evt.key === "PageDown") {
+        newValue = clampValue(Math.ceil(value / step - 10) * step, min, max);
+      } else if (evt.key === "Home" && max != null) {
+        newValue = max;
+      } else if (evt.key === "End" && min != null) {
+        newValue = min;
+      }
+
+      if (newValue !== value) {
+        onChange(newValue, evt);
+        setValueStr(newValue.toString());
+      }
     },
     [value, min, max, step, onChange],
   );
@@ -86,11 +82,11 @@ const NumberTextField = ({
         return;
       }
 
-      const clamped = Math.min(Math.max(newValue, min), max);
+      const clamped = clampValue(newValue, min, max);
       setValueStr(newValue === clamped ? newValueStr : clamped.toString());
       onChange?.(clamped, evt);
     },
-    [onChange, min, max],
+    [min, max, onChange],
   );
 
   const handleBlur = useCallback(() => {

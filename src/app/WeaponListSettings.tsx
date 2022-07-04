@@ -80,7 +80,7 @@ const WeaponListSettings = () => {
           size="small"
           variant="outlined"
           min={0}
-          max={30}
+          max={29}
           step={0.5}
           value={maxWeight}
           onChange={(value) => onMaxWeightChanged(value)}
