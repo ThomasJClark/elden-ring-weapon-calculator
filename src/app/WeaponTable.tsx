@@ -2,13 +2,7 @@ import { useMemo } from "react";
 import { Box, Button, Tooltip, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import {
-  allAttributes,
-  AttackPower,
-  DamageType,
-  Weapon,
-  WeaponAttackResult,
-} from "../calculator/calculator";
+import { allAttributes, DamageType, Weapon, WeaponAttackResult } from "../calculator/calculator";
 import {
   getAttributeLabel,
   getDamageTypeIcon,
