@@ -34,6 +34,7 @@
     "last 3 safari version"
   ],
   "devDependencies": {
+    "prettier": "^2.7.1",
     "ts-node": "10.8.1"
   }
 }

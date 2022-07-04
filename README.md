@@ -6,8 +6,8 @@ An Elden Ring attack rating calculator that allows comparing multiple weapons an
 
 ## Roadmap
 
-- [ ] Filter by affinity
-- [ ] Filter by weapon type
+- [x] Filter by affinity
+- [x] Filter by weapon type
 - [ ] Bookmark/pin weapons
 - [ ] Passive effects
 - [x] Save settings when refreshing or visiting the site later

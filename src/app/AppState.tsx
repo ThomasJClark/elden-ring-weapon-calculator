@@ -18,17 +18,19 @@ interface AppState {
   readonly affinities: readonly Affinity[];
   readonly maxWeight: number;
   readonly effectiveOnly: boolean;
+  readonly splitDamage: boolean;
 }
 
 interface UpdateAppState extends AppState {
-  onDarkModeChanged(darkMode: boolean): void;
-  onAttributesChanged(attributes: Attributes): void;
-  onTwoHandingChanged(twoHanding: boolean): void;
-  onUpgradeLevelChanged(upgradeLevel: number): void;
-  onWeaponTypesChanged(weaponTypes: readonly WeaponType[]): void;
-  onAffinitiesChanged(affinities: readonly Affinity[]): void;
-  onMaxWeightChanged(maxWeight: number): void;
-  onEffectiveOnlyChanged(effectiveOnly: boolean): void;
+  setDarkMode(darkMode: boolean): void;
+  setAttributes(attributes: Attributes): void;
+  setTwoHanding(twoHanding: boolean): void;
+  setUpgradeLevel(upgradeLevel: number): void;
+  setWeaponTypes(weaponTypes: readonly WeaponType[]): void;
+  setAffinities(affinities: readonly Affinity[]): void;
+  setMaxWeight(maxWeight: number): void;
+  setEffectiveOnly(effectiveOnly: boolean): void;
+  setSplitDamage(splitDamage: boolean): void;
 }
 
 const defaultAppState: AppState = {
@@ -46,18 +48,20 @@ const defaultAppState: AppState = {
   affinities: ["None"],
   maxWeight: 30,
   effectiveOnly: false,
+  splitDamage: false,
 };
 
 const AppStateContext = createContext<UpdateAppState>({
   ...defaultAppState,
-  onDarkModeChanged() {},
-  onAttributesChanged() {},
-  onTwoHandingChanged() {},
-  onUpgradeLevelChanged() {},
-  onWeaponTypesChanged() {},
-  onAffinitiesChanged() {},
-  onMaxWeightChanged() {},
-  onEffectiveOnlyChanged() {},
+  setDarkMode() {},
+  setAttributes() {},
+  setTwoHanding() {},
+  setUpgradeLevel() {},
+  setWeaponTypes() {},
+  setAffinities() {},
+  setMaxWeight() {},
+  setEffectiveOnly() {},
+  setSplitDamage() {},
 });
 
 /**
@@ -80,64 +84,40 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("appState", JSON.stringify(appState));
   }, [appState]);
 
-  const onDarkModeChanged = useCallback<UpdateAppState["onDarkModeChanged"]>(
-    (darkMode) => setAppState((prevAppState) => ({ ...prevAppState, darkMode })),
-    [],
-  );
-  const onAttributesChanged = useCallback<UpdateAppState["onAttributesChanged"]>(
-    (attributes) => setAppState((prevAppState) => ({ ...prevAppState, attributes })),
-    [],
-  );
-  const onTwoHandingChanged = useCallback<UpdateAppState["onTwoHandingChanged"]>(
-    (twoHanding) => setAppState((prevAppState) => ({ ...prevAppState, twoHanding })),
-    [],
-  );
-  const onUpgradeLevelChanged = useCallback<UpdateAppState["onUpgradeLevelChanged"]>(
-    (upgradeLevel) => setAppState((prevAppState) => ({ ...prevAppState, upgradeLevel })),
-    [],
-  );
-  const onWeaponTypesChanged = useCallback<UpdateAppState["onWeaponTypesChanged"]>(
-    (weaponTypes) => setAppState((prevAppState) => ({ ...prevAppState, weaponTypes })),
-    [],
-  );
-  const onAffinitiesChanged = useCallback<UpdateAppState["onAffinitiesChanged"]>(
-    (affinities) => setAppState((prevAppState) => ({ ...prevAppState, affinities })),
-    [],
-  );
-  const onMaxWeightChanged = useCallback<UpdateAppState["onMaxWeightChanged"]>(
-    (maxWeight) => setAppState((prevAppState) => ({ ...prevAppState, maxWeight })),
-    [],
-  );
-  const onEffectiveOnlyChanged = useCallback<UpdateAppState["onEffectiveOnlyChanged"]>(
-    (effectiveOnly) => setAppState((prevAppState) => ({ ...prevAppState, effectiveOnly })),
-    [],
-  );
-
-  const context = useMemo(
+  const changeHandlers = useMemo<Omit<UpdateAppState, keyof AppState>>(
     () => ({
-      ...appState,
-      onDarkModeChanged,
-      onAttributesChanged,
-      onTwoHandingChanged,
-      onUpgradeLevelChanged,
-      onWeaponTypesChanged,
-      onAffinitiesChanged,
-      onMaxWeightChanged,
-      onEffectiveOnlyChanged,
+      setDarkMode(darkMode) {
+        setAppState((prevAppState) => ({ ...prevAppState, darkMode }));
+      },
+      setAttributes(attributes) {
+        setAppState((prevAppState) => ({ ...prevAppState, attributes }));
+      },
+      setTwoHanding(twoHanding) {
+        setAppState((prevAppState) => ({ ...prevAppState, twoHanding }));
+      },
+      setUpgradeLevel(upgradeLevel) {
+        setAppState((prevAppState) => ({ ...prevAppState, upgradeLevel }));
+      },
+      setWeaponTypes(weaponTypes) {
+        setAppState((prevAppState) => ({ ...prevAppState, weaponTypes }));
+      },
+      setAffinities(affinities) {
+        setAppState((prevAppState) => ({ ...prevAppState, affinities }));
+      },
+      setMaxWeight(maxWeight) {
+        setAppState((prevAppState) => ({ ...prevAppState, maxWeight }));
+      },
+      setEffectiveOnly(effectiveOnly) {
+        setAppState((prevAppState) => ({ ...prevAppState, effectiveOnly }));
+      },
+      setSplitDamage(splitDamage) {
+        setAppState((prevAppState) => ({ ...prevAppState, splitDamage }));
+      },
     }),
-    [
-      appState,
-      onDarkModeChanged,
-      onAttributesChanged,
-      onTwoHandingChanged,
-      onUpgradeLevelChanged,
-      onWeaponTypesChanged,
-      onAffinitiesChanged,
-      onMaxWeightChanged,
-      onEffectiveOnlyChanged,
-    ],
+    [],
   );
 
+  const context = useMemo(() => ({ ...appState, ...changeHandlers }), [appState, changeHandlers]);
   return <AppStateContext.Provider value={context}>{children}</AppStateContext.Provider>;
 };
 

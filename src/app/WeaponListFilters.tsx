@@ -21,7 +21,7 @@ const miscWeaponTypes: WeaponType[] = [
  * Left rail containing options to filter the weapon list by weapon type and/or affinity
  */
 const WeaponListFilters = () => {
-  const { weaponTypes, affinities, onWeaponTypesChanged, onAffinitiesChanged } = useAppState();
+  const { weaponTypes, affinities, setWeaponTypes, setAffinities } = useAppState();
 
   const [showMiscWeaponTypesChecked, setShowMiscWeaponTypesChecked] = useState(false);
 
@@ -46,7 +46,7 @@ const WeaponListFilters = () => {
           variant="text"
           size="small"
           disabled={affinities.length === allAffinities.length}
-          onClick={() => onAffinitiesChanged(allAffinities)}
+          onClick={() => setAffinities(allAffinities)}
         >
           Select all
         </Button>
@@ -54,7 +54,7 @@ const WeaponListFilters = () => {
           variant="text"
           size="small"
           disabled={affinities.length === 0}
-          onClick={() => onAffinitiesChanged([])}
+          onClick={() => setAffinities([])}
         >
           Clear
         </Button>
@@ -85,7 +85,7 @@ const WeaponListFilters = () => {
                 checked={affinities.includes(affinity)}
                 name={affinity}
                 onChange={(evt) =>
-                  onAffinitiesChanged(
+                  setAffinities(
                     evt.currentTarget.checked
                       ? [...affinities, affinity]
                       : affinities.filter((value) => value !== affinity),
@@ -111,7 +111,7 @@ const WeaponListFilters = () => {
           variant="text"
           size="small"
           disabled={weaponTypes.length === allWeaponTypes.length}
-          onClick={() => onWeaponTypesChanged(allWeaponTypes)}
+          onClick={() => setWeaponTypes(allWeaponTypes)}
         >
           Select all
         </Button>
@@ -119,7 +119,7 @@ const WeaponListFilters = () => {
           variant="text"
           size="small"
           disabled={weaponTypes.length === 0}
-          onClick={() => onWeaponTypesChanged([])}
+          onClick={() => setWeaponTypes([])}
         >
           Clear
         </Button>
@@ -138,7 +138,7 @@ const WeaponListFilters = () => {
                 checked={weaponTypes.includes(weaponType)}
                 name={weaponType}
                 onChange={(evt) =>
-                  onWeaponTypesChanged(
+                  setWeaponTypes(
                     evt.currentTarget.checked
                       ? [...weaponTypes, weaponType]
                       : weaponTypes.filter((value) => value !== weaponType),

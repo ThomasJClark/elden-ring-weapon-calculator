@@ -23,11 +23,13 @@ const WeaponListSettings = () => {
     upgradeLevel,
     maxWeight,
     effectiveOnly,
-    onAttributesChanged,
-    onTwoHandingChanged,
-    onUpgradeLevelChanged,
-    onMaxWeightChanged,
-    onEffectiveOnlyChanged,
+    splitDamage,
+    setAttributes,
+    setTwoHanding,
+    setUpgradeLevel,
+    setMaxWeight,
+    setEffectiveOnly,
+    setSplitDamage,
   } = useAppState();
 
   return (
@@ -51,7 +53,7 @@ const WeaponListSettings = () => {
             min={1}
             max={99}
             onChange={(value) => {
-              onAttributesChanged({ ...attributes, [attribute]: value });
+              setAttributes({ ...attributes, [attribute]: value });
             }}
           />
         ))}
@@ -65,7 +67,7 @@ const WeaponListSettings = () => {
             label="Weapon Level"
             size="small"
             value={upgradeLevel}
-            onChange={(evt) => onUpgradeLevelChanged(+evt.target.value)}
+            onChange={(evt) => setUpgradeLevel(+evt.target.value)}
           >
             {Array.from({ length: maxRegularUpgradeLevel + 1 }, (_, upgradeLevelOption) => (
               <MenuItem key={upgradeLevelOption} value={upgradeLevelOption}>
@@ -83,7 +85,7 @@ const WeaponListSettings = () => {
           max={29}
           step={0.5}
           value={maxWeight}
-          onChange={(value) => onMaxWeightChanged(value)}
+          onChange={(value) => setMaxWeight(value)}
         />
       </Box>
 
@@ -95,7 +97,7 @@ const WeaponListSettings = () => {
             size="small"
             checked={twoHanding}
             name="Two Handing"
-            onChange={(evt) => onTwoHandingChanged(evt.currentTarget.checked)}
+            onChange={(evt) => setTwoHanding(evt.currentTarget.checked)}
           />
         }
       />
@@ -108,7 +110,20 @@ const WeaponListSettings = () => {
             size="small"
             checked={effectiveOnly}
             name="Effective only"
-            onChange={(evt) => onEffectiveOnlyChanged(evt.currentTarget.checked)}
+            onChange={(evt) => setEffectiveOnly(evt.currentTarget.checked)}
+          />
+        }
+      />
+
+      <FormControlLabel
+        label="Show damage type split"
+        sx={{ mr: 0 }}
+        control={
+          <Checkbox
+            size="small"
+            checked={splitDamage}
+            name="Show damage type split"
+            onChange={(evt) => setSplitDamage(evt.currentTarget.checked)}
           />
         }
       />

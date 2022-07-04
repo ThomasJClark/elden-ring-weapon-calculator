@@ -22,7 +22,7 @@ const AppThemeProvider = ({ children }: { children: ReactNode }) => {
 };
 
 const DarkModeToggle = () => {
-  const { darkMode, onDarkModeChanged } = useAppState();
+  const { darkMode, setDarkMode } = useAppState();
   return (
     <FormControlLabel
       label="Dark Mode"
@@ -31,7 +31,7 @@ const DarkModeToggle = () => {
         <Switch
           size="small"
           checked={darkMode}
-          onChange={(evt) => onDarkModeChanged(evt.currentTarget.checked)}
+          onChange={(evt) => setDarkMode(evt.currentTarget.checked)}
         />
       }
     />
