@@ -40,7 +40,7 @@ const scalingCurves: Record<WeaponScalingCurve, (attributeValue: number) => numb
   },
   4: (attributeValue) => {
     if (attributeValue > 80) {
-      return 0.95 + 0.5 * ((attributeValue - 80) / 19);
+      return 0.95 + 0.05 * ((attributeValue - 80) / 19);
     } else if (attributeValue > 50) {
       return 0.8 + 0.15 * ((attributeValue - 50) / 30);
     } else if (attributeValue > 20) {
