@@ -42,9 +42,9 @@ function useColumns(): GridColDef<WeaponTableRow>[] {
         ),
       },
       {
-        headerName: "Attack Power",
+        headerName: "Attack",
         field: "attackPower",
-        width: 256,
+        width: splitDamage ? 256 : 96,
         sortingOrder: ["desc", "asc"],
         valueGetter: ({ row: [, { attackRating }] }) =>
           Object.values(attackRating).reduce(

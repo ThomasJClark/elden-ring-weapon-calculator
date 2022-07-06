@@ -74,6 +74,13 @@ export const darkTheme = createTheme({
         },
       },
     },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: "9999px",
+        },
+      },
+    },
     MuiDataGrid: {
       styleOverrides: {
         root: {
@@ -152,6 +159,13 @@ export const lightTheme = createTheme({
             )
           `,
           backgroundAttachment: "fixed",
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: "9999px",
         },
       },
     },

@@ -12,6 +12,15 @@ import poisonAffinityIcon from "./img/poisonAffinity.webp";
 import bloodAffinityIcon from "./img/bloodAffinity.webp";
 import occultAffinityIcon from "./img/occultAffinity.webp";
 
+export function getAffinityLabel(affinity: Affinity) {
+  switch (affinity) {
+    case "None":
+      return "Standard";
+    default:
+      return affinity;
+  }
+}
+
 export function getAffinityIcon(affinity: Affinity) {
   switch (affinity) {
     case "None":

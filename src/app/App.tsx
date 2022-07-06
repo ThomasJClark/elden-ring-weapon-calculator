@@ -14,7 +14,8 @@ import SearchResults from "./SearchResults";
 import { darkTheme, lightTheme } from "./theme";
 import useWeapons from "./useWeapons";
 import { AppStateProvider, useAppState } from "./AppState";
-import WeaponListFilters from "./WeaponListFilters";
+import WeaponTypePicker from "./WeaponTypePicker";
+import AffinityPicker from "./AffinityPicker";
 
 const AppThemeProvider = ({ children }: { children: ReactNode }) => {
   const { darkMode } = useAppState();
@@ -24,17 +25,17 @@ const AppThemeProvider = ({ children }: { children: ReactNode }) => {
 const DarkModeToggle = () => {
   const { darkMode, setDarkMode } = useAppState();
   return (
-    <FormControlLabel
-      label="Dark Mode"
-      sx={{ justifySelf: "end" }}
-      control={
-        <Switch
-          size="small"
-          checked={darkMode}
-          onChange={(evt) => setDarkMode(evt.currentTarget.checked)}
-        />
-      }
-    />
+    <Box>
+      <Typography component="h2" variant="h6" sx={{ mb: 1 }}>
+        Appearance
+      </Typography>
+      <FormControlLabel
+        label="Dark Mode"
+        control={
+          <Switch checked={darkMode} onChange={(evt) => setDarkMode(evt.currentTarget.checked)} />
+        }
+      />
+    </Box>
   );
 };
 
@@ -57,27 +58,31 @@ const App = () => {
             px: { xs: 0, lg: 3 },
           }}
         >
-          <Box>
-            <Typography variant="h6" sx={{ mb: 1 }}>
+          <Box display="grid" sx={{ gap: 2 }}>
+            <Typography component="h1" variant="h5">
               Elden Ring Weapon
               <br />
               Attack Calculator
             </Typography>
+
+            <AffinityPicker />
+
+            <WeaponTypePicker />
+
             <DarkModeToggle />
           </Box>
+          <Box>
+            <WeaponListSettings />
 
-          <WeaponListSettings />
-
-          <WeaponListFilters />
-
-          {loading ? (
-            <Box sx={{ py: 6, textAlign: "center" }}>
-              Loading weapon data...
-              <LinearProgress sx={{ mt: 3 }} />
-            </Box>
-          ) : (
-            !error && <SearchResults weapons={weapons} />
-          )}
+            {loading ? (
+              <Box sx={{ py: 6, textAlign: "center" }}>
+                Loading weapon data...
+                <LinearProgress sx={{ mt: 3 }} />
+              </Box>
+            ) : (
+              !error && <SearchResults weapons={weapons} />
+            )}
+          </Box>
         </Container>
       </AppThemeProvider>
     </AppStateProvider>
