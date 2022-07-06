@@ -2,7 +2,13 @@ import { useMemo } from "react";
 import { Box, Button, Tooltip, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { allAttributes, DamageType, Weapon, WeaponAttackResult } from "../calculator/calculator";
+import {
+  allAttributes,
+  DamageType,
+  PassiveType,
+  Weapon,
+  WeaponAttackResult,
+} from "../calculator/calculator";
 import {
   getAttributeLabel,
   getDamageTypeIcon,
@@ -14,6 +20,40 @@ import { useAppState } from "./AppState";
 export type WeaponTableRow = [Weapon, WeaponAttackResult];
 
 const getRowId = ([weapon]: WeaponTableRow) => weapon.name;
+
+const blankIcon = <RemoveIcon color="disabled" fontSize="small" />;
+
+const passiveBuildupColumn: GridColDef<WeaponTableRow, [PassiveType, number][]> = {
+  headerName: "Status",
+  field: "passiveBuildup",
+  width: 128,
+  sortingOrder: ["desc", "asc"],
+  valueGetter: ({ row: [, { passiveBuildup }] }) => {
+    const buildups = Object.entries(passiveBuildup) as [PassiveType, number][];
+    return buildups.sort(([, buildup1], [, buildup2]) => buildup2 - buildup1);
+  },
+  // For sorting purposes, just use the highest status buildup I guess. Ideally we would
+  // support sorting by a single status.
+  sortComparator: (buildups1, buildups2) => {
+    const n = Math.max(buildups1.length, buildups2.length);
+    for (let i = 0; i < n; i++) {
+      if (buildups1[i]?.[1] !== buildups2[i]?.[1]) {
+        return (buildups1[i]?.[1] ?? 0) - (buildups2[i]?.[1] ?? 0);
+      }
+    }
+
+    return 0;
+  },
+  renderCell: ({ value: buildups }) => {
+    if (buildups == null || buildups.length === 0) {
+      return blankIcon;
+    }
+
+    return buildups
+      .map(([passiveType, buildup]) => `${passiveType}: ${Math.floor(buildup)}`)
+      .join(", ");
+  },
+};
 
 function useColumns(): GridColDef<WeaponTableRow>[] {
   const { splitDamage } = useAppState();
@@ -46,13 +86,15 @@ function useColumns(): GridColDef<WeaponTableRow>[] {
         field: "attackPower",
         width: splitDamage ? 256 : 96,
         sortingOrder: ["desc", "asc"],
+        // For sorting purposes, just use the total attack power I guess. Ideally we would
+        // support sorting by a single damage type.
         valueGetter: ({ row: [, { attackRating }] }) =>
           Object.values(attackRating).reduce(
             (sum, attackPower) =>
               sum + attackPower.baseAttackPower + attackPower.scalingAttackPower,
             0,
           ),
-        renderCell({ value, row: [, { attackRating }] }) {
+        renderCell: ({ value, row: [, { attackRating }] }) => {
           const damageTypes = Object.keys(attackRating) as DamageType[];
 
           if (splitDamage) {
@@ -121,6 +163,7 @@ function useColumns(): GridColDef<WeaponTableRow>[] {
           );
         },
       },
+      passiveBuildupColumn as GridColDef<WeaponTableRow>,
       ...allAttributes.map(
         (attribute): GridColDef<WeaponTableRow> => ({
           headerName: attribute,
@@ -136,8 +179,7 @@ function useColumns(): GridColDef<WeaponTableRow>[] {
               <span>{attribute}</span>
             </Tooltip>
           ),
-          renderCell: ({ value }) =>
-            value === 0 ? <RemoveIcon color="disabled" fontSize="small" /> : getScalingLabel(value),
+          renderCell: ({ value }) => (value === 0 ? blankIcon : getScalingLabel(value)),
         }),
       ),
       ...allAttributes.map(
@@ -157,7 +199,7 @@ function useColumns(): GridColDef<WeaponTableRow>[] {
           ),
           renderCell: ({ value, row: [, { ineffectiveAttributes }] }) => {
             if (value === 0) {
-              return <RemoveIcon color="disabled" fontSize="small" />;
+              return blankIcon;
             }
 
             if (ineffectiveAttributes.includes(attribute)) {

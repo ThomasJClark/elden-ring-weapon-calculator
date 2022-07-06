@@ -1,4 +1,11 @@
-import type { Affinity, Attribute, DamageType, MaxUpgradeLevel, WeaponType } from "./utils";
+import type {
+  Affinity,
+  Attribute,
+  DamageType,
+  MaxUpgradeLevel,
+  PassiveType,
+  WeaponType,
+} from "./utils";
 
 export interface Weapon {
   /**
@@ -35,6 +42,11 @@ export interface Weapon {
    * Map indicating which scaling curve is used for each damage type
    */
   damageScalingCurves: Partial<Record<DamageType, WeaponScalingCurve>>;
+
+  /**
+   * Map indicating the base buildup amount for any passives this weapon has
+   */
+  passives: Partial<Record<PassiveType, number>>;
 }
 
 export type WeaponScalingCurve = 0 | 1 | 2 | 4 | 7 | 8 | 12 | 14 | 15 | 16;

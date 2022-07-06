@@ -1,10 +1,10 @@
 import { WeaponScalingCurve } from "./weapon";
 
 /**
- * Scaling curves. These determine how much a player attribute affects scaling damage, as a
- * percentage of the weapon's base attack multiplied by its scaling.
+ * These determine how much a player attribute affects scaling damage, as a percentage of the
+ * weapon's base attack multiplied by its scaling.
  */
-const scalingCurves: Record<WeaponScalingCurve, (attributeValue: number) => number> = {
+export const damageScalingCurves: Record<WeaponScalingCurve, (attributeValue: number) => number> = {
   0: (attributeValue) => {
     if (attributeValue > 80) {
       return 0.9 + 0.2 * ((attributeValue - 80) / 70);
@@ -117,4 +117,17 @@ const scalingCurves: Record<WeaponScalingCurve, (attributeValue: number) => numb
   },
 };
 
-export default scalingCurves;
+/**
+ * Unique scaling curve used for arcane scaling for passive buildup
+ */
+export function passiveCurve(attributeValue: number) {
+  if (attributeValue > 60) {
+    return 0.9 + (0.1 * (attributeValue - 60)) / 39;
+  } else if (attributeValue > 45) {
+    return 0.75 + (0.15 * (attributeValue - 45)) / 15;
+  } else if (attributeValue > 25) {
+    return 0.1 + (0.65 * (attributeValue - 25)) / 20;
+  } else {
+    return 0.1 * ((attributeValue - 1) / 24);
+  }
+}

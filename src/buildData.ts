@@ -11,18 +11,19 @@ import {
   WeaponType,
   Weapon,
   WeaponScalingCurve,
+  PassiveType,
 } from "./calculator/calculator";
 
 /**
  * Load a map from a spreadsheet where the first column is the key
  */
-const loadSpreadsheet = <T>(path: string, mapper: (columns: string[]) => T) =>
+const loadSpreadsheet = <T>(path: string, mapper: (columns: string[], key: string) => T) =>
   new Map<string, T>(
     readFileSync(path, "utf-8")
       .split("\n")
       .slice(1)
       .map((row) => row.trim().split(","))
-      .map(([weaponName, ...columns]) => [weaponName, mapper(columns)]),
+      .map(([key, ...columns]) => [key, mapper(columns, key)]),
   );
 
 /**
@@ -32,11 +33,11 @@ const loadSpreadsheet = <T>(path: string, mapper: (columns: string[]) => T) =>
 const loadSpreadsheetByLevel = <T>(
   path: string,
   columnCount: number,
-  mapper: (columns: string[]) => T,
+  mapper: (columns: string[], key: string) => T,
 ) =>
-  loadSpreadsheet<T[]>(path, (columns) =>
+  loadSpreadsheet<T[]>(path, (columns, key) =>
     Array.from({ length: Math.floor(columns.length / columnCount) }, (_, upgradeLevel) =>
-      mapper(columns.slice(upgradeLevel * columnCount, (upgradeLevel + 1) * columnCount)),
+      mapper(columns.slice(upgradeLevel * columnCount, (upgradeLevel + 1) * columnCount), key),
     ),
   );
 
@@ -179,8 +180,41 @@ const loadWeapons = (): Weapon[] => {
     },
   );
 
+  const passiveMap = loadSpreadsheet(
+    resolve(cwd(), "data/passive.csv"),
+    ([, , scarletRot, madness, sleep, ...columns], weaponName) =>
+      Array.from({ length: Math.floor(columns.length / 3) }, (_, upgradeLevel) => {
+        const [frost, poison, bleed] = columns.slice(upgradeLevel * 3, (upgradeLevel + 1) * 3);
+
+        const passiveBuildup: Partial<Record<PassiveType, number>> = {};
+
+        if (scarletRot !== "0") passiveBuildup["Scarlet Rot"] = +scarletRot;
+        if (madness !== "0") passiveBuildup["Madness"] = +madness;
+        if (sleep !== "0") passiveBuildup["Sleep"] = +sleep;
+        if (frost !== "0") passiveBuildup["Frost"] = +frost;
+        if (poison !== "0") passiveBuildup["Poison"] = +poison;
+        if (bleed !== "0") passiveBuildup["Bleed"] = +bleed;
+
+        // Cold antspur rapier is bugged? It apparently gains more scarlet rot buildup up to +5,
+        // then loses it at +6 and above
+        if (weaponName === "Cold Antspur Rapier") {
+          if (upgradeLevel < 6) {
+            passiveBuildup["Scarlet Rot"] = 50 + 5 * upgradeLevel;
+          } else {
+            delete passiveBuildup["Scarlet Rot"];
+          }
+        }
+
+        // TODO: test Poison/Blood Fingerprint Stone Shield. /u/TarnishedSpreadsheet's spreadsheet
+        // has some shenanagins and I don't understand how they would change things
+
+        return passiveBuildup;
+      }),
+  );
+
   return [...attackMap.keys()].flatMap((weaponNameWithoutUpgradeLevel) => {
     const attackByLevel = attackMap.get(weaponNameWithoutUpgradeLevel)!;
+    const passivesByLevel = passiveMap.get(weaponNameWithoutUpgradeLevel);
     const attributeScalingByLevel = attributeScalingMap.get(weaponNameWithoutUpgradeLevel)!;
     const { metadata, requirements } = extraDataMap.get(weaponNameWithoutUpgradeLevel)!;
     const { attackElementCorrectId, damageScalingCurves } = calcCorrectMap.get(
@@ -203,6 +237,7 @@ const loadWeapons = (): Weapon[] => {
         attributeScaling,
         damageScalingAttributes: { ...damageScalingAttributes },
         damageScalingCurves: { ...damageScalingCurves },
+        passives: passivesByLevel?.[upgradeLevel] ?? {},
       };
 
       allDamageTypes.forEach((damageType) => {
