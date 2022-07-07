@@ -2,7 +2,7 @@
 
 _Lay out your arms. Let's get smithing._
 
-An Elden Ring attack rating calculator that allows comparing multiple weapons and infusions at once.
+An Elden Ring attack rating calculator that allows comparing multiple weapons and infusions. Try it at [eldenring.tclark.io](https://eldenring.tclark.io/).
 
 ## Roadmap
 
