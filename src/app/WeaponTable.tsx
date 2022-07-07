@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { ReactNode, useMemo } from "react";
 import { Box, Button, Tooltip, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -13,6 +13,7 @@ import {
   getAttributeLabel,
   getDamageTypeIcon,
   getDamageTypeLabel,
+  getPassiveTypeIcon,
   getScalingLabel,
 } from "./uiUtils";
 import { useAppState } from "./AppState";
@@ -23,10 +24,38 @@ const getRowId = ([weapon]: WeaponTableRow) => weapon.name;
 
 const blankIcon = <RemoveIcon color="disabled" fontSize="small" />;
 
+const TextAndIcon = ({
+  text,
+  iconPath,
+  tooltip,
+}: {
+  text: ReactNode;
+  iconPath: string | string[];
+  tooltip: string;
+}) => (
+  <Tooltip
+    sx={{
+      display: "grid",
+      gridAutoFlow: "column",
+      alignItems: "center",
+      justifyContent: "start",
+      gap: 1,
+    }}
+    title={tooltip}
+  >
+    <Box>
+      {(Array.isArray(iconPath) ? iconPath : [iconPath]).map((iconPath) => (
+        <img key={iconPath} src={iconPath} alt="" width={24} height={24} />
+      ))}
+      {text}
+    </Box>
+  </Tooltip>
+);
+
 const passiveBuildupColumn: GridColDef<WeaponTableRow, [PassiveType, number][]> = {
   headerName: "Status",
   field: "passiveBuildup",
-  width: 128,
+  width: 150,
   sortingOrder: ["desc", "asc"],
   valueGetter: ({ row: [, { passiveBuildup }] }) => {
     const buildups = Object.entries(passiveBuildup) as [PassiveType, number][];
@@ -49,9 +78,18 @@ const passiveBuildupColumn: GridColDef<WeaponTableRow, [PassiveType, number][]> 
       return blankIcon;
     }
 
-    return buildups
-      .map(([passiveType, buildup]) => `${passiveType}: ${Math.floor(buildup)}`)
-      .join(", ");
+    return (
+      <Box display="grid" width="100%" sx={{ gridTemplateColumns: "1fr 1fr" }}>
+        {buildups.map(([passiveType, buildup]) => (
+          <TextAndIcon
+            key={passiveType}
+            text={Math.floor(buildup)}
+            iconPath={getPassiveTypeIcon(passiveType)}
+            tooltip={`${Math.floor(buildup)} ${passiveType} Buildup`}
+          />
+        ))}
+      </Box>
+    );
   },
 };
 
@@ -84,7 +122,7 @@ function useColumns(): GridColDef<WeaponTableRow>[] {
       {
         headerName: "Attack",
         field: "attackPower",
-        width: splitDamage ? 256 : 96,
+        width: splitDamage ? 256 : 128,
         sortingOrder: ["desc", "asc"],
         // For sorting purposes, just use the total attack power I guess. Ideally we would
         // support sorting by a single damage type.
@@ -102,26 +140,14 @@ function useColumns(): GridColDef<WeaponTableRow>[] {
               <Box display="grid" width="100%" sx={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
                 {damageTypes.map((damageType) => {
                   const { baseAttackPower, scalingAttackPower } = attackRating[damageType]!;
-                  const damageTypeLabel = getDamageTypeLabel(damageType);
-                  const damageTypeIcon = getDamageTypeIcon(damageType);
                   const displayedAttackPower = Math.floor(baseAttackPower + scalingAttackPower);
                   return (
-                    <Tooltip
-                      sx={{
-                        display: "grid",
-                        gridAutoFlow: "column",
-                        alignItems: "center",
-                        justifyContent: "start",
-                        gap: 1,
-                      }}
-                      title={`${displayedAttackPower} ${damageTypeLabel} Attack`}
+                    <TextAndIcon
                       key={damageType}
-                    >
-                      <Box>
-                        <img src={damageTypeIcon} alt="" width={24} height={24} />
-                        {displayedAttackPower}
-                      </Box>
-                    </Tooltip>
+                      iconPath={getDamageTypeIcon(damageType)}
+                      text={displayedAttackPower}
+                      tooltip={`${displayedAttackPower} ${getDamageTypeLabel(damageType)} Attack`}
+                    />
                   );
                 })}
               </Box>
@@ -135,31 +161,13 @@ function useColumns(): GridColDef<WeaponTableRow>[] {
               : damageTypes.filter((damageType) => damageType !== "physical");
 
           return (
-            <Tooltip
-              sx={{
-                display: "grid",
-                gridAutoFlow: "column",
-                alignItems: "center",
-                justifyContent: "start",
-                gap: 1,
-              }}
-              title={`${displayedAttackPower} ${damageTypes
+            <TextAndIcon
+              iconPath={displayedDamageTypes.map(getDamageTypeIcon)}
+              text={displayedAttackPower}
+              tooltip={`${displayedAttackPower} ${damageTypes
                 .map(getDamageTypeLabel)
                 .join("/")} Attack`}
-            >
-              <Box>
-                {displayedDamageTypes.map((damageType) => (
-                  <img
-                    key={damageType}
-                    src={getDamageTypeIcon(damageType)}
-                    alt=""
-                    width={24}
-                    height={24}
-                  />
-                ))}
-                {displayedAttackPower}
-              </Box>
-            </Tooltip>
+            />
           );
         },
       },
@@ -172,7 +180,8 @@ function useColumns(): GridColDef<WeaponTableRow>[] {
           hideSortIcons: true,
           headerAlign: "center",
           align: "center",
-          width: 48,
+          minWidth: 0,
+          width: 40,
           valueGetter: ({ row: [weapon] }) => weapon.attributeScaling[attribute] ?? 0,
           renderHeader: () => (
             <Tooltip title={`${getAttributeLabel(attribute)} Scaling`}>
@@ -190,7 +199,8 @@ function useColumns(): GridColDef<WeaponTableRow>[] {
           hideSortIcons: true,
           headerAlign: "center",
           align: "center",
-          width: 48,
+          minWidth: 0,
+          width: 40,
           valueGetter: ({ row: [weapon] }) => weapon.requirements[attribute] ?? 0,
           renderHeader: () => (
             <Tooltip title={`${getAttributeLabel(attribute)} Requirement`}>

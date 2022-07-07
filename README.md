@@ -9,8 +9,9 @@ An Elden Ring attack rating calculator that allows comparing multiple weapons an
 - [x] Filter by affinity
 - [x] Filter by weapon type
 - [ ] Bookmark/pin weapons
-- [ ] Passive effects
+- [x] Passive effects
 - [x] Save settings when refreshing or visiting the site later
+- [ ] Responsive design / mobile support
 - [ ] Damage with buffs?
   - Flame, Grant Me Strength - Physical/Fire +15% (PVP) +20% (PVE)
   - Golden Vow incantation - All +7.5% (PVP) +15% (PVE)

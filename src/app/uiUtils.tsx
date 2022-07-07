@@ -1,4 +1,4 @@
-import { Affinity, Attribute, DamageType } from "../calculator/calculator";
+import { Affinity, Attribute, DamageType, PassiveType } from "../calculator/calculator";
 import noAffinityIcon from "./img/noAffinity.webp";
 import heavyAffinityIcon from "./img/heavyAffinity.webp";
 import keenAffinityIcon from "./img/keenAffinity.webp";
@@ -11,6 +11,12 @@ import sacredAffinityIcon from "./img/sacredAffinity.webp";
 import poisonAffinityIcon from "./img/poisonAffinity.webp";
 import bloodAffinityIcon from "./img/bloodAffinity.webp";
 import occultAffinityIcon from "./img/occultAffinity.webp";
+import scarletRotStatusIcon from "./img/scarletRotStatus.webp";
+import madnessStatusIcon from "./img/madnessStatus.webp";
+import sleepStatusIcon from "./img/sleepStatus.webp";
+import frostStatusIcon from "./img/frostStatus.webp";
+import poisonStatusIcon from "./img/poisonStatus.webp";
+import bleedStatusIcon from "./img/bleedStatus.webp";
 
 export function getAffinityLabel(affinity: Affinity) {
   switch (affinity) {
@@ -78,6 +84,23 @@ export function getDamageTypeIcon(damageType: DamageType) {
       return lightningAffinityIcon;
     case "holy":
       return sacredAffinityIcon;
+  }
+}
+
+export function getPassiveTypeIcon(passiveType: PassiveType) {
+  switch (passiveType) {
+    case "Scarlet Rot":
+      return scarletRotStatusIcon;
+    case "Madness":
+      return madnessStatusIcon;
+    case "Sleep":
+      return sleepStatusIcon;
+    case "Frost":
+      return frostStatusIcon;
+    case "Poison":
+      return poisonStatusIcon;
+    case "Bleed":
+      return bleedStatusIcon;
   }
 }
 
