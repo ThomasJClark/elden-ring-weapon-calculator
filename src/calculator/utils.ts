@@ -74,7 +74,7 @@ export type Attribute = typeof allAttributes[number];
 export type Attributes = Record<Attribute, number>;
 export type Affinity = typeof allAffinities[number];
 export type WeaponType = typeof allWeaponTypes[number];
-export type MaxUpgradeLevel = typeof maxSpecialUpgradeLevel | typeof maxRegularUpgradeLevel;
+export type MaxUpgradeLevel = typeof maxSpecialUpgradeLevel | typeof maxRegularUpgradeLevel; // TODO 0 for Meteorite Staff
 
 /**
  * Adjust a set of character attributes to take into account the 50% Strength bonus when two

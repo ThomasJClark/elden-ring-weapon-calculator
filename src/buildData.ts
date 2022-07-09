@@ -13,6 +13,7 @@ import {
   WeaponScalingCurve,
   PassiveType,
 } from "./calculator/calculator";
+import { decodeWeapon, encodeWeapon } from "./weaponCodec";
 
 /**
  * Load a map from a spreadsheet where the first column is the key
@@ -208,7 +209,11 @@ const loadWeapons = (): Weapon[] => {
         // TODO: test Poison/Blood Fingerprint Stone Shield. /u/TarnishedSpreadsheet's spreadsheet
         // has some shenanagins and I don't understand how they would change things
 
-        return passiveBuildup;
+        if (Object.values(passiveBuildup).some((value) => value !== 0)) {
+          return passiveBuildup;
+        }
+
+        return undefined;
       }),
   );
 
@@ -264,5 +269,13 @@ const loadWeapons = (): Weapon[] => {
 };
 
 const weapons = loadWeapons();
+
 const outputPath = resolve(cwd(), argv[2]);
-writeFileSync(outputPath, JSON.stringify(weapons));
+writeFileSync(
+  outputPath,
+  JSON.stringify(
+    weapons
+      .map(encodeWeapon)
+      .map((encodedWeapon) => encodedWeapon.filter((field) => field !== undefined)),
+  ),
+);
