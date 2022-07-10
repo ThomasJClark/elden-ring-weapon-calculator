@@ -1,7 +1,6 @@
 import { ReactNode, useState } from "react";
 import {
   Box,
-  Button,
   CssBaseline,
   Divider,
   LinearProgress,
@@ -44,8 +43,7 @@ const App = () => {
             alignContent: "start",
             alignItems: "start",
             gap: 2,
-            py: 3,
-            px: { xs: 0, lg: 3 },
+            p: 3,
           }}
         >
           {menuOpen && (
