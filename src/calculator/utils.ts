@@ -64,8 +64,8 @@ export const allWeaponTypes = [
   "Whip",
 ] as const;
 
+export const maxUnupgradeableUpgradeLevel = 0 as const;
 export const maxRegularUpgradeLevel = 25 as const;
-
 export const maxSpecialUpgradeLevel = 10 as const;
 
 export type DamageType = typeof allDamageTypes[number];
@@ -74,7 +74,10 @@ export type Attribute = typeof allAttributes[number];
 export type Attributes = Record<Attribute, number>;
 export type Affinity = typeof allAffinities[number];
 export type WeaponType = typeof allWeaponTypes[number];
-export type MaxUpgradeLevel = typeof maxSpecialUpgradeLevel | typeof maxRegularUpgradeLevel; // TODO 0 for Meteorite Staff
+export type MaxUpgradeLevel =
+  | typeof maxUnupgradeableUpgradeLevel
+  | typeof maxSpecialUpgradeLevel
+  | typeof maxRegularUpgradeLevel;
 
 /**
  * Adjust a set of character attributes to take into account the 50% Strength bonus when two

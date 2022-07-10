@@ -3,6 +3,7 @@ import {
   Attribute,
   Attributes,
   maxRegularUpgradeLevel,
+  maxSpecialUpgradeLevel,
   Weapon,
   WeaponType,
 } from "../calculator/calculator";
@@ -45,14 +46,6 @@ export function toSpecialUpgradeLevel(regularUpgradeLevel: number) {
   ];
 }
 
-// /**
-//  * @param specialUpgradeLevel the upgrade level of a somber weapon
-//  * @returns the upgrade level for a regular weapon that would have the same matchmaking range
-//  */
-// export function toRegularUpgradeLevel(specialUpgradeLevel: number) {
-//   return [0, 2, 5, 7, 10, 12, 15, 17, 20, 22, 25][specialUpgradeLevel];
-// }
-
 export default function filterWeapons(
   weapons: IterableIterator<Weapon>,
   {
@@ -66,12 +59,17 @@ export default function filterWeapons(
   const specialUpgradeLevel = toSpecialUpgradeLevel(upgradeLevel);
 
   function filterWeapon(weapon: Weapon): boolean {
-    const comparisonUpgradeLevel =
-      weapon.metadata.maxUpgradeLevel === maxRegularUpgradeLevel
-        ? upgradeLevel
-        : specialUpgradeLevel;
+    if (
+      weapon.metadata.maxUpgradeLevel === maxRegularUpgradeLevel &&
+      weapon.metadata.upgradeLevel !== upgradeLevel
+    ) {
+      return false;
+    }
 
-    if (weapon.metadata.upgradeLevel !== comparisonUpgradeLevel) {
+    if (
+      weapon.metadata.maxUpgradeLevel === maxSpecialUpgradeLevel &&
+      weapon.metadata.upgradeLevel !== specialUpgradeLevel
+    ) {
       return false;
     }
 
