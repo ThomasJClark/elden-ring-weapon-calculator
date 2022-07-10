@@ -1,16 +1,5 @@
 import { createTheme, alpha } from "@mui/material/styles";
-import { OverridesStyleRules } from "@mui/material/styles/overrides";
-import { GridClasses, DataGridProps } from "@mui/x-data-grid";
 import backgroundStars from "./img/backgroundStars.png";
-
-declare module "@mui/material/styles/components" {
-  export interface Components {
-    MuiDataGrid?: {
-      defaultProps?: Partial<DataGridProps>;
-      styleOverrides?: Partial<OverridesStyleRules<keyof GridClasses>>;
-    };
-  }
-}
 
 export const darkTheme = createTheme({
   palette: {
@@ -80,33 +69,6 @@ export const darkTheme = createTheme({
         },
       },
     },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: "9999px",
-        },
-      },
-    },
-    MuiDataGrid: {
-      styleOverrides: {
-        root: {
-          borderColor: "#655e46",
-        },
-        cell: {
-          borderColor: "#655e46",
-        },
-        footerContainer: {
-          borderColor: "#655e46",
-        },
-        columnHeaders: {
-          borderColor: "#655e46",
-          userSelect: "none",
-        },
-        columnSeparator: {
-          display: "none",
-        },
-      },
-    },
   },
 });
 
@@ -138,34 +100,6 @@ export const lightTheme = createTheme({
         body: {
           minHeight: "100vh",
           background: "#fff",
-        },
-      },
-    },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: "9999px",
-        },
-      },
-    },
-    MuiDataGrid: {
-      styleOverrides: {
-        root: {
-          backgroundColor: alpha("#fff", 0.25),
-          borderColor: "#aaa89b",
-        },
-        cell: {
-          borderColor: "#aaa89b",
-        },
-        footerContainer: {
-          borderColor: "#aaa89b",
-        },
-        columnHeaders: {
-          borderColor: "#aaa89b",
-          userSelect: "none",
-        },
-        columnSeparator: {
-          display: "none",
         },
       },
     },
