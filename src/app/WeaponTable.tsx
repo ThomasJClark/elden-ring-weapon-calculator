@@ -247,6 +247,12 @@ const WeaponTable = ({ rows }: Props) => {
       columns={columns}
       getRowId={getRowId}
       density="compact"
+      sx={(theme) => ({
+        borderLeftWidth: { xs: 0, md: 1 },
+        borderRightWidth: { xs: 0, md: 1 },
+        borderRadius: { xs: 0, md: `${theme.shape.borderRadius}px` },
+        mx: { xs: -3, md: 0 },
+      })}
       disableSelectionOnClick
       disableColumnFilter
       disableColumnMenu
