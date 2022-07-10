@@ -39,8 +39,6 @@ const WeaponListSettings = () => {
         gap: 2,
         gridTemplateColumns: { xs: "1fr", md: "384px 128px auto auto 1fr" },
         alignItems: "start",
-        pt: 1,
-        pb: 2,
       }}
     >
       <Box display="grid" sx={{ gap: 2, gridTemplateColumns: "1fr 1fr 1fr" }}>

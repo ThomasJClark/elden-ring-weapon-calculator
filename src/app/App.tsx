@@ -1,5 +1,14 @@
 import { ReactNode, useState } from "react";
-import { Box, CssBaseline, Divider, LinearProgress, ThemeProvider } from "@mui/material";
+import {
+  Box,
+  Button,
+  CssBaseline,
+  Divider,
+  LinearProgress,
+  Link,
+  ThemeProvider,
+  Typography,
+} from "@mui/material";
 import WeaponListSettings from "./WeaponListSettings";
 import SearchResults from "./SearchResults";
 import { darkTheme, lightTheme } from "./theme";
@@ -35,26 +44,63 @@ const App = () => {
             alignContent: "start",
             alignItems: "start",
             gap: 2,
-            py: 2,
+            py: 3,
             px: { xs: 0, lg: 3 },
           }}
         >
-          <Box display={menuOpen ? "grid" : "none"} sx={{ gap: 2 }}>
-            <AffinityPicker />
+          {menuOpen && (
+            <Box display="grid" sx={{ gap: 2 }}>
+              <AffinityPicker />
 
-            <WeaponTypePicker />
-          </Box>
-          <Box>
+              <WeaponTypePicker />
+            </Box>
+          )}
+
+          <Box display="grid" sx={{ gap: 2 }}>
             <WeaponListSettings />
 
-            {loading ? (
+            {loading && (
               <Box sx={{ py: 6, textAlign: "center" }}>
                 Loading weapon data...
                 <LinearProgress sx={{ mt: 3 }} />
               </Box>
-            ) : (
-              !error && <SearchResults weapons={weapons} />
             )}
+
+            {!loading && !error && <SearchResults weapons={weapons} />}
+
+            <Typography variant="body1" align="center">
+              Made by Tom Clark (
+              <Link
+                href="https://twitter.com/thechewanater"
+                target="_blank"
+                rel="noopener noreferer"
+              >
+                @thechewanater
+              </Link>
+              ). DM me with bug reports or suggestions.
+              <br />
+              Weapon data gathered by{" "}
+              <Link
+                href="https://www.reddit.com/user/TarnishedSpreadsheet/"
+                target="_blank"
+                rel="noopener noreferer"
+              >
+                /u/TarnishedSpreadsheet
+              </Link>{" "}
+              on Reddit.
+              <br />
+              Inspired by{" "}
+              <Link
+                href="https://soulsplanner.com/darksouls/weaponatk"
+                target="_blank"
+                rel="noopener noreferer"
+              >
+                Dark Souls Weapons Attack Calculator
+              </Link>
+              .
+              <br />
+              Elden Ring is a trademark of FromSoftware and Bandai Namco Entertainment.
+            </Typography>
           </Box>
         </Box>
       </AppThemeProvider>
