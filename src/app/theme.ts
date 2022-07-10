@@ -11,8 +11,6 @@ declare module "@mui/material/styles/components" {
   }
 }
 
-const backgroundPaperDark = "#121617";
-
 export const darkTheme = createTheme({
   palette: {
     mode: "dark",
@@ -27,7 +25,7 @@ export const darkTheme = createTheme({
       main: "#cf8563",
     },
     background: {
-      paper: backgroundPaperDark,
+      paper: "#353328",
       default: "#0e120e",
     },
   },
@@ -38,38 +36,49 @@ export const darkTheme = createTheme({
     },
   },
   components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: `
+            linear-gradient(
+              to bottom,
+              #59584a 0%,
+              #4d4d3d 100%
+            )`,
+        },
+      },
+    },
     MuiCssBaseline: {
       styleOverrides: {
         body: {
           minHeight: "100vh",
           background: `
-          radial-gradient(
+            radial-gradient(
               circle at 50% 50%,
               ${alpha("#1f1d17", 0)} 0%,
               ${alpha("#1f1d17", 0)} 60%,
               ${alpha("#1f1d17", 0.2)} 80%,
               ${alpha("#1f1d17", 0.6)} 100%
-              ),
-              linear-gradient(
+            ),
+            linear-gradient(
               to right,
               ${alpha("#3a3a30", 0.3)} 0%,
               ${alpha("#3a3a30", 0)} 20%,
               ${alpha("#3a3a30", 0)} 80%,
               ${alpha("#3a3a30", 0.3)} 100%
-              ),
-              linear-gradient(
-                to bottom,
-                #0c0c09 0%,
-                #1f1d17 40%,
-                #353328 60%,
-                #454536 75%,
-                #4d4d3d 80%,
-                #59584a 85%,
-                #4d4d3d 90%,
-                #3a3a30 95%,
-                #2f2f28 100%
-                )
-                `,
+            ),
+            linear-gradient(
+              to bottom,
+              #0c0c09 0%,
+              #1f1d17 40%,
+              #353328 60%,
+              #454536 75%,
+              #4d4d3d 80%,
+              #59584a 85%,
+              #4d4d3d 90%,
+              #3a3a30 95%,
+              #2f2f28 100%
+            )`,
           backgroundAttachment: "fixed",
         },
       },
@@ -84,7 +93,6 @@ export const darkTheme = createTheme({
     MuiDataGrid: {
       styleOverrides: {
         root: {
-          backgroundColor: alpha(backgroundPaperDark, 0),
           borderColor: "#655e46",
         },
         cell: {
