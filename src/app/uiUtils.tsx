@@ -1,4 +1,10 @@
-import { Affinity, Attribute, DamageType, PassiveType } from "../calculator/calculator";
+import {
+  Affinity,
+  AttackPower,
+  Attribute,
+  DamageType,
+  PassiveType,
+} from "../calculator/calculator";
 import noAffinityIcon from "./img/noAffinity.webp";
 import heavyAffinityIcon from "./img/heavyAffinity.webp";
 import keenAffinityIcon from "./img/keenAffinity.webp";
@@ -119,6 +125,21 @@ export function getAttributeLabel(attribute: Attribute) {
   }
 }
 
+export function getShortAttributeLabel(attribute: Attribute) {
+  switch (attribute) {
+    case "str":
+      return "Str";
+    case "dex":
+      return "Dex";
+    case "int":
+      return "Int";
+    case "fai":
+      return "Fai";
+    case "arc":
+      return "Arc";
+  }
+}
+
 export function getScalingLabel(scaling: number) {
   if (scaling > 1.75) {
     return "S";
@@ -135,4 +156,20 @@ export function getScalingLabel(scaling: number) {
   } else {
     return "-";
   }
+}
+
+export function getDamageTypeAttackPower(
+  attackRating: Partial<Record<DamageType, AttackPower>>,
+  damageType: DamageType,
+) {
+  const attackPower = attackRating[damageType];
+  return attackPower != null ? attackPower.baseAttackPower + attackPower.scalingAttackPower : 0;
+}
+
+export function getTotalAttackPower(attackRating: Partial<Record<DamageType, AttackPower>>) {
+  return Object.values(attackRating).reduce(
+    (totalAttackPower, attackPower) =>
+      totalAttackPower + attackPower.baseAttackPower + attackPower.scalingAttackPower,
+    0,
+  );
 }

@@ -1,8 +1,9 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import getWeaponAttack, { adjustAttributesForTwoHanding, Weapon } from "../calculator/calculator";
 import filterWeapons from "../search/filterWeapons";
-import WeaponTable, { WeaponTableRow } from "./WeaponTable";
+import { WeaponTableRow } from "./WeaponTable";
 import { useAppState } from "./AppState";
+import { sortWeapons } from "../search/sortWeapons";
 
 /* eslint-disable react-hooks/exhaustive-deps */
 function useMemoThrottled<T>(factory: () => T, timeoutMs: number, dependencies: unknown[]): T {
@@ -43,14 +44,10 @@ function useMemoThrottled<T>(factory: () => T, timeoutMs: number, dependencies: 
 }
 /* eslint-enable react-hooks/exhaustive-deps */
 
-interface Props {
-  weapons: Map<string, Weapon>;
-}
-
 /**
- * Displays a table of weapons based on the selected search criteria
+ * Filter, sort, and paginate the weapon list based on the current selections
  */
-const SearchScreen = ({ weapons }: Props) => {
+const useWeaponTableRows = (weapons: readonly Weapon[]) => {
   const {
     attributes,
     twoHanding,
@@ -59,9 +56,14 @@ const SearchScreen = ({ weapons }: Props) => {
     affinities,
     maxWeight,
     effectiveOnly,
+    sortBy,
+    reverse,
   } = useAppState();
 
-  const weaponTableRows = useMemoThrottled<WeaponTableRow[]>(
+  const offset = 0;
+  const limit = 100;
+
+  const filteredRows = useMemoThrottled<WeaponTableRow[]>(
     () => {
       // Apply the two handing bonus if selected
       const adjustedAttributes = twoHanding
@@ -94,7 +96,19 @@ const SearchScreen = ({ weapons }: Props) => {
     ],
   );
 
-  return <WeaponTable rows={weaponTableRows} />;
+  const sortedRows = useMemo(() => sortWeapons(filteredRows, sortBy), [filteredRows, sortBy]);
+
+  const paginatedRows = useMemo(() => {
+    if (reverse) {
+      return sortedRows
+        .slice(sortedRows.length - offset - limit, sortedRows.length - offset)
+        .reverse();
+    } else {
+      return sortedRows.slice(offset, limit);
+    }
+  }, [sortedRows, reverse, offset, limit]);
+
+  return paginatedRows;
 };
 
-export default SearchScreen;
+export default useWeaponTableRows;

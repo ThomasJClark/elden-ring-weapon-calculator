@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
 import { Affinity, Attributes, WeaponType } from "../calculator/calculator";
+import { SortBy } from "../search/sortWeapons";
 
 interface AppState {
   readonly darkMode: boolean;
@@ -11,6 +12,8 @@ interface AppState {
   readonly maxWeight: number;
   readonly effectiveOnly: boolean;
   readonly splitDamage: boolean;
+  readonly sortBy: SortBy;
+  readonly reverse: boolean;
 }
 
 interface UpdateAppState extends AppState {
@@ -23,6 +26,8 @@ interface UpdateAppState extends AppState {
   setMaxWeight(maxWeight: number): void;
   setEffectiveOnly(effectiveOnly: boolean): void;
   setSplitDamage(splitDamage: boolean): void;
+  setSortBy(sortBy: SortBy): void;
+  setReverse(reverse: boolean): void;
 }
 
 const defaultAppState: AppState = {
@@ -41,6 +46,8 @@ const defaultAppState: AppState = {
   maxWeight: 30,
   effectiveOnly: false,
   splitDamage: false,
+  sortBy: { type: "name" },
+  reverse: false,
 };
 
 const AppStateContext = createContext<UpdateAppState>({
@@ -54,6 +61,8 @@ const AppStateContext = createContext<UpdateAppState>({
   setMaxWeight() {},
   setEffectiveOnly() {},
   setSplitDamage() {},
+  setSortBy() {},
+  setReverse() {},
 });
 
 /**
@@ -65,7 +74,7 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
     try {
       const value = localStorage.getItem("appState");
       if (value) {
-        return JSON.parse(value);
+        return { ...defaultAppState, ...JSON.parse(value) };
       }
     } catch {}
 
@@ -104,6 +113,12 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
       },
       setSplitDamage(splitDamage) {
         setAppState((prevAppState) => ({ ...prevAppState, splitDamage }));
+      },
+      setSortBy(sortBy) {
+        setAppState((prevAppState) => ({ ...prevAppState, sortBy }));
+      },
+      setReverse(reverse) {
+        setAppState((prevAppState) => ({ ...prevAppState, reverse }));
       },
     }),
     [],

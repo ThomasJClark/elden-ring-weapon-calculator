@@ -59,7 +59,7 @@ export default function filterWeapons(
     maxWeight,
     effectiveWithAttributes,
   }: FilterWeaponsOptions,
-): Weapon[] {
+): readonly Weapon[] {
   const specialUpgradeLevel = toSpecialUpgradeLevel(upgradeLevel);
 
   function filterWeapon(weapon: Weapon): boolean {
