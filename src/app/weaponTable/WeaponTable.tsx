@@ -1,21 +1,24 @@
 import { ReactNode } from "react";
 import { Box, Typography } from "@mui/material";
 import { SystemStyleObject, Theme } from "@mui/system";
-import { Weapon, WeaponAttackResult } from "../calculator/calculator";
+import { Weapon, WeaponAttackResult } from "../../calculator/calculator";
+import { SortBy } from "../../search/sortWeapons";
 import useWeaponTableColumns from "./useWeaponTableColumns";
+import WeaponTableHeaderRow from "./WeaponTableHeaderRow";
+import WeaponTableDataRow from "./WeaponTableDataRow";
 
-export type WeaponTableRow = [Weapon, WeaponAttackResult];
+export type WeaponTableRowData = [Weapon, WeaponAttackResult];
 
-export interface WeaponTableColumn {
-  key: string;
+export interface WeaponTableColumnDef {
+  key: SortBy;
   header: ReactNode;
-  render(row: WeaponTableRow): ReactNode;
+  render(row: WeaponTableRowData): ReactNode;
   width?: number;
   sx?: SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>);
 }
 
 interface Props {
-  rows: readonly WeaponTableRow[];
+  rows: readonly WeaponTableRowData[];
 }
 
 const WeaponTable = ({ rows }: Props) => {
@@ -23,6 +26,7 @@ const WeaponTable = ({ rows }: Props) => {
   return (
     <Box
       display="grid"
+      role="table"
       sx={(theme) => ({
         overflowX: "auto",
         [theme.breakpoints.down("lg")]: {
@@ -39,6 +43,7 @@ const WeaponTable = ({ rows }: Props) => {
       {/* Column group headers */}
       <Box
         display="flex"
+        role="row"
         sx={{
           alignItems: "center",
           height: "36px",
@@ -89,7 +94,7 @@ const WeaponTable = ({ rows }: Props) => {
             return null;
           }
 
-          if (column.key === "physicalAttackPower") {
+          if (column.key === "physicalAttack") {
             return (
               <Typography
                 key={column.key}
@@ -99,7 +104,7 @@ const WeaponTable = ({ rows }: Props) => {
                 Attack Power
               </Typography>
             );
-          } else if (column.key.endsWith("AttackPower")) {
+          } else if (column.key.endsWith("Attack")) {
             return null;
           }
 
@@ -111,47 +116,10 @@ const WeaponTable = ({ rows }: Props) => {
         })}
       </Box>
 
-      {/* Column headers */}
-      <Box
-        display="flex"
-        sx={{
-          alignItems: "center",
-          height: "36px",
-          padding: "0px 10px",
-        }}
-      >
-        {columns.map((column) => (
-          <Typography
-            key={column.key}
-            variant="subtitle2"
-            sx={[{ display: "grid", width: column.width }, column.sx ?? false]}
-          >
-            {column.header}
-          </Typography>
-        ))}
-      </Box>
+      <WeaponTableHeaderRow columns={columns} />
 
-      {/* Rows */}
-      {rows.slice(0, 100).map((row) => (
-        <Box
-          key={row[0].name}
-          display="flex"
-          sx={(theme) => ({
-            alignItems: "center",
-            height: "36px",
-            padding: "0px 10px",
-            borderTop: `solid 1px ${theme.palette.divider}`,
-            ":hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.08)",
-            },
-          })}
-        >
-          {columns.map((column) => (
-            <Box key={column.key} display="grid" sx={[{ width: column.width }, column.sx ?? false]}>
-              {column.render(row)}
-            </Box>
-          ))}
-        </Box>
+      {rows.map((row) => (
+        <WeaponTableDataRow key={row[0].name} columns={columns} row={row} />
       ))}
     </Box>
   );

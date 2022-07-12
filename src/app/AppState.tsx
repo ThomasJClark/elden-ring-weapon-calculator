@@ -46,7 +46,7 @@ const defaultAppState: AppState = {
   maxWeight: 30,
   effectiveOnly: false,
   splitDamage: false,
-  sortBy: { type: "name" },
+  sortBy: "name",
   reverse: false,
 };
 

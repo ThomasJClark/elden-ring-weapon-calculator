@@ -10,14 +10,14 @@ import {
   Typography,
 } from "@mui/material";
 import WeaponListSettings from "./WeaponListSettings";
-import useWeaponTableRows from "./useWeaponTableRows";
+import WeaponTable from "./weaponTable/WeaponTable";
+import useWeaponTableRows from "./weaponTable/useWeaponTableRows";
 import { darkTheme, lightTheme } from "./theme";
 import useWeapons from "./useWeapons";
 import { useAppState } from "./AppState";
 import AppBar from "./AppBar";
 import WeaponTypePicker from "./WeaponTypePicker";
 import AffinityPicker from "./AffinityPicker";
-import WeaponTable from "./WeaponTable";
 
 const App = () => {
   const { darkMode } = useAppState();

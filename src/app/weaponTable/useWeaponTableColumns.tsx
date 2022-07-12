@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Box, Link, Tooltip, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { allAttributes, allDamageTypes, allPassiveTypes } from "../calculator/calculator";
+import { allAttributes, allDamageTypes, allPassiveTypes } from "../../calculator/calculator";
 import {
   getAttributeLabel,
   getDamageTypeAttackPower,
@@ -11,18 +11,23 @@ import {
   getScalingLabel,
   getShortAttributeLabel,
   getTotalAttackPower,
-} from "./uiUtils";
-import { useAppState } from "./AppState";
-import { WeaponTableColumn } from "./WeaponTable";
+} from "../uiUtils";
+import { useAppState } from "../AppState";
+import { WeaponTableColumnDef } from "./WeaponTable";
 
 const blankIcon = <RemoveIcon color="disabled" fontSize="small" />;
 
-const nameColumn: WeaponTableColumn = {
+const nameColumn: WeaponTableColumnDef = {
   key: "name",
-  header: "Weapon",
+  header: (
+    <Typography component="span" variant="subtitle2">
+      Weapon
+    </Typography>
+  ),
   sx: {
     flex: 1,
     minWidth: 320,
+    justifyContent: "start",
   },
   render([weapon]) {
     return (
@@ -44,8 +49,8 @@ const nameColumn: WeaponTableColumn = {
   },
 };
 
-const damageAttackPowerColumns: WeaponTableColumn[] = allDamageTypes.map((damageType) => ({
-  key: `${damageType}AttackPower`,
+const damageAttackPowerColumns: WeaponTableColumnDef[] = allDamageTypes.map((damageType) => ({
+  key: `${damageType}Attack`,
   header: (
     <Tooltip title={`${getDamageTypeLabel(damageType)} Attack`}>
       <img src={getDamageTypeIcon(damageType)} alt="" width={24} height={24} />
@@ -58,16 +63,23 @@ const damageAttackPowerColumns: WeaponTableColumn[] = allDamageTypes.map((damage
   },
 }));
 
-const totalAttackPowerColumn: WeaponTableColumn = {
-  key: "totalAttackPower",
-  header: "Attack Power",
+const totalAttackPowerColumn: WeaponTableColumnDef = {
+  key: "totalAttack",
+  header: (
+    <Typography component="span" variant="subtitle2">
+      Attack Power
+    </Typography>
+  ),
+  sx: {
+    justifyContent: "start",
+  },
   width: 128,
   render([, { attackRating }]) {
     return Math.floor(getTotalAttackPower(attackRating));
   },
 };
 
-const passiveColumns: WeaponTableColumn[] = allPassiveTypes.map((passiveType, i, arr) => ({
+const passiveColumns: WeaponTableColumnDef[] = allPassiveTypes.map((passiveType, i, arr) => ({
   key: `${passiveType}Buildup`,
   header: (
     <Tooltip title={`${passiveType} Buildup`}>
@@ -81,7 +93,7 @@ const passiveColumns: WeaponTableColumn[] = allPassiveTypes.map((passiveType, i,
   },
 }));
 
-const scalingColumns: WeaponTableColumn[] = allAttributes.map((attribute) => ({
+const scalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => ({
   key: `${attribute}Scaling`,
   width: 40,
   sx: {
@@ -89,7 +101,9 @@ const scalingColumns: WeaponTableColumn[] = allAttributes.map((attribute) => ({
   },
   header: (
     <Tooltip title={`${getAttributeLabel(attribute)} Scaling`}>
-      <span>{getShortAttributeLabel(attribute)}</span>
+      <Typography component="span" variant="subtitle2">
+        {getShortAttributeLabel(attribute)}
+      </Typography>
     </Tooltip>
   ),
   render([weapon]) {
@@ -99,7 +113,7 @@ const scalingColumns: WeaponTableColumn[] = allAttributes.map((attribute) => ({
 }));
 
 const requirementColumns = allAttributes.map(
-  (attribute): WeaponTableColumn => ({
+  (attribute): WeaponTableColumnDef => ({
     key: `${attribute}Requirement`,
     width: 40,
     sx: {
@@ -107,7 +121,9 @@ const requirementColumns = allAttributes.map(
     },
     header: (
       <Tooltip title={`${getAttributeLabel(attribute)} Requirement`}>
-        <span>{getShortAttributeLabel(attribute)}</span>
+        <Typography component="span" variant="subtitle2">
+          {getShortAttributeLabel(attribute)}
+        </Typography>
       </Tooltip>
     ),
     render([weapon, { ineffectiveAttributes }]) {
@@ -136,7 +152,7 @@ const requirementColumns = allAttributes.map(
   }),
 );
 
-export default function useWeaponTableColumns(): WeaponTableColumn[] {
+export default function useWeaponTableColumns(): WeaponTableColumnDef[] {
   const { splitDamage } = useAppState();
   return useMemo(
     () => [

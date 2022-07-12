@@ -1,9 +1,12 @@
 import { useMemo, useRef, useState } from "react";
-import getWeaponAttack, { adjustAttributesForTwoHanding, Weapon } from "../calculator/calculator";
-import filterWeapons from "../search/filterWeapons";
-import { WeaponTableRow } from "./WeaponTable";
-import { useAppState } from "./AppState";
-import { sortWeapons } from "../search/sortWeapons";
+import getWeaponAttack, {
+  adjustAttributesForTwoHanding,
+  Weapon,
+} from "../../calculator/calculator";
+import filterWeapons from "../../search/filterWeapons";
+import { WeaponTableRowData } from "./WeaponTable";
+import { useAppState } from "../AppState";
+import { sortWeapons } from "../../search/sortWeapons";
 
 /* eslint-disable react-hooks/exhaustive-deps */
 function useMemoThrottled<T>(factory: () => T, timeoutMs: number, dependencies: unknown[]): T {
@@ -63,7 +66,7 @@ const useWeaponTableRows = (weapons: readonly Weapon[]) => {
   const offset = 0;
   const limit = 100;
 
-  const filteredRows = useMemoThrottled<WeaponTableRow[]>(
+  const filteredRows = useMemoThrottled<WeaponTableRowData[]>(
     () => {
       // Apply the two handing bonus if selected
       const adjustedAttributes = twoHanding
