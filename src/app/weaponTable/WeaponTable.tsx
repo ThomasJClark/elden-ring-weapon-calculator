@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { Box, Typography } from "@mui/material";
+import { ReactNode, useMemo } from "react";
+import { Box } from "@mui/material";
 import { SystemStyleObject, Theme } from "@mui/system";
 import { Weapon, WeaponAttackResult } from "../../calculator/calculator";
 import { SortBy } from "../../search/sortWeapons";
@@ -11,10 +11,17 @@ export type WeaponTableRowData = [Weapon, WeaponAttackResult];
 
 export interface WeaponTableColumnDef {
   key: SortBy;
+  columnGroup?: string;
   header: ReactNode;
   render(row: WeaponTableRowData): ReactNode;
   width?: number;
   sx?: SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>);
+}
+
+export interface WeaponTableColumnGroupDef {
+  key: string;
+  header?: ReactNode;
+  columns: readonly WeaponTableColumnDef[];
 }
 
 interface Props {
@@ -22,7 +29,12 @@ interface Props {
 }
 
 const WeaponTable = ({ rows }: Props) => {
-  const columns = useWeaponTableColumns();
+  const columnGroups = useWeaponTableColumns();
+  const columns = useMemo(
+    () => columnGroups.flatMap((columnGroup) => columnGroup.columns),
+    [columnGroups],
+  );
+
   return (
     <Box
       display="grid"
@@ -45,75 +57,30 @@ const WeaponTable = ({ rows }: Props) => {
         display="flex"
         role="row"
         sx={{
-          alignItems: "center",
-          height: "36px",
+          alignItems: "stretch",
+          minHeight: "36px",
           padding: "0px 10px",
         }}
       >
-        {/* TODO actually implement column groups. Should be able to add both a border & a column group header */}
-        {columns.map((column) => {
-          if (column.key === "strScaling") {
-            return (
-              <Typography
-                key={column.key}
-                variant="subtitle2"
-                sx={[{ width: 5 * column.width! }, column.sx ?? false]}
-              >
-                Attribute Scaling
-              </Typography>
-            );
-          } else if (column.key.endsWith("Scaling")) {
-            return null;
-          }
-
-          if (column.key === "strRequirement") {
-            return (
-              <Typography
-                key={column.key}
-                variant="subtitle2"
-                sx={[{ width: 5 * column.width! }, column.sx ?? false]}
-              >
-                Attributes Required
-              </Typography>
-            );
-          } else if (column.key.endsWith("Requirement")) {
-            return null;
-          }
-
-          if (column.key === "Scarlet RotBuildup") {
-            return (
-              <Typography
-                key={column.key}
-                variant="subtitle2"
-                sx={[{ width: 6 * column.width! }, column.sx ?? false]}
-              >
-                Passive Effects
-              </Typography>
-            );
-          } else if (column.key.endsWith("Buildup")) {
-            return null;
-          }
-
-          if (column.key === "physicalAttack") {
-            return (
-              <Typography
-                key={column.key}
-                variant="subtitle2"
-                sx={[{ width: 5 * column.width! }, column.sx ?? false]}
-              >
-                Attack Power
-              </Typography>
-            );
-          } else if (column.key.endsWith("Attack")) {
-            return null;
-          }
-
-          return (
-            <Box key={column.key} sx={[{ width: column.width }, column.sx ?? false]}>
-              {null}
-            </Box>
-          );
-        })}
+        {columnGroups.map((columnGroup) => (
+          <Box
+            key={columnGroup.key}
+            display="grid"
+            sx={[
+              // Columns in group require exact widths, which is fine for now. The weapon name
+              // column is the only one that flexes.
+              columnGroup.columns.every((column) => column.width != null)
+                ? { width: columnGroup.columns.reduce((width, column) => width + column.width!, 0) }
+                : { flex: 1 },
+              {
+                alignItems: "center",
+                justifyContent: "center",
+              },
+            ]}
+          >
+            {columnGroup.header}
+          </Box>
+        ))}
       </Box>
 
       <WeaponTableHeaderRow columns={columns} />

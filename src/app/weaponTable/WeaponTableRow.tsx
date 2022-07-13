@@ -18,7 +18,7 @@ const WeaponTableRow = ({ sx, columns, columnSx, columnProps, renderColumn }: Pr
     sx={[
       (theme) => ({
         alignItems: "stretch",
-        height: "36px",
+        minHeight: "36px",
         padding: "0px 10px",
         borderTop: `solid 1px ${theme.palette.divider}`,
       }),

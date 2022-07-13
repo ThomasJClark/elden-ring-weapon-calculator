@@ -13,7 +13,7 @@ import {
   getTotalAttackPower,
 } from "../uiUtils";
 import { useAppState } from "../AppState";
-import { WeaponTableColumnDef } from "./WeaponTable";
+import { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
 
 const blankIcon = <RemoveIcon color="disabled" fontSize="small" />;
 
@@ -70,16 +70,13 @@ const totalAttackPowerColumn: WeaponTableColumnDef = {
       Attack Power
     </Typography>
   ),
-  sx: {
-    justifyContent: "start",
-  },
   width: 128,
   render([, { attackRating }]) {
     return Math.floor(getTotalAttackPower(attackRating));
   },
 };
 
-const passiveColumns: WeaponTableColumnDef[] = allPassiveTypes.map((passiveType, i, arr) => ({
+const passiveColumns: WeaponTableColumnDef[] = allPassiveTypes.map((passiveType) => ({
   key: `${passiveType}Buildup`,
   header: (
     <Tooltip title={`${passiveType} Buildup`}>
@@ -152,15 +149,49 @@ const requirementColumns = allAttributes.map(
   }),
 );
 
-export default function useWeaponTableColumns(): WeaponTableColumnDef[] {
+export default function useWeaponTableColumns(): WeaponTableColumnGroupDef[] {
   const { splitDamage } = useAppState();
   return useMemo(
     () => [
-      nameColumn,
-      ...(splitDamage ? damageAttackPowerColumns : [totalAttackPowerColumn]),
-      ...passiveColumns,
-      ...scalingColumns,
-      ...requirementColumns,
+      { key: "name", columns: [nameColumn] },
+      splitDamage
+        ? {
+            key: "attack",
+            header: (
+              <Typography component="span" variant="subtitle2">
+                Attack Power
+              </Typography>
+            ),
+            columns: damageAttackPowerColumns,
+          }
+        : { key: "attack", columns: [totalAttackPowerColumn] },
+      {
+        key: "passives",
+        header: (
+          <Typography component="span" variant="subtitle2">
+            Passive Effects
+          </Typography>
+        ),
+        columns: passiveColumns,
+      },
+      {
+        key: "scaling",
+        header: (
+          <Typography component="span" variant="subtitle2">
+            Attribute Scaling
+          </Typography>
+        ),
+        columns: scalingColumns,
+      },
+      {
+        key: "requirements",
+        header: (
+          <Typography component="span" variant="subtitle2">
+            Attribute Requirements
+          </Typography>
+        ),
+        columns: requirementColumns,
+      },
     ],
     [splitDamage],
   );
