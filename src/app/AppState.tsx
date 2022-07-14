@@ -45,7 +45,7 @@ const defaultAppState: AppState = {
   affinities: ["None"],
   maxWeight: 30,
   effectiveOnly: false,
-  splitDamage: false,
+  splitDamage: true,
   sortBy: "name",
   reverse: false,
 };

@@ -43,13 +43,13 @@ export const darkTheme = createTheme({
         body: {
           minHeight: "100vh",
           backgroundImage: `
-          radial-gradient(
-            circle at 50% 50%,
+            radial-gradient(
+              circle at 50% 50%,
               ${alpha("#1f1d17", 0)} 0%,
               ${alpha("#1f1d17", 0)} 60%,
               ${alpha("#1f1d17", 0.2)} 80%,
               ${alpha("#1f1d17", 0.6)} 100%
-              ),
+            ),
             linear-gradient(
               to right,
               ${alpha("#3a3a30", 0.3)} 0%,
@@ -66,6 +66,10 @@ export const darkTheme = createTheme({
               #454536 100%
             )`,
           backgroundAttachment: "fixed",
+        },
+        "::selection": {
+          backgroundColor: "#f5bd63",
+          color: "#454536",
         },
       },
     },

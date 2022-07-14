@@ -1,20 +1,18 @@
-import { ReactNode, useMemo } from "react";
+import { memo, ReactNode } from "react";
 import { Box } from "@mui/material";
 import { SystemStyleObject, Theme } from "@mui/system";
 import { Weapon, WeaponAttackResult } from "../../calculator/calculator";
 import { SortBy } from "../../search/sortWeapons";
+import { useAppState } from "../AppState";
 import useWeaponTableColumns from "./useWeaponTableColumns";
-import WeaponTableHeaderRow from "./WeaponTableHeaderRow";
-import WeaponTableDataRow from "./WeaponTableDataRow";
+import WeaponTableRow from "./WeaponTableRow";
 
 export type WeaponTableRowData = [Weapon, WeaponAttackResult];
 
 export interface WeaponTableColumnDef {
   key: SortBy;
-  columnGroup?: string;
   header: ReactNode;
   render(row: WeaponTableRowData): ReactNode;
-  width?: number;
   sx?: SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>);
 }
 
@@ -22,18 +20,123 @@ export interface WeaponTableColumnGroupDef {
   key: string;
   header?: ReactNode;
   columns: readonly WeaponTableColumnDef[];
+  sx?: SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>);
 }
 
 interface Props {
   rows: readonly WeaponTableRowData[];
 }
 
+/**
+ * The first row in the weapon table containing headers for each column group
+ */
+const ColumnGroupHeaderGroup = memo(
+  ({ columnGroups }: { columnGroups: readonly WeaponTableColumnGroupDef[] }) => (
+    <WeaponTableRow
+      columnGroupSx={{ alignItems: "center", justifyContent: "center" }}
+      columnGroups={columnGroups}
+      renderColumnGroup={({ header }) => header}
+    />
+  ),
+);
+
+/**
+ * The row in the weapon table containing headers for each column
+ */
+const ColumnHeaderRow = memo(
+  ({ columnGroups }: { columnGroups: readonly WeaponTableColumnGroupDef[] }) => {
+    const { sortBy, reverse, setSortBy, setReverse } = useAppState();
+
+    const onColumnClicked = (column: WeaponTableColumnDef) => {
+      if (column.key === sortBy) {
+        setReverse(!reverse);
+      } else {
+        setSortBy(column.key);
+        setReverse(false);
+      }
+    };
+
+    return (
+      <WeaponTableRow
+        columnGroups={columnGroups}
+        renderColumnGroup={({ columns }) =>
+          columns.map((column) => (
+            <Box
+              key={column.key}
+              display="grid"
+              sx={[
+                {
+                  flex: "1 1 0",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: "9999px",
+                  cursor: "pointer",
+                  userSelect: "none",
+                  ":hover": { backgroundColor: "rgba(245, 189, 99, 0.08)" },
+                },
+                column.sx ?? {},
+              ]}
+              role="columnheader"
+              tabIndex={0}
+              aria-sort={column.key === sortBy ? (reverse ? "ascending" : "descending") : undefined}
+              onClick={() => onColumnClicked(column)}
+              onKeyDown={(evt) => {
+                if (evt.key === " " || evt.key === "Enter") {
+                  onColumnClicked(column);
+                  evt.preventDefault();
+                }
+              }}
+            >
+              {column.header}
+            </Box>
+          ))
+        }
+      />
+    );
+  },
+);
+
+/**
+ * A row in the weapon table containing a single weapon
+ */
+const DataRow = memo(
+  ({
+    columnGroups,
+    row,
+  }: {
+    columnGroups: readonly WeaponTableColumnGroupDef[];
+    row: WeaponTableRowData;
+  }) => (
+    <WeaponTableRow
+      columnGroups={columnGroups}
+      sx={{
+        ":nth-of-type(2n+1)": { backgroundColor: "rgba(255, 255, 255, 0.02)" },
+        ":hover": { backgroundColor: "rgba(255, 255, 255, 0.08)" },
+      }}
+      renderColumnGroup={({ columns }) =>
+        columns.map((column) => (
+          <Box
+            key={column.key}
+            display="grid"
+            sx={[
+              {
+                flex: "1 1 0",
+                alignItems: "center",
+                justifyContent: "center",
+              },
+              column.sx ?? {},
+            ]}
+          >
+            {column.render(row)}
+          </Box>
+        ))
+      }
+    />
+  ),
+);
+
 const WeaponTable = ({ rows }: Props) => {
   const columnGroups = useWeaponTableColumns();
-  const columns = useMemo(
-    () => columnGroups.flatMap((columnGroup) => columnGroup.columns),
-    [columnGroups],
-  );
 
   return (
     <Box
@@ -52,41 +155,10 @@ const WeaponTable = ({ rows }: Props) => {
         },
       })}
     >
-      {/* Column group headers */}
-      <Box
-        display="flex"
-        role="row"
-        sx={{
-          alignItems: "stretch",
-          minHeight: "36px",
-          padding: "0px 10px",
-        }}
-      >
-        {columnGroups.map((columnGroup) => (
-          <Box
-            key={columnGroup.key}
-            display="grid"
-            sx={[
-              // Columns in group require exact widths, which is fine for now. The weapon name
-              // column is the only one that flexes.
-              columnGroup.columns.every((column) => column.width != null)
-                ? { width: columnGroup.columns.reduce((width, column) => width + column.width!, 0) }
-                : { flex: 1 },
-              {
-                alignItems: "center",
-                justifyContent: "center",
-              },
-            ]}
-          >
-            {columnGroup.header}
-          </Box>
-        ))}
-      </Box>
-
-      <WeaponTableHeaderRow columns={columns} />
-
+      <ColumnGroupHeaderGroup columnGroups={columnGroups} />
+      <ColumnHeaderRow columnGroups={columnGroups} />
       {rows.map((row) => (
-        <WeaponTableDataRow key={row[0].name} columns={columns} row={row} />
+        <DataRow key={row[0].name} columnGroups={columnGroups} row={row} />
       ))}
     </Box>
   );

@@ -1,17 +1,17 @@
 import { ReactNode } from "react";
 import { Box, BoxProps } from "@mui/material";
 import { SystemStyleObject, Theme } from "@mui/system";
-import { WeaponTableColumnDef } from "./WeaponTable";
+import { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
 
 interface Props {
   sx?: SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>);
-  columns: readonly WeaponTableColumnDef[];
-  columnSx?: SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>);
+  columnGroupSx?: SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>);
+  columnGroups: readonly WeaponTableColumnGroupDef[];
   columnProps?(column: WeaponTableColumnDef): Omit<BoxProps, "children">;
-  renderColumn(column: WeaponTableColumnDef): ReactNode;
+  renderColumnGroup(column: WeaponTableColumnGroupDef): ReactNode;
 }
 
-const WeaponTableRow = ({ sx, columns, columnSx, columnProps, renderColumn }: Props) => (
+const WeaponTableRow = ({ sx, columnGroupSx, columnGroups, renderColumnGroup }: Props) => (
   <Box
     display="flex"
     role="row"
@@ -19,24 +19,30 @@ const WeaponTableRow = ({ sx, columns, columnSx, columnProps, renderColumn }: Pr
       (theme) => ({
         alignItems: "stretch",
         minHeight: "36px",
-        padding: "0px 10px",
-        borderTop: `solid 1px ${theme.palette.divider}`,
+        ":not(:first-of-type)": {
+          borderTop: `solid 1px ${theme.palette.divider}`,
+        },
       }),
       sx ?? false,
     ]}
   >
-    {columns.map((column) => (
+    {columnGroups.map((columnGroup) => (
       <Box
-        key={column.key}
-        display="grid"
+        key={columnGroup.key}
+        display="flex"
         sx={[
-          { width: column.width, alignItems: "center", justifyContent: "center" },
-          columnSx ?? false,
-          column.sx ?? false,
+          (theme) => ({
+            padding: "0px 10px",
+            alignItems: "stretch",
+            ":not(:first-of-type)": {
+              borderLeft: `solid 1px ${theme.palette.divider}`,
+            },
+          }),
+          columnGroupSx ?? {},
+          columnGroup.sx ?? {},
         ]}
-        {...columnProps?.(column)}
       >
-        {renderColumn(column)}
+        {renderColumnGroup(columnGroup)}
       </Box>
     ))}
   </Box>
