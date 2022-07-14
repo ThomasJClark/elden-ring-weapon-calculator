@@ -50,7 +50,7 @@ const nameColumn: WeaponTableColumnDef = {
 const damageAttackPowerColumns: WeaponTableColumnDef[] = allDamageTypes.map((damageType) => ({
   key: `${damageType}Attack`,
   header: (
-    <Tooltip title={`${getDamageTypeLabel(damageType)} Attack`}>
+    <Tooltip title={`${getDamageTypeLabel(damageType)} Attack`} placement="top">
       <img src={getDamageTypeIcon(damageType)} alt="" width={24} height={24} />
     </Tooltip>
   ),
@@ -75,7 +75,7 @@ const totalAttackPowerColumn: WeaponTableColumnDef = {
 const passiveColumns: WeaponTableColumnDef[] = allPassiveTypes.map((passiveType) => ({
   key: `${passiveType}Buildup`,
   header: (
-    <Tooltip title={`${passiveType} Buildup`}>
+    <Tooltip title={`${passiveType} Buildup`} placement="top">
       <img src={getPassiveTypeIcon(passiveType)} alt="" width={24} height={24} />
     </Tooltip>
   ),
@@ -88,7 +88,7 @@ const passiveColumns: WeaponTableColumnDef[] = allPassiveTypes.map((passiveType)
 const scalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => ({
   key: `${attribute}Scaling`,
   header: (
-    <Tooltip title={`${getAttributeLabel(attribute)} Scaling`}>
+    <Tooltip title={`${getAttributeLabel(attribute)} Scaling`} placement="top">
       <Typography component="span" variant="subtitle2">
         {getShortAttributeLabel(attribute)}
       </Typography>
@@ -104,7 +104,7 @@ const requirementColumns = allAttributes.map(
   (attribute): WeaponTableColumnDef => ({
     key: `${attribute}Requirement`,
     header: (
-      <Tooltip title={`${getAttributeLabel(attribute)} Requirement`}>
+      <Tooltip title={`${getAttributeLabel(attribute)} Requirement`} placement="top">
         <Typography component="span" variant="subtitle2">
           {getShortAttributeLabel(attribute)}
         </Typography>
@@ -123,6 +123,7 @@ const requirementColumns = allAttributes.map(
             title={`Unable to wield this weapon effectively with present ${getAttributeLabel(
               attribute,
             )} stat`}
+            placement="top"
           >
             <Typography sx={{ color: (theme) => theme.palette.error.main }}>
               {requirement}
@@ -149,7 +150,7 @@ export default function useWeaponTableColumns(): WeaponTableColumnGroupDef[] {
         ? {
             key: "attack",
             sx: {
-              width: 48 * damageAttackPowerColumns.length,
+              width: 40 * damageAttackPowerColumns.length + 21,
             },
             header: (
               <Typography component="span" variant="subtitle2">
@@ -168,7 +169,7 @@ export default function useWeaponTableColumns(): WeaponTableColumnGroupDef[] {
       {
         key: "passives",
         sx: {
-          width: 40 * passiveColumns.length,
+          width: 40 * passiveColumns.length + 21,
         },
         header: (
           <Typography component="span" variant="subtitle2">
@@ -180,7 +181,7 @@ export default function useWeaponTableColumns(): WeaponTableColumnGroupDef[] {
       {
         key: "scaling",
         sx: {
-          width: 40 * scalingColumns.length,
+          width: 36 * scalingColumns.length + 21,
         },
         header: (
           <Typography component="span" variant="subtitle2">
@@ -192,7 +193,7 @@ export default function useWeaponTableColumns(): WeaponTableColumnGroupDef[] {
       {
         key: "requirements",
         sx: {
-          width: 40 * requirementColumns.length,
+          width: 36 * requirementColumns.length + 21,
         },
         header: (
           <Typography component="span" variant="subtitle2">
