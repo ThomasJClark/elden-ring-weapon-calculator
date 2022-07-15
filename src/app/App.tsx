@@ -5,7 +5,6 @@ import {
   CssBaseline,
   Divider,
   LinearProgress,
-  Link,
   ThemeProvider,
   Typography,
 } from "@mui/material";
@@ -18,6 +17,7 @@ import { useAppState } from "./AppState";
 import AppBar from "./AppBar";
 import WeaponTypePicker from "./WeaponTypePicker";
 import AffinityPicker from "./AffinityPicker";
+import Footer from "./Footer";
 
 const App = () => {
   const { darkMode } = useAppState();
@@ -82,35 +82,7 @@ const App = () => {
 
           {mainContent}
 
-          <Typography variant="body1" align="center">
-            Made by Tom Clark (
-            <Link href="https://twitter.com/thechewanater" target="_blank" rel="noopener noreferer">
-              @thechewanater
-            </Link>
-            ). DM me with bug reports or suggestions.
-            <br />
-            Weapon data gathered by{" "}
-            <Link
-              href="https://www.reddit.com/user/TarnishedSpreadsheet/"
-              target="_blank"
-              rel="noopener noreferer"
-            >
-              /u/TarnishedSpreadsheet
-            </Link>{" "}
-            on Reddit.
-            <br />
-            Inspired by{" "}
-            <Link
-              href="https://soulsplanner.com/darksouls/weaponatk"
-              target="_blank"
-              rel="noopener noreferer"
-            >
-              Dark Souls Weapons Attack Calculator
-            </Link>
-            .
-            <br />
-            Elden Ring is a trademark of FromSoftware and Bandai Namco Entertainment.
-          </Typography>
+          <Footer />
         </Box>
       </Box>
     </ThemeProvider>
