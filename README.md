@@ -1,10 +1,18 @@
 # Elden Ring Weapon Attack Calculator
 
-_Lay out your arms. Let's get smithing._
+A weapon calculator that allows comparing multiple weapons and infusions. Try it at [eldenring.tclark.io](https://eldenring.tclark.io/).
 
-An Elden Ring attack rating calculator that allows comparing multiple weapons and infusions. Try it at [eldenring.tclark.io](https://eldenring.tclark.io/).
+![image](https://user-images.githubusercontent.com/3964980/179122581-112f2c0a-48b1-417d-ae66-ddf8719881cf.png)
 
-## Roadmap
+Enter your stats and your criteria (weapon type, weight limit, etc). The app will list every weapon matching your selections, along with the attack rating and status buildup you'll get on your build. Click a column header to sort the table by that column.
+
+This was inspired the [Dark Souls Weapons Attack Calculator](https://soulsplanner.com/darksouls/weaponatk). As far as I know, the creator hasn't made an updated version for Elden Ring, so I put this together based on weapon data reverse engineered by [/u/TarnishedSpreadsheet](https://www.reddit.com/user/TarnishedSpreadsheet/).
+
+## Reporting Issues
+
+Feel free to [submit an issue](https://github.com/ThomasJClark/elden-ring-weapon-calculator/issues/new) if you discover any bugs in the UI or inconsistencies with in-game stats.
+
+## Future Ideas
 
 - [x] Filter by affinity
 - [x] Filter by weapon type
@@ -12,31 +20,5 @@ An Elden Ring attack rating calculator that allows comparing multiple weapons an
 - [x] Passive effects
 - [x] Save settings when refreshing or visiting the site later
 - [ ] Responsive design / mobile support
-- [ ] Damage with buffs?
-  - Flame, Grant Me Strength - Physical/Fire +15% (PVP) +20% (PVE)
-  - Golden Vow incantation - All +7.5% (PVP) +15% (PVE)
-  - Golden Vow skill - All +12.5%
-  - Magic-Shrouding Cracked Tear - Magic +15% (PVP) +20% (PVE)
-  - Fire-Shrouding Cracked Tear - Fire +15% (PVP) +20% (PVE)
-  - Lightning-Shrouding Cracked Tear - Lightning +15% (PVP) +20% (PVE)
-  - Holy-Shrouding Cracked Tear - Holy +15% (PVP) +20% (PVE)
-  - Magic Scorpion Charm - Magic +8% (PVP) +12% (PVE)
-  - Fire Scorpion Charm - Magic +8% (PVP) +12% (PVE)
-  - Lightning Scorpion Charm - Magic +8% (PVP) +12% (PVE)
-  - Holy Scorpion Charm - Magic +8% (PVP) +12% (PVE)
-  - In rain - +10% Lightning, -10% Fire (need to verify)
-  - In water - +10% Lightning, -10% Fire (need to verify)
-  - Ritual Sword Talisman active - All +10%
-  - Red-Feathered Branchsword active - All +20%
-  - Arrow's Sting Talisman - Arrows and Bolts +10%
-  - Lord of Blood's Exultation active - All +20%
-  - White Mask active - All +10%
-  - Twinbird Kite Shield active - All +5%
-  - Jellyfish Shield active - All +20%
-  - Resins
 
 ## Special Thanks
-
-This tool was inspired by soulsplanner.com's [Dark Souls Weapons Attack Calculator](https://soulsplanner.com/darksouls/weaponatk).
-
-Weapon data gathered by [/u/TarnishedSpreadsheet](https://www.reddit.com/user/TarnishedSpreadsheet/) on Reddit.
