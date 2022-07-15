@@ -144,12 +144,12 @@ const WeaponTable = ({ rows }: Props) => {
       role="table"
       sx={(theme) => ({
         overflowX: "auto",
-        [theme.breakpoints.down("lg")]: {
+        [theme.breakpoints.down("md")]: {
           borderTop: `solid 1px ${theme.palette.divider}`,
           borderBottom: `solid 1px ${theme.palette.divider}`,
           marginX: -3,
         },
-        [theme.breakpoints.up("lg")]: {
+        [theme.breakpoints.up("md")]: {
           border: `solid 1px ${theme.palette.divider}`,
           borderRadius: `${theme.shape.borderRadius}px`,
         },
