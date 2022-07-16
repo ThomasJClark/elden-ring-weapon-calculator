@@ -37,7 +37,10 @@ const WeaponListSettings = () => {
       display="grid"
       sx={{
         gap: 2,
-        gridTemplateColumns: { xs: "1fr", md: "384px 128px auto auto 1fr" },
+        gridTemplateColumns: {
+          xs: "1fr",
+          lg: "332px 128px auto auto 1fr",
+        },
         alignItems: "start",
       }}
     >
@@ -88,44 +91,46 @@ const WeaponListSettings = () => {
         />
       </Box>
 
-      <FormControlLabel
-        label="Two Handing"
-        sx={{ mr: 0 }}
-        control={
-          <Checkbox
-            size="small"
-            checked={twoHanding}
-            name="Two Handing"
-            onChange={(evt) => setTwoHanding(evt.currentTarget.checked)}
-          />
-        }
-      />
+      <Box display="grid" sx={{ gridTemplateColumns: "1fr 1fr", gap: 2 }}>
+        <FormControlLabel
+          label="Two Handing"
+          sx={{ mr: 0 }}
+          control={
+            <Checkbox
+              size="small"
+              checked={twoHanding}
+              name="Two Handing"
+              onChange={(evt) => setTwoHanding(evt.currentTarget.checked)}
+            />
+          }
+        />
 
-      <FormControlLabel
-        label="Effective only"
-        sx={{ mr: 0 }}
-        control={
-          <Checkbox
-            size="small"
-            checked={effectiveOnly}
-            name="Effective only"
-            onChange={(evt) => setEffectiveOnly(evt.currentTarget.checked)}
-          />
-        }
-      />
+        <FormControlLabel
+          label="Effective only"
+          sx={{ mr: 0 }}
+          control={
+            <Checkbox
+              size="small"
+              checked={effectiveOnly}
+              name="Effective only"
+              onChange={(evt) => setEffectiveOnly(evt.currentTarget.checked)}
+            />
+          }
+        />
 
-      <FormControlLabel
-        label="Show damage type split"
-        sx={{ mr: 0 }}
-        control={
-          <Checkbox
-            size="small"
-            checked={splitDamage}
-            name="Show damage type split"
-            onChange={(evt) => setSplitDamage(evt.currentTarget.checked)}
-          />
-        }
-      />
+        <FormControlLabel
+          label="Show damage split"
+          sx={{ mr: 0 }}
+          control={
+            <Checkbox
+              size="small"
+              checked={splitDamage}
+              name="Show damage split"
+              onChange={(evt) => setSplitDamage(evt.currentTarget.checked)}
+            />
+          }
+        />
+      </Box>
     </Box>
   );
 };
