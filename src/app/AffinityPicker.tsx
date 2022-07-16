@@ -5,8 +5,6 @@ import { getAffinityIcon, getAffinityLabel } from "./uiUtils";
 
 /**
  * Set of checkboxes for selecting which weapon affinities to show
- *
- * TODO: List no affinity separately from weapons that can't be infused?
  */
 const AffinityPicker = () => {
   const { affinities, setAffinities } = useAppState();

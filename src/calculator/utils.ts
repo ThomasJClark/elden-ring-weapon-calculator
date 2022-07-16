@@ -12,7 +12,7 @@ export const allStatusTypes = [
 export const allAttributes = ["str", "dex", "int", "fai", "arc"] as const;
 
 export const allAffinities = [
-  "None",
+  "Standard",
   "Heavy",
   "Keen",
   "Quality",
@@ -25,6 +25,7 @@ export const allAffinities = [
   "Poison",
   "Blood",
   "Occult",
+  "Special",
 ] as const;
 
 export const allWeaponTypes = [

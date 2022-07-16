@@ -1,5 +1,6 @@
 import { Affinity, AttackPower, Attribute, DamageType, StatusType } from "../calculator/calculator";
-import noAffinityIcon from "./img/noAffinity.webp";
+import specialWeaponIcon from "./img/specialWeapon.webp";
+import standardAffinityIcon from "./img/standardAffinity.webp";
 import heavyAffinityIcon from "./img/heavyAffinity.webp";
 import keenAffinityIcon from "./img/keenAffinity.webp";
 import qualityAffinityIcon from "./img/qualityAffinity.webp";
@@ -19,18 +20,13 @@ import poisonStatusIcon from "./img/poisonStatus.webp";
 import bleedStatusIcon from "./img/bleedStatus.webp";
 
 export function getAffinityLabel(affinity: Affinity) {
-  switch (affinity) {
-    case "None":
-      return "Standard";
-    default:
-      return affinity;
-  }
+  return affinity;
 }
 
-export function getAffinityIcon(affinity: Affinity) {
+export function getAffinityIcon(affinity: Affinity): string {
   switch (affinity) {
-    case "None":
-      return noAffinityIcon;
+    case "Standard":
+      return standardAffinityIcon;
     case "Heavy":
       return heavyAffinityIcon;
     case "Keen":
@@ -54,6 +50,8 @@ export function getAffinityIcon(affinity: Affinity) {
       return bloodAffinityIcon;
     case "Occult":
       return occultAffinityIcon;
+    case "Special":
+      return specialWeaponIcon;
   }
 }
 
@@ -72,10 +70,10 @@ export function getDamageTypeLabel(damageType: DamageType) {
   }
 }
 
-export function getDamageTypeIcon(damageType: DamageType) {
+export function getDamageTypeIcon(damageType: DamageType): string {
   switch (damageType) {
     case "physical":
-      return noAffinityIcon;
+      return standardAffinityIcon;
     case "magic":
       return magicAffinityIcon;
     case "fire":
@@ -87,7 +85,7 @@ export function getDamageTypeIcon(damageType: DamageType) {
   }
 }
 
-export function getStatusTypeIcon(statusType: StatusType) {
+export function getStatusTypeIcon(statusType: StatusType): string {
   switch (statusType) {
     case "Scarlet Rot":
       return scarletRotStatusIcon;

@@ -42,7 +42,7 @@ const defaultAppState: AppState = {
   twoHanding: false,
   upgradeLevel: 25,
   weaponTypes: ["Axe"],
-  affinities: ["None"],
+  affinities: ["Standard", "Special"],
   maxWeight: 30,
   effectiveOnly: false,
   splitDamage: true,

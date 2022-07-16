@@ -96,7 +96,7 @@ const loadWeapons = (): Weapon[] => {
       baseWeaponName: getTrueBaseWeaponName(baseWeaponName),
       metadata: {
         weaponName,
-        affinity: affinity as Affinity,
+        affinity: affinity as Affinity, // Note: this technically can contain "None" which is fixed below
         maxUpgradeLevel: parseInt(maxUpgradeLevel, 10) as 10 | 25,
         weight: parseFloat(weight),
         weaponType: weaponType as WeaponType,
@@ -225,6 +225,20 @@ const loadWeapons = (): Weapon[] => {
       }),
   );
 
+  // The raw spreadsheets list all weapons without an affinity as "None". Separate special weapons
+  // that can't be infused from standard weapons that are not currently infused.
+  const infusableWeaponNames = new Set<string>();
+  extraDataMap.forEach(({ metadata }) => {
+    if ((metadata.affinity as Affinity | "None") !== "None") {
+      infusableWeaponNames.add(metadata.weaponName);
+    }
+  });
+  extraDataMap.forEach(({ metadata }) => {
+    if ((metadata.affinity as Affinity | "None") === "None") {
+      metadata.affinity = infusableWeaponNames.has(metadata.weaponName) ? "Standard" : "Special";
+    }
+  });
+
   return [...attackMap.keys()].flatMap((weaponKey) => {
     const attackByLevel = attackMap.get(weaponKey)!;
     const statusBuildupsByLevel = statusMap.get(weaponKey);
@@ -239,7 +253,10 @@ const loadWeapons = (): Weapon[] => {
 
       const weapon = {
         name: upgradeLevel > 0 ? `${baseWeaponName} +${upgradeLevel}` : baseWeaponName,
-        metadata: { ...metadata, upgradeLevel },
+        metadata: {
+          ...metadata,
+          upgradeLevel,
+        },
         requirements,
         attack,
         attributeScaling,
