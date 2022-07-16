@@ -40,7 +40,7 @@ const nameColumn: WeaponTableColumnDef = {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {weapon.name.replace("Epee", "Épée")}
+          {weapon.name}
         </Link>
       </Box>
     );

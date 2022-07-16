@@ -13,7 +13,11 @@ import {
   WeaponScalingCurve,
   PassiveType,
 } from "./calculator/calculator";
-import { decodeWeapon, encodeWeapon } from "./weaponCodec";
+import { encodeWeapon } from "./weaponCodec";
+
+function getTrueBaseWeaponName(baseWeaponName: string) {
+  return baseWeaponName.replace("Epee", "Épée").replace("Misericorde", "Miséricorde");
+}
 
 /**
  * Load a map from a spreadsheet where the first column is the key
@@ -24,7 +28,7 @@ const loadSpreadsheet = <T>(path: string, mapper: (columns: string[], key: strin
       .split("\n")
       .slice(1)
       .map((row) => row.trim().split(","))
-      .map(([key, ...columns]) => [key, mapper(columns, key)]),
+      .map(([key, ...columns]) => [key.toUpperCase(), mapper(columns, key)]),
   );
 
 /**
@@ -72,20 +76,24 @@ const loadWeapons = (): Weapon[] => {
 
   const extraDataMap = loadSpreadsheet(
     resolve(cwd(), "data/extraData.csv"),
-    ([
-      weaponName,
-      affinity,
-      ,
-      maxUpgradeLevel,
-      strRequirement,
-      dexRequirement,
-      intRequirement,
-      faiRequirement,
-      arcRequirement,
-      ,
-      weight,
-      weaponType,
-    ]) => ({
+    (
+      [
+        weaponName,
+        affinity,
+        ,
+        maxUpgradeLevel,
+        strRequirement,
+        dexRequirement,
+        intRequirement,
+        faiRequirement,
+        arcRequirement,
+        ,
+        weight,
+        weaponType,
+      ],
+      baseWeaponName,
+    ) => ({
+      baseWeaponName: getTrueBaseWeaponName(baseWeaponName),
       metadata: {
         weaponName,
         affinity: affinity as Affinity,
@@ -217,14 +225,12 @@ const loadWeapons = (): Weapon[] => {
       }),
   );
 
-  return [...attackMap.keys()].flatMap((weaponNameWithoutUpgradeLevel) => {
-    const attackByLevel = attackMap.get(weaponNameWithoutUpgradeLevel)!;
-    const passivesByLevel = passiveMap.get(weaponNameWithoutUpgradeLevel);
-    const attributeScalingByLevel = attributeScalingMap.get(weaponNameWithoutUpgradeLevel)!;
-    const { metadata, requirements } = extraDataMap.get(weaponNameWithoutUpgradeLevel)!;
-    const { attackElementCorrectId, damageScalingCurves } = calcCorrectMap.get(
-      weaponNameWithoutUpgradeLevel,
-    )!;
+  return [...attackMap.keys()].flatMap((weaponKey) => {
+    const attackByLevel = attackMap.get(weaponKey)!;
+    const passivesByLevel = passiveMap.get(weaponKey);
+    const attributeScalingByLevel = attributeScalingMap.get(weaponKey)!;
+    const { baseWeaponName, metadata, requirements } = extraDataMap.get(weaponKey)!;
+    const { attackElementCorrectId, damageScalingCurves } = calcCorrectMap.get(weaponKey)!;
     const damageScalingAttributes = attackElementCorrect.get(attackElementCorrectId)!;
 
     return Array.from({ length: metadata.maxUpgradeLevel + 1 }, (_, upgradeLevel) => {
@@ -232,10 +238,7 @@ const loadWeapons = (): Weapon[] => {
       const attributeScaling = attributeScalingByLevel[upgradeLevel];
 
       const weapon = {
-        name:
-          upgradeLevel > 0
-            ? `${weaponNameWithoutUpgradeLevel} +${upgradeLevel}`
-            : weaponNameWithoutUpgradeLevel,
+        name: upgradeLevel > 0 ? `${baseWeaponName} +${upgradeLevel}` : baseWeaponName,
         metadata: { ...metadata, upgradeLevel },
         requirements,
         attack,
