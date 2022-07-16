@@ -1,5 +1,32 @@
 import { createTheme, alpha } from "@mui/material/styles";
+import { TypographyOptions } from "@mui/material/styles/createTypography";
 import backgroundStars from "./img/backgroundStars.png";
+
+const fontFamily = "Prompt";
+
+const fontDefinition = [
+  {
+    fontFamily,
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontDisplay: "swap",
+    src: `url(/prompt-v10-latin-medium.woff2) format("woff2")`,
+  },
+];
+
+const typography: TypographyOptions = {
+  fontFamily: `${fontFamily}, sans-serif`,
+  button: {
+    textTransform: "none",
+  },
+  overline: {
+    textTransform: "none",
+  },
+  fontWeightLight: 500,
+  fontWeightRegular: 500,
+  fontWeightMedium: 500,
+  fontWeightBold: 500,
+};
 
 export const darkTheme = createTheme({
   palette: {
@@ -19,12 +46,7 @@ export const darkTheme = createTheme({
       default: "#0e120e",
     },
   },
-  typography: {
-    fontFamily: "Prompt, sans-serif",
-    button: {
-      textTransform: "none",
-    },
-  },
+  typography,
   components: {
     MuiPaper: {
       styleOverrides: {
@@ -40,6 +62,7 @@ export const darkTheme = createTheme({
     },
     MuiCssBaseline: {
       styleOverrides: {
+        "@font-face": fontDefinition,
         body: {
           minHeight: "100vh",
           backgroundImage: `
@@ -92,15 +115,11 @@ export const lightTheme = createTheme({
       default: "#edf0f2",
     },
   },
-  typography: {
-    fontFamily: "Prompt, sans-serif",
-    button: {
-      textTransform: "none",
-    },
-  },
+  typography,
   components: {
     MuiCssBaseline: {
       styleOverrides: {
+        "@font-face": fontDefinition,
         body: {
           minHeight: "100vh",
           background: "#fff",

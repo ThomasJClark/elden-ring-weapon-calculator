@@ -6,28 +6,26 @@
     <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon32x32.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon48x48.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#1f1d17" />
     <meta
       name="description"
       content="Elden Ring weapon guide, calculator, and optimizer for patch 1.05"
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
     <link rel="preload" href="%PUBLIC_URL%/weaponData.js" as="fetch" crossorigin="anonymous" />
+    <link
+      rel="preload"
+      href="%PUBLIC_URL%/prompt-v10-latin-medium.woff2"
+      as="font"
+      crossorigin="anonymous"
+    />
     <title>Elden Ring Weapon Calculator</title>
     <% if (process.env.NODE_ENV === 'production') { %>
     <link rel="canonical" href="%REACT_APP_HOST%/%PUBLIC_URL%" />
-    <!-- Cloudflare Web Analytics -->
     <script
       defer
       src="https://static.cloudflareinsights.com/beacon.min.js"
       data-cf-beacon='{"token": "d8a2f64573a446009add0eb554c2eb4b"}'
     ></script>
-    <!-- End Cloudflare Web Analytics -->
     <% } %>
   </head>
   <body>
