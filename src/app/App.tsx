@@ -26,10 +26,17 @@ import Footer from "./Footer";
 
 const App = () => {
   const { darkMode } = useAppState();
-  const { weapons, loading, error } = useWeapons();
-  const weaponTableRows = useWeaponTableRows(weapons);
+
   const theme = useTheme();
   const isMobile = useMediaQuery<Theme>(theme.breakpoints.down("md"));
+
+  // TODO pagination if there are >200 results
+  const offset = 0;
+  const limit = 200;
+  const { weapons, loading, error } = useWeapons();
+  const { rows, total } = useWeaponTableRows({ weapons, offset, limit });
+
+  console.log({ total });
 
   // Open the menu by default on large viewports. On mobile-sized viewports, the menu is an overlay
   // that partially covers the rest of the screen.
@@ -61,7 +68,7 @@ const App = () => {
   } else {
     mainContent = (
       <WeaponTable
-        rows={weaponTableRows}
+        rows={rows}
         placeholder={
           loading ? (
             <>
@@ -77,6 +84,13 @@ const App = () => {
               No weapons match your selections
             </Typography>
           )
+        }
+        footer={
+          total > limit ? (
+            <Typography variant="body1" align="center" sx={{ alignSelf: "center" }}>
+              {total} weapons match your selections - showing the first {limit}
+            </Typography>
+          ) : undefined
         }
       />
     );

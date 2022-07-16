@@ -8,14 +8,26 @@ import { WeaponTableRowData } from "./WeaponTable";
 import { useAppState } from "../AppState";
 import { sortWeapons } from "../../search/sortWeapons";
 
+interface WeaponTableRowsOptions {
+  weapons: readonly Weapon[];
+  offset: number;
+  limit: number;
+}
+
+interface WeaponTableRowsResult {
+  rows: readonly WeaponTableRowData[];
+  total: number;
+}
+
 /**
  * Filter, sort, and paginate the weapon list based on the current selections
  */
-const useWeaponTableRows = (weapons: readonly Weapon[]) => {
+const useWeaponTableRows = ({
+  weapons,
+  offset,
+  limit,
+}: WeaponTableRowsOptions): WeaponTableRowsResult => {
   const appState = useAppState();
-
-  const offset = 0;
-  const limit = 100;
 
   // Defer filtering based on app state changes because this can be CPU intensive if done while
   // busy rendering
@@ -69,7 +81,10 @@ const useWeaponTableRows = (weapons: readonly Weapon[]) => {
     }
   }, [sortedRows, appState.reverse, offset, limit]);
 
-  return paginatedRows;
+  return {
+    rows: paginatedRows,
+    total: filteredRows.length,
+  };
 };
 
 export default useWeaponTableRows;
