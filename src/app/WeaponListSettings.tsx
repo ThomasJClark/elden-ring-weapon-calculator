@@ -13,10 +13,14 @@ import { useAppState } from "./AppState";
 import NumberTextField from "./NumberTextField";
 import { getAttributeLabel } from "./uiUtils";
 
+interface Props {
+  breakpoint: "md" | "lg";
+}
+
 /**
  * Form controls for entering player attributes, basic filters, and display options
  */
-const WeaponListSettings = () => {
+const WeaponListSettings = ({ breakpoint }: Props) => {
   const {
     attributes,
     twoHanding,
@@ -39,7 +43,7 @@ const WeaponListSettings = () => {
         gap: 2,
         gridTemplateColumns: {
           xs: "1fr",
-          lg: "332px 128px auto auto 1fr",
+          [breakpoint]: "332px 128px auto auto 1fr",
         },
         alignItems: "start",
       }}

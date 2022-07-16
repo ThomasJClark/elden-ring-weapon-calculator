@@ -146,7 +146,7 @@ const App = () => {
         </Drawer>
 
         <Box display="grid" sx={{ gap: 2 }}>
-          <WeaponListSettings />
+          <WeaponListSettings breakpoint={menuOpen ? "lg" : "md"} />
 
           {mainContent}
 

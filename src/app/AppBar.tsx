@@ -1,8 +1,8 @@
 import { IconButton, Toolbar, Typography } from "@mui/material";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
+import DarkModeIcon from "@mui/icons-material/DarkModeRounded";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import MenuIcon from "@mui/icons-material/Menu";
+import LightModeIcon from "@mui/icons-material/LightModeRounded";
+import MenuIcon from "@mui/icons-material/MenuRounded";
 import { useAppState } from "./AppState";
 
 /**
