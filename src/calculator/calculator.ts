@@ -3,11 +3,11 @@ import {
   DamageType,
   Attributes,
   Attribute,
-  PassiveType,
-  allPassiveTypes,
+  StatusType,
+  allStatusTypes,
 } from "./utils";
 import { Weapon } from "./weapon";
-import { damageScalingCurves, passiveCurve } from "./scalingCurves";
+import { damageScalingCurves, statusCurve } from "./scalingCurves";
 
 export interface WeaponAttackOptions {
   weapon: Weapon;
@@ -21,7 +21,7 @@ export interface AttackPower {
 
 export interface WeaponAttackResult {
   attackRating: Partial<Record<DamageType, AttackPower>>;
-  passiveBuildup: Partial<Record<PassiveType, number>>;
+  statusBuildup: Partial<Record<StatusType, number>>;
   ineffectiveAttributes: Attribute[];
 }
 
@@ -66,29 +66,29 @@ export default function getWeaponAttack({
     }
   }
 
-  const passiveBuildup: Partial<Record<PassiveType, number>> = {};
-  for (const passiveType of allPassiveTypes) {
-    if (passiveType in weapon.passives) {
-      const passiveBase = weapon.passives[passiveType] ?? 0;
+  const statusBuildup: Partial<Record<StatusType, number>> = {};
+  for (const statusType of allStatusTypes) {
+    if (statusType in weapon.statuses) {
+      const statusBase = weapon.statuses[statusType] ?? 0;
 
       let scalingMultiplier = 0;
       if (attributes.arc < (weapon.requirements.arc ?? 0)) {
         // If the arcane requirement is not met, a 40% penalty is subtracted instead of a scaling
         // bonus being added
         scalingMultiplier = -0.4;
-      } else if (passiveType === "Poison" || passiveType === "Bleed") {
+      } else if (statusType === "Poison" || statusType === "Bleed") {
         // Otherwise, the scaling multiplier for poison and bleed is equal to the product of the
         // arcane scaling and the current arcane stat on a special curve.
-        scalingMultiplier = (weapon.attributeScaling.arc ?? 0) * passiveCurve(attributes.arc);
+        scalingMultiplier = (weapon.attributeScaling.arc ?? 0) * statusCurve(attributes.arc);
       }
 
-      passiveBuildup[passiveType] = passiveBase * (1 + scalingMultiplier);
+      statusBuildup[statusType] = statusBase * (1 + scalingMultiplier);
     }
   }
 
   return {
     attackRating,
-    passiveBuildup,
+    statusBuildup: statusBuildup,
     ineffectiveAttributes,
   };
 }

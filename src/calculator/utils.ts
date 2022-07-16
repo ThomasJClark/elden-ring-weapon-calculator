@@ -1,12 +1,12 @@
 export const allDamageTypes = ["physical", "magic", "fire", "lightning", "holy"] as const;
 
-export const allPassiveTypes = [
-  "Scarlet Rot",
-  "Madness",
-  "Sleep",
-  "Frost",
+export const allStatusTypes = [
   "Poison",
+  "Scarlet Rot",
   "Bleed",
+  "Frost",
+  "Sleep",
+  "Madness",
 ] as const;
 
 export const allAttributes = ["str", "dex", "int", "fai", "arc"] as const;
@@ -17,11 +17,11 @@ export const allAffinities = [
   "Keen",
   "Quality",
   "Magic",
-  "Cold",
   "Fire",
   "Flame Art",
   "Lightning",
   "Sacred",
+  "Cold",
   "Poison",
   "Blood",
   "Occult",
@@ -69,7 +69,7 @@ export const maxRegularUpgradeLevel = 25 as const;
 export const maxSpecialUpgradeLevel = 10 as const;
 
 export type DamageType = typeof allDamageTypes[number];
-export type PassiveType = typeof allPassiveTypes[number];
+export type StatusType = typeof allStatusTypes[number];
 export type Attribute = typeof allAttributes[number];
 export type Attributes = Record<Attribute, number>;
 export type Affinity = typeof allAffinities[number];

@@ -1,13 +1,13 @@
 import { useMemo } from "react";
 import { Box, Link, Tooltip, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { allAttributes, allDamageTypes, allPassiveTypes } from "../../calculator/calculator";
+import { allAttributes, allDamageTypes, allStatusTypes } from "../../calculator/calculator";
 import {
   getAttributeLabel,
   getDamageTypeAttackPower,
   getDamageTypeIcon,
   getDamageTypeLabel,
-  getPassiveTypeIcon,
+  getStatusTypeIcon,
   getScalingLabel,
   getShortAttributeLabel,
   getTotalAttackPower,
@@ -72,15 +72,15 @@ const totalAttackPowerColumn: WeaponTableColumnDef = {
   },
 };
 
-const passiveColumns: WeaponTableColumnDef[] = allPassiveTypes.map((passiveType) => ({
-  key: `${passiveType}Buildup`,
+const passiveEffectsColumns: WeaponTableColumnDef[] = allStatusTypes.map((statusType) => ({
+  key: `${statusType}Buildup`,
   header: (
-    <Tooltip title={`${passiveType} Buildup`} placement="top">
-      <img src={getPassiveTypeIcon(passiveType)} alt="" width={24} height={24} />
+    <Tooltip title={`${statusType} Buildup`} placement="top">
+      <img src={getStatusTypeIcon(statusType)} alt="" width={24} height={24} />
     </Tooltip>
   ),
-  render([, { passiveBuildup }]) {
-    const buildup = passiveBuildup[passiveType] ?? 0;
+  render([, { statusBuildup }]) {
+    const buildup = statusBuildup[statusType] ?? 0;
     return buildup === 0 ? blankIcon : Math.floor(buildup);
   },
 }));
@@ -169,14 +169,14 @@ export default function useWeaponTableColumns(): WeaponTableColumnGroupDef[] {
       {
         key: "passives",
         sx: {
-          width: 40 * passiveColumns.length + 21,
+          width: 40 * passiveEffectsColumns.length + 21,
         },
         header: (
           <Typography component="span" variant="subtitle2">
             Passive Effects
           </Typography>
         ),
-        columns: passiveColumns,
+        columns: passiveEffectsColumns,
       },
       {
         key: "scaling",

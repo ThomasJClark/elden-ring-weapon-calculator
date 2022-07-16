@@ -1,10 +1,4 @@
-import {
-  Affinity,
-  AttackPower,
-  Attribute,
-  DamageType,
-  PassiveType,
-} from "../calculator/calculator";
+import { Affinity, AttackPower, Attribute, DamageType, StatusType } from "../calculator/calculator";
 import noAffinityIcon from "./img/noAffinity.webp";
 import heavyAffinityIcon from "./img/heavyAffinity.webp";
 import keenAffinityIcon from "./img/keenAffinity.webp";
@@ -93,8 +87,8 @@ export function getDamageTypeIcon(damageType: DamageType) {
   }
 }
 
-export function getPassiveTypeIcon(passiveType: PassiveType) {
-  switch (passiveType) {
+export function getStatusTypeIcon(statusType: StatusType) {
+  switch (statusType) {
     case "Scarlet Rot":
       return scarletRotStatusIcon;
     case "Madness":

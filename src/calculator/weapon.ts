@@ -3,7 +3,7 @@ import type {
   Attribute,
   DamageType,
   MaxUpgradeLevel,
-  PassiveType,
+  StatusType,
   WeaponType,
 } from "./utils";
 
@@ -44,9 +44,9 @@ export interface Weapon {
   damageScalingCurves: Partial<Record<DamageType, WeaponScalingCurve>>;
 
   /**
-   * Map indicating the base buildup amount for any passives this weapon has
+   * Map indicating the base buildup amount for any status effects this weapon has
    */
-  passives: Partial<Record<PassiveType, number>>;
+  statuses: Partial<Record<StatusType, number>>;
 }
 
 export type WeaponScalingCurve = 0 | 1 | 2 | 4 | 7 | 8 | 12 | 14 | 15 | 16;

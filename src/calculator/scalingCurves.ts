@@ -118,9 +118,9 @@ export const damageScalingCurves: Record<WeaponScalingCurve, (attributeValue: nu
 };
 
 /**
- * Unique scaling curve used for arcane scaling for passive buildup
+ * Unique scaling curve used for arcane scaling for status effect buildup
  */
-export function passiveCurve(attributeValue: number) {
+export function statusCurve(attributeValue: number) {
   if (attributeValue > 60) {
     return 0.9 + (0.1 * (attributeValue - 60)) / 39;
   } else if (attributeValue > 45) {

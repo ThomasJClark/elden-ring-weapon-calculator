@@ -11,7 +11,7 @@ import {
   WeaponType,
   Weapon,
   WeaponScalingCurve,
-  PassiveType,
+  StatusType,
 } from "./calculator/calculator";
 import { encodeWeapon } from "./weaponCodec";
 
@@ -189,36 +189,36 @@ const loadWeapons = (): Weapon[] => {
     },
   );
 
-  const passiveMap = loadSpreadsheet(
-    resolve(cwd(), "data/passive.csv"),
+  const statusMap = loadSpreadsheet(
+    resolve(cwd(), "data/status.csv"),
     ([, , scarletRot, madness, sleep, ...columns], weaponName) =>
       Array.from({ length: Math.floor(columns.length / 3) }, (_, upgradeLevel) => {
         const [frost, poison, bleed] = columns.slice(upgradeLevel * 3, (upgradeLevel + 1) * 3);
 
-        const passiveBuildup: Partial<Record<PassiveType, number>> = {};
+        const statusBuildup: Partial<Record<StatusType, number>> = {};
 
-        if (scarletRot !== "0") passiveBuildup["Scarlet Rot"] = +scarletRot;
-        if (madness !== "0") passiveBuildup["Madness"] = +madness;
-        if (sleep !== "0") passiveBuildup["Sleep"] = +sleep;
-        if (frost !== "0") passiveBuildup["Frost"] = +frost;
-        if (poison !== "0") passiveBuildup["Poison"] = +poison;
-        if (bleed !== "0") passiveBuildup["Bleed"] = +bleed;
+        if (scarletRot !== "0") statusBuildup["Scarlet Rot"] = +scarletRot;
+        if (madness !== "0") statusBuildup["Madness"] = +madness;
+        if (sleep !== "0") statusBuildup["Sleep"] = +sleep;
+        if (frost !== "0") statusBuildup["Frost"] = +frost;
+        if (poison !== "0") statusBuildup["Poison"] = +poison;
+        if (bleed !== "0") statusBuildup["Bleed"] = +bleed;
 
         // Cold antspur rapier is bugged? It apparently gains more scarlet rot buildup up to +5,
         // then loses it at +6 and above
         if (weaponName === "Cold Antspur Rapier") {
           if (upgradeLevel < 6) {
-            passiveBuildup["Scarlet Rot"] = 50 + 5 * upgradeLevel;
+            statusBuildup["Scarlet Rot"] = 50 + 5 * upgradeLevel;
           } else {
-            delete passiveBuildup["Scarlet Rot"];
+            delete statusBuildup["Scarlet Rot"];
           }
         }
 
         // TODO: test Poison/Blood Fingerprint Stone Shield. /u/TarnishedSpreadsheet's spreadsheet
         // has some shenanagins and I don't understand how they would change things
 
-        if (Object.values(passiveBuildup).some((value) => value !== 0)) {
-          return passiveBuildup;
+        if (Object.values(statusBuildup).some((value) => value !== 0)) {
+          return statusBuildup;
         }
 
         return undefined;
@@ -227,7 +227,7 @@ const loadWeapons = (): Weapon[] => {
 
   return [...attackMap.keys()].flatMap((weaponKey) => {
     const attackByLevel = attackMap.get(weaponKey)!;
-    const passivesByLevel = passiveMap.get(weaponKey);
+    const statusBuildupsByLevel = statusMap.get(weaponKey);
     const attributeScalingByLevel = attributeScalingMap.get(weaponKey)!;
     const { baseWeaponName, metadata, requirements } = extraDataMap.get(weaponKey)!;
     const { attackElementCorrectId, damageScalingCurves } = calcCorrectMap.get(weaponKey)!;
@@ -245,7 +245,7 @@ const loadWeapons = (): Weapon[] => {
         attributeScaling,
         damageScalingAttributes: { ...damageScalingAttributes },
         damageScalingCurves: { ...damageScalingCurves },
-        passives: passivesByLevel?.[upgradeLevel] ?? {},
+        statuses: statusBuildupsByLevel?.[upgradeLevel] ?? {},
       };
 
       allDamageTypes.forEach((damageType) => {

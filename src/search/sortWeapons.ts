@@ -1,12 +1,12 @@
 import { getDamageTypeAttackPower, getTotalAttackPower } from "../app/uiUtils";
 import { WeaponTableRowData } from "../app/weaponTable/WeaponTable";
-import { allAffinities, Attribute, DamageType, PassiveType } from "../calculator/utils";
+import { allAffinities, Attribute, DamageType, StatusType } from "../calculator/utils";
 
 export type SortBy =
   | "name"
   | "totalAttack"
   | `${DamageType}Attack`
-  | `${PassiveType}Buildup`
+  | `${StatusType}Buildup`
   | `${Attribute}Scaling`
   | `${Attribute}Requirement`;
 
@@ -36,8 +36,8 @@ export function sortWeapons(
     }
 
     if (sortBy.endsWith("Buildup")) {
-      const passiveType = sortBy.slice(0, -1 * "Buildup".length) as PassiveType;
-      return ([, { passiveBuildup }]) => -(passiveBuildup[passiveType] ?? 0);
+      const statusType = sortBy.slice(0, -1 * "Buildup".length) as StatusType;
+      return ([, { statusBuildup }]) => -(statusBuildup[statusType] ?? 0);
     }
 
     if (sortBy.endsWith("Scaling")) {

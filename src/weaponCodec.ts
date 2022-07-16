@@ -9,7 +9,7 @@ import {
   allAffinities,
   allAttributes,
   allDamageTypes,
-  allPassiveTypes,
+  allStatusTypes,
   allWeaponTypes,
 } from "./calculator/calculator";
 
@@ -26,7 +26,7 @@ export type EncodedWeapon = [
   number[], // scaling for each attribute
   number[][], // scaling attributes for each damage type
   (WeaponScalingCurve | -1)[], // scaling curve for each damage type
-  number[] | undefined, // base buildup for each passive type
+  number[] | undefined, // base buildup for each status type
 ];
 
 function encodeMap<Key extends string, Value, Encoded>(
@@ -76,9 +76,9 @@ export function encodeWeapon({
   attributeScaling,
   damageScalingAttributes,
   damageScalingCurves,
-  passives,
+  statuses,
 }: Weapon): EncodedWeapon {
-  const encodedPassives = encodeMap(passives, allPassiveTypes, 0, identity);
+  const encodedStatuses = encodeMap(statuses, allStatusTypes, 0, identity);
   return [
     name,
     weight,
@@ -94,7 +94,7 @@ export function encodeWeapon({
       values.map((value) => allAttributes.indexOf(value)),
     ),
     encodeMap(damageScalingCurves, allDamageTypes, -1, identity),
-    encodedPassives.length !== 0 ? encodedPassives : undefined,
+    encodedStatuses.length !== 0 ? encodedStatuses : undefined,
   ];
 }
 
@@ -114,7 +114,7 @@ export function decodeWeapon([
   attributeScalling,
   damageScalingAttributes,
   damageScalingCurves,
-  passives = [],
+  statuses = [],
 ]: EncodedWeapon): Weapon {
   return {
     name,
@@ -141,6 +141,6 @@ export function decodeWeapon([
       equals(-1),
       (scalingCurve) => scalingCurve as WeaponScalingCurve,
     ),
-    passives: decodeMap(passives, allPassiveTypes, equals(0), identity),
+    statuses: decodeMap(statuses, allStatusTypes, equals(0), identity),
   };
 }
