@@ -25,6 +25,7 @@ export interface WeaponTableColumnGroupDef {
 
 interface Props {
   rows: readonly WeaponTableRowData[];
+  placeholder?: ReactNode;
 }
 
 /**
@@ -135,7 +136,7 @@ const DataRow = memo(
   ),
 );
 
-const WeaponTable = ({ rows }: Props) => {
+const WeaponTable = ({ rows, placeholder }: Props) => {
   const columnGroups = useWeaponTableColumns();
 
   return (
@@ -157,9 +158,13 @@ const WeaponTable = ({ rows }: Props) => {
     >
       <ColumnGroupHeaderGroup columnGroups={columnGroups} />
       <ColumnHeaderRow columnGroups={columnGroups} />
-      {rows.map((row) => (
-        <DataRow key={row[0].name} columnGroups={columnGroups} row={row} />
-      ))}
+      {rows.length > 0 ? (
+        rows.map((row) => <DataRow key={row[0].name} columnGroups={columnGroups} row={row} />)
+      ) : (
+        <Box display="grid" sx={{ minHeight: 480, gap: 3 }}>
+          {placeholder}
+        </Box>
+      )}
     </Box>
   );
 };

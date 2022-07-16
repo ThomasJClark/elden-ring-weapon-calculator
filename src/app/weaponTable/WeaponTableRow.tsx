@@ -19,8 +19,9 @@ const WeaponTableRow = ({ sx, columnGroupSx, columnGroups, renderColumnGroup }: 
       (theme) => ({
         alignItems: "stretch",
         minHeight: "36px",
-        ":not(:first-of-type)": {
-          borderTop: `solid 1px ${theme.palette.divider}`,
+        ":not(:last-of-type)": {
+          minHeight: "37px",
+          borderBottom: `solid 1px ${theme.palette.divider}`,
         },
       }),
       sx ?? false,

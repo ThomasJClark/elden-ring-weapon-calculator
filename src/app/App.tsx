@@ -2,10 +2,10 @@ import { ReactNode, useCallback, useEffect, useState } from "react";
 import {
   Alert,
   Box,
+  CircularProgress,
   CssBaseline,
   Divider,
   Drawer,
-  LinearProgress,
   Theme,
   ThemeProvider,
   Toolbar,
@@ -52,29 +52,34 @@ const App = () => {
   }, [isMobile]);
 
   let mainContent: ReactNode;
-  if (loading) {
-    mainContent = (
-      <Box sx={{ py: 6 }}>
-        <Typography variant="body1" align="center">
-          Loading weapon data...
-        </Typography>
-        <LinearProgress sx={{ mt: 3 }} />
-      </Box>
-    );
-  } else if (error) {
+  if (error) {
     mainContent = (
       <Alert severity="error" sx={{ my: 3 }}>
         Oops, something went wrong loading weapons ({error.message})
       </Alert>
     );
-  } else if (weaponTableRows.length === 0) {
-    mainContent = (
-      <Alert severity="info" sx={{ my: 3 }}>
-        No weapons match your filters.
-      </Alert>
-    );
   } else {
-    mainContent = <WeaponTable rows={weaponTableRows} />;
+    mainContent = (
+      <WeaponTable
+        rows={weaponTableRows}
+        placeholder={
+          loading ? (
+            <>
+              <Typography variant="body1" align="center" sx={{ alignSelf: "end" }}>
+                Loading weapon data
+              </Typography>
+              <Box display="grid" sx={{ alignSelf: "start", justifyContent: "center" }}>
+                <CircularProgress />
+              </Box>
+            </>
+          ) : (
+            <Typography variant="body1" align="center" sx={{ alignSelf: "center" }}>
+              No weapons match your selections
+            </Typography>
+          )
+        }
+      />
+    );
   }
 
   const drawerContent = (
