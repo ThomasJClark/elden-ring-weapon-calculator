@@ -24,11 +24,65 @@ import WeaponTypePicker from "./WeaponTypePicker";
 import AffinityPicker from "./AffinityPicker";
 import Footer from "./Footer";
 
+const useMenuState = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery<Theme>(theme.breakpoints.down("md"));
+
+  // Open the menu by default on large viewports. On mobile-sized viewports, the menu is an overlay
+  // that partially covers the rest of the screen.
+  const [menuOpenMobile, setMenuOpenMobile] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(true);
+
+  /* eslint-disable no-restricted-globals */
+  const onMenuOpenChanged = useCallback(
+    (open: boolean) => {
+      if (isMobile) {
+        if (open) {
+          history.replaceState(null, "");
+          history.pushState(null, "");
+          setMenuOpenMobile(true);
+        } else {
+          history.back();
+          setMenuOpenMobile(false);
+        }
+      } else {
+        setMenuOpen(open);
+      }
+    },
+    [isMobile],
+  );
+
+  useEffect(() => {
+    if (menuOpenMobile) {
+      if (!isMobile) {
+        history.back();
+        setMenuOpenMobile(false);
+        return () => {};
+      }
+
+      const onPopState = (evt: PopStateEvent) => {
+        setMenuOpenMobile(false);
+        evt.stopPropagation();
+      };
+
+      window.addEventListener("popstate", onPopState, false);
+      return () => window.removeEventListener("popstate", onPopState, false);
+    }
+  }, [isMobile, menuOpenMobile]);
+  /* eslint-enable no-restricted-globals */
+
+  return {
+    isMobile,
+    menuOpen,
+    menuOpenMobile,
+    onMenuOpenChanged,
+  };
+};
+
 const App = () => {
   const { darkMode } = useAppState();
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery<Theme>(theme.breakpoints.down("md"));
+  const { isMobile, menuOpen, menuOpenMobile, onMenuOpenChanged } = useMenuState();
 
   // TODO pagination if there are >200 results
   const offset = 0;
@@ -37,26 +91,6 @@ const App = () => {
   const { rows, total } = useWeaponTableRows({ weapons, offset, limit });
 
   console.log({ total });
-
-  // Open the menu by default on large viewports. On mobile-sized viewports, the menu is an overlay
-  // that partially covers the rest of the screen.
-  const [menuOpenMobile, setMenuOpenMobile] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(true);
-  const onMenuOpenChanged = useCallback(
-    (open: boolean) => {
-      if (isMobile) {
-        setMenuOpenMobile(open);
-      } else {
-        setMenuOpen(open);
-      }
-    },
-    [isMobile],
-  );
-  useEffect(() => {
-    if (!isMobile) {
-      setMenuOpenMobile(false);
-    }
-  }, [isMobile]);
 
   let mainContent: ReactNode;
   if (error) {
