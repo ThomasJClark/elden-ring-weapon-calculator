@@ -6,6 +6,7 @@ import {
   CssBaseline,
   Divider,
   Drawer,
+  IconButton,
   Theme,
   ThemeProvider,
   Toolbar,
@@ -13,6 +14,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBackRounded";
 import WeaponListSettings from "./WeaponListSettings";
 import WeaponTable from "./weaponTable/WeaponTable";
 import useWeaponTableRows from "./weaponTable/useWeaponTableRows";
@@ -184,7 +186,19 @@ const App = () => {
             "& .MuiDrawer-paper": { boxSizing: "border-box", width: "348px" },
           }}
         >
-          <Toolbar />
+          <Toolbar>
+            <IconButton
+              size="large"
+              color="inherit"
+              edge="start"
+              role="checkbox"
+              aria-label="Close Menu"
+              sx={{ mr: 1 }}
+              onClick={() => onMenuOpenChanged(false)}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+          </Toolbar>
 
           <Divider />
 
