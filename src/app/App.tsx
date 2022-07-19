@@ -92,8 +92,6 @@ const App = () => {
   const { weapons, loading, error } = useWeapons();
   const { rows, total } = useWeaponTableRows({ weapons, offset, limit });
 
-  console.log({ total });
-
   let mainContent: ReactNode;
   if (error) {
     mainContent = (
