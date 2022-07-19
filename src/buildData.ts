@@ -16,7 +16,26 @@ import {
 import { encodeWeapon } from "./weaponCodec";
 
 function getTrueBaseWeaponName(baseWeaponName: string) {
-  return baseWeaponName.replace("Epee", "Épée").replace("Misericorde", "Miséricorde");
+  // Include the accent marks which are missing from the spreadsheet
+  if (baseWeaponName.includes("Epee")) {
+    return baseWeaponName.replace("Epee", "Épée");
+  }
+  if (baseWeaponName.includes("Misericorde")) {
+    return baseWeaponName.replace("Misericorde", "Miséricorde");
+  }
+  return baseWeaponName;
+}
+
+function getTrueWeaponName(weaponName: string) {
+  // I think this is an error in the spreadsheet - "Sacred" was searched & replaced out of all
+  // weapon names
+  if (weaponName === "Relic Sword") {
+    return "Sacred Relic Sword";
+  }
+  if (weaponName === "Mohgwyn's Spear") {
+    return "Mohgwyn's Sacred Spear";
+  }
+  return weaponName;
 }
 
 /**
@@ -95,7 +114,7 @@ const loadWeapons = (): Weapon[] => {
     ) => ({
       baseWeaponName: getTrueBaseWeaponName(baseWeaponName),
       metadata: {
-        weaponName,
+        weaponName: getTrueWeaponName(weaponName),
         affinity: affinity as Affinity, // Note: this technically can contain "None" which is fixed below
         maxUpgradeLevel: parseInt(maxUpgradeLevel, 10) as 10 | 25,
         weight: parseFloat(weight),

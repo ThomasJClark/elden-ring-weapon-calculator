@@ -33,7 +33,7 @@ const nameColumn: WeaponTableColumnDef = {
         <Link
           variant="button"
           underline="hover"
-          href={`https://eldenring.wiki.fextralife.com/${weapon.metadata.weaponName.replace(
+          href={`https://eldenring.wiki.fextralife.com/${weapon.metadata.weaponName.replaceAll(
             " ",
             "+",
           )}`}
