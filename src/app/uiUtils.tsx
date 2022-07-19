@@ -20,7 +20,12 @@ import poisonStatusIcon from "./img/poisonStatus.webp";
 import bleedStatusIcon from "./img/bleedStatus.webp";
 
 export function getAffinityLabel(affinity: Affinity) {
-  return affinity;
+  switch (affinity) {
+    case "Special":
+      return "Unique";
+    default:
+      return affinity;
+  }
 }
 
 export function getAffinityIcon(affinity: Affinity): string {
