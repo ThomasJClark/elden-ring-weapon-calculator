@@ -46,7 +46,7 @@ const defaultAppState: AppState = {
   maxWeight: 30,
   effectiveOnly: false,
   splitDamage: true,
-  sortBy: "name",
+  sortBy: "totalAttack",
   reverse: false,
 };
 

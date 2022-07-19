@@ -1,6 +1,8 @@
 import { memo, ReactNode } from "react";
 import { Box } from "@mui/material";
 import { SystemStyleObject, Theme } from "@mui/system";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { Weapon, WeaponAttackResult } from "../../calculator/calculator";
 import { SortBy } from "../../search/sortWeapons";
 import { useAppState } from "../AppState";
@@ -60,6 +62,7 @@ const ColumnHeaderRow = memo(
 
     return (
       <WeaponTableRow
+        sx={{ minHeight: 41 }}
         columnGroups={columnGroups}
         renderColumnGroup={({ columns }) =>
           columns.map((column) => (
@@ -69,11 +72,14 @@ const ColumnHeaderRow = memo(
               sx={[
                 {
                   flex: "1 1 0",
-                  alignItems: "center",
+                  gridTemplateRows: "24px 1fr",
+                  alignItems: "start",
                   justifyContent: "center",
                   borderRadius: "9999px",
                   cursor: "pointer",
                   userSelect: "none",
+                  position: "relative",
+                  pt: 1,
                   ":hover": { backgroundColor: "rgba(245, 189, 99, 0.08)" },
                 },
                 column.sx ?? {},
@@ -90,6 +96,12 @@ const ColumnHeaderRow = memo(
               }}
             >
               {column.header}
+              {column.key === sortBy &&
+                (reverse ? (
+                  <ArrowDropUpIcon sx={{ justifySelf: "center" }} fontSize="small" />
+                ) : (
+                  <ArrowDropDownIcon sx={{ justifySelf: "center" }} fontSize="small" />
+                ))}
             </Box>
           ))
         }
