@@ -47,18 +47,33 @@ const nameColumn: WeaponTableColumnDef = {
   },
 };
 
-const damageAttackPowerColumns: WeaponTableColumnDef[] = allDamageTypes.map((damageType) => ({
-  key: `${damageType}Attack`,
-  header: (
-    <Tooltip title={`${getDamageTypeLabel(damageType)} Attack`} placement="top">
-      <img src={getDamageTypeIcon(damageType)} alt="" width={24} height={24} />
-    </Tooltip>
+const damageAttackPowerColumns: WeaponTableColumnDef[] = [
+  ...allDamageTypes.map(
+    (damageType): WeaponTableColumnDef => ({
+      key: `${damageType}Attack`,
+      header: (
+        <Tooltip title={`${getDamageTypeLabel(damageType)} Attack`} placement="top">
+          <img src={getDamageTypeIcon(damageType)} alt="" width={24} height={24} />
+        </Tooltip>
+      ),
+      render([, { attackRating }]) {
+        const attackPower = getDamageTypeAttackPower(attackRating, damageType);
+        return attackPower === 0 ? blankIcon : Math.floor(attackPower);
+      },
+    }),
   ),
-  render([, { attackRating }]) {
-    const attackPower = getDamageTypeAttackPower(attackRating, damageType);
-    return attackPower === 0 ? blankIcon : Math.floor(attackPower);
+  {
+    key: "totalAttack",
+    header: (
+      <Typography component="span" variant="subtitle2">
+        Total
+      </Typography>
+    ),
+    render([, { attackRating }]) {
+      return Math.floor(getTotalAttackPower(attackRating));
+    },
   },
-}));
+];
 
 const totalAttackPowerColumn: WeaponTableColumnDef = {
   key: "totalAttack",
