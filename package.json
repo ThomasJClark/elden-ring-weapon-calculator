@@ -29,7 +29,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
-    "rebuildWeaponData": "ts-node src/buildData.ts public/weaponData-2.js"
+    "rebuildWeaponData": "ts-node src/buildData.ts public/weaponData-3.js"
   },
   "eslintConfig": {
     "extends": [

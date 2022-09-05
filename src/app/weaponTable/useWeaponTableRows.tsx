@@ -1,8 +1,5 @@
 import { useDeferredValue, useMemo } from "react";
-import getWeaponAttack, {
-  adjustAttributesForTwoHanding,
-  Weapon,
-} from "../../calculator/calculator";
+import getWeaponAttack, { Weapon } from "../../calculator/calculator";
 import filterWeapons from "../../search/filterWeapons";
 import { WeaponTableRowData } from "./WeaponTable";
 import { useAppState } from "../AppState";
@@ -40,20 +37,22 @@ const useWeaponTableRows = ({
   const effectiveOnly = useDeferredValue(appState.effectiveOnly);
 
   const filteredRows = useMemo<WeaponTableRowData[]>(() => {
-    // Apply the two handing bonus if selected
-    const adjustedAttributes = twoHanding ? adjustAttributesForTwoHanding(attributes) : attributes;
-
     const filteredWeapons = filterWeapons(weapons.values(), {
       upgradeLevel,
       weaponTypes,
       affinities,
       maxWeight,
-      effectiveWithAttributes: effectiveOnly ? adjustedAttributes : undefined,
+      effectiveWithAttributes: effectiveOnly ? attributes : undefined,
+      twoHanding,
     });
 
     return filteredWeapons.map((weapon) => [
       weapon,
-      getWeaponAttack({ weapon, attributes: adjustedAttributes }),
+      getWeaponAttack({
+        weapon,
+        attributes,
+        twoHanding,
+      }),
     ]);
   }, [
     attributes,

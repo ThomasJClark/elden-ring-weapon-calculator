@@ -27,6 +27,7 @@ export type EncodedWeapon = [
   number[][], // scaling attributes for each damage type
   (WeaponScalingCurve | -1)[], // scaling curve for each damage type
   number[] | undefined, // base buildup for each status type
+  number | undefined, // paired
 ];
 
 function encodeMap<Key extends string, Value, Encoded>(
@@ -77,6 +78,7 @@ export function encodeWeapon({
   damageScalingAttributes,
   damageScalingCurves,
   statuses,
+  paired,
 }: Weapon): EncodedWeapon {
   const encodedStatuses = encodeMap(statuses, allStatusTypes, 0, identity);
   return [
@@ -94,7 +96,8 @@ export function encodeWeapon({
       values.map((value) => allAttributes.indexOf(value)),
     ),
     encodeMap(damageScalingCurves, allDamageTypes, -1, identity),
-    encodedStatuses.length !== 0 ? encodedStatuses : undefined,
+    encodedStatuses.length !== 0 || paired ? encodedStatuses : undefined,
+    paired ? 1 : undefined,
   ];
 }
 
@@ -115,6 +118,7 @@ export function decodeWeapon([
   damageScalingAttributes,
   damageScalingCurves,
   statuses = [],
+  paired = 0,
 ]: EncodedWeapon): Weapon {
   return {
     name,
@@ -142,5 +146,6 @@ export function decodeWeapon([
       (scalingCurve) => scalingCurve as WeaponScalingCurve,
     ),
     statuses: decodeMap(statuses, allStatusTypes, equals(0), identity),
+    paired: !!paired,
   };
 }

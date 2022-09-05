@@ -1,4 +1,5 @@
 import {
+  adjustAttributesForTwoHanding,
   Affinity,
   Attribute,
   Attributes,
@@ -34,6 +35,8 @@ export interface FilterWeaponsOptions {
    * Only include weapons that are effective with the given player attribute values
    */
   effectiveWithAttributes?: Attributes;
+
+  twoHanding?: boolean;
 }
 
 /**
@@ -58,6 +61,7 @@ export default function filterWeapons(
     affinities,
     maxWeight,
     effectiveWithAttributes,
+    twoHanding,
   }: FilterWeaponsOptions,
 ): readonly Weapon[] {
   const specialUpgradeLevel = toSpecialUpgradeLevel(upgradeLevel);
@@ -89,13 +93,19 @@ export default function filterWeapons(
       return false;
     }
 
-    if (
-      effectiveWithAttributes != null &&
-      (Object.entries(weapon.requirements) as [Attribute, number][]).some(
-        ([attribute, requirement]) => effectiveWithAttributes[attribute] < requirement,
-      )
-    ) {
-      return false;
+    if (effectiveWithAttributes != null) {
+      const attributes =
+        twoHanding && !weapon.paired
+          ? adjustAttributesForTwoHanding(effectiveWithAttributes)
+          : effectiveWithAttributes;
+
+      if (
+        (Object.entries(weapon.requirements) as [Attribute, number][]).some(
+          ([attribute, requirement]) => attributes[attribute] < requirement,
+        )
+      ) {
+        return false;
+      }
     }
 
     return true;

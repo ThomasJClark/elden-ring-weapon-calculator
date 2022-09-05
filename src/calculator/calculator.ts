@@ -5,6 +5,7 @@ import {
   Attribute,
   StatusType,
   allStatusTypes,
+  adjustAttributesForTwoHanding,
 } from "./utils";
 import { Weapon } from "./weapon";
 import { damageScalingCurves, statusCurve } from "./scalingCurves";
@@ -12,6 +13,7 @@ import { damageScalingCurves, statusCurve } from "./scalingCurves";
 export interface WeaponAttackOptions {
   weapon: Weapon;
   attributes: Attributes;
+  twoHanding?: boolean;
 }
 
 export interface AttackPower {
@@ -31,9 +33,13 @@ export interface WeaponAttackResult {
 export default function getWeaponAttack({
   weapon,
   attributes,
+  twoHanding,
 }: WeaponAttackOptions): WeaponAttackResult {
+  const effectiveAttributes =
+    twoHanding && !weapon.paired ? adjustAttributesForTwoHanding(attributes) : attributes;
+
   const ineffectiveAttributes = (Object.entries(weapon.requirements) as [Attribute, number][])
-    .filter(([attribute, requirement]) => attributes[attribute] < requirement)
+    .filter(([attribute, requirement]) => effectiveAttributes[attribute] < requirement)
     .map(([attribute]) => attribute);
 
   const attackRating: Partial<Record<DamageType, AttackPower>> = {};
@@ -55,7 +61,7 @@ export default function getWeaponAttack({
         // with multiple attributes, the products are added together.
         for (const attribute of scalingAttributes) {
           const scaling = weapon.attributeScaling[attribute] ?? 0;
-          scalingMultiplier += scalingCurve(attributes[attribute]) * scaling;
+          scalingMultiplier += scalingCurve(effectiveAttributes[attribute]) * scaling;
         }
       }
 
@@ -72,14 +78,15 @@ export default function getWeaponAttack({
       const statusBase = weapon.statuses[statusType] ?? 0;
 
       let scalingMultiplier = 0;
-      if (attributes.arc < (weapon.requirements.arc ?? 0)) {
+      if (effectiveAttributes.arc < (weapon.requirements.arc ?? 0)) {
         // If the arcane requirement is not met, a 40% penalty is subtracted instead of a scaling
         // bonus being added
         scalingMultiplier = -0.4;
       } else if (statusType === "Poison" || statusType === "Bleed") {
         // Otherwise, the scaling multiplier for poison and bleed is equal to the product of the
         // arcane scaling and the current arcane stat on a special curve.
-        scalingMultiplier = (weapon.attributeScaling.arc ?? 0) * statusCurve(attributes.arc);
+        scalingMultiplier =
+          (weapon.attributeScaling.arc ?? 0) * statusCurve(effectiveAttributes.arc);
       }
 
       statusBuildup[statusType] = statusBase * (1 + scalingMultiplier);

@@ -47,6 +47,11 @@ export interface Weapon {
    * Map indicating the base buildup amount for any status effects this weapon has
    */
   statuses: Partial<Record<StatusType, number>>;
+
+  /**
+   * True if the weapon doesn't get a strength bonus when two-handing
+   */
+  paired: boolean;
 }
 
 export type WeaponScalingCurve = 0 | 1 | 2 | 4 | 7 | 8 | 12 | 14 | 15 | 16;

@@ -109,6 +109,7 @@ const loadWeapons = (): Weapon[] => {
         ,
         weight,
         weaponType,
+        paired,
       ],
       baseWeaponName,
     ) => ({
@@ -127,6 +128,7 @@ const loadWeapons = (): Weapon[] => {
         fai: parseInt(faiRequirement, 10) || undefined,
         arc: parseInt(arcRequirement, 10) || undefined,
       },
+      paired: paired === "Yes",
     }),
   );
 
@@ -262,7 +264,7 @@ const loadWeapons = (): Weapon[] => {
     const attackByLevel = attackMap.get(weaponKey)!;
     const statusBuildupsByLevel = statusMap.get(weaponKey);
     const attributeScalingByLevel = attributeScalingMap.get(weaponKey)!;
-    const { baseWeaponName, metadata, requirements } = extraDataMap.get(weaponKey)!;
+    const { baseWeaponName, metadata, requirements, paired } = extraDataMap.get(weaponKey)!;
     const { attackElementCorrectId, damageScalingCurves } = calcCorrectMap.get(weaponKey)!;
     const damageScalingAttributes = attackElementCorrect.get(attackElementCorrectId)!;
 
@@ -282,6 +284,7 @@ const loadWeapons = (): Weapon[] => {
         damageScalingAttributes: { ...damageScalingAttributes },
         damageScalingCurves: { ...damageScalingCurves },
         statuses: statusBuildupsByLevel?.[upgradeLevel] ?? {},
+        paired,
       };
 
       allDamageTypes.forEach((damageType) => {
