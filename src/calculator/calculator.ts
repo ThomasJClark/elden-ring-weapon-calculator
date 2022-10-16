@@ -35,8 +35,7 @@ export default function getWeaponAttack({
   attributes,
   twoHanding,
 }: WeaponAttackOptions): WeaponAttackResult {
-  const effectiveAttributes =
-    twoHanding && !weapon.paired ? adjustAttributesForTwoHanding(attributes) : attributes;
+  const effectiveAttributes = adjustAttributesForTwoHanding({ twoHanding, weapon, attributes });
 
   const ineffectiveAttributes = (Object.entries(weapon.requirements) as [Attribute, number][])
     .filter(([attribute, requirement]) => effectiveAttributes[attribute] < requirement)

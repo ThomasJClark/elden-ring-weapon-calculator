@@ -94,10 +94,11 @@ export default function filterWeapons(
     }
 
     if (effectiveWithAttributes != null) {
-      const attributes =
-        twoHanding && !weapon.paired
-          ? adjustAttributesForTwoHanding(effectiveWithAttributes)
-          : effectiveWithAttributes;
+      const attributes = adjustAttributesForTwoHanding({
+        twoHanding,
+        weapon,
+        attributes: effectiveWithAttributes,
+      });
 
       if (
         (Object.entries(weapon.requirements) as [Attribute, number][]).some(

@@ -1,3 +1,5 @@
+import { Weapon } from "./weapon";
+
 export const allDamageTypes = ["physical", "magic", "fire", "lightning", "holy"] as const;
 
 export const allStatusTypes = [
@@ -84,9 +86,38 @@ export type MaxUpgradeLevel =
  * Adjust a set of character attributes to take into account the 50% Strength bonus when two
  * handing a weapon
  */
-export function adjustAttributesForTwoHanding({ str, ...attributes }: Attributes) {
-  return {
-    str: Math.floor(str * 1.5),
-    ...attributes,
-  };
+export function adjustAttributesForTwoHanding({
+  twoHanding = false,
+  weapon,
+  attributes,
+}: {
+  twoHanding?: boolean;
+  weapon: Weapon;
+  attributes: Attributes;
+}): Attributes {
+  let twoHandingBonus = twoHanding;
+
+  // Paired weapons do not get the two handing bonus
+  if (weapon.paired) {
+    twoHandingBonus = false;
+  }
+
+  // Bows and ballistae can only be two handed
+  if (
+    weapon.metadata.weaponType === "Light Bow" ||
+    weapon.metadata.weaponType === "Bow" ||
+    weapon.metadata.weaponType === "Greatbow" ||
+    weapon.metadata.weaponType === "Ballista"
+  ) {
+    twoHandingBonus = true;
+  }
+
+  if (twoHandingBonus) {
+    return {
+      ...attributes,
+      str: Math.floor(attributes.str * 1.5),
+    };
+  }
+
+  return attributes;
 }
