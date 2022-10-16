@@ -53,6 +53,18 @@ export function toSpecialUpgradeLevel(regularUpgradeLevel: number) {
   );
 }
 
+/** Weapon types that can never have an affinity applied, so an affinity filter doesn't make sense */
+const uninfusableWeaponTypes: WeaponType[] = [
+  "Light Bow",
+  "Bow",
+  "Greatbow",
+  "Crossbow",
+  "Ballista",
+  "Torch",
+  "Glintstone Staff",
+  "Sacred Seal",
+];
+
 export default function filterWeapons(
   weapons: IterableIterator<Weapon>,
   {
@@ -85,7 +97,16 @@ export default function filterWeapons(
       return false;
     }
 
-    if (affinities.length > 0 && !affinities.includes(weapon.metadata.affinity)) {
+    if (
+      affinities.length > 0 &&
+      !affinities.some(
+        (affinity) =>
+          affinity === weapon.metadata.affinity ||
+          // Include uninfusable categories of armaments (torches etc.) if standard weapons are included,
+          // since the standard vs. unique distinction doesn't apply to these categories
+          (affinity === "Standard" && uninfusableWeaponTypes.includes(weapon.metadata.weaponType)),
+      )
+    ) {
       return false;
     }
 
