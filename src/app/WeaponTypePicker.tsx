@@ -1,6 +1,6 @@
 import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
+import { memo } from "react";
 import { allWeaponTypes, WeaponType } from "../calculator/calculator";
-import { useAppState } from "./AppState";
 
 /**
  * Might as well hide these by default. If you really need to know which small shield has the
@@ -21,12 +21,15 @@ const meleeWeaponTypes: WeaponType[] = allWeaponTypes.filter(
   (weaponType) => !rangedWeaponTypes.includes(weaponType) && !miscWeaponTypes.includes(weaponType),
 );
 
+interface Props {
+  weaponTypes: readonly WeaponType[];
+  onWeaponTypesChanged(weaponTypes: WeaponType[]): void;
+}
+
 /**
  * Set of checkboxes for selecting weapon types to include in the search results
  */
-const WeaponListFilters = () => {
-  const { weaponTypes, setWeaponTypes } = useAppState();
-
+const WeaponListFilters = ({ weaponTypes, onWeaponTypesChanged }: Props) => {
   const renderWeaponCategory = (label: string, weaponTypesInCategory: WeaponType[]) => {
     let checked = false;
     let indeterminate = false;
@@ -49,9 +52,9 @@ const WeaponListFilters = () => {
             name={label}
             onChange={(evt) => {
               if (evt.currentTarget.checked) {
-                setWeaponTypes([...new Set([...weaponTypes, ...weaponTypesInCategory])]);
+                onWeaponTypesChanged([...new Set([...weaponTypes, ...weaponTypesInCategory])]);
               } else {
-                setWeaponTypes(
+                onWeaponTypesChanged(
                   weaponTypes.filter((weaponType) => !weaponTypesInCategory.includes(weaponType)),
                 );
               }
@@ -73,7 +76,7 @@ const WeaponListFilters = () => {
           checked={weaponTypes.includes(weaponType)}
           name={weaponType}
           onChange={(evt) =>
-            setWeaponTypes(
+            onWeaponTypesChanged(
               evt.currentTarget.checked
                 ? [...weaponTypes, weaponType]
                 : weaponTypes.filter((value) => value !== weaponType),
@@ -102,4 +105,4 @@ const WeaponListFilters = () => {
   );
 };
 
-export default WeaponListFilters;
+export default memo(WeaponListFilters);

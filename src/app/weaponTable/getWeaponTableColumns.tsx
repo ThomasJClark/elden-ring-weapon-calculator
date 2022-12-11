@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { Box, Link, Tooltip, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { allAttributes, allDamageTypes, allStatusTypes } from "../../calculator/calculator";
@@ -12,7 +11,6 @@ import {
   getShortAttributeLabel,
   getTotalAttackPower,
 } from "../uiUtils";
-import { useAppState } from "../AppState";
 import { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
 
 const blankIcon = <RemoveIcon color="disabled" fontSize="small" />;
@@ -152,72 +150,74 @@ const requirementColumns = allAttributes.map(
   }),
 );
 
-export default function useWeaponTableColumns(): WeaponTableColumnGroupDef[] {
-  const { splitDamage } = useAppState();
-  return useMemo(
-    () => [
-      {
-        key: "name",
-        sx: { flex: 1, minWidth: 320 },
-        columns: [nameColumn],
-      },
-      splitDamage
-        ? {
-            key: "attack",
-            sx: {
-              width: 40 * damageAttackPowerColumns.length + 21,
-            },
-            header: (
-              <Typography component="span" variant="subtitle2">
-                Attack Power
-              </Typography>
-            ),
-            columns: damageAttackPowerColumns,
-          }
-        : {
-            key: "attack",
-            sx: {
-              width: 128,
-            },
-            columns: [totalAttackPowerColumn],
+interface WeaponTableColumnsOptions {
+  splitDamage: boolean;
+}
+
+export default function getWeaponTableColumns({
+  splitDamage,
+}: WeaponTableColumnsOptions): WeaponTableColumnGroupDef[] {
+  return [
+    {
+      key: "name",
+      sx: { flex: 1, minWidth: 320 },
+      columns: [nameColumn],
+    },
+    splitDamage
+      ? {
+          key: "attack",
+          sx: {
+            width: 40 * damageAttackPowerColumns.length + 21,
           },
-      {
-        key: "passives",
-        sx: {
-          width: 40 * passiveEffectsColumns.length + 21,
+          header: (
+            <Typography component="span" variant="subtitle2">
+              Attack Power
+            </Typography>
+          ),
+          columns: damageAttackPowerColumns,
+        }
+      : {
+          key: "attack",
+          sx: {
+            width: 128,
+          },
+          columns: [totalAttackPowerColumn],
         },
-        header: (
-          <Typography component="span" variant="subtitle2">
-            Passive Effects
-          </Typography>
-        ),
-        columns: passiveEffectsColumns,
+    {
+      key: "passives",
+      sx: {
+        width: 40 * passiveEffectsColumns.length + 21,
       },
-      {
-        key: "scaling",
-        sx: {
-          width: 36 * scalingColumns.length + 21,
-        },
-        header: (
-          <Typography component="span" variant="subtitle2">
-            Attribute Scaling
-          </Typography>
-        ),
-        columns: scalingColumns,
+      header: (
+        <Typography component="span" variant="subtitle2">
+          Passive Effects
+        </Typography>
+      ),
+      columns: passiveEffectsColumns,
+    },
+    {
+      key: "scaling",
+      sx: {
+        width: 36 * scalingColumns.length + 21,
       },
-      {
-        key: "requirements",
-        sx: {
-          width: 36 * requirementColumns.length + 21,
-        },
-        header: (
-          <Typography component="span" variant="subtitle2">
-            Attribute Requirements
-          </Typography>
-        ),
-        columns: requirementColumns,
+      header: (
+        <Typography component="span" variant="subtitle2">
+          Attribute Scaling
+        </Typography>
+      ),
+      columns: scalingColumns,
+    },
+    {
+      key: "requirements",
+      sx: {
+        width: 36 * requirementColumns.length + 21,
       },
-    ],
-    [splitDamage],
-  );
+      header: (
+        <Typography component="span" variant="subtitle2">
+          Attribute Requirements
+        </Typography>
+      ),
+      columns: requirementColumns,
+    },
+  ];
 }

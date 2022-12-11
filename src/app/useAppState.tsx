@@ -1,5 +1,5 @@
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
-import { Affinity, Attributes, WeaponType } from "../calculator/calculator";
+import { useEffect, useMemo, useState } from "react";
+import { Affinity, Attribute, Attributes, WeaponType } from "../calculator/calculator";
 import { SortBy } from "../search/sortWeapons";
 
 interface AppState {
@@ -17,7 +17,7 @@ interface AppState {
 
 interface UpdateAppState extends AppState {
   setDarkMode(darkMode: boolean): void;
-  setAttributes(attributes: Attributes): void;
+  setAttribute(attribute: Attribute, value: number): void;
   setTwoHanding(twoHanding: boolean): void;
   setUpgradeLevel(upgradeLevel: number): void;
   setWeaponTypes(weaponTypes: readonly WeaponType[]): void;
@@ -47,25 +47,11 @@ const defaultAppState: AppState = {
   reverse: false,
 };
 
-const AppStateContext = createContext<UpdateAppState>({
-  ...defaultAppState,
-  setDarkMode() {},
-  setAttributes() {},
-  setTwoHanding() {},
-  setUpgradeLevel() {},
-  setWeaponTypes() {},
-  setAffinities() {},
-  setEffectiveOnly() {},
-  setSplitDamage() {},
-  setSortBy() {},
-  setReverse() {},
-});
-
 /**
  * Manages all of the user selectable filters and display options, and saves/loads them in
  * localStorage for use on future page loads
  */
-export const AppStateProvider = ({ children }: { children: ReactNode }) => {
+export default function useAppState() {
   const [appState, setAppState] = useState<AppState>(() => {
     try {
       const value = localStorage.getItem("appState");
@@ -86,8 +72,11 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
       setDarkMode(darkMode) {
         setAppState((prevAppState) => ({ ...prevAppState, darkMode }));
       },
-      setAttributes(attributes) {
-        setAppState((prevAppState) => ({ ...prevAppState, attributes }));
+      setAttribute(attribute, value) {
+        setAppState((prevAppState) => ({
+          ...prevAppState,
+          attributes: { ...prevAppState.attributes, [attribute]: value },
+        }));
       },
       setTwoHanding(twoHanding) {
         setAppState((prevAppState) => ({ ...prevAppState, twoHanding }));
@@ -117,10 +106,5 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
     [],
   );
 
-  const context = useMemo(() => ({ ...appState, ...changeHandlers }), [appState, changeHandlers]);
-  return <AppStateContext.Provider value={context}>{children}</AppStateContext.Provider>;
-};
-
-export function useAppState() {
-  return useContext(AppStateContext);
+  return useMemo(() => ({ ...appState, ...changeHandlers }), [appState, changeHandlers]);
 }

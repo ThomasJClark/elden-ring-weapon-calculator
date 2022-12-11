@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link, Typography } from "@mui/material";
 
 const Footer = () => (
@@ -26,4 +27,4 @@ const Footer = () => (
   </Typography>
 );
 
-export default Footer;
+export default memo(Footer);

@@ -3,62 +3,63 @@ import DarkModeIcon from "@mui/icons-material/DarkModeRounded";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LightModeIcon from "@mui/icons-material/LightModeRounded";
 import MenuIcon from "@mui/icons-material/MenuRounded";
-import { useAppState } from "./AppState";
+import { memo } from "react";
 
 /**
  * The main toolbar that has the app name, dark mode toggle, and a link to the GitHub repository
  */
 const AppBar = ({
   menuOpen,
+  darkMode,
   onMenuOpenChanged,
+  onDarkModeChanged,
 }: {
   menuOpen: boolean;
+  darkMode: boolean;
   onMenuOpenChanged(menuOpen: boolean): void;
-}) => {
-  const { darkMode, setDarkMode } = useAppState();
-  return (
-    <Toolbar>
-      <IconButton
-        size="large"
-        color="inherit"
-        edge="start"
-        role="checkbox"
-        aria-label="Show Menu"
-        aria-checked={menuOpen}
-        sx={{ mr: 1 }}
-        onClick={() => onMenuOpenChanged(!menuOpen)}
-      >
-        <MenuIcon />
-      </IconButton>
+  onDarkModeChanged(darkMode: boolean): void;
+}) => (
+  <Toolbar>
+    <IconButton
+      size="large"
+      color="inherit"
+      edge="start"
+      role="checkbox"
+      aria-label="Show Menu"
+      aria-checked={menuOpen}
+      sx={{ mr: 1 }}
+      onClick={() => onMenuOpenChanged(!menuOpen)}
+    >
+      <MenuIcon />
+    </IconButton>
 
-      <Typography variant="h6" component="span" sx={{ flexGrow: 1 }}>
-        Elden Ring Weapon Calculator
-      </Typography>
+    <Typography variant="h6" component="span" sx={{ flexGrow: 1 }}>
+      Elden Ring Weapon Calculator
+    </Typography>
 
-      <IconButton
-        size="large"
-        color="inherit"
-        role="checkbox"
-        aria-label="Dark Mode"
-        aria-checked={darkMode}
-        onClick={() => setDarkMode(!darkMode)}
-      >
-        {darkMode ? <DarkModeIcon /> : <LightModeIcon />}
-      </IconButton>
+    <IconButton
+      size="large"
+      color="inherit"
+      role="checkbox"
+      aria-label="Dark Mode"
+      aria-checked={darkMode}
+      onClick={() => onDarkModeChanged(!darkMode)}
+    >
+      {darkMode ? <DarkModeIcon /> : <LightModeIcon />}
+    </IconButton>
 
-      <IconButton
-        size="large"
-        color="inherit"
-        edge="end"
-        aria-label="GitHub Repository"
-        href="https://github.com/ThomasJClark/elden-ring-weapon-calculator"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <GitHubIcon />
-      </IconButton>
-    </Toolbar>
-  );
-};
+    <IconButton
+      size="large"
+      color="inherit"
+      edge="end"
+      aria-label="GitHub Repository"
+      href="https://github.com/ThomasJClark/elden-ring-weapon-calculator"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <GitHubIcon />
+    </IconButton>
+  </Toolbar>
+);
 
-export default AppBar;
+export default memo(AppBar);

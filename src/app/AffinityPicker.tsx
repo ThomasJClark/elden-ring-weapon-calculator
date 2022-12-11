@@ -1,14 +1,17 @@
 import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
+import { memo } from "react";
 import { Affinity, allAffinities } from "../calculator/calculator";
-import { useAppState } from "./AppState";
 import { getAffinityIcon, getAffinityLabel } from "./uiUtils";
+
+interface Props {
+  affinities: readonly Affinity[];
+  onAffinitiesChanged(affinities: Affinity[]): void;
+}
 
 /**
  * Set of checkboxes for selecting which weapon affinities to show
  */
-const AffinityPicker = () => {
-  const { affinities, setAffinities } = useAppState();
-
+const AffinityPicker = ({ affinities, onAffinitiesChanged }: Props) => {
   const renderAffinityCheckbox = (affinity: Affinity) => (
     <FormControlLabel
       key={affinity}
@@ -33,7 +36,7 @@ const AffinityPicker = () => {
           checked={affinities.includes(affinity)}
           name={affinity}
           onChange={(evt) =>
-            setAffinities(
+            onAffinitiesChanged(
               evt.currentTarget.checked
                 ? [...affinities, affinity]
                 : affinities.filter((value) => value !== affinity),
@@ -62,4 +65,4 @@ const AffinityPicker = () => {
   );
 };
 
-export default AffinityPicker;
+export default memo(AffinityPicker);

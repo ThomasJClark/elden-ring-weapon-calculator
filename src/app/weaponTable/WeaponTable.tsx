@@ -1,12 +1,11 @@
-import { memo, ReactNode } from "react";
+import { memo, ReactNode, useMemo } from "react";
 import { Box } from "@mui/material";
 import { SystemStyleObject, Theme } from "@mui/system";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { Weapon, WeaponAttackResult } from "../../calculator/calculator";
 import { SortBy } from "../../search/sortWeapons";
-import { useAppState } from "../AppState";
-import useWeaponTableColumns from "./useWeaponTableColumns";
+import getWeaponTableColumns from "./getWeaponTableColumns";
 import WeaponTableRow from "./WeaponTableRow";
 
 export type WeaponTableRowData = [Weapon, WeaponAttackResult];
@@ -29,6 +28,11 @@ interface Props {
   rows: readonly WeaponTableRowData[];
   placeholder?: ReactNode;
   footer?: ReactNode;
+  sortBy: SortBy;
+  reverse: boolean;
+  splitDamage: boolean;
+  onSortByChanged(sortBy: SortBy): void;
+  onReverseChanged(reverse: boolean): void;
 }
 
 /**
@@ -48,15 +52,25 @@ const ColumnGroupHeaderGroup = memo(
  * The row in the weapon table containing headers for each column
  */
 const ColumnHeaderRow = memo(
-  ({ columnGroups }: { columnGroups: readonly WeaponTableColumnGroupDef[] }) => {
-    const { sortBy, reverse, setSortBy, setReverse } = useAppState();
-
+  ({
+    columnGroups,
+    sortBy,
+    reverse,
+    onSortByChanged,
+    onReverseChanged,
+  }: {
+    columnGroups: readonly WeaponTableColumnGroupDef[];
+    sortBy: SortBy;
+    reverse: boolean;
+    onSortByChanged(sortBy: SortBy): void;
+    onReverseChanged(reverse: boolean): void;
+  }) => {
     const onColumnClicked = (column: WeaponTableColumnDef) => {
       if (column.key === sortBy) {
-        setReverse(!reverse);
+        onReverseChanged(!reverse);
       } else {
-        setSortBy(column.key);
-        setReverse(false);
+        onSortByChanged(column.key);
+        onReverseChanged(false);
       }
     };
 
@@ -149,8 +163,17 @@ const DataRow = memo(
   ),
 );
 
-const WeaponTable = ({ rows, placeholder, footer }: Props) => {
-  const columnGroups = useWeaponTableColumns();
+const WeaponTable = ({
+  rows,
+  placeholder,
+  footer,
+  sortBy,
+  reverse,
+  splitDamage,
+  onSortByChanged,
+  onReverseChanged,
+}: Props) => {
+  const columnGroups = useMemo(() => getWeaponTableColumns({ splitDamage }), [splitDamage]);
 
   return (
     <Box
@@ -170,7 +193,13 @@ const WeaponTable = ({ rows, placeholder, footer }: Props) => {
       })}
     >
       <ColumnGroupHeaderGroup columnGroups={columnGroups} />
-      <ColumnHeaderRow columnGroups={columnGroups} />
+      <ColumnHeaderRow
+        columnGroups={columnGroups}
+        sortBy={sortBy}
+        reverse={reverse}
+        onSortByChanged={onSortByChanged}
+        onReverseChanged={onReverseChanged}
+      />
       {rows.length > 0 ? (
         rows.map((row) => <DataRow key={row[0].name} columnGroups={columnGroups} row={row} />)
       ) : (
@@ -187,4 +216,4 @@ const WeaponTable = ({ rows, placeholder, footer }: Props) => {
   );
 };
 
-export default WeaponTable;
+export default memo(WeaponTable);

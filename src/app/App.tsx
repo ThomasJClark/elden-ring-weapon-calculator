@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Box,
@@ -20,7 +20,7 @@ import WeaponTable from "./weaponTable/WeaponTable";
 import useWeaponTableRows from "./weaponTable/useWeaponTableRows";
 import { darkTheme, lightTheme } from "./theme";
 import useWeapons from "./useWeapons";
-import { useAppState } from "./AppState";
+import useAppState from "./useAppState";
 import AppBar from "./AppBar";
 import WeaponTypePicker from "./WeaponTypePicker";
 import AffinityPicker from "./AffinityPicker";
@@ -82,7 +82,28 @@ const useMenuState = () => {
 };
 
 const App = () => {
-  const { darkMode } = useAppState();
+  const {
+    darkMode,
+    affinities,
+    weaponTypes,
+    attributes,
+    effectiveOnly,
+    splitDamage,
+    twoHanding,
+    upgradeLevel,
+    sortBy,
+    reverse,
+    setDarkMode,
+    setAffinities,
+    setWeaponTypes,
+    setAttribute,
+    setEffectiveOnly,
+    setSplitDamage,
+    setTwoHanding,
+    setUpgradeLevel,
+    setSortBy,
+    setReverse,
+  } = useAppState();
 
   const { isMobile, menuOpen, menuOpenMobile, onMenuOpenChanged } = useMenuState();
 
@@ -90,7 +111,48 @@ const App = () => {
   const offset = 0;
   const limit = 200;
   const { weapons, loading, error } = useWeapons();
-  const { rows, total } = useWeaponTableRows({ weapons, offset, limit });
+  const { rows, total } = useWeaponTableRows({
+    weapons,
+    offset,
+    limit,
+    sortBy,
+    reverse,
+    affinities,
+    weaponTypes,
+    attributes,
+    effectiveOnly,
+    twoHanding,
+    upgradeLevel,
+  });
+
+  const tablePlaceholder = useMemo(
+    () =>
+      loading ? (
+        <>
+          <Typography variant="body1" align="center" sx={{ alignSelf: "end" }}>
+            Loading weapon data
+          </Typography>
+          <Box display="grid" sx={{ alignSelf: "start", justifyContent: "center" }}>
+            <CircularProgress />
+          </Box>
+        </>
+      ) : (
+        <Typography variant="body1" align="center" sx={{ alignSelf: "center" }}>
+          No weapons match your selections
+        </Typography>
+      ),
+    [loading],
+  );
+
+  const tableFooter = useMemo(
+    () =>
+      total > limit ? (
+        <Typography variant="body1" align="center" sx={{ alignSelf: "center" }}>
+          {total} weapons match your selections - showing the first {limit}
+        </Typography>
+      ) : undefined,
+    [total, limit],
+  );
 
   let mainContent: ReactNode;
   if (error) {
@@ -103,37 +165,21 @@ const App = () => {
     mainContent = (
       <WeaponTable
         rows={rows}
-        placeholder={
-          loading ? (
-            <>
-              <Typography variant="body1" align="center" sx={{ alignSelf: "end" }}>
-                Loading weapon data
-              </Typography>
-              <Box display="grid" sx={{ alignSelf: "start", justifyContent: "center" }}>
-                <CircularProgress />
-              </Box>
-            </>
-          ) : (
-            <Typography variant="body1" align="center" sx={{ alignSelf: "center" }}>
-              No weapons match your selections
-            </Typography>
-          )
-        }
-        footer={
-          total > limit ? (
-            <Typography variant="body1" align="center" sx={{ alignSelf: "center" }}>
-              {total} weapons match your selections - showing the first {limit}
-            </Typography>
-          ) : undefined
-        }
+        placeholder={tablePlaceholder}
+        footer={tableFooter}
+        sortBy={sortBy}
+        reverse={reverse}
+        splitDamage={splitDamage}
+        onSortByChanged={setSortBy}
+        onReverseChanged={setReverse}
       />
     );
   }
 
   const drawerContent = (
     <>
-      <AffinityPicker />
-      <WeaponTypePicker />
+      <AffinityPicker affinities={affinities} onAffinitiesChanged={setAffinities} />
+      <WeaponTypePicker weaponTypes={weaponTypes} onWeaponTypesChanged={setWeaponTypes} />
     </>
   );
 
@@ -143,7 +189,9 @@ const App = () => {
 
       <AppBar
         menuOpen={isMobile ? menuOpenMobile : menuOpen}
+        darkMode={darkMode}
         onMenuOpenChanged={onMenuOpenChanged}
+        onDarkModeChanged={setDarkMode}
       />
 
       <Divider />
@@ -206,7 +254,19 @@ const App = () => {
         </Drawer>
 
         <Box display="grid" sx={{ gap: 2 }}>
-          <WeaponListSettings breakpoint={menuOpen ? "lg" : "md"} />
+          <WeaponListSettings
+            breakpoint={menuOpen ? "lg" : "md"}
+            attributes={attributes}
+            twoHanding={twoHanding}
+            upgradeLevel={upgradeLevel}
+            effectiveOnly={effectiveOnly}
+            splitDamage={splitDamage}
+            onAttributeChanged={setAttribute}
+            onTwoHandingChanged={setTwoHanding}
+            onUpgradeLevelChanged={setUpgradeLevel}
+            onEffectiveOnlyChanged={setEffectiveOnly}
+            onSplitDamageChanged={setSplitDamage}
+          />
 
           {mainContent}
 
