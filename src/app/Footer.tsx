@@ -1,9 +1,9 @@
 import { Link, Typography } from "@mui/material";
 
-const App = () => (
-  <Typography variant="body1" align="center">
+const Footer = () => (
+  <Typography component="div" variant="body1" align="center">
     <h1 style={{ display: "inline", font: "inherit", margin: 0, padding: 0 }}>
-      Elden Ring Weapon Calculator - optimize any weapon or build for Elden Ring patch 1.07.
+      Elden Ring Weapon Calculator - optimize any weapon or build for Elden Ring patch 1.08.
     </h1>
     <br />
     Made by Tom Clark (
@@ -26,4 +26,4 @@ const App = () => (
   </Typography>
 );
 
-export default App;
+export default Footer;
