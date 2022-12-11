@@ -57,7 +57,6 @@ export interface Weapon {
 export type WeaponScalingCurve = 0 | 1 | 2 | 4 | 7 | 8 | 12 | 14 | 15 | 16;
 
 export interface WeaponMetadata {
-  weight: number;
   upgradeLevel: number;
   maxUpgradeLevel: MaxUpgradeLevel;
   weaponName: string;

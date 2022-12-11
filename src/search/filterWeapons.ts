@@ -27,11 +27,6 @@ export interface FilterWeaponsOptions {
   affinities: readonly Affinity[];
 
   /**
-   * Only include weapons up to this weight
-   */
-  maxWeight: number;
-
-  /**
    * Only include weapons that are effective with the given player attribute values
    */
   effectiveWithAttributes?: Attributes;
@@ -71,7 +66,6 @@ export default function filterWeapons(
     upgradeLevel,
     weaponTypes,
     affinities,
-    maxWeight,
     effectiveWithAttributes,
     twoHanding,
   }: FilterWeaponsOptions,
@@ -107,10 +101,6 @@ export default function filterWeapons(
           (affinity === "Standard" && uninfusableWeaponTypes.includes(weapon.metadata.weaponType)),
       )
     ) {
-      return false;
-    }
-
-    if (weapon.metadata.weight > maxWeight) {
       return false;
     }
 

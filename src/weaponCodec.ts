@@ -15,7 +15,6 @@ import {
 
 export type EncodedWeapon = [
   string, // name
-  number, // weight
   number, // upgrade level
   MaxUpgradeLevel,
   string, // weapon name
@@ -71,7 +70,7 @@ function identity<V>(value: V) {
  */
 export function encodeWeapon({
   name,
-  metadata: { weight, upgradeLevel, maxUpgradeLevel, weaponName, affinity, weaponType },
+  metadata: { upgradeLevel, maxUpgradeLevel, weaponName, affinity, weaponType },
   requirements,
   attack,
   attributeScaling,
@@ -83,7 +82,6 @@ export function encodeWeapon({
   const encodedStatuses = encodeMap(statuses, allStatusTypes, 0, identity);
   return [
     name,
-    weight,
     upgradeLevel,
     maxUpgradeLevel,
     weaponName,
@@ -106,7 +104,6 @@ export function encodeWeapon({
  */
 export function decodeWeapon([
   name,
-  weight,
   upgradeLevel,
   maxUpgradeLevel,
   weaponName,
@@ -126,7 +123,6 @@ export function decodeWeapon([
       weaponName,
       affinity: allAffinities[affinityIdx],
       maxUpgradeLevel,
-      weight,
       weaponType: allWeaponTypes[weaponTypeIdx],
       upgradeLevel,
     },

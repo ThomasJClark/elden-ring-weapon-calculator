@@ -9,7 +9,6 @@ interface AppState {
   readonly upgradeLevel: number;
   readonly weaponTypes: readonly WeaponType[];
   readonly affinities: readonly Affinity[];
-  readonly maxWeight: number;
   readonly effectiveOnly: boolean;
   readonly splitDamage: boolean;
   readonly sortBy: SortBy;
@@ -23,7 +22,6 @@ interface UpdateAppState extends AppState {
   setUpgradeLevel(upgradeLevel: number): void;
   setWeaponTypes(weaponTypes: readonly WeaponType[]): void;
   setAffinities(affinities: readonly Affinity[]): void;
-  setMaxWeight(maxWeight: number): void;
   setEffectiveOnly(effectiveOnly: boolean): void;
   setSplitDamage(splitDamage: boolean): void;
   setSortBy(sortBy: SortBy): void;
@@ -43,7 +41,6 @@ const defaultAppState: AppState = {
   upgradeLevel: 25,
   weaponTypes: ["Axe"],
   affinities: ["Standard", "Special"],
-  maxWeight: 30,
   effectiveOnly: false,
   splitDamage: true,
   sortBy: "totalAttack",
@@ -58,7 +55,6 @@ const AppStateContext = createContext<UpdateAppState>({
   setUpgradeLevel() {},
   setWeaponTypes() {},
   setAffinities() {},
-  setMaxWeight() {},
   setEffectiveOnly() {},
   setSplitDamage() {},
   setSortBy() {},
@@ -104,9 +100,6 @@ export const AppStateProvider = ({ children }: { children: ReactNode }) => {
       },
       setAffinities(affinities) {
         setAppState((prevAppState) => ({ ...prevAppState, affinities }));
-      },
-      setMaxWeight(maxWeight) {
-        setAppState((prevAppState) => ({ ...prevAppState, maxWeight }));
       },
       setEffectiveOnly(effectiveOnly) {
         setAppState((prevAppState) => ({ ...prevAppState, effectiveOnly }));

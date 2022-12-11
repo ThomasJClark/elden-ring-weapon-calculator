@@ -33,7 +33,6 @@ const useWeaponTableRows = ({
   const upgradeLevel = useDeferredValue(appState.upgradeLevel);
   const weaponTypes = useDeferredValue(appState.weaponTypes);
   const affinities = useDeferredValue(appState.affinities);
-  const maxWeight = useDeferredValue(appState.maxWeight);
   const effectiveOnly = useDeferredValue(appState.effectiveOnly);
 
   const filteredRows = useMemo<WeaponTableRowData[]>(() => {
@@ -41,7 +40,6 @@ const useWeaponTableRows = ({
       upgradeLevel,
       weaponTypes,
       affinities,
-      maxWeight,
       effectiveWithAttributes: effectiveOnly ? attributes : undefined,
       twoHanding,
     });
@@ -54,16 +52,7 @@ const useWeaponTableRows = ({
         twoHanding,
       }),
     ]);
-  }, [
-    attributes,
-    twoHanding,
-    weapons,
-    upgradeLevel,
-    weaponTypes,
-    affinities,
-    maxWeight,
-    effectiveOnly,
-  ]);
+  }, [attributes, twoHanding, weapons, upgradeLevel, weaponTypes, affinities, effectiveOnly]);
 
   const sortedRows = useMemo(
     () => sortWeapons(filteredRows, appState.sortBy),

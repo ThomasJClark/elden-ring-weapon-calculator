@@ -25,13 +25,11 @@ const WeaponListSettings = ({ breakpoint }: Props) => {
     attributes,
     twoHanding,
     upgradeLevel,
-    maxWeight,
     effectiveOnly,
     splitDamage,
     setAttributes,
     setTwoHanding,
     setUpgradeLevel,
-    setMaxWeight,
     setEffectiveOnly,
     setSplitDamage,
   } = useAppState();
@@ -82,17 +80,6 @@ const WeaponListSettings = ({ breakpoint }: Props) => {
             ))}
           </Select>
         </FormControl>
-
-        <NumberTextField
-          label="Weight Limit"
-          size="small"
-          variant="outlined"
-          min={0}
-          max={29}
-          step={0.5}
-          value={maxWeight}
-          onChange={(value) => setMaxWeight(value)}
-        />
       </Box>
 
       <Box display="grid" sx={{ gridTemplateColumns: "1fr 1fr", gap: 2 }}>

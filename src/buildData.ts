@@ -107,7 +107,7 @@ const loadWeapons = (): Weapon[] => {
         faiRequirement,
         arcRequirement,
         ,
-        weight,
+        ,
         weaponType,
         paired,
       ],
@@ -118,7 +118,6 @@ const loadWeapons = (): Weapon[] => {
         weaponName: getTrueWeaponName(weaponName),
         affinity: affinity as Affinity, // Note: this technically can contain "None" which is fixed below
         maxUpgradeLevel: parseInt(maxUpgradeLevel, 10) as 10 | 25,
-        weight: parseFloat(weight),
         weaponType: weaponType as WeaponType,
       },
       requirements: {
