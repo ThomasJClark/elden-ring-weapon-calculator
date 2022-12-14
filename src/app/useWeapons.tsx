@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Weapon } from "../calculator/calculator";
-import { decodeWeapon, EncodedWeapon } from "../weaponCodec";
+import { decodeWeapons, EncodedWeapon } from "../weaponCodec";
 
 export default function useWeapons() {
   const [loading, setLoading] = useState(true);
@@ -8,10 +8,10 @@ export default function useWeapons() {
   const [weapons, setWeapons] = useState<readonly Weapon[]>([]);
 
   useEffect(() => {
-    fetch(`${process.env.PUBLIC_URL}/weaponData-5.js`)
-      .then((response) => response.json())
-      .then((weaponData: EncodedWeapon[]) => {
-        setWeapons(weaponData.map(decodeWeapon));
+    fetch(`${process.env.PUBLIC_URL}/weaponData-6.js`)
+      .then((response) => response.json() as Promise<[string[], EncodedWeapon[]]>)
+      .then((weaponData) => {
+        setWeapons(decodeWeapons(weaponData));
         setLoading(false);
       })
       .catch(setError);

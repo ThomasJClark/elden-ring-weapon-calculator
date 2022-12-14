@@ -11,13 +11,13 @@ import {
   allDamageTypes,
   allStatusTypes,
   allWeaponTypes,
+  WeaponMetadata,
 } from "./calculator/calculator";
 
 export type EncodedWeapon = [
-  string, // name
   number, // upgrade level
   MaxUpgradeLevel,
-  string, // weapon name
+  number, // weapon name
   number, // affinity
   number, // weapon type
   number[], // requirement for each attribute
@@ -65,26 +65,97 @@ function identity<V>(value: V) {
   return value;
 }
 
+const accentedNames = new Map([
+  ["Misericorde", "Miséricorde"],
+  ["Great Epee", "Great Épée"],
+]);
+
+// Weapons that have "Bloody" in the name for the Blood affinity
+const bloodyNames = new Set([
+  "Bastard Sword",
+  "Buckler",
+  "Carian Knight's Shield",
+  "Club",
+  "Highland Axe",
+  "Iron Roundshield",
+  "Lance",
+  "Large Leather Shield",
+  "Longsword",
+  "Red Thorn Roundshield",
+  "Rickety Shield",
+  "Scimitar",
+  "Spear",
+  "Twinblade",
+]);
+
+// Patterns that determine where in a weapon name the affinity goes
+// e.g. "Flowing Curved Sword" => ["Flowing", "Curved Sword"] => "Flowing Heavy Curved Sword"
+const affinityMatches = [
+  /(^Weathered )(.*$)/,
+  /(^Troll's Golden )(.*$)/,
+  /(^Flowing )(.*$)/,
+  /(^)(Gilded Greatshield$)/,
+  /(^.*Gilded )(.*$)/,
+  /(^Marred )(.*$)/,
+  /(^Distinguished )(.*$)/,
+  /(^)(Lordsworn's Shield$)/,
+  /(^.*'s )(.*$)/,
+  /(^)(.*$)/,
+];
+
+function getNameFromMetadata({ weaponName, affinity, upgradeLevel }: WeaponMetadata) {
+  let name = weaponName;
+
+  if (accentedNames.has(weaponName)) {
+    name = accentedNames.get(weaponName)!;
+  }
+
+  if (affinity !== "Standard" && affinity !== "Special") {
+    let affinityStr: string = affinity;
+    if (affinity === "Blood" && bloodyNames.has(weaponName)) {
+      affinityStr = "Bloody";
+    }
+
+    for (const affinityMatch of affinityMatches) {
+      if (affinityMatch.test(name)) {
+        name = name.replace(
+          affinityMatch,
+          (_, prefix, suffix) => `${prefix}${affinityStr} ${suffix}`,
+        );
+        break;
+      }
+    }
+  }
+
+  if (upgradeLevel > 0) {
+    name = `${name} +${upgradeLevel}`;
+  }
+
+  return name;
+}
+
 /**
  * @returns the given weapon encoded into a compact JSON object
  */
-export function encodeWeapon({
-  name,
-  metadata: { upgradeLevel, maxUpgradeLevel, weaponName, affinity, weaponType },
-  requirements,
-  attack,
-  attributeScaling,
-  damageScalingAttributes,
-  damageScalingCurves,
-  statuses,
-  paired,
-}: Weapon): EncodedWeapon {
+export function encodeWeapon(
+  {
+    name,
+    metadata: { upgradeLevel, maxUpgradeLevel, weaponName, affinity, weaponType },
+    requirements,
+    attack,
+    attributeScaling,
+    damageScalingAttributes,
+    damageScalingCurves,
+    statuses,
+    paired,
+  }: Weapon,
+  indexesByWeaponName: Map<string, number>,
+): EncodedWeapon {
   const encodedStatuses = encodeMap(statuses, allStatusTypes, 0, identity);
   return [
-    name,
     upgradeLevel,
     maxUpgradeLevel,
-    weaponName,
+    indexesByWeaponName.get(weaponName)!,
     allAffinities.indexOf(affinity),
     allWeaponTypes.indexOf(weaponType),
     encodeMap(requirements, allAttributes, 0, identity),
@@ -102,30 +173,34 @@ export function encodeWeapon({
 /**
  * @returns the given weapon decoded into a usable JavaScript object
  */
-export function decodeWeapon([
-  name,
-  upgradeLevel,
-  maxUpgradeLevel,
-  weaponName,
-  affinityIdx,
-  weaponTypeIdx,
-  requirements,
-  attack,
-  attributeScalling,
-  damageScalingAttributes,
-  damageScalingCurves,
-  statuses = [],
-  paired = 0,
-]: EncodedWeapon): Weapon {
+export function decodeWeapon(
+  [
+    upgradeLevel,
+    maxUpgradeLevel,
+    weaponNameIdx,
+    affinityIdx,
+    weaponTypeIdx,
+    requirements,
+    attack,
+    attributeScalling,
+    damageScalingAttributes,
+    damageScalingCurves,
+    statuses = [],
+    paired = 0,
+  ]: EncodedWeapon,
+  names: readonly string[],
+): Weapon {
+  const metadata = {
+    weaponName: names[weaponNameIdx],
+    affinity: allAffinities[affinityIdx],
+    maxUpgradeLevel,
+    weaponType: allWeaponTypes[weaponTypeIdx],
+    upgradeLevel,
+  };
+
   return {
-    name,
-    metadata: {
-      weaponName,
-      affinity: allAffinities[affinityIdx],
-      maxUpgradeLevel,
-      weaponType: allWeaponTypes[weaponTypeIdx],
-      upgradeLevel,
-    },
+    name: getNameFromMetadata(metadata),
+    metadata,
     requirements: decodeMap(requirements, allAttributes, equals(0), identity),
     attack: decodeMap(attack, allDamageTypes, equals(0), identity),
     attributeScaling: decodeMap(attributeScalling, allAttributes, equals(0), identity),
@@ -144,4 +219,8 @@ export function decodeWeapon([
     statuses: decodeMap(statuses, allStatusTypes, equals(0), identity),
     paired: !!paired,
   };
+}
+
+export function decodeWeapons([names, encodedWeapons]: [readonly string[], EncodedWeapon[]]) {
+  return encodedWeapons.map((encodedWeapon) => decodeWeapon(encodedWeapon, names));
 }

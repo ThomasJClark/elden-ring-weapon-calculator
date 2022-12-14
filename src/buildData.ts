@@ -15,17 +15,6 @@ import {
 } from "./calculator/calculator";
 import { encodeWeapon } from "./weaponCodec";
 
-function getTrueBaseWeaponName(baseWeaponName: string) {
-  // Include the accent marks which are missing from the spreadsheet
-  if (baseWeaponName.includes("Epee")) {
-    return baseWeaponName.replace("Epee", "Épée");
-  }
-  if (baseWeaponName.includes("Misericorde")) {
-    return baseWeaponName.replace("Misericorde", "Miséricorde");
-  }
-  return baseWeaponName;
-}
-
 function getTrueWeaponName(weaponName: string) {
   // I think this is an error in the spreadsheet - "Sacred" was searched & replaced out of all
   // weapon names
@@ -95,25 +84,21 @@ const loadWeapons = (): Weapon[] => {
 
   const extraDataMap = loadSpreadsheet(
     resolve(cwd(), "data/extraData.csv"),
-    (
-      [
-        weaponName,
-        affinity,
-        ,
-        maxUpgradeLevel,
-        strRequirement,
-        dexRequirement,
-        intRequirement,
-        faiRequirement,
-        arcRequirement,
-        ,
-        ,
-        weaponType,
-        paired,
-      ],
-      baseWeaponName,
-    ) => ({
-      baseWeaponName: getTrueBaseWeaponName(baseWeaponName),
+    ([
+      weaponName,
+      affinity,
+      ,
+      maxUpgradeLevel,
+      strRequirement,
+      dexRequirement,
+      intRequirement,
+      faiRequirement,
+      arcRequirement,
+      ,
+      ,
+      weaponType,
+      paired,
+    ]) => ({
       metadata: {
         weaponName: getTrueWeaponName(weaponName),
         affinity: affinity as Affinity, // Note: this technically can contain "None" which is fixed below
@@ -263,7 +248,7 @@ const loadWeapons = (): Weapon[] => {
     const attackByLevel = attackMap.get(weaponKey)!;
     const statusBuildupsByLevel = statusMap.get(weaponKey);
     const attributeScalingByLevel = attributeScalingMap.get(weaponKey)!;
-    const { baseWeaponName, metadata, requirements, paired } = extraDataMap.get(weaponKey)!;
+    const { metadata, requirements, paired } = extraDataMap.get(weaponKey)!;
     const { attackElementCorrectId, damageScalingCurves } = calcCorrectMap.get(weaponKey)!;
     const damageScalingAttributes = attackElementCorrect.get(attackElementCorrectId)!;
 
@@ -272,7 +257,7 @@ const loadWeapons = (): Weapon[] => {
       const attributeScaling = attributeScalingByLevel[upgradeLevel];
 
       const weapon = {
-        name: upgradeLevel > 0 ? `${baseWeaponName} +${upgradeLevel}` : baseWeaponName,
+        name: "", // Doesn't matter, this isn't stored in the encoded JSON because it's formatted client side
         metadata: {
           ...metadata,
           upgradeLevel,
@@ -311,12 +296,20 @@ const loadWeapons = (): Weapon[] => {
 
 const weapons = loadWeapons();
 
+const indexesByWeaponName = new Map<string, number>();
+for (const weapon of weapons) {
+  if (!indexesByWeaponName.has(weapon.metadata.weaponName)) {
+    indexesByWeaponName.set(weapon.metadata.weaponName, indexesByWeaponName.size);
+  }
+}
+
 const outputPath = resolve(cwd(), argv[2]);
 writeFileSync(
   outputPath,
-  JSON.stringify(
+  JSON.stringify([
+    [...indexesByWeaponName.keys()],
     weapons
-      .map(encodeWeapon)
+      .map((weapon) => encodeWeapon(weapon, indexesByWeaponName))
       .map((encodedWeapon) => encodedWeapon.filter((field) => field !== undefined)),
-  ),
+  ]),
 );
