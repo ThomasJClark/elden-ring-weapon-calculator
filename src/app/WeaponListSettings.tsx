@@ -135,6 +135,7 @@ const WeaponListSettings = ({
     <Box display="grid" sx={{ gap: 2, gridTemplateColumns: "1fr 1fr 1fr" }}>
       {allAttributes.map((attribute) => (
         <AttributeInput
+          key={attribute}
           attribute={attribute}
           value={attributes[attribute]}
           onAttributeChanged={onAttributeChanged}
