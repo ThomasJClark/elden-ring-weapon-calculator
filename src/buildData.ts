@@ -230,6 +230,21 @@ const loadWeapons = (): Weapon[] => {
       }),
   );
 
+  // Remove infused Great Club. These weapons don't actually exist in the game since it's impossible
+  // to add Ashes of War to the Great Club.
+  for (const [weaponKey, { metadata }] of extraDataMap.entries()) {
+    if (
+      metadata.weaponName === "Great Club" &&
+      (metadata.affinity as Affinity | "None") !== "None"
+    ) {
+      attackMap.delete(weaponKey);
+      statusMap.delete(weaponKey);
+      attributeScalingMap.delete(weaponKey);
+      extraDataMap.delete(weaponKey);
+      calcCorrectMap.delete(weaponKey);
+    }
+  }
+
   // The raw spreadsheets list all weapons without an affinity as "None". Separate special weapons
   // that can't be infused from standard weapons that are not currently infused.
   const infusableWeaponNames = new Set<string>();

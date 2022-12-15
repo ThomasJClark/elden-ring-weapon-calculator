@@ -8,7 +8,7 @@ export default function useWeapons() {
   const [weapons, setWeapons] = useState<readonly Weapon[]>([]);
 
   useEffect(() => {
-    fetch(`${process.env.PUBLIC_URL}/weaponData-6.js`)
+    fetch(`${process.env.PUBLIC_URL}/weaponData-7.js`)
       .then((response) => response.json() as Promise<[string[], EncodedWeapon[]]>)
       .then((weaponData) => {
         setWeapons(decodeWeapons(weaponData));
