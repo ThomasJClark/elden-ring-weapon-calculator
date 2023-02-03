@@ -29,7 +29,7 @@ interface Props {
 /**
  * Set of checkboxes for selecting weapon types to include in the search results
  */
-const WeaponListFilters = ({ weaponTypes, onWeaponTypesChanged }: Props) => {
+function WeaponListFilters({ weaponTypes, onWeaponTypesChanged }: Props) {
   const renderWeaponCategory = (label: string, weaponTypesInCategory: WeaponType[]) => {
     let checked = false;
     let indeterminate = false;
@@ -103,6 +103,6 @@ const WeaponListFilters = ({ weaponTypes, onWeaponTypesChanged }: Props) => {
       <Box sx={{ ml: 3 }}>{miscWeaponTypes.map(renderWeaponType)}</Box>
     </Box>
   );
-};
+}
 
 export default memo(WeaponListFilters);

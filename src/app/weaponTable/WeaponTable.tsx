@@ -163,7 +163,7 @@ const DataRow = memo(
   ),
 );
 
-const WeaponTable = ({
+function WeaponTable({
   rows,
   placeholder,
   footer,
@@ -172,7 +172,7 @@ const WeaponTable = ({
   splitDamage,
   onSortByChanged,
   onReverseChanged,
-}: Props) => {
+}: Props) {
   const columnGroups = useMemo(() => getWeaponTableColumns({ splitDamage }), [splitDamage]);
 
   return (
@@ -214,6 +214,6 @@ const WeaponTable = ({
       )}
     </Box>
   );
-};
+}
 
 export default memo(WeaponTable);

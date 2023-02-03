@@ -108,7 +108,7 @@ interface Props {
 /**
  * Form controls for entering player attributes, basic filters, and display options
  */
-const WeaponListSettings = ({
+function WeaponListSettings({
   breakpoint,
   attributes,
   twoHanding,
@@ -120,47 +120,52 @@ const WeaponListSettings = ({
   onUpgradeLevelChanged,
   onEffectiveOnlyChanged,
   onSplitDamageChanged,
-}: Props) => (
-  <Box
-    display="grid"
-    sx={{
-      gap: 2,
-      gridTemplateColumns: {
-        xs: "1fr",
-        [breakpoint]: "332px 128px auto auto 1fr",
-      },
-      alignItems: "start",
-    }}
-  >
-    <Box display="grid" sx={{ gap: 2, gridTemplateColumns: "1fr 1fr 1fr" }}>
-      {allAttributes.map((attribute) => (
-        <AttributeInput
-          key={attribute}
-          attribute={attribute}
-          value={attributes[attribute]}
-          onAttributeChanged={onAttributeChanged}
+}: Props) {
+  return (
+    <Box
+      display="grid"
+      sx={{
+        gap: 2,
+        gridTemplateColumns: {
+          xs: "1fr",
+          [breakpoint]: "332px 128px auto auto 1fr",
+        },
+        alignItems: "start",
+      }}
+    >
+      <Box display="grid" sx={{ gap: 2, gridTemplateColumns: "1fr 1fr 1fr" }}>
+        {allAttributes.map((attribute) => (
+          <AttributeInput
+            key={attribute}
+            attribute={attribute}
+            value={attributes[attribute]}
+            onAttributeChanged={onAttributeChanged}
+          />
+        ))}
+      </Box>
+
+      <Box display="grid" sx={{ gap: 2 }}>
+        <WeaponLevelInput
+          upgradeLevel={upgradeLevel}
+          onUpgradeLevelChanged={onUpgradeLevelChanged}
         />
-      ))}
-    </Box>
+      </Box>
 
-    <Box display="grid" sx={{ gap: 2 }}>
-      <WeaponLevelInput upgradeLevel={upgradeLevel} onUpgradeLevelChanged={onUpgradeLevelChanged} />
+      <Box display="grid" sx={{ gridTemplateColumns: "1fr 1fr", gap: 2 }}>
+        <BooleanInput label="Two Handing" checked={twoHanding} onChange={onTwoHandingChanged} />
+        <BooleanInput
+          label="Effective only"
+          checked={effectiveOnly}
+          onChange={onEffectiveOnlyChanged}
+        />
+        <BooleanInput
+          label="Show damage split"
+          checked={splitDamage}
+          onChange={onSplitDamageChanged}
+        />
+      </Box>
     </Box>
-
-    <Box display="grid" sx={{ gridTemplateColumns: "1fr 1fr", gap: 2 }}>
-      <BooleanInput label="Two Handing" checked={twoHanding} onChange={onTwoHandingChanged} />
-      <BooleanInput
-        label="Effective only"
-        checked={effectiveOnly}
-        onChange={onEffectiveOnlyChanged}
-      />
-      <BooleanInput
-        label="Show damage split"
-        checked={splitDamage}
-        onChange={onSplitDamageChanged}
-      />
-    </Box>
-  </Box>
-);
+  );
+}
 
 export default memo(WeaponListSettings);

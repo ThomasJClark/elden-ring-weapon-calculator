@@ -11,42 +11,47 @@ interface Props {
   renderColumnGroup(column: WeaponTableColumnGroupDef): ReactNode;
 }
 
-const WeaponTableRow = ({ sx, columnGroupSx, columnGroups, renderColumnGroup }: Props) => (
-  <Box
-    display="flex"
-    role="row"
-    sx={[
-      (theme) => ({
-        alignItems: "stretch",
-        minHeight: "36px",
-        ":not(:last-of-type)": {
-          minHeight: "37px",
-          borderBottom: `solid 1px ${theme.palette.divider}`,
-        },
-      }),
-      sx ?? false,
-    ]}
-  >
-    {columnGroups.map((columnGroup) => (
-      <Box
-        key={columnGroup.key}
-        display="flex"
-        sx={[
-          (theme) => ({
-            padding: "0px 10px",
-            alignItems: "stretch",
-            ":not(:first-of-type)": {
-              borderLeft: `solid 1px ${theme.palette.divider}`,
-            },
-          }),
-          columnGroupSx ?? {},
-          columnGroup.sx ?? {},
-        ]}
-      >
-        {renderColumnGroup(columnGroup)}
-      </Box>
-    ))}
-  </Box>
-);
-
-export default WeaponTableRow;
+export default function WeaponTableRow({
+  sx,
+  columnGroupSx,
+  columnGroups,
+  renderColumnGroup,
+}: Props) {
+  return (
+    <Box
+      display="flex"
+      role="row"
+      sx={[
+        (theme) => ({
+          alignItems: "stretch",
+          minHeight: "36px",
+          ":not(:last-of-type)": {
+            minHeight: "37px",
+            borderBottom: `solid 1px ${theme.palette.divider}`,
+          },
+        }),
+        sx ?? false,
+      ]}
+    >
+      {columnGroups.map((columnGroup) => (
+        <Box
+          key={columnGroup.key}
+          display="flex"
+          sx={[
+            (theme) => ({
+              padding: "0px 10px",
+              alignItems: "stretch",
+              ":not(:first-of-type)": {
+                borderLeft: `solid 1px ${theme.palette.divider}`,
+              },
+            }),
+            columnGroupSx ?? {},
+            columnGroup.sx ?? {},
+          ]}
+        >
+          {renderColumnGroup(columnGroup)}
+        </Box>
+      ))}
+    </Box>
+  );
+}

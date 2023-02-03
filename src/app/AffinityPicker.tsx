@@ -11,7 +11,7 @@ interface Props {
 /**
  * Set of checkboxes for selecting which weapon affinities to show
  */
-const AffinityPicker = ({ affinities, onAffinitiesChanged }: Props) => {
+function AffinityPicker({ affinities, onAffinitiesChanged }: Props) {
   const renderAffinityCheckbox = (affinity: Affinity) => (
     <FormControlLabel
       key={affinity}
@@ -63,6 +63,6 @@ const AffinityPicker = ({ affinities, onAffinitiesChanged }: Props) => {
       </Box>
     </Box>
   );
-};
+}
 
 export default memo(AffinityPicker);

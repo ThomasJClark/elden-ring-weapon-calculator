@@ -81,7 +81,7 @@ const useMenuState = () => {
   };
 };
 
-const App = () => {
+export default function App() {
   const {
     darkMode,
     affinities,
@@ -275,6 +275,4 @@ const App = () => {
       </Box>
     </ThemeProvider>
   );
-};
-
-export default App;
+}

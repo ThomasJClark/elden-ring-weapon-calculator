@@ -15,14 +15,14 @@ interface Props extends Omit<TextFieldProps, "value" | "inputMode" | "onKeyDown"
   ): void;
 }
 
-const NumberTextField = ({
+export default function NumberTextField({
   value,
   min = -Infinity,
   max = Infinity,
   step = 1,
   onChange,
   ...props
-}: Props) => {
+}: Props) {
   const [valueStr, setValueStr] = useState(value.toString());
 
   const handleKeyDown = useCallback(
@@ -103,6 +103,4 @@ const NumberTextField = ({
       value={valueStr}
     />
   );
-};
-
-export default NumberTextField;
+}
