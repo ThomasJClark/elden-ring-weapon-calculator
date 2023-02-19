@@ -219,8 +219,10 @@ const loadWeapons = (): Weapon[] => {
           }
         }
 
-        // TODO: test Poison/Blood Fingerprint Stone Shield. /u/TarnishedSpreadsheet's spreadsheet
-        // has some shenanagins and I don't understand how they would change things
+        // Fingerprint Stone Shield is bugged? It loses madness buildup with the Occult affinity
+        if (weaponName === "Occult Fingerprint Stone Shield") {
+          delete statusBuildup["Madness"];
+        }
 
         if (Object.values(statusBuildup).some((value) => value !== 0)) {
           return statusBuildup;

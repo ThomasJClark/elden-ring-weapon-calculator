@@ -81,9 +81,14 @@ export default function getWeaponAttack({
         // If the arcane requirement is not met, a 40% penalty is subtracted instead of a scaling
         // bonus being added
         scalingMultiplier = -0.4;
-      } else if (statusType === "Poison" || statusType === "Bleed") {
-        // Otherwise, the scaling multiplier for poison and bleed is equal to the product of the
-        // arcane scaling and the current arcane stat on a special curve.
+      } else if (
+        statusType === "Poison" ||
+        statusType === "Bleed" ||
+        statusType === "Madness" ||
+        statusType === "Sleep"
+      ) {
+        // Otherwise, the scaling multiplier for certain status types is equal to the product of
+        // the arcane scaling and the current arcane stat on a special curve.
         scalingMultiplier =
           (weapon.attributeScaling.arc ?? 0) * statusCurve(effectiveAttributes.arc);
       }
