@@ -20,7 +20,6 @@ interface WeaponTableRowsOptions {
   attributes: Attributes;
   effectiveOnly: boolean;
   twoHanding: boolean;
-  upgradeLevel: number;
 }
 
 interface WeaponTableRowsResult {
@@ -41,14 +40,12 @@ const useWeaponTableRows = ({
   // busy rendering
   const attributes = useDeferredValue(options.attributes);
   const twoHanding = useDeferredValue(options.twoHanding);
-  const upgradeLevel = useDeferredValue(options.upgradeLevel);
   const weaponTypes = useDeferredValue(options.weaponTypes);
   const affinities = useDeferredValue(options.affinities);
   const effectiveOnly = useDeferredValue(options.effectiveOnly);
 
   const filteredRows = useMemo<WeaponTableRowData[]>(() => {
     const filteredWeapons = filterWeapons(weapons.values(), {
-      upgradeLevel,
       weaponTypes,
       affinities,
       effectiveWithAttributes: effectiveOnly ? attributes : undefined,
@@ -63,7 +60,7 @@ const useWeaponTableRows = ({
         twoHanding,
       }),
     ]);
-  }, [attributes, twoHanding, weapons, upgradeLevel, weaponTypes, affinities, effectiveOnly]);
+  }, [attributes, twoHanding, weapons, weaponTypes, affinities, effectiveOnly]);
 
   const sortedRows = useMemo(
     () => sortWeapons(filteredRows, options.sortBy),

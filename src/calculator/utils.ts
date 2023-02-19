@@ -121,3 +121,17 @@ export function adjustAttributesForTwoHanding({
 
   return attributes;
 }
+
+/**
+ * @param regularUpgradeLevel the upgrade level of a regular weapon
+ * @returns the corresponding upgrade level for a somber weapon
+ */
+export function toSpecialUpgradeLevel(regularUpgradeLevel: number) {
+  // For in between levels with no exact equivalent, round down. I think this is what you would
+  // look for in practice, e.g. if you pick +24 you probably want +9 sombers because you're not
+  // spending an Ancient Dragon (Somber) Smithing Stone, although it's not necessarily the same
+  // matchmaking range.
+  return Math.floor(
+    (regularUpgradeLevel + 0.5) * (maxSpecialUpgradeLevel / maxRegularUpgradeLevel),
+  );
+}

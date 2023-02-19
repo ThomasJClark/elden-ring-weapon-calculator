@@ -13,8 +13,8 @@ import {
   Attribute,
   Attributes,
   maxRegularUpgradeLevel,
+  toSpecialUpgradeLevel,
 } from "../calculator/calculator";
-import { toSpecialUpgradeLevel } from "../search/filterWeapons";
 import NumberTextField from "./NumberTextField";
 import { getAttributeLabel } from "./uiUtils";
 

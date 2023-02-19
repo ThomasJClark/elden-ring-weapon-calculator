@@ -110,7 +110,7 @@ export default function App() {
   // TODO pagination if there are >200 results
   const offset = 0;
   const limit = 200;
-  const { weapons, loading, error } = useWeapons();
+  const { weapons, loading, error } = useWeapons(upgradeLevel);
   const { rows, total } = useWeaponTableRows({
     weapons,
     offset,
@@ -122,7 +122,6 @@ export default function App() {
     attributes,
     effectiveOnly,
     twoHanding,
-    upgradeLevel,
   });
 
   const tablePlaceholder = useMemo(
