@@ -5,7 +5,8 @@ function Footer() {
   return (
     <Typography component="div" variant="body1" align="center">
       <h1 style={{ display: "inline", font: "inherit", margin: 0, padding: 0 }}>
-        Elden Ring Weapon Calculator - optimize any weapon or build for Elden Ring patch 1.08.
+        Elden Ring Weapon Attack Calculator - optimize any weapon or build for Elden Ring patch
+        1.08.
       </h1>
       <br />
       Made by Tom Clark (
