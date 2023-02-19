@@ -318,13 +318,27 @@ for (const weapon of weapons) {
   }
 }
 
+// Group every upgrade level for each weapon
+const weaponGroups = (() => {
+  const tmp = new Map<string, Weapon[]>();
+  for (const weapon of weapons) {
+    const key = `${weapon.metadata.weaponName}/${weapon.metadata.affinity}`;
+    if (tmp.has(key)) {
+      tmp.get(key)?.push(weapon);
+    } else {
+      tmp.set(key, [weapon]);
+    }
+  }
+  return [...tmp.values()];
+})();
+
 const outputPath = resolve(cwd(), argv[2]);
 writeFileSync(
   outputPath,
   JSON.stringify([
     [...indexesByWeaponName.keys()],
-    weapons
-      .map((weapon) => encodeWeapon(weapon, indexesByWeaponName))
+    weaponGroups
+      .map((weaponGroup) => encodeWeapon(weaponGroup, indexesByWeaponName))
       .map((encodedWeapon) => encodedWeapon.filter((field) => field !== undefined)),
   ]),
 );

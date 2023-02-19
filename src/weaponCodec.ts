@@ -14,56 +14,34 @@ import {
   WeaponMetadata,
 } from "./calculator/calculator";
 
-export type EncodedWeapon = [
-  number, // upgrade level
-  MaxUpgradeLevel,
-  number, // weapon name
-  number, // affinity
-  number, // weapon type
-  number[], // requirement for each attribute
-  number[], // base attack for each damage type
-  number[], // scaling for each attribute
-  number[][], // scaling attributes for each damage type
-  (WeaponScalingCurve | -1)[], // scaling curve for each damage type
-  number[] | undefined, // base buildup for each status type
-  number | undefined, // paired
+type EncodedAttributeInfo = [
+  number, // Attribute (index in allAttributes)
+  number, // Requirement for this attribute
+  ...number[], // Scaling for this attribute at each upgrade level
 ];
 
-function encodeMap<Key extends string, Value, Encoded>(
-  obj: Readonly<Partial<Record<Key, Value>>>,
-  allKeys: ReadonlyArray<Key>,
-  defaultValue: Value,
-  encodeValue: (value: Value) => Encoded,
-): Encoded[] {
-  const arr = allKeys.map((key) => obj[key] ?? defaultValue);
-  while (arr.length && arr[arr.length - 1] === defaultValue) {
-    arr.pop();
-  }
-  return arr.map(encodeValue);
-}
+type EncodedDamageInfo = [
+  number, // Damage type (index in allDamageTypes)
+  WeaponScalingCurve, // Scaling curve for this damage type
+  number[], // Attributes that this damage type scales with (indexes in allAttributes)
+  ...number[], // Base attack for this damage type at each upgrade level
+];
 
-function decodeMap<Key extends string, Value, Encoded>(
-  arr: ReadonlyArray<Encoded>,
-  allKeys: ReadonlyArray<Key>,
-  isDefaultValue: (encoded: Encoded) => boolean,
-  decodeValue: (encoded: Encoded) => Value,
-): Partial<Record<Key, Value>> {
-  const obj: Partial<Record<Key, Value>> = {};
-  arr.forEach((encoded, idx) => {
-    if (!isDefaultValue(encoded)) {
-      obj[allKeys[idx]] = decodeValue(encoded);
-    }
-  });
-  return obj;
-}
+type EncodedStatusInfo = [
+  number, // Status type (index in allStatusTypes)
+  ...number[], // Base buildup for this status type at each upgrade level
+];
 
-function equals<V>(defaultValue: V) {
-  return (value: V) => value === defaultValue;
-}
-
-function identity<V>(value: V) {
-  return value;
-}
+export type EncodedWeapon = [
+  MaxUpgradeLevel,
+  number, // Weapon name without affinity or upgrade level (index in the weapon name array)
+  number, // Affinity (index in allAffinities)
+  number, // Weapon type (index in allWeaponTypes)
+  EncodedAttributeInfo[],
+  EncodedDamageInfo[],
+  EncodedStatusInfo[] | undefined,
+  number | undefined, // Paired (1 if this is a paired weapon, absent otherwise)
+];
 
 const accentedNames = new Map([
   ["Misericorde", "Miséricorde"],
@@ -135,37 +113,53 @@ function getNameFromMetadata({ weaponName, affinity, upgradeLevel }: WeaponMetad
 }
 
 /**
+ * @param weaponGroup a list of every upgraded version of a weapon from +0 to +25/+10
  * @returns the given weapon encoded into a compact JSON object
  */
 export function encodeWeapon(
-  {
-    name,
-    metadata: { upgradeLevel, maxUpgradeLevel, weaponName, affinity, weaponType },
-    requirements,
-    attack,
-    attributeScaling,
-    damageScalingAttributes,
-    damageScalingCurves,
-    statuses,
-    paired,
-  }: Weapon,
+  weaponGroup: Weapon[],
   indexesByWeaponName: Map<string, number>,
 ): EncodedWeapon {
-  const encodedStatuses = encodeMap(statuses, allStatusTypes, 0, identity);
+  const { metadata, requirements, damageScalingAttributes, damageScalingCurves, paired } =
+    weaponGroup[0];
+
+  const encodedAttributeInfo: EncodedAttributeInfo[] = [];
+  allAttributes.forEach((attribute, index) => {
+    if (requirements[attribute] || weaponGroup[0].attributeScaling[attribute]) {
+      const requirement = requirements[attribute] ?? 0;
+      const scaling = weaponGroup.map((weapon) => weapon.attributeScaling[attribute] ?? 0);
+      encodedAttributeInfo.push([index, requirement, ...scaling]);
+    }
+  });
+
+  const encodedDamageInfo: EncodedDamageInfo[] = [];
+  allDamageTypes.forEach((damageType, index) => {
+    if (weaponGroup[0].attack[damageType]) {
+      const curve = damageScalingCurves[damageType] ?? 0;
+      const attributes =
+        damageScalingAttributes[damageType]?.map((attribute) => allAttributes.indexOf(attribute)) ??
+        [];
+      const baseAttack = weaponGroup.map((weapon) => weapon.attack[damageType] ?? 0);
+      encodedDamageInfo.push([index, curve, attributes, ...baseAttack]);
+    }
+  });
+
+  const encodedStatusInfo: EncodedStatusInfo[] = [];
+  allStatusTypes.forEach((statusType, index) => {
+    if (weaponGroup[0].statuses[statusType]) {
+      const baseBuildup = weaponGroup.map((weapon) => weapon.statuses[statusType] ?? 0);
+      encodedStatusInfo.push([index, ...baseBuildup]);
+    }
+  });
+
   return [
-    upgradeLevel,
-    maxUpgradeLevel,
-    indexesByWeaponName.get(weaponName)!,
-    allAffinities.indexOf(affinity),
-    allWeaponTypes.indexOf(weaponType),
-    encodeMap(requirements, allAttributes, 0, identity),
-    encodeMap(attack, allDamageTypes, 0, identity),
-    encodeMap(attributeScaling, allAttributes, 0, identity),
-    encodeMap(damageScalingAttributes, allDamageTypes, [], (values) =>
-      values.map((value) => allAttributes.indexOf(value)),
-    ),
-    encodeMap(damageScalingCurves, allDamageTypes, -1, identity),
-    encodedStatuses.length !== 0 || paired ? encodedStatuses : undefined,
+    metadata.maxUpgradeLevel,
+    indexesByWeaponName.get(metadata.weaponName)!,
+    allAffinities.indexOf(metadata.affinity),
+    allWeaponTypes.indexOf(metadata.weaponType),
+    encodedAttributeInfo,
+    encodedDamageInfo,
+    encodedStatusInfo.length || paired ? encodedStatusInfo : undefined,
     paired ? 1 : undefined,
   ];
 }
@@ -175,52 +169,69 @@ export function encodeWeapon(
  */
 export function decodeWeapon(
   [
-    upgradeLevel,
     maxUpgradeLevel,
     weaponNameIdx,
     affinityIdx,
     weaponTypeIdx,
-    requirements,
-    attack,
-    attributeScalling,
-    damageScalingAttributes,
-    damageScalingCurves,
-    statuses = [],
+    encodedAttributeInfo,
+    encodedDamageInfo,
+    encodedStatusInfo = [],
     paired = 0,
   ]: EncodedWeapon,
   names: readonly string[],
-): Weapon {
-  const metadata = {
+): Weapon[] {
+  const baseMetadata: Omit<Weapon["metadata"], "upgradeLevel"> = {
     weaponName: names[weaponNameIdx],
     affinity: allAffinities[affinityIdx],
     maxUpgradeLevel,
     weaponType: allWeaponTypes[weaponTypeIdx],
-    upgradeLevel,
   };
+  const requirements: Weapon["requirements"] = {};
+  const damageScalingAttributes: Weapon["damageScalingAttributes"] = {};
+  const damageScalingCurves: Weapon["damageScalingCurves"] = {};
 
-  return {
-    name: getNameFromMetadata(metadata),
-    metadata,
-    requirements: decodeMap(requirements, allAttributes, equals(0), identity),
-    attack: decodeMap(attack, allDamageTypes, equals(0), identity),
-    attributeScaling: decodeMap(attributeScalling, allAttributes, equals(0), identity),
-    damageScalingAttributes: decodeMap(
+  const weapons: Weapon[] = Array.from({ length: maxUpgradeLevel + 1 }, (_, upgradeLevel) => {
+    const metadata = { ...baseMetadata, upgradeLevel };
+    return {
+      name: getNameFromMetadata(metadata),
+      metadata,
+      requirements,
+      attack: {},
+      attributeScaling: {},
       damageScalingAttributes,
-      allDamageTypes,
-      (attributesArr) => attributesArr.length === 0,
-      (attributesArr) => attributesArr.map((idx) => allAttributes[idx]),
-    ),
-    damageScalingCurves: decodeMap(
       damageScalingCurves,
-      allDamageTypes,
-      equals(-1),
-      (scalingCurve) => scalingCurve as WeaponScalingCurve,
-    ),
-    statuses: decodeMap(statuses, allStatusTypes, equals(0), identity),
-    paired: !!paired,
-  };
+      statuses: {},
+      paired: !!paired,
+    };
+  });
+
+  encodedDamageInfo.forEach(([damageTypeIndex, scalingCurve, attributeIndexes, ...values]) => {
+    const damageType = allDamageTypes[damageTypeIndex];
+    damageScalingAttributes[damageType] = attributeIndexes.map((i) => allAttributes[i]);
+    damageScalingCurves[damageType] = scalingCurve;
+    weapons.forEach((weapon, upgradeLevel) => {
+      weapon.attack[damageType] = values[upgradeLevel];
+    });
+  });
+
+  encodedAttributeInfo.forEach(([attributeIndex, requirement, ...values]) => {
+    const attribute = allAttributes[attributeIndex];
+    requirements[attribute] = requirement;
+    weapons.forEach((weapon, upgradeLevel) => {
+      weapon.attributeScaling[attribute] = values[upgradeLevel];
+    });
+  });
+
+  encodedStatusInfo.forEach(([statusTypeIndex, ...values]) => {
+    const statusType = allStatusTypes[statusTypeIndex];
+    weapons.forEach((weapon, upgradeLevel) => {
+      weapon.statuses[statusType] = values[upgradeLevel];
+    });
+  });
+
+  return weapons;
 }
 
 export function decodeWeapons([names, encodedWeapons]: [readonly string[], EncodedWeapon[]]) {
-  return encodedWeapons.map((encodedWeapon) => decodeWeapon(encodedWeapon, names));
+  return encodedWeapons.flatMap((encodedWeapon) => decodeWeapon(encodedWeapon, names));
 }
