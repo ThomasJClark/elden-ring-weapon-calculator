@@ -5,7 +5,7 @@
   "license": "MIT",
   "author": {
     "name": "Tom Clark",
-    "email": "the.thomas.j.clark@gmail.com"
+    "email": "tom@tclark.io"
   },
   "dependencies": {
     "@emotion/react": "11.9.3",
