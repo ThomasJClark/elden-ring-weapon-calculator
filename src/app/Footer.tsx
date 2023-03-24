@@ -10,8 +10,8 @@ function Footer() {
       </h1>
       <br />
       Made by Tom Clark (
-      <Link href="https://twitter.com/thechewanater" target="_blank" rel="noopener noreferer">
-        @thechewanater
+      <Link href="mailto:tom@tclark.io" target="_blank" rel="noopener noreferer">
+        tom@tclark.io
       </Link>
       ).
       <br />
