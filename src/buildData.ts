@@ -209,16 +209,6 @@ const loadWeapons = (): Weapon[] => {
         if (poison !== "0") statusBuildup["Poison"] = +poison;
         if (bleed !== "0") statusBuildup["Bleed"] = +bleed;
 
-        // Cold antspur rapier is bugged? It apparently gains more scarlet rot buildup up to +5,
-        // then loses it at +6 and above
-        if (weaponName === "Cold Antspur Rapier") {
-          if (upgradeLevel < 6) {
-            statusBuildup["Scarlet Rot"] = 50 + 5 * upgradeLevel;
-          } else {
-            delete statusBuildup["Scarlet Rot"];
-          }
-        }
-
         // Fingerprint Stone Shield is bugged? It loses madness buildup with the Occult affinity
         if (weaponName === "Occult Fingerprint Stone Shield") {
           delete statusBuildup["Madness"];

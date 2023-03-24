@@ -1148,19 +1148,19 @@ Cold Hand Axe,Hand Axe,Cold,Cold,25,9,8,0,0,0,Standard,3.5,Axe,No,900
 Poison Hand Axe,Hand Axe,Poison,Poison,25,9,8,0,0,0,Standard,3.5,Axe,No,1000
 Blood Hand Axe,Hand Axe,Blood,Blood,25,9,8,0,0,0,Standard,3.5,Axe,No,1100
 Occult Hand Axe,Hand Axe,Occult,Occult,25,9,8,0,0,0,Standard,3.5,Axe,No,1200
-Jawbone Axe,Jawbone Axe,None,None,25,14,8,0,0,0,Standard,5.5,Axe,No,0
-Heavy Jawbone Axe,Jawbone Axe,Heavy,Heavy,25,14,8,0,0,0,Standard,5.5,Axe,No,6000
-Keen Jawbone Axe,Jawbone Axe,Keen,Keen,25,14,8,0,0,0,Standard,5.5,Axe,No,200
-Quality Jawbone Axe,Jawbone Axe,Quality,Quality,25,14,8,0,0,0,Standard,5.5,Axe,No,300
-Fire Jawbone Axe,Jawbone Axe,Fire,Fire,25,14,8,0,0,0,Standard,5.5,Axe,No,400
-Flame Art Jawbone Axe,Jawbone Axe,Flame Art,Flame Art,25,14,8,0,0,0,Standard,5.5,Axe,No,500
-Lightning Jawbone Axe,Jawbone Axe,Lightning,Lightning,25,14,8,0,0,0,Standard,5.5,Axe,No,600
-Sacred Jawbone Axe,Jawbone Axe,Sacred,Sacred,25,14,8,0,0,0,Standard,5.5,Axe,No,700
-Magic Jawbone Axe,Jawbone Axe,Magic,Magic,25,14,8,0,0,0,Standard,5.5,Axe,No,800
-Cold Jawbone Axe,Jawbone Axe,Cold,Cold,25,14,8,0,0,0,Standard,5.5,Axe,No,900
-Poison Jawbone Axe,Jawbone Axe,Poison,Poison,25,14,8,0,0,0,Standard,5.5,Axe,No,1000
-Blood Jawbone Axe,Jawbone Axe,Blood,Blood,25,14,8,0,0,0,Standard,5.5,Axe,No,1100
-Occult Jawbone Axe,Jawbone Axe,Occult,Occult,25,14,8,0,0,0,Standard,5.5,Axe,No,1200
+Jawbone Axe,Jawbone Axe,None,None,25,14,8,0,0,0,Strike,5.5,Axe,No,0
+Heavy Jawbone Axe,Jawbone Axe,Heavy,Heavy,25,14,8,0,0,0,Strike,5.5,Axe,No,6000
+Keen Jawbone Axe,Jawbone Axe,Keen,Keen,25,14,8,0,0,0,Strike,5.5,Axe,No,200
+Quality Jawbone Axe,Jawbone Axe,Quality,Quality,25,14,8,0,0,0,Strike,5.5,Axe,No,300
+Fire Jawbone Axe,Jawbone Axe,Fire,Fire,25,14,8,0,0,0,Strike,5.5,Axe,No,400
+Flame Art Jawbone Axe,Jawbone Axe,Flame Art,Flame Art,25,14,8,0,0,0,Strike,5.5,Axe,No,500
+Lightning Jawbone Axe,Jawbone Axe,Lightning,Lightning,25,14,8,0,0,0,Strike,5.5,Axe,No,600
+Sacred Jawbone Axe,Jawbone Axe,Sacred,Sacred,25,14,8,0,0,0,Strike,5.5,Axe,No,700
+Magic Jawbone Axe,Jawbone Axe,Magic,Magic,25,14,8,0,0,0,Strike,5.5,Axe,No,800
+Cold Jawbone Axe,Jawbone Axe,Cold,Cold,25,14,8,0,0,0,Strike,5.5,Axe,No,900
+Poison Jawbone Axe,Jawbone Axe,Poison,Poison,25,14,8,0,0,0,Strike,5.5,Axe,No,1000
+Blood Jawbone Axe,Jawbone Axe,Blood,Blood,25,14,8,0,0,0,Strike,5.5,Axe,No,1100
+Occult Jawbone Axe,Jawbone Axe,Occult,Occult,25,14,8,0,0,0,Strike,5.5,Axe,No,1200
 Iron Cleaver,Iron Cleaver,None,None,25,15,7,0,0,0,Standard,6,Axe,No,0
 Heavy Iron Cleaver,Iron Cleaver,Heavy,Heavy,25,15,7,0,0,0,Standard,6,Axe,No,6000
 Keen Iron Cleaver,Iron Cleaver,Keen,Keen,25,15,7,0,0,0,Standard,6,Axe,No,200
@@ -1378,19 +1378,19 @@ Clayman's Poison Harpoon,Clayman's Harpoon,Poison,Poison,25,12,10,12,0,0,Pierce,
 Clayman's Blood Harpoon,Clayman's Harpoon,Blood,Blood,25,12,10,12,0,0,Pierce,5.5,Spear,No,1100
 Clayman's Occult Harpoon,Clayman's Harpoon,Occult,Occult,25,12,10,12,0,0,Pierce,5.5,Spear,No,1200
 Cleanrot Spear,Cleanrot Spear,None,-,10,16,16,0,14,0,Pierce,5.5,Spear,No,2200
-Partisan,Partisan,None,None,25,15,12,0,0,0,Pierce,6.5,Spear,No,0
-Heavy Partisan,Partisan,Heavy,Heavy,25,15,12,0,0,0,Pierce,6.5,Spear,No,100
-Keen Partisan,Partisan,Keen,Keen,25,15,12,0,0,0,Pierce,6.5,Spear,No,200
-Quality Partisan,Partisan,Quality,Quality,25,15,12,0,0,0,Pierce,6.5,Spear,No,300
-Fire Partisan,Partisan,Fire,Fire,25,15,12,0,0,0,Pierce,6.5,Spear,No,400
-Flame Art Partisan,Partisan,Flame Art,Flame Art,25,15,12,0,0,0,Pierce,6.5,Spear,No,500
-Lightning Partisan,Partisan,Lightning,Lightning,25,15,12,0,0,0,Pierce,6.5,Spear,No,600
-Sacred Partisan,Partisan,Sacred,Sacred,25,15,12,0,0,0,Pierce,6.5,Spear,No,700
-Magic Partisan,Partisan,Magic,Magic,25,15,12,0,0,0,Pierce,6.5,Spear,No,800
-Cold Partisan,Partisan,Cold,Cold,25,15,12,0,0,0,Pierce,6.5,Spear,No,900
-Poison Partisan,Partisan,Poison,Poison,25,15,12,0,0,0,Pierce,6.5,Spear,No,1000
-Blood Partisan,Partisan,Blood,Blood,25,15,12,0,0,0,Pierce,6.5,Spear,No,1100
-Occult Partisan,Partisan,Occult,Occult,25,15,12,0,0,0,Pierce,6.5,Spear,No,1200
+Partisan,Partisan,None,None,25,15,12,0,0,0,Slash/Pierce,6.5,Spear,No,0
+Heavy Partisan,Partisan,Heavy,Heavy,25,15,12,0,0,0,Slash/Pierce,6.5,Spear,No,100
+Keen Partisan,Partisan,Keen,Keen,25,15,12,0,0,0,Slash/Pierce,6.5,Spear,No,200
+Quality Partisan,Partisan,Quality,Quality,25,15,12,0,0,0,Slash/Pierce,6.5,Spear,No,300
+Fire Partisan,Partisan,Fire,Fire,25,15,12,0,0,0,Slash/Pierce,6.5,Spear,No,400
+Flame Art Partisan,Partisan,Flame Art,Flame Art,25,15,12,0,0,0,Slash/Pierce,6.5,Spear,No,500
+Lightning Partisan,Partisan,Lightning,Lightning,25,15,12,0,0,0,Slash/Pierce,6.5,Spear,No,600
+Sacred Partisan,Partisan,Sacred,Sacred,25,15,12,0,0,0,Slash/Pierce,6.5,Spear,No,700
+Magic Partisan,Partisan,Magic,Magic,25,15,12,0,0,0,Slash/Pierce,6.5,Spear,No,800
+Cold Partisan,Partisan,Cold,Cold,25,15,12,0,0,0,Slash/Pierce,6.5,Spear,No,900
+Poison Partisan,Partisan,Poison,Poison,25,15,12,0,0,0,Slash/Pierce,6.5,Spear,No,1000
+Blood Partisan,Partisan,Blood,Blood,25,15,12,0,0,0,Slash/Pierce,6.5,Spear,No,1100
+Occult Partisan,Partisan,Occult,Occult,25,15,12,0,0,0,Slash/Pierce,6.5,Spear,No,1200
 Celebrant's Rib-Rake,Celebrant's Rib-Rake,None,None,25,8,14,0,0,0,Pierce,5,Spear,No,0
 Celebrant's Heavy Rib-Rake,Celebrant's Rib-Rake,Heavy,Heavy,25,8,14,0,0,0,Pierce,5,Spear,No,100
 Celebrant's Keen Rib-Rake,Celebrant's Rib-Rake,Keen,Keen,25,8,14,0,0,0,Pierce,5,Spear,No,5000
@@ -1419,34 +1419,34 @@ Blood Pike,Pike,Blood,Blood,25,20,14,0,0,0,Pierce,7.5,Spear,No,1100
 Occult Pike,Pike,Occult,Occult,25,20,14,0,0,0,Pierce,7.5,Spear,No,1200
 Torchpole,Torchpole,None,-,25,14,15,0,0,0,Pierce,6,Spear,No,0
 Bolt of Gransax,Bolt of Gransax,None,-,10,20,40,0,0,0,Pierce,8.5,Spear,No,2200
-Cross-Naginata,Cross-Naginata,None,None,25,16,20,0,0,0,Pierce,8,Spear,No,0
-Heavy Cross-Naginata,Cross-Naginata,Heavy,Heavy,25,16,20,0,0,0,Pierce,8,Spear,No,100
-Keen Cross-Naginata,Cross-Naginata,Keen,Keen,25,16,20,0,0,0,Pierce,8,Spear,No,5000
-Quality Cross-Naginata,Cross-Naginata,Quality,Quality,25,16,20,0,0,0,Pierce,8,Spear,No,300
-Fire Cross-Naginata,Cross-Naginata,Fire,Fire,25,16,20,0,0,0,Pierce,8,Spear,No,400
-Flame Art Cross-Naginata,Cross-Naginata,Flame Art,Flame Art,25,16,20,0,0,0,Pierce,8,Spear,No,500
-Lightning Cross-Naginata,Cross-Naginata,Lightning,Lightning,25,16,20,0,0,0,Pierce,8,Spear,No,600
-Sacred Cross-Naginata,Cross-Naginata,Sacred,Sacred,25,16,20,0,0,0,Pierce,8,Spear,No,700
-Magic Cross-Naginata,Cross-Naginata,Magic,Magic,25,16,20,0,0,0,Pierce,8,Spear,No,800
-Cold Cross-Naginata,Cross-Naginata,Cold,Cold,25,16,20,0,0,0,Pierce,8,Spear,No,900
-Poison Cross-Naginata,Cross-Naginata,Poison,Poison,25,16,20,0,0,0,Pierce,8,Spear,No,1000
-Blood Cross-Naginata,Cross-Naginata,Blood,Blood,25,16,20,0,0,0,Pierce,8,Spear,No,1100
-Occult Cross-Naginata,Cross-Naginata,Occult,Occult,25,16,20,0,0,0,Pierce,8,Spear,No,1200
+Cross-Naginata,Cross-Naginata,None,None,25,16,20,0,0,0,Slash/Pierce,8,Spear,No,0
+Heavy Cross-Naginata,Cross-Naginata,Heavy,Heavy,25,16,20,0,0,0,Slash/Pierce,8,Spear,No,100
+Keen Cross-Naginata,Cross-Naginata,Keen,Keen,25,16,20,0,0,0,Slash/Pierce,8,Spear,No,5000
+Quality Cross-Naginata,Cross-Naginata,Quality,Quality,25,16,20,0,0,0,Slash/Pierce,8,Spear,No,300
+Fire Cross-Naginata,Cross-Naginata,Fire,Fire,25,16,20,0,0,0,Slash/Pierce,8,Spear,No,400
+Flame Art Cross-Naginata,Cross-Naginata,Flame Art,Flame Art,25,16,20,0,0,0,Slash/Pierce,8,Spear,No,500
+Lightning Cross-Naginata,Cross-Naginata,Lightning,Lightning,25,16,20,0,0,0,Slash/Pierce,8,Spear,No,600
+Sacred Cross-Naginata,Cross-Naginata,Sacred,Sacred,25,16,20,0,0,0,Slash/Pierce,8,Spear,No,700
+Magic Cross-Naginata,Cross-Naginata,Magic,Magic,25,16,20,0,0,0,Slash/Pierce,8,Spear,No,800
+Cold Cross-Naginata,Cross-Naginata,Cold,Cold,25,16,20,0,0,0,Slash/Pierce,8,Spear,No,900
+Poison Cross-Naginata,Cross-Naginata,Poison,Poison,25,16,20,0,0,0,Slash/Pierce,8,Spear,No,1000
+Blood Cross-Naginata,Cross-Naginata,Blood,Blood,25,16,20,0,0,0,Slash/Pierce,8,Spear,No,1100
+Occult Cross-Naginata,Cross-Naginata,Occult,Occult,25,16,20,0,0,0,Slash/Pierce,8,Spear,No,1200
 Death Ritual Spear,Death Ritual Spear,None,-,10,14,20,18,0,0,Pierce,6.5,Spear,No,2200
 Inquisitor's Girandole,Inquisitor's Girandole,None,-,10,18,15,0,16,0,Pierce,7.5,Spear,No,2200
-Spiked Spear,Spiked Spear,None,None,25,14,16,0,0,0,Pierce,6,Spear,No,0
-Heavy Spiked Spear,Spiked Spear,Heavy,Heavy,25,14,16,0,0,0,Pierce,6,Spear,No,100
-Keen Spiked Spear,Spiked Spear,Keen,Keen,25,14,16,0,0,0,Pierce,6,Spear,No,200
-Quality Spiked Spear,Spiked Spear,Quality,Quality,25,14,16,0,0,0,Pierce,6,Spear,No,300
-Fire Spiked Spear,Spiked Spear,Fire,Fire,25,14,16,0,0,0,Pierce,6,Spear,No,400
-Flame Art Spiked Spear,Spiked Spear,Flame Art,Flame Art,25,14,16,0,0,0,Pierce,6,Spear,No,500
-Lightning Spiked Spear,Spiked Spear,Lightning,Lightning,25,14,16,0,0,0,Pierce,6,Spear,No,600
-Sacred Spiked Spear,Spiked Spear,Sacred,Sacred,25,14,16,0,0,0,Pierce,6,Spear,No,700
-Magic Spiked Spear,Spiked Spear,Magic,Magic,25,14,16,0,0,0,Pierce,6,Spear,No,800
-Cold Spiked Spear,Spiked Spear,Cold,Cold,25,14,16,0,0,0,Pierce,6,Spear,No,900
-Poison Spiked Spear,Spiked Spear,Poison,Poison,25,14,16,0,0,0,Pierce,6,Spear,No,1000
-Blood Spiked Spear,Spiked Spear,Blood,Blood,25,14,16,0,0,0,Pierce,6,Spear,No,1100
-Occult Spiked Spear,Spiked Spear,Occult,Occult,25,14,16,0,0,0,Pierce,6,Spear,No,1200
+Spiked Spear,Spiked Spear,None,None,25,14,16,0,0,0,Strike/Pierce,6,Spear,No,0
+Heavy Spiked Spear,Spiked Spear,Heavy,Heavy,25,14,16,0,0,0,Strike/Pierce,6,Spear,No,100
+Keen Spiked Spear,Spiked Spear,Keen,Keen,25,14,16,0,0,0,Strike/Pierce,6,Spear,No,200
+Quality Spiked Spear,Spiked Spear,Quality,Quality,25,14,16,0,0,0,Strike/Pierce,6,Spear,No,300
+Fire Spiked Spear,Spiked Spear,Fire,Fire,25,14,16,0,0,0,Strike/Pierce,6,Spear,No,400
+Flame Art Spiked Spear,Spiked Spear,Flame Art,Flame Art,25,14,16,0,0,0,Strike/Pierce,6,Spear,No,500
+Lightning Spiked Spear,Spiked Spear,Lightning,Lightning,25,14,16,0,0,0,Strike/Pierce,6,Spear,No,600
+Sacred Spiked Spear,Spiked Spear,Sacred,Sacred,25,14,16,0,0,0,Strike/Pierce,6,Spear,No,700
+Magic Spiked Spear,Spiked Spear,Magic,Magic,25,14,16,0,0,0,Strike/Pierce,6,Spear,No,800
+Cold Spiked Spear,Spiked Spear,Cold,Cold,25,14,16,0,0,0,Strike/Pierce,6,Spear,No,900
+Poison Spiked Spear,Spiked Spear,Poison,Poison,25,14,16,0,0,0,Strike/Pierce,6,Spear,No,1000
+Blood Spiked Spear,Spiked Spear,Blood,Blood,25,14,16,0,0,0,Strike/Pierce,6,Spear,No,1100
+Occult Spiked Spear,Spiked Spear,Occult,Occult,25,14,16,0,0,0,Strike/Pierce,6,Spear,No,1200
 Iron Spear,Iron Spear,None,None,25,13,11,0,0,0,Pierce,4.5,Spear,No,0
 Heavy Iron Spear,Iron Spear,Heavy,Heavy,25,13,11,0,0,0,Pierce,4.5,Spear,No,100
 Keen Iron Spear,Iron Spear,Keen,Keen,25,13,11,0,0,0,Pierce,4.5,Spear,No,200
@@ -1492,32 +1492,32 @@ Cold Halberd,Halberd,Cold,Cold,25,14,12,0,0,0,Standard/Pierce,8,Halberd,No,900
 Poison Halberd,Halberd,Poison,Poison,25,14,12,0,0,0,Standard/Pierce,8,Halberd,No,1000
 Blood Halberd,Halberd,Blood,Blood,25,14,12,0,0,0,Standard/Pierce,8,Halberd,No,1100
 Occult Halberd,Halberd,Occult,Occult,25,14,12,0,0,0,Standard/Pierce,8,Halberd,No,1200
-Pest's Glaive,Pest's Glaive,None,None,25,13,13,0,0,0,Standard/Pierce,7,Halberd,No,0
-Pest's Heavy Glaive,Pest's Glaive,Heavy,Heavy,25,13,13,0,0,0,Standard/Pierce,7,Halberd,No,100
-Pest's Keen Glaive,Pest's Glaive,Keen,Keen,25,13,13,0,0,0,Standard/Pierce,7,Halberd,No,200
-Pest's Quality Glaive,Pest's Glaive,Quality,Quality,25,13,13,0,0,0,Standard/Pierce,7,Halberd,No,300
-Pest's Fire Glaive,Pest's Glaive,Fire,Fire,25,13,13,0,0,0,Standard/Pierce,7,Halberd,No,400
-Pest's Flame Art Glaive,Pest's Glaive,Flame Art,Flame Art,25,13,13,0,0,0,Standard/Pierce,7,Halberd,No,500
-Pest's Lightning Glaive,Pest's Glaive,Lightning,Lightning,25,13,13,0,0,0,Standard/Pierce,7,Halberd,No,600
-Pest's Sacred Glaive,Pest's Glaive,Sacred,Sacred,25,13,13,0,0,0,Standard/Pierce,7,Halberd,No,700
-Pest's Magic Glaive,Pest's Glaive,Magic,Magic,25,13,13,0,0,0,Standard/Pierce,7,Halberd,No,800
-Pest's Cold Glaive,Pest's Glaive,Cold,Cold,25,13,13,0,0,0,Standard/Pierce,7,Halberd,No,900
-Pest's Poison Glaive,Pest's Glaive,Poison,Poison,25,13,13,0,0,0,Standard/Pierce,7,Halberd,No,1000
-Pest's Blood Glaive,Pest's Glaive,Blood,Blood,25,13,13,0,0,0,Standard/Pierce,7,Halberd,No,1100
-Pest's Occult Glaive,Pest's Glaive,Occult,Occult,25,13,13,0,0,0,Standard/Pierce,7,Halberd,No,1200
-Lucerne,Lucerne,None,None,25,15,12,0,0,0,Standard/Pierce,7,Halberd,No,0
-Heavy Lucerne,Lucerne,Heavy,Heavy,25,15,12,0,0,0,Standard/Pierce,7,Halberd,No,100
-Keen Lucerne,Lucerne,Keen,Keen,25,15,12,0,0,0,Standard/Pierce,7,Halberd,No,5000
-Quality Lucerne,Lucerne,Quality,Quality,25,15,12,0,0,0,Standard/Pierce,7,Halberd,No,300
-Fire Lucerne,Lucerne,Fire,Fire,25,15,12,0,0,0,Standard/Pierce,7,Halberd,No,400
-Flame Art Lucerne,Lucerne,Flame Art,Flame Art,25,15,12,0,0,0,Standard/Pierce,7,Halberd,No,500
-Lightning Lucerne,Lucerne,Lightning,Lightning,25,15,12,0,0,0,Standard/Pierce,7,Halberd,No,600
-Sacred Lucerne,Lucerne,Sacred,Sacred,25,15,12,0,0,0,Standard/Pierce,7,Halberd,No,700
-Magic Lucerne,Lucerne,Magic,Magic,25,15,12,0,0,0,Standard/Pierce,7,Halberd,No,800
-Cold Lucerne,Lucerne,Cold,Cold,25,15,12,0,0,0,Standard/Pierce,7,Halberd,No,900
-Poison Lucerne,Lucerne,Poison,Poison,25,15,12,0,0,0,Standard/Pierce,7,Halberd,No,1000
-Blood Lucerne,Lucerne,Blood,Blood,25,15,12,0,0,0,Standard/Pierce,7,Halberd,No,1100
-Occult Lucerne,Lucerne,Occult,Occult,25,15,12,0,0,0,Standard/Pierce,7,Halberd,No,1200
+Pest's Glaive,Pest's Glaive,None,None,25,13,13,0,0,0,Slash/Pierce,7,Halberd,No,0
+Pest's Heavy Glaive,Pest's Glaive,Heavy,Heavy,25,13,13,0,0,0,Slash/Pierce,7,Halberd,No,100
+Pest's Keen Glaive,Pest's Glaive,Keen,Keen,25,13,13,0,0,0,Slash/Pierce,7,Halberd,No,200
+Pest's Quality Glaive,Pest's Glaive,Quality,Quality,25,13,13,0,0,0,Slash/Pierce,7,Halberd,No,300
+Pest's Fire Glaive,Pest's Glaive,Fire,Fire,25,13,13,0,0,0,Slash/Pierce,7,Halberd,No,400
+Pest's Flame Art Glaive,Pest's Glaive,Flame Art,Flame Art,25,13,13,0,0,0,Slash/Pierce,7,Halberd,No,500
+Pest's Lightning Glaive,Pest's Glaive,Lightning,Lightning,25,13,13,0,0,0,Slash/Pierce,7,Halberd,No,600
+Pest's Sacred Glaive,Pest's Glaive,Sacred,Sacred,25,13,13,0,0,0,Slash/Pierce,7,Halberd,No,700
+Pest's Magic Glaive,Pest's Glaive,Magic,Magic,25,13,13,0,0,0,Slash/Pierce,7,Halberd,No,800
+Pest's Cold Glaive,Pest's Glaive,Cold,Cold,25,13,13,0,0,0,Slash/Pierce,7,Halberd,No,900
+Pest's Poison Glaive,Pest's Glaive,Poison,Poison,25,13,13,0,0,0,Slash/Pierce,7,Halberd,No,1000
+Pest's Blood Glaive,Pest's Glaive,Blood,Blood,25,13,13,0,0,0,Slash/Pierce,7,Halberd,No,1100
+Pest's Occult Glaive,Pest's Glaive,Occult,Occult,25,13,13,0,0,0,Slash/Pierce,7,Halberd,No,1200
+Lucerne,Lucerne,None,None,25,15,12,0,0,0,Pierce,7,Halberd,No,0
+Heavy Lucerne,Lucerne,Heavy,Heavy,25,15,12,0,0,0,Pierce,7,Halberd,No,100
+Keen Lucerne,Lucerne,Keen,Keen,25,15,12,0,0,0,Pierce,7,Halberd,No,5000
+Quality Lucerne,Lucerne,Quality,Quality,25,15,12,0,0,0,Pierce,7,Halberd,No,300
+Fire Lucerne,Lucerne,Fire,Fire,25,15,12,0,0,0,Pierce,7,Halberd,No,400
+Flame Art Lucerne,Lucerne,Flame Art,Flame Art,25,15,12,0,0,0,Pierce,7,Halberd,No,500
+Lightning Lucerne,Lucerne,Lightning,Lightning,25,15,12,0,0,0,Pierce,7,Halberd,No,600
+Sacred Lucerne,Lucerne,Sacred,Sacred,25,15,12,0,0,0,Pierce,7,Halberd,No,700
+Magic Lucerne,Lucerne,Magic,Magic,25,15,12,0,0,0,Pierce,7,Halberd,No,800
+Cold Lucerne,Lucerne,Cold,Cold,25,15,12,0,0,0,Pierce,7,Halberd,No,900
+Poison Lucerne,Lucerne,Poison,Poison,25,15,12,0,0,0,Pierce,7,Halberd,No,1000
+Blood Lucerne,Lucerne,Blood,Blood,25,15,12,0,0,0,Pierce,7,Halberd,No,1100
+Occult Lucerne,Lucerne,Occult,Occult,25,15,12,0,0,0,Pierce,7,Halberd,No,1200
 Banished Knight's Halberd,Banished Knight's Halberd,None,None,25,14,12,0,0,0,Standard/Pierce,8,Halberd,No,0
 Banished Knight's Heavy Halberd,Banished Knight's Halberd,Heavy,Heavy,25,14,12,0,0,0,Standard/Pierce,8,Halberd,No,100
 Banished Knight's Keen Halberd,Banished Knight's Halberd,Keen,Keen,25,14,12,0,0,0,Standard/Pierce,8,Halberd,No,200
@@ -1532,19 +1532,19 @@ Banished Knight's Poison Halberd,Banished Knight's Halberd,Poison,Poison,25,14,1
 Banished Knight's Blood Halberd,Banished Knight's Halberd,Blood,Blood,25,14,12,0,0,0,Standard/Pierce,8,Halberd,No,1100
 Banished Knight's Occult Halberd,Banished Knight's Halberd,Occult,Occult,25,14,12,0,0,0,Standard/Pierce,8,Halberd,No,1200
 Commander's Standard,Commander's Standard,None,-,10,24,14,0,0,0,Standard/Pierce,11.5,Halberd,No,2200
-Nightrider Glaive,Nightrider Glaive,None,None,25,26,10,0,0,0,Standard/Pierce,12,Halberd,No,0
-Heavy Nightrider Glaive,Nightrider Glaive,Heavy,Heavy,25,26,10,0,0,0,Standard/Pierce,12,Halberd,No,6000
-Keen Nightrider Glaive,Nightrider Glaive,Keen,Keen,25,26,10,0,0,0,Standard/Pierce,12,Halberd,No,200
-Quality Nightrider Glaive,Nightrider Glaive,Quality,Quality,25,26,10,0,0,0,Standard/Pierce,12,Halberd,No,300
-Fire Nightrider Glaive,Nightrider Glaive,Fire,Fire,25,26,10,0,0,0,Standard/Pierce,12,Halberd,No,400
-Flame Art Nightrider Glaive,Nightrider Glaive,Flame Art,Flame Art,25,26,10,0,0,0,Standard/Pierce,12,Halberd,No,500
-Lightning Nightrider Glaive,Nightrider Glaive,Lightning,Lightning,25,26,10,0,0,0,Standard/Pierce,12,Halberd,No,600
-Sacred Nightrider Glaive,Nightrider Glaive,Sacred,Sacred,25,26,10,0,0,0,Standard/Pierce,12,Halberd,No,700
-Magic Nightrider Glaive,Nightrider Glaive,Magic,Magic,25,26,10,0,0,0,Standard/Pierce,12,Halberd,No,800
-Cold Nightrider Glaive,Nightrider Glaive,Cold,Cold,25,26,10,0,0,0,Standard/Pierce,12,Halberd,No,900
-Poison Nightrider Glaive,Nightrider Glaive,Poison,Poison,25,26,10,0,0,0,Standard/Pierce,12,Halberd,No,1000
-Blood Nightrider Glaive,Nightrider Glaive,Blood,Blood,25,26,10,0,0,0,Standard/Pierce,12,Halberd,No,1100
-Occult Nightrider Glaive,Nightrider Glaive,Occult,Occult,25,26,10,0,0,0,Standard/Pierce,12,Halberd,No,1200
+Nightrider Glaive,Nightrider Glaive,None,None,25,26,10,0,0,0,Slash/Pierce,12,Halberd,No,0
+Heavy Nightrider Glaive,Nightrider Glaive,Heavy,Heavy,25,26,10,0,0,0,Slash/Pierce,12,Halberd,No,6000
+Keen Nightrider Glaive,Nightrider Glaive,Keen,Keen,25,26,10,0,0,0,Slash/Pierce,12,Halberd,No,200
+Quality Nightrider Glaive,Nightrider Glaive,Quality,Quality,25,26,10,0,0,0,Slash/Pierce,12,Halberd,No,300
+Fire Nightrider Glaive,Nightrider Glaive,Fire,Fire,25,26,10,0,0,0,Slash/Pierce,12,Halberd,No,400
+Flame Art Nightrider Glaive,Nightrider Glaive,Flame Art,Flame Art,25,26,10,0,0,0,Slash/Pierce,12,Halberd,No,500
+Lightning Nightrider Glaive,Nightrider Glaive,Lightning,Lightning,25,26,10,0,0,0,Slash/Pierce,12,Halberd,No,600
+Sacred Nightrider Glaive,Nightrider Glaive,Sacred,Sacred,25,26,10,0,0,0,Slash/Pierce,12,Halberd,No,700
+Magic Nightrider Glaive,Nightrider Glaive,Magic,Magic,25,26,10,0,0,0,Slash/Pierce,12,Halberd,No,800
+Cold Nightrider Glaive,Nightrider Glaive,Cold,Cold,25,26,10,0,0,0,Slash/Pierce,12,Halberd,No,900
+Poison Nightrider Glaive,Nightrider Glaive,Poison,Poison,25,26,10,0,0,0,Slash/Pierce,12,Halberd,No,1000
+Blood Nightrider Glaive,Nightrider Glaive,Blood,Blood,25,26,10,0,0,0,Slash/Pierce,12,Halberd,No,1100
+Occult Nightrider Glaive,Nightrider Glaive,Occult,Occult,25,26,10,0,0,0,Slash/Pierce,12,Halberd,No,1200
 Ripple Crescent Halberd,Ripple Crescent Halberd,None,-,25,12,12,0,0,20,Standard/Pierce,8.5,Halberd,No,0
 Vulgar Militia Saw,Vulgar Militia Saw,None,None,25,15,13,0,0,0,Standard/Pierce,8,Halberd,No,0
 Heavy Vulgar Militia Saw,Vulgar Militia Saw,Heavy,Heavy,25,15,13,0,0,0,Standard/Pierce,8,Halberd,No,100
@@ -1560,20 +1560,20 @@ Poison Vulgar Militia Saw,Vulgar Militia Saw,Poison,Poison,25,15,13,0,0,0,Standa
 Blood Vulgar Militia Saw,Vulgar Militia Saw,Blood,Blood,25,15,13,0,0,0,Standard/Pierce,8,Halberd,No,1100
 Occult Vulgar Militia Saw,Vulgar Militia Saw,Occult,Occult,25,15,13,0,0,0,Standard/Pierce,8,Halberd,No,1200
 Golden Halberd,Golden Halberd,None,-,10,30,14,0,12,0,Standard/Pierce,13.5,Halberd,No,2200
-Glaive,Glaive,None,None,25,18,15,0,0,0,Standard/Pierce,10,Halberd,No,0
-Heavy Glaive,Glaive,Heavy,Heavy,25,18,15,0,0,0,Standard/Pierce,10,Halberd,No,100
-Keen Glaive,Glaive,Keen,Keen,25,18,15,0,0,0,Standard/Pierce,10,Halberd,No,200
-Quality Glaive,Glaive,Quality,Quality,25,18,15,0,0,0,Standard/Pierce,10,Halberd,No,300
-Fire Glaive,Glaive,Fire,Fire,25,18,15,0,0,0,Standard/Pierce,10,Halberd,No,400
-Flame Art Glaive,Glaive,Flame Art,Flame Art,25,18,15,0,0,0,Standard/Pierce,10,Halberd,No,500
-Lightning Glaive,Glaive,Lightning,Lightning,25,18,15,0,0,0,Standard/Pierce,10,Halberd,No,600
-Sacred Glaive,Glaive,Sacred,Sacred,25,18,15,0,0,0,Standard/Pierce,10,Halberd,No,700
-Magic Glaive,Glaive,Magic,Magic,25,18,15,0,0,0,Standard/Pierce,10,Halberd,No,800
-Cold Glaive,Glaive,Cold,Cold,25,18,15,0,0,0,Standard/Pierce,10,Halberd,No,900
-Poison Glaive,Glaive,Poison,Poison,25,18,15,0,0,0,Standard/Pierce,10,Halberd,No,1000
-Blood Glaive,Glaive,Blood,Blood,25,18,15,0,0,0,Standard/Pierce,10,Halberd,No,1100
-Occult Glaive,Glaive,Occult,Occult,25,18,15,0,0,0,Standard/Pierce,10,Halberd,No,1200
-Loretta's War Sickle,Loretta's War Sickle,None,-,10,20,15,20,0,0,Standard/Pierce,10,Halberd,No,2200
+Glaive,Glaive,None,None,25,18,15,0,0,0,Slash/Pierce,10,Halberd,No,0
+Heavy Glaive,Glaive,Heavy,Heavy,25,18,15,0,0,0,Slash/Pierce,10,Halberd,No,100
+Keen Glaive,Glaive,Keen,Keen,25,18,15,0,0,0,Slash/Pierce,10,Halberd,No,200
+Quality Glaive,Glaive,Quality,Quality,25,18,15,0,0,0,Slash/Pierce,10,Halberd,No,300
+Fire Glaive,Glaive,Fire,Fire,25,18,15,0,0,0,Slash/Pierce,10,Halberd,No,400
+Flame Art Glaive,Glaive,Flame Art,Flame Art,25,18,15,0,0,0,Slash/Pierce,10,Halberd,No,500
+Lightning Glaive,Glaive,Lightning,Lightning,25,18,15,0,0,0,Slash/Pierce,10,Halberd,No,600
+Sacred Glaive,Glaive,Sacred,Sacred,25,18,15,0,0,0,Slash/Pierce,10,Halberd,No,700
+Magic Glaive,Glaive,Magic,Magic,25,18,15,0,0,0,Slash/Pierce,10,Halberd,No,800
+Cold Glaive,Glaive,Cold,Cold,25,18,15,0,0,0,Slash/Pierce,10,Halberd,No,900
+Poison Glaive,Glaive,Poison,Poison,25,18,15,0,0,0,Slash/Pierce,10,Halberd,No,1000
+Blood Glaive,Glaive,Blood,Blood,25,18,15,0,0,0,Slash/Pierce,10,Halberd,No,1100
+Occult Glaive,Glaive,Occult,Occult,25,18,15,0,0,0,Slash/Pierce,10,Halberd,No,1200
+Loretta's War Sickle,Loretta's War Sickle,None,-,10,20,15,20,0,0,Slash/Pierce,10,Halberd,No,2200
 Guardian's Swordspear,Guardian's Swordspear,None,None,25,17,16,0,0,0,Standard/Pierce,9,Halberd,No,0
 Guardian's Heavy Swordspear,Guardian's Swordspear,Heavy,Heavy,25,17,16,0,0,0,Standard/Pierce,9,Halberd,No,100
 Guardian's Keen Swordspear,Guardian's Swordspear,Keen,Keen,25,17,16,0,0,0,Standard/Pierce,9,Halberd,No,200
@@ -1862,7 +1862,7 @@ Occult Duelist Greataxe,Duelist Greataxe,Occult,Occult,25,30,10,0,0,0,Standard,2
 Axe of Godfrey,Axe of Godfrey,None,-,10,42,14,0,0,0,Standard,18,Colossal Weapon,No,2200
 Dragon Greatclaw,Dragon Greatclaw,None,-,10,30,14,0,0,0,Standard,16,Colossal Weapon,No,2200
 Staff of the Avatar,Staff of the Avatar,None,-,10,34,8,0,24,0,Strike,20,Colossal Weapon,No,2200
-Fallingstar Beast Jaw,Fallingstar Beast Jaw,None,-,10,34,12,20,0,0,Strike/Pierce,21.5,Colossal Weapon,No,2200
+Fallingstar Beast Jaw,Fallingstar Beast Jaw,None,-,10,34,12,20,0,0,Pierce,21.5,Colossal Weapon,No,2200
 Ghiza's Wheel,Ghiza's Wheel,None,-,10,28,18,0,0,0,Standard,19,Colossal Weapon,No,2200
 Giant-Crusher,Giant-Crusher,None,None,25,60,0,0,0,0,Strike,26.5,Colossal Weapon,No,0
 Heavy Giant-Crusher,Giant-Crusher,Heavy,Heavy,25,60,0,0,0,0,Strike,26.5,Colossal Weapon,No,6000
