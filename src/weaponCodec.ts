@@ -49,6 +49,7 @@ export type EncodedWeapon = [
 const accentedNames = new Map([
   ["Misericorde", "Miséricorde"],
   ["Great Epee", "Great Épée"],
+  ["Varre's Bouquet", "Varré's Bouquet"],
 ]);
 
 // Weapons that have "Bloody" in the name for the Blood affinity
