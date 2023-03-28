@@ -7,7 +7,7 @@ export default function useWeapons(upgradeLevel: number) {
   const [encodedWeapons, setEncodedWeapons] = useState<[string[], EncodedWeapon[]]>([[], []]);
 
   useEffect(() => {
-    fetch(`${process.env.PUBLIC_URL}/weaponData-1.09.js`)
+    fetch("/weaponData-1.09.js")
       .then((response) => response.json())
       .then((weaponData) => {
         setEncodedWeapons(weaponData);

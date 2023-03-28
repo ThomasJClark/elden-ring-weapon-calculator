@@ -18,27 +18,26 @@
   },
   "devDependencies": {
     "@types/node": "18.0.0",
-    "@types/react-dom": "18.0.5",
     "@types/react": "18.0.14",
+    "@types/react-dom": "18.0.5",
+    "@vitejs/plugin-react-swc": "^3.0.0",
+    "eslint": "^8.36.0",
+    "eslint-config-react-app": "^7.0.1",
     "prettier": "2.7.1",
-    "react-scripts": "5.0.1",
     "ts-node": "10.8.1",
-    "typescript": "4.9.5"
+    "typescript": "5.0.2",
+    "vite": "^4.2.0",
+    "vite-plugin-eslint": "^1.8.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "eject": "react-scripts eject",
-    "rebuildWeaponData": "ts-node src/buildData.ts public/weaponData-1.09.js"
+    "start": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "rebuildWeaponData": "ts-node-esm src/buildData.ts public/weaponData-1.09.js"
   },
   "eslintConfig": {
     "extends": [
       "react-app"
     ]
-  },
-  "browserslist": [
-    "last 3 chrome version",
-    "last 3 firefox version",
-    "last 3 safari version"
-  ]
+  }
 }
