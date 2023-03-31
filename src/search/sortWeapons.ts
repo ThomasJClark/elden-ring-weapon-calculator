@@ -16,7 +16,8 @@ export type SortBy =
 export function sortWeapons(
   rows: readonly WeaponTableRowData[],
   sortBy: SortBy,
-): readonly WeaponTableRowData[] {
+  reverse: boolean,
+): WeaponTableRowData[] {
   const getSortValue = ((): ((row: WeaponTableRowData) => any) => {
     if (sortBy === "name") {
       return ([weapon]) =>
@@ -53,5 +54,8 @@ export function sortWeapons(
     return () => {};
   })();
 
-  return [...rows].sort((row1, row2) => (getSortValue(row1) > getSortValue(row2) ? 1 : -1));
+  return [...rows].sort((row1, row2) =>
+    // eslint-disable-next-line no-mixed-operators
+    getSortValue(row1) > getSortValue(row2) !== reverse ? 1 : -1,
+  );
 }

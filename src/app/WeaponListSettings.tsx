@@ -98,11 +98,13 @@ interface Props {
   upgradeLevel: number;
   effectiveOnly: boolean;
   splitDamage: boolean;
+  groupWeaponTypes: boolean;
   onAttributeChanged(attribute: Attribute, value: number): void;
   onTwoHandingChanged(twoHanding: boolean): void;
   onUpgradeLevelChanged(upgradeLevel: number): void;
   onEffectiveOnlyChanged(effectiveOnly: boolean): void;
   onSplitDamageChanged(splitDamage: boolean): void;
+  onGroupWeaponTypesChanged(groupWeaponTypes: boolean): void;
 }
 
 /**
@@ -115,11 +117,13 @@ function WeaponListSettings({
   upgradeLevel,
   effectiveOnly,
   splitDamage,
+  groupWeaponTypes,
   onAttributeChanged,
   onTwoHandingChanged,
   onUpgradeLevelChanged,
   onEffectiveOnlyChanged,
   onSplitDamageChanged,
+  onGroupWeaponTypesChanged,
 }: Props) {
   return (
     <Box
@@ -162,6 +166,11 @@ function WeaponListSettings({
           label="Show damage split"
           checked={splitDamage}
           onChange={onSplitDamageChanged}
+        />
+        <BooleanInput
+          label="Group weapon types"
+          checked={groupWeaponTypes}
+          onChange={onGroupWeaponTypesChanged}
         />
       </Box>
     </Box>

@@ -3,20 +3,19 @@ import { Box, BoxProps } from "@mui/material";
 import { SystemStyleObject, Theme } from "@mui/system";
 import { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
 
-interface Props {
+interface BaseProps {
   sx?: SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>);
+  children: ReactNode;
+}
+
+interface Props extends Omit<BaseProps, "children"> {
   columnGroupSx?: SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>);
   columnGroups: readonly WeaponTableColumnGroupDef[];
   columnProps?(column: WeaponTableColumnDef): Omit<BoxProps, "children">;
   renderColumnGroup(column: WeaponTableColumnGroupDef): ReactNode;
 }
 
-export default function WeaponTableRow({
-  sx,
-  columnGroupSx,
-  columnGroups,
-  renderColumnGroup,
-}: Props) {
+export function WeaponTableBaseRow({ sx, children }: BaseProps) {
   return (
     <Box
       display="flex"
@@ -33,6 +32,19 @@ export default function WeaponTableRow({
         sx ?? false,
       ]}
     >
+      {children}
+    </Box>
+  );
+}
+
+export default function WeaponTableRow({
+  sx,
+  columnGroupSx,
+  columnGroups,
+  renderColumnGroup,
+}: Props) {
+  return (
+    <WeaponTableBaseRow sx={sx}>
       {columnGroups.map((columnGroup) => (
         <Box
           key={columnGroup.key}
@@ -52,6 +64,6 @@ export default function WeaponTableRow({
           {renderColumnGroup(columnGroup)}
         </Box>
       ))}
-    </Box>
+    </WeaponTableBaseRow>
   );
 }

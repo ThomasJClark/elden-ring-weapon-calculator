@@ -1,25 +1,11 @@
 import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { memo } from "react";
-import { allWeaponTypes, WeaponType } from "../calculator/calculator";
-
-/**
- * Might as well hide these by default. If you really need to know which small shield has the
- * highest AR... good luck.
- */
-const rangedWeaponTypes: WeaponType[] = ["Light Bow", "Bow", "Greatbow", "Crossbow", "Ballista"];
-
-const miscWeaponTypes: WeaponType[] = [
-  "Torch",
-  "Small Shield",
-  "Medium Shield",
-  "Greatshield",
-  "Glintstone Staff",
-  "Sacred Seal",
-];
-
-const meleeWeaponTypes: WeaponType[] = allWeaponTypes.filter(
-  (weaponType) => !rangedWeaponTypes.includes(weaponType) && !miscWeaponTypes.includes(weaponType),
-);
+import {
+  meleeWeaponTypes,
+  rangedWeaponTypes,
+  miscWeaponTypes,
+  WeaponType,
+} from "../calculator/calculator";
 
 interface Props {
   weaponTypes: readonly WeaponType[];

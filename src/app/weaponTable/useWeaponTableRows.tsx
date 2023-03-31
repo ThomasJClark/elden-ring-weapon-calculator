@@ -2,12 +2,17 @@ import { useDeferredValue, useMemo } from "react";
 import getWeaponAttack, {
   Affinity,
   Attributes,
+  meleeWeaponTypes,
+  miscWeaponTypes,
+  rangedWeaponTypes,
   Weapon,
   WeaponType,
 } from "../../calculator/calculator";
 import filterWeapons from "../../search/filterWeapons";
-import { WeaponTableRowData } from "./WeaponTable";
+import { WeaponTableRowData, WeaponTableRowGroup } from "./WeaponTable";
 import { SortBy, sortWeapons } from "../../search/sortWeapons";
+
+const orderedWeaponTypes = [...meleeWeaponTypes, ...rangedWeaponTypes, ...miscWeaponTypes];
 
 interface WeaponTableRowsOptions {
   weapons: readonly Weapon[];
@@ -20,10 +25,11 @@ interface WeaponTableRowsOptions {
   attributes: Attributes;
   effectiveOnly: boolean;
   twoHanding: boolean;
+  groupWeaponTypes: boolean; // TODO sort by weapon type when this is true
 }
 
 interface WeaponTableRowsResult {
-  rows: readonly WeaponTableRowData[];
+  rowGroups: readonly WeaponTableRowGroup[];
   total: number;
 }
 
@@ -34,6 +40,9 @@ const useWeaponTableRows = ({
   weapons,
   offset,
   limit,
+  groupWeaponTypes,
+  sortBy,
+  reverse,
   ...options
 }: WeaponTableRowsOptions): WeaponTableRowsResult => {
   // Defer filtering based on app state changes because this can be CPU intensive if done while
@@ -62,23 +71,37 @@ const useWeaponTableRows = ({
     ]);
   }, [attributes, twoHanding, weapons, weaponTypes, affinities, effectiveOnly]);
 
-  const sortedRows = useMemo(
-    () => sortWeapons(filteredRows, options.sortBy),
-    [filteredRows, options.sortBy],
-  );
+  const rowGroups = useMemo<WeaponTableRowGroup[]>(() => {
+    if (groupWeaponTypes) {
+      const rowsByWeaponType: { [weaponType in WeaponType]?: WeaponTableRowData[] } = {};
+      filteredRows.forEach((row) => {
+        const [weapon] = row;
+        (rowsByWeaponType[weapon.metadata.weaponType] ??= []).push(row);
+      });
 
-  const paginatedRows = useMemo(() => {
-    if (options.reverse) {
-      return sortedRows
-        .slice(sortedRows.length - offset - limit, sortedRows.length - offset)
-        .reverse();
-    } else {
-      return sortedRows.slice(offset, limit);
+      const rowGroups: WeaponTableRowGroup[] = [];
+      orderedWeaponTypes.forEach((weaponType) => {
+        if (weaponType in rowsByWeaponType) {
+          rowGroups.push({
+            key: weaponType,
+            name: weaponType,
+            rows: sortWeapons(rowsByWeaponType[weaponType]!, sortBy, reverse),
+          });
+        }
+      });
+      return rowGroups;
     }
-  }, [sortedRows, options.reverse, offset, limit]);
+
+    return [
+      {
+        key: "allWeapons",
+        rows: sortWeapons(filteredRows, sortBy, reverse).slice(offset, limit),
+      },
+    ];
+  }, [filteredRows, reverse, sortBy, groupWeaponTypes, offset, limit]);
 
   return {
-    rows: paginatedRows,
+    rowGroups,
     total: filteredRows.length,
   };
 };

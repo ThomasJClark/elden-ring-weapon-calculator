@@ -1,14 +1,20 @@
-import { memo, ReactNode, useMemo } from "react";
-import { Box } from "@mui/material";
+import { Fragment, memo, ReactNode, useMemo } from "react";
+import { Box, Typography } from "@mui/material";
 import { SystemStyleObject, Theme } from "@mui/system";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { Weapon, WeaponAttackResult } from "../../calculator/calculator";
 import { SortBy } from "../../search/sortWeapons";
 import getWeaponTableColumns from "./getWeaponTableColumns";
-import WeaponTableRow from "./WeaponTableRow";
+import WeaponTableRow, { WeaponTableBaseRow } from "./WeaponTableRow";
 
 export type WeaponTableRowData = [Weapon, WeaponAttackResult];
+
+export interface WeaponTableRowGroup {
+  key: string;
+  name?: string;
+  rows: readonly WeaponTableRowData[];
+}
 
 export interface WeaponTableColumnDef {
   key: SortBy;
@@ -25,7 +31,7 @@ export interface WeaponTableColumnGroupDef {
 }
 
 interface Props {
-  rows: readonly WeaponTableRowData[];
+  rowGroups: readonly WeaponTableRowGroup[];
   placeholder?: ReactNode;
   footer?: ReactNode;
   sortBy: SortBy;
@@ -164,7 +170,7 @@ const DataRow = memo(
 );
 
 function WeaponTable({
-  rows,
+  rowGroups,
   placeholder,
   footer,
   sortBy,
@@ -200,8 +206,28 @@ function WeaponTable({
         onSortByChanged={onSortByChanged}
         onReverseChanged={onReverseChanged}
       />
-      {rows.length > 0 ? (
-        rows.map((row) => <DataRow key={row[0].name} columnGroups={columnGroups} row={row} />)
+      {rowGroups.length > 0 ? (
+        rowGroups.map(({ key, name, rows }) => (
+          <Fragment key={key}>
+            {name != null && (
+              <WeaponTableBaseRow
+                sx={{
+                  padding: "0px 10px",
+                  alignItems: "center",
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                }}
+              >
+                <Typography component="span" variant="subtitle2">
+                  {name}
+                </Typography>
+              </WeaponTableBaseRow>
+            )}
+
+            {rows.map((row) => (
+              <DataRow key={row[0].name} columnGroups={columnGroups} row={row} />
+            ))}
+          </Fragment>
+        ))
       ) : (
         <Box display="grid" sx={{ minHeight: "480px", px: "10px", gap: 3 }}>
           {placeholder}

@@ -91,6 +91,7 @@ export default function App() {
     splitDamage,
     twoHanding,
     upgradeLevel,
+    groupWeaponTypes,
     sortBy,
     reverse,
     setDarkMode,
@@ -101,6 +102,7 @@ export default function App() {
     setSplitDamage,
     setTwoHanding,
     setUpgradeLevel,
+    setGroupWeaponTypes,
     setSortBy,
     setReverse,
   } = useAppState();
@@ -111,7 +113,7 @@ export default function App() {
   const offset = 0;
   const limit = 200;
   const { weapons, loading, error } = useWeapons(upgradeLevel);
-  const { rows, total } = useWeaponTableRows({
+  const { rowGroups, total } = useWeaponTableRows({
     weapons,
     offset,
     limit,
@@ -122,6 +124,7 @@ export default function App() {
     attributes,
     effectiveOnly,
     twoHanding,
+    groupWeaponTypes,
   });
 
   const tablePlaceholder = useMemo(
@@ -163,7 +166,7 @@ export default function App() {
   } else {
     mainContent = (
       <WeaponTable
-        rows={rows}
+        rowGroups={rowGroups}
         placeholder={tablePlaceholder}
         footer={tableFooter}
         sortBy={sortBy}
@@ -260,11 +263,13 @@ export default function App() {
             upgradeLevel={upgradeLevel}
             effectiveOnly={effectiveOnly}
             splitDamage={splitDamage}
+            groupWeaponTypes={groupWeaponTypes}
             onAttributeChanged={setAttribute}
             onTwoHandingChanged={setTwoHanding}
             onUpgradeLevelChanged={setUpgradeLevel}
             onEffectiveOnlyChanged={setEffectiveOnly}
             onSplitDamageChanged={setSplitDamage}
+            onGroupWeaponTypesChanged={setGroupWeaponTypes}
           />
 
           {mainContent}

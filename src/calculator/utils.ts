@@ -67,6 +67,31 @@ export const allWeaponTypes = [
   "Whip",
 ] as const;
 
+/**
+ * Might as well hide these by default. If you really need to know which small shield has the
+ * highest AR... good luck.
+ */
+export const rangedWeaponTypes: WeaponType[] = [
+  "Light Bow",
+  "Bow",
+  "Greatbow",
+  "Crossbow",
+  "Ballista",
+];
+
+export const miscWeaponTypes: WeaponType[] = [
+  "Torch",
+  "Small Shield",
+  "Medium Shield",
+  "Greatshield",
+  "Glintstone Staff",
+  "Sacred Seal",
+];
+
+export const meleeWeaponTypes: WeaponType[] = allWeaponTypes.filter(
+  (weaponType) => !rangedWeaponTypes.includes(weaponType) && !miscWeaponTypes.includes(weaponType),
+);
+
 export const maxUnupgradeableUpgradeLevel = 0 as const;
 export const maxRegularUpgradeLevel = 25 as const;
 export const maxSpecialUpgradeLevel = 10 as const;
