@@ -6,7 +6,11 @@ A weapon calculator that allows comparing multiple weapons and infusions. Try it
 
 Enter your stats and your criteria (weapon type, affinity, etc). The app will list every weapon matching your selections, along with the attack rating and status buildup you'll get on your build. Click a column header to sort the table by that column.
 
-This was inspired the [Dark Souls Weapons Attack Calculator](https://soulsplanner.com/darksouls/weaponatk). As far as I know, the creator hasn't made an updated version for Elden Ring, so I put this together based on weapon data reverse engineered by [/u/TarnishedSpreadsheet](https://www.reddit.com/user/TarnishedSpreadsheet/).
+## Special Thanks
+
+This was inspired the [Dark Souls Weapons Attack Calculator](https://soulsplanner.com/darksouls/weaponatk). As far as I know, the creator hasn't made an updated version for Elden Ring, so I put this together.
+
+All regulation data was extracted using [DSMapStudio](https://github.com/soulsmods/DSMapStudio).
 
 ## Reporting Issues
 

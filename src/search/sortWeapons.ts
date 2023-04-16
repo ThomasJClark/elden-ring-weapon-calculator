@@ -1,6 +1,6 @@
-import { getDamageTypeAttackPower, getTotalAttackPower } from "../app/uiUtils";
+import { getTotalAttackPower } from "../app/uiUtils";
 import { WeaponTableRowData } from "../app/weaponTable/WeaponTable";
-import { allAffinities, Attribute, DamageType, StatusType } from "../calculator/utils";
+import { Attribute, DamageType, StatusType } from "../calculator/utils";
 
 export type SortBy =
   | "name"
@@ -20,20 +20,16 @@ export function sortWeapons(
 ): WeaponTableRowData[] {
   const getSortValue = ((): ((row: WeaponTableRowData) => any) => {
     if (sortBy === "name") {
-      return ([weapon]) =>
-        `${weapon.metadata.weaponName},${allAffinities
-          .indexOf(weapon.metadata.affinity)
-          .toString()
-          .padStart(2, "0")}`;
+      return ([weapon]) => `${weapon.weaponName},${weapon.affinityId.toString().padStart(4, "0")}`;
     }
 
     if (sortBy === "totalAttack") {
-      return ([, { attackRating }]) => -getTotalAttackPower(attackRating);
+      return ([, { attackPower }]) => -getTotalAttackPower(attackPower);
     }
 
     if (sortBy.endsWith("Attack")) {
       const damageType = sortBy.slice(0, -1 * "Attack".length) as DamageType;
-      return ([, { attackRating }]) => -getDamageTypeAttackPower(attackRating, damageType);
+      return ([, { attackPower }]) => -(attackPower[damageType] ?? 0);
     }
 
     if (sortBy.endsWith("Buildup")) {
@@ -43,7 +39,8 @@ export function sortWeapons(
 
     if (sortBy.endsWith("Scaling")) {
       const attribute = sortBy.slice(0, -1 * "Scaling".length) as Attribute;
-      return ([weapon]) => -(weapon.attributeScaling[attribute] ?? 0);
+      return ([weapon, { upgradeLevel }]) =>
+        -(weapon.attributeScaling[upgradeLevel][attribute] ?? 0);
     }
 
     if (sortBy.endsWith("Requirement")) {

@@ -3,7 +3,6 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { allAttributes, allDamageTypes, allStatusTypes } from "../../calculator/calculator";
 import {
   getAttributeLabel,
-  getDamageTypeAttackPower,
   getDamageTypeIcon,
   getDamageTypeLabel,
   getStatusTypeIcon,
@@ -12,6 +11,14 @@ import {
   getTotalAttackPower,
 } from "../uiUtils";
 import { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
+
+/**
+ * @returns the given value truncated to an integer
+ */
+function round(value: number) {
+  // Add a small offset to prevent off-by-ones due to floating point error
+  return Math.floor(value + 0.000000001);
+}
 
 const blankIcon = <RemoveIcon color="disabled" fontSize="small" />;
 
@@ -25,20 +32,18 @@ const nameColumn: WeaponTableColumnDef = {
   sx: {
     justifyContent: "start",
   },
-  render([weapon]) {
+  render([weapon, { upgradeLevel }]) {
     return (
       <Box>
         <Link
           variant="button"
           underline="hover"
-          href={`https://eldenring.wiki.fextralife.com/${weapon.metadata.weaponName.replaceAll(
-            " ",
-            "+",
-          )}`}
+          href={`https://eldenring.wiki.fextralife.com/${weapon.weaponName.replaceAll(" ", "+")}`}
           target="_blank"
           rel="noopener noreferrer"
         >
           {weapon.name}
+          {upgradeLevel > 0 && ` +${upgradeLevel}`}
         </Link>
       </Box>
     );
@@ -54,9 +59,9 @@ const damageAttackPowerColumns: WeaponTableColumnDef[] = [
           <img src={getDamageTypeIcon(damageType)} alt="" width={24} height={24} />
         </Tooltip>
       ),
-      render([, { attackRating }]) {
-        const attackPower = getDamageTypeAttackPower(attackRating, damageType);
-        return attackPower === 0 ? blankIcon : Math.floor(attackPower);
+      render([, { attackPower }]) {
+        const damageTypeAttackPower = attackPower[damageType];
+        return damageTypeAttackPower == null ? blankIcon : round(damageTypeAttackPower);
       },
     }),
   ),
@@ -67,8 +72,8 @@ const damageAttackPowerColumns: WeaponTableColumnDef[] = [
         Total
       </Typography>
     ),
-    render([, { attackRating }]) {
-      return Math.floor(getTotalAttackPower(attackRating));
+    render([, { attackPower }]) {
+      return round(getTotalAttackPower(attackPower));
     },
   },
 ];
@@ -80,8 +85,8 @@ const totalAttackPowerColumn: WeaponTableColumnDef = {
       Attack Power
     </Typography>
   ),
-  render([, { attackRating }]) {
-    return Math.floor(getTotalAttackPower(attackRating));
+  render([, { attackPower }]) {
+    return round(getTotalAttackPower(attackPower));
   },
 };
 
@@ -94,7 +99,7 @@ const passiveEffectsColumns: WeaponTableColumnDef[] = allStatusTypes.map((status
   ),
   render([, { statusBuildup }]) {
     const buildup = statusBuildup[statusType] ?? 0;
-    return buildup === 0 ? blankIcon : Math.floor(buildup);
+    return buildup === 0 ? blankIcon : round(buildup);
   },
 }));
 
@@ -107,9 +112,15 @@ const scalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => 
       </Typography>
     </Tooltip>
   ),
-  render([weapon]) {
-    const scaling = weapon.attributeScaling[attribute] ?? 0;
-    return scaling === 0 ? blankIcon : getScalingLabel(scaling);
+  render([weapon, { upgradeLevel }]) {
+    const scaling = weapon.attributeScaling[upgradeLevel][attribute] ?? 0;
+    return scaling === 0 ? (
+      blankIcon
+    ) : (
+      <Tooltip title={`${Math.round(scaling * 1000) / 10}%`} placement="top">
+        <span>{getScalingLabel(scaling)}</span>
+      </Tooltip>
+    );
   },
 }));
 

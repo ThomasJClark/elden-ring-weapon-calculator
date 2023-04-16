@@ -1,10 +1,12 @@
 import { useDeferredValue, useMemo } from "react";
 import getWeaponAttack, {
-  Affinity,
   Attributes,
+  maxRegularUpgradeLevel,
+  maxSpecialUpgradeLevel,
   meleeWeaponTypes,
   miscWeaponTypes,
   rangedWeaponTypes,
+  toSpecialUpgradeLevel,
   Weapon,
   WeaponType,
 } from "../../calculator/calculator";
@@ -16,16 +18,18 @@ const orderedWeaponTypes = [...meleeWeaponTypes, ...rangedWeaponTypes, ...miscWe
 
 interface WeaponTableRowsOptions {
   weapons: readonly Weapon[];
+  allAffinityIds: readonly number[];
   offset: number;
   limit: number;
   sortBy: SortBy;
   reverse: boolean;
-  affinities: readonly Affinity[];
+  affinityIds: readonly number[];
   weaponTypes: readonly WeaponType[];
   attributes: Attributes;
   effectiveOnly: boolean;
   twoHanding: boolean;
-  groupWeaponTypes: boolean; // TODO sort by weapon type when this is true
+  upgradeLevel: number;
+  groupWeaponTypes: boolean;
 }
 
 interface WeaponTableRowsResult {
@@ -38,8 +42,10 @@ interface WeaponTableRowsResult {
  */
 const useWeaponTableRows = ({
   weapons,
+  allAffinityIds,
   offset,
   limit,
+  upgradeLevel: regularUpgradeLevel,
   groupWeaponTypes,
   sortBy,
   reverse,
@@ -50,33 +56,59 @@ const useWeaponTableRows = ({
   const attributes = useDeferredValue(options.attributes);
   const twoHanding = useDeferredValue(options.twoHanding);
   const weaponTypes = useDeferredValue(options.weaponTypes);
-  const affinities = useDeferredValue(options.affinities);
+  const affinityIds = useDeferredValue(options.affinityIds);
   const effectiveOnly = useDeferredValue(options.effectiveOnly);
 
+  const specialUpgradeLevel = toSpecialUpgradeLevel(regularUpgradeLevel);
+
   const filteredRows = useMemo<WeaponTableRowData[]>(() => {
+    const validAffinityIds = affinityIds.filter((affinityId) =>
+      allAffinityIds.includes(affinityId),
+    );
+
     const filteredWeapons = filterWeapons(weapons.values(), {
       weaponTypes,
-      affinities,
+      affinityIds: validAffinityIds,
       effectiveWithAttributes: effectiveOnly ? attributes : undefined,
       twoHanding,
     });
 
-    return filteredWeapons.map((weapon) => [
-      weapon,
-      getWeaponAttack({
+    return filteredWeapons.map((weapon) => {
+      let upgradeLevel = 0;
+      if (weapon.attack.length - 1 === maxRegularUpgradeLevel) {
+        upgradeLevel = regularUpgradeLevel;
+      } else if (weapon.attack.length - 1 === maxSpecialUpgradeLevel) {
+        upgradeLevel = specialUpgradeLevel;
+      }
+
+      return [
         weapon,
-        attributes,
-        twoHanding,
-      }),
-    ]);
-  }, [attributes, twoHanding, weapons, weaponTypes, affinities, effectiveOnly]);
+        getWeaponAttack({
+          weapon,
+          attributes,
+          twoHanding,
+          upgradeLevel,
+        }),
+      ];
+    });
+  }, [
+    attributes,
+    twoHanding,
+    weapons,
+    allAffinityIds,
+    regularUpgradeLevel,
+    specialUpgradeLevel,
+    weaponTypes,
+    affinityIds,
+    effectiveOnly,
+  ]);
 
   const rowGroups = useMemo<WeaponTableRowGroup[]>(() => {
     if (groupWeaponTypes) {
       const rowsByWeaponType: { [weaponType in WeaponType]?: WeaponTableRowData[] } = {};
       filteredRows.forEach((row) => {
         const [weapon] = row;
-        (rowsByWeaponType[weapon.metadata.weaponType] ??= []).push(row);
+        (rowsByWeaponType[weapon.weaponType] ??= []).push(row);
       });
 
       const rowGroups: WeaponTableRowGroup[] = [];

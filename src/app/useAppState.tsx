@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Affinity, Attribute, Attributes, WeaponType } from "../calculator/calculator";
+import { Attribute, Attributes, WeaponType } from "../calculator/calculator";
 import { SortBy } from "../search/sortWeapons";
 
 interface AppState {
@@ -8,7 +8,7 @@ interface AppState {
   readonly twoHanding: boolean;
   readonly upgradeLevel: number;
   readonly weaponTypes: readonly WeaponType[];
-  readonly affinities: readonly Affinity[];
+  readonly affinityIds: readonly number[];
   readonly effectiveOnly: boolean;
   readonly splitDamage: boolean;
   readonly groupWeaponTypes: boolean;
@@ -22,7 +22,7 @@ interface UpdateAppState extends AppState {
   setTwoHanding(twoHanding: boolean): void;
   setUpgradeLevel(upgradeLevel: number): void;
   setWeaponTypes(weaponTypes: readonly WeaponType[]): void;
-  setAffinities(affinities: readonly Affinity[]): void;
+  setAffinityIds(affinityIds: readonly number[]): void;
   setEffectiveOnly(effectiveOnly: boolean): void;
   setSplitDamage(splitDamage: boolean): void;
   setGroupWeaponTypes(groupWeaponTypes: boolean): void;
@@ -42,7 +42,7 @@ const defaultAppState: AppState = {
   twoHanding: false,
   upgradeLevel: 25,
   weaponTypes: ["Axe"],
-  affinities: ["Standard", "Special"],
+  affinityIds: [0, -1], // Standard and Special
   effectiveOnly: false,
   splitDamage: true,
   groupWeaponTypes: false,
@@ -90,8 +90,8 @@ export default function useAppState() {
       setWeaponTypes(weaponTypes) {
         setAppState((prevAppState) => ({ ...prevAppState, weaponTypes }));
       },
-      setAffinities(affinities) {
-        setAppState((prevAppState) => ({ ...prevAppState, affinities }));
+      setAffinityIds(affinityIds) {
+        setAppState((prevAppState) => ({ ...prevAppState, affinityIds }));
       },
       setEffectiveOnly(effectiveOnly) {
         setAppState((prevAppState) => ({ ...prevAppState, effectiveOnly }));

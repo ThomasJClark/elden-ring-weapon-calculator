@@ -92,9 +92,9 @@ export const meleeWeaponTypes: WeaponType[] = allWeaponTypes.filter(
   (weaponType) => !rangedWeaponTypes.includes(weaponType) && !miscWeaponTypes.includes(weaponType),
 );
 
-export const maxUnupgradeableUpgradeLevel = 0 as const;
-export const maxRegularUpgradeLevel = 25 as const;
-export const maxSpecialUpgradeLevel = 10 as const;
+export const maxUnupgradeableUpgradeLevel = 0;
+export const maxRegularUpgradeLevel = 25;
+export const maxSpecialUpgradeLevel = 10;
 
 export type DamageType = typeof allDamageTypes[number];
 export type StatusType = typeof allStatusTypes[number];
@@ -102,10 +102,6 @@ export type Attribute = typeof allAttributes[number];
 export type Attributes = Record<Attribute, number>;
 export type Affinity = typeof allAffinities[number];
 export type WeaponType = typeof allWeaponTypes[number];
-export type MaxUpgradeLevel =
-  | typeof maxUnupgradeableUpgradeLevel
-  | typeof maxSpecialUpgradeLevel
-  | typeof maxRegularUpgradeLevel;
 
 /**
  * Adjust a set of character attributes to take into account the 50% Strength bonus when two
@@ -129,10 +125,10 @@ export function adjustAttributesForTwoHanding({
 
   // Bows and ballistae can only be two handed
   if (
-    weapon.metadata.weaponType === "Light Bow" ||
-    weapon.metadata.weaponType === "Bow" ||
-    weapon.metadata.weaponType === "Greatbow" ||
-    weapon.metadata.weaponType === "Ballista"
+    weapon.weaponType === "Light Bow" ||
+    weapon.weaponType === "Bow" ||
+    weapon.weaponType === "Greatbow" ||
+    weapon.weaponType === "Ballista"
   ) {
     twoHandingBonus = true;
   }

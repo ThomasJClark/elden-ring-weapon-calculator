@@ -1,336 +1,439 @@
 /*
- * Build-time script that generates a single JSON file of weapon stats from the various Elden Ring
- * Weapon Calculator spreadsheets
+ * Usage: yarn ts-node-esm src/buildData.ts data/vanilla-1.09
  */
 import { readFileSync, writeFileSync } from "fs";
-import { resolve } from "path";
-import { cwd, argv } from "process";
-import {
-  allDamageTypes,
-  Affinity,
+import { basename, join } from "path";
+import type {
+  Attribute,
+  CalcCorrectGraph,
   WeaponType,
-  Weapon,
-  WeaponScalingCurve,
   StatusType,
+  DamageType,
 } from "./calculator/calculator";
-import { encodeWeapon } from "./weaponCodec";
+import type {
+  EncodedWeaponJson,
+  EncodedRegulationDataJson,
+  ReinforceParamWeapon,
+} from "./regulationData";
+import { uninfusableWeaponTypes } from "./search/filterWeapons";
 
-function getTrueWeaponName(weaponName: string) {
-  // I think this is an error in the spreadsheet - "Sacred" was searched & replaced out of all
-  // weapon names
-  if (weaponName === "Relic Sword") {
-    return "Sacred Relic Sword";
-  }
-  if (weaponName === "Mohgwyn's Spear") {
-    return "Mohgwyn's Sacred Spear";
-  }
-  return weaponName;
+const weaponTypesById: { [key in number]?: WeaponType } = {
+  1: "Dagger",
+  3: "Straight Sword",
+  5: "Greatsword",
+  7: "Colossal Sword",
+  9: "Curved Sword",
+  11: "Curved Greatsword",
+  13: "Katana",
+  14: "Twinblade",
+  15: "Thrusting Sword",
+  16: "Heavy Thrusting Sword",
+  17: "Axe",
+  19: "Greataxe",
+  21: "Hammer",
+  23: "Great Hammer",
+  24: "Flail",
+  25: "Spear",
+  28: "Great Spear",
+  29: "Halberd",
+  31: "Reaper",
+  35: "Fist",
+  37: "Claw",
+  39: "Whip",
+  41: "Colossal Weapon",
+  50: "Light Bow",
+  51: "Bow",
+  53: "Greatbow",
+  55: "Crossbow",
+  56: "Ballista",
+  57: "Glintstone Staff",
+  61: "Sacred Seal",
+  65: "Small Shield",
+  67: "Medium Shield",
+  69: "Greatshield",
+  87: "Torch",
+};
+
+interface CsvRow {
+  name: string;
+  data: {
+    [key: string]: number;
+  };
 }
 
 /**
- * Load a map from a spreadsheet where the first column is the key
+ * Parse a CSV file with "ID", "Name", and numeric columns
  */
-const loadSpreadsheet = <T>(path: string, mapper: (columns: string[], key: string) => T) =>
-  new Map<string, T>(
-    readFileSync(path, "utf-8")
-      .split("\n")
-      .slice(1)
-      .map((row) => row.trim().split(","))
-      .map(([key, ...columns]) => [key.toUpperCase(), mapper(columns, key)]),
-  );
+function readCsv(filename: string): Map<number, CsvRow> {
+  const [cols, ...lines] = readFileSync(filename, "utf-8")
+    .split("\n")
+    .filter((row) => !!row)
+    .map((row) => row.split(","));
 
-/**
- * Load a map from a spreadsheet where the first column is the key, and the remaining columns
- * are partitioned by upgrade level
- */
-const loadSpreadsheetByLevel = <T>(
-  path: string,
-  columnCount: number,
-  mapper: (columns: string[], key: string) => T,
-) =>
-  loadSpreadsheet<T[]>(path, (columns, key) =>
-    Array.from({ length: Math.floor(columns.length / columnCount) }, (_, upgradeLevel) =>
-      mapper(columns.slice(upgradeLevel * columnCount, (upgradeLevel + 1) * columnCount), key),
-    ),
-  );
+  return new Map<number, CsvRow>(
+    lines.map((line) => {
+      let name: string = "";
+      const data: { [key: string]: number } = {};
 
-/**
- * Load the weapon data from the Elden Ring Weapon Calculator spreadsheets
- */
-const loadWeapons = (): Weapon[] => {
-  const attackMap = loadSpreadsheetByLevel(
-    resolve(cwd(), "data/attack.csv"),
-    6, // 5 damage types, plus stamina damage (ignored)
-    ([physical, magic, fire, lightning, holy]) => ({
-      physical: parseFloat(physical) || undefined,
-      magic: parseFloat(magic) || undefined,
-      fire: parseFloat(fire) || undefined,
-      lightning: parseFloat(lightning) || undefined,
-      holy: parseFloat(holy) || undefined,
-    }),
-  );
-
-  const attributeScalingMap = loadSpreadsheetByLevel(
-    resolve(cwd(), "data/scaling.csv"),
-    5,
-    ([str, dex, int, fai, arc]) => ({
-      str: parseFloat(str) || undefined,
-      dex: parseFloat(dex) || undefined,
-      int: parseFloat(int) || undefined,
-      fai: parseFloat(fai) || undefined,
-      arc: parseFloat(arc) || undefined,
-    }),
-  );
-
-  const extraDataMap = loadSpreadsheet(
-    resolve(cwd(), "data/extraData.csv"),
-    ([
-      weaponName,
-      affinity,
-      ,
-      maxUpgradeLevel,
-      strRequirement,
-      dexRequirement,
-      intRequirement,
-      faiRequirement,
-      arcRequirement,
-      ,
-      ,
-      weaponType,
-      paired,
-    ]) => ({
-      metadata: {
-        weaponName: getTrueWeaponName(weaponName),
-        affinity: affinity as Affinity, // Note: this technically can contain "None" which is fixed below
-        maxUpgradeLevel: parseInt(maxUpgradeLevel, 10) as 10 | 25,
-        weaponType: weaponType as WeaponType,
-      },
-      requirements: {
-        str: parseInt(strRequirement, 10) || undefined,
-        dex: parseInt(dexRequirement, 10) || undefined,
-        int: parseInt(intRequirement, 10) || undefined,
-        fai: parseInt(faiRequirement, 10) || undefined,
-        arc: parseInt(arcRequirement, 10) || undefined,
-      },
-      paired: paired === "Yes",
-    }),
-  );
-
-  const calcCorrectMap = loadSpreadsheet(
-    resolve(cwd(), "data/calcCorrectGraph.csv"),
-    ([physical, magic, fire, lightning, holy, attackElementCorrectId]): {
-      attackElementCorrectId: string;
-      damageScalingCurves: Weapon["damageScalingCurves"];
-    } => ({
-      attackElementCorrectId,
-      damageScalingCurves: {
-        physical: parseInt(physical) as WeaponScalingCurve,
-        magic: parseInt(magic) as WeaponScalingCurve,
-        fire: parseInt(fire) as WeaponScalingCurve,
-        lightning: parseInt(lightning) as WeaponScalingCurve,
-        holy: parseInt(holy) as WeaponScalingCurve,
-      },
-    }),
-  );
-
-  const attackElementCorrect = loadSpreadsheet(
-    resolve(cwd(), "data/attackElementCorrect.csv"),
-    ([
-      physicalScalesOnStr,
-      physicalScalesOnDex,
-      physicalScalesOnInt,
-      physicalScalesOnFai,
-      physicalScalesOnArc,
-      magicScalesOnStr,
-      magicScalesOnDex,
-      magicScalesOnInt,
-      magicScalesOnFai,
-      magicScalesOnArc,
-      fireScalesOnStr,
-      fireScalesOnDex,
-      fireScalesOnInt,
-      fireScalesOnFai,
-      fireScalesOnArc,
-      lightningScalesOnStr,
-      lightningScalesOnDex,
-      lightningScalesOnInt,
-      lightningScalesOnFai,
-      lightningScalesOnArc,
-      holyScalesOnStr,
-      holyScalesOnDex,
-      holyScalesOnInt,
-      holyScalesOnFai,
-      holyScalesOnArc,
-    ]) => {
-      const map: Weapon["damageScalingAttributes"] = {};
-
-      if (physicalScalesOnStr === "1") (map.physical = map.physical || []).push("str");
-      if (physicalScalesOnDex === "1") (map.physical = map.physical || []).push("dex");
-      if (physicalScalesOnInt === "1") (map.physical = map.physical || []).push("int");
-      if (physicalScalesOnFai === "1") (map.physical = map.physical || []).push("fai");
-      if (physicalScalesOnArc === "1") (map.physical = map.physical || []).push("arc");
-      if (magicScalesOnStr === "1") (map.magic = map.magic || []).push("str");
-      if (magicScalesOnDex === "1") (map.magic = map.magic || []).push("dex");
-      if (magicScalesOnInt === "1") (map.magic = map.magic || []).push("int");
-      if (magicScalesOnFai === "1") (map.magic = map.magic || []).push("fai");
-      if (magicScalesOnArc === "1") (map.magic = map.magic || []).push("arc");
-      if (fireScalesOnStr === "1") (map.fire = map.fire || []).push("str");
-      if (fireScalesOnDex === "1") (map.fire = map.fire || []).push("dex");
-      if (fireScalesOnInt === "1") (map.fire = map.fire || []).push("int");
-      if (fireScalesOnFai === "1") (map.fire = map.fire || []).push("fai");
-      if (fireScalesOnArc === "1") (map.fire = map.fire || []).push("arc");
-      if (lightningScalesOnStr === "1") (map.lightning = map.lightning || []).push("str");
-      if (lightningScalesOnDex === "1") (map.lightning = map.lightning || []).push("dex");
-      if (lightningScalesOnInt === "1") (map.lightning = map.lightning || []).push("int");
-      if (lightningScalesOnFai === "1") (map.lightning = map.lightning || []).push("fai");
-      if (lightningScalesOnArc === "1") (map.lightning = map.lightning || []).push("arc");
-      if (holyScalesOnStr === "1") (map.holy = map.holy || []).push("str");
-      if (holyScalesOnDex === "1") (map.holy = map.holy || []).push("dex");
-      if (holyScalesOnInt === "1") (map.holy = map.holy || []).push("int");
-      if (holyScalesOnFai === "1") (map.holy = map.holy || []).push("fai");
-      if (holyScalesOnArc === "1") (map.holy = map.holy || []).push("arc");
-
-      return map;
-    },
-  );
-
-  const statusMap = loadSpreadsheet(
-    resolve(cwd(), "data/status.csv"),
-    ([, , scarletRot, madness, sleep, ...columns], weaponName) =>
-      Array.from({ length: Math.floor(columns.length / 3) }, (_, upgradeLevel) => {
-        const [frost, poison, bleed] = columns.slice(upgradeLevel * 3, (upgradeLevel + 1) * 3);
-
-        const statusBuildup: Partial<Record<StatusType, number>> = {};
-
-        if (scarletRot !== "0") statusBuildup["Scarlet Rot"] = +scarletRot;
-        if (madness !== "0") statusBuildup["Madness"] = +madness;
-        if (sleep !== "0") statusBuildup["Sleep"] = +sleep;
-        if (frost !== "0") statusBuildup["Frost"] = +frost;
-        if (poison !== "0") statusBuildup["Poison"] = +poison;
-        if (bleed !== "0") statusBuildup["Bleed"] = +bleed;
-
-        // Fingerprint Stone Shield is bugged? It loses madness buildup with the Occult affinity
-        if (weaponName === "Occult Fingerprint Stone Shield") {
-          delete statusBuildup["Madness"];
-        }
-
-        if (Object.values(statusBuildup).some((value) => value !== 0)) {
-          return statusBuildup;
-        }
-
-        return undefined;
-      }),
-  );
-
-  // Remove infused Great Club. These weapons don't actually exist in the game since it's impossible
-  // to add Ashes of War to the Great Club.
-  for (const [weaponKey, { metadata }] of extraDataMap.entries()) {
-    if (
-      metadata.weaponName === "Great Club" &&
-      (metadata.affinity as Affinity | "None") !== "None"
-    ) {
-      attackMap.delete(weaponKey);
-      statusMap.delete(weaponKey);
-      attributeScalingMap.delete(weaponKey);
-      extraDataMap.delete(weaponKey);
-      calcCorrectMap.delete(weaponKey);
-    }
-  }
-
-  // The raw spreadsheets list all weapons without an affinity as "None". Separate special weapons
-  // that can't be infused from standard weapons that are not currently infused.
-  const infusableWeaponNames = new Set<string>();
-  extraDataMap.forEach(({ metadata }) => {
-    if ((metadata.affinity as Affinity | "None") !== "None") {
-      infusableWeaponNames.add(metadata.weaponName);
-    }
-  });
-  extraDataMap.forEach(({ metadata }) => {
-    if ((metadata.affinity as Affinity | "None") === "None") {
-      metadata.affinity = infusableWeaponNames.has(metadata.weaponName) ? "Standard" : "Special";
-    }
-  });
-
-  return [...attackMap.keys()].flatMap((weaponKey) => {
-    const attackByLevel = attackMap.get(weaponKey)!;
-    const statusBuildupsByLevel = statusMap.get(weaponKey);
-    const attributeScalingByLevel = attributeScalingMap.get(weaponKey)!;
-    const { metadata, requirements, paired } = extraDataMap.get(weaponKey)!;
-    const { attackElementCorrectId, damageScalingCurves } = calcCorrectMap.get(weaponKey)!;
-    const damageScalingAttributes = attackElementCorrect.get(attackElementCorrectId)!;
-
-    return Array.from({ length: metadata.maxUpgradeLevel + 1 }, (_, upgradeLevel) => {
-      const attack = attackByLevel[upgradeLevel];
-      const attributeScaling = attributeScalingByLevel[upgradeLevel];
-
-      const weapon = {
-        name: "", // Doesn't matter, this isn't stored in the encoded JSON because it's formatted client side
-        metadata: {
-          ...metadata,
-          upgradeLevel,
-        },
-        requirements,
-        attack,
-        attributeScaling,
-        damageScalingAttributes: { ...damageScalingAttributes },
-        damageScalingCurves: { ...damageScalingCurves },
-        statuses: statusBuildupsByLevel?.[upgradeLevel] ?? {},
-        paired,
-      };
-
-      allDamageTypes.forEach((damageType) => {
-        if (damageType in weapon.damageScalingAttributes) {
-          // Only include attributes that affect the weapon's attack power
-          weapon.damageScalingAttributes[damageType] = weapon.damageScalingAttributes[
-            damageType
-          ]!.filter(
-            (attribute) => weapon.attributeScaling[attribute] || weapon.requirements[attribute],
-          );
-
-          // Do not include any scaling information if this weapon doesn't deal this damage type,
-          // or the damage type doesn't scale with any attributes.
-          if (!attack[damageType] || weapon.damageScalingAttributes[damageType]!.length === 0) {
-            delete weapon.damageScalingAttributes[damageType];
-            delete weapon.damageScalingCurves[damageType];
-          }
+      cols.forEach((key, index) => {
+        if (key === "Name") {
+          name = line[index];
+        } else if (key) {
+          data[key] = +line[index];
         }
       });
 
-      return weapon;
+      return [data.ID, { name, data }];
+    }),
+  );
+}
+
+const dataDir = process.argv[2];
+const outputFile = join("public", `regulation-${basename(dataDir)}.js`);
+
+// Hack: these weapons can't have Ashes of War applied and therefore will never have an affinity
+const uninfusableWeaponIds = [
+  9080000, // Serpentbone Blade
+  17070000, // Treespear
+  23020000, // Great Club
+  23130000, // Troll's Hammer
+];
+
+// Hack: these weapons have names in the UI that are different from their names in EquipParamWeapon
+const nameOverrides = new Map([
+  [1030000, "Miséricorde"],
+  [1030100, "Heavy Miséricorde"],
+  [1030200, "Keen Miséricorde"],
+  [1030300, "Quality Miséricorde"],
+  [1030400, "Fire Miséricorde"],
+  [1030500, "Flame Art Miséricorde"],
+  [1030600, "Lightning Miséricorde"],
+  [1030700, "Sacred Miséricorde"],
+  [1030800, "Magic Miséricorde"],
+  [1030900, "Cold Miséricorde"],
+  [1031000, "Poison Miséricorde"],
+  [1031100, "Blood Miséricorde"],
+  [1031200, "Occult Miséricorde"],
+  [6020000, "Great Épée"],
+  [6020100, "Heavy Great Épée"],
+  [6020200, "Keen Great Épée"],
+  [6020300, "Quality Great Épée"],
+  [6020400, "Fire Great Épée"],
+  [6020500, "Flame Art Great Épée"],
+  [6020600, "Lightning Great Épée"],
+  [6020700, "Sacred Great Épée"],
+  [6020800, "Magic Great Épée"],
+  [6020900, "Cold Great Épée"],
+  [6021000, "Poison Great Épée"],
+  [6021100, "Blood Great Épée"],
+  [6021200, "Occult Great Épée"],
+  [11060000, "Varré's Bouquet"],
+]);
+
+const attackElementCorrectParams = readCsv(join(dataDir, "AttackElementCorrectParam.csv"));
+const calcCorrectGraphs = readCsv(join(dataDir, "CalcCorrectGraph.csv"));
+const equipParamWeapons = readCsv(join(dataDir, "EquipParamWeapon.csv"));
+const reinforceParamWeapons = readCsv(join(dataDir, "ReinforceParamWeapon.csv"));
+const spEffectParams = readCsv(join(dataDir, "SpEffectParam.csv"));
+
+function ifNotDefault<T>(value: T, defaultValue: T): T | undefined {
+  return value === defaultValue ? undefined : value;
+}
+
+function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
+  if (
+    !name ||
+    !(data.wepType in weaponTypesById) ||
+    !reinforceParamWeapons.has(data.reinforceTypeId) ||
+    !attackElementCorrectParams.has(data.attackElementCorrectId)
+  ) {
+    return null;
+  }
+
+  const uninfusedWeaponId = Math.floor(data.ID / 10000) * 10000;
+  let affinityId = Math.floor((data.ID - uninfusedWeaponId) / 100) * 100;
+  if (affinityId && uninfusableWeaponIds.includes(uninfusedWeaponId)) {
+    return null;
+  }
+
+  const weaponType = weaponTypesById[data.wepType]!;
+
+  // If the weapon can't be given an affinity, categorize it as "Unique" instead of standard affinity
+  if (
+    !affinityId &&
+    !uninfusableWeaponTypes.includes(weaponType) &&
+    (!equipParamWeapons.has(data.ID + 100) || uninfusableWeaponIds.includes(uninfusedWeaponId))
+  ) {
+    affinityId = -1;
+  }
+
+  const attack = {
+    physical: ifNotDefault(data.attackBasePhysics, 0),
+    magic: ifNotDefault(data.attackBaseMagic, 0),
+    fire: ifNotDefault(data.attackBaseFire, 0),
+    lightning: ifNotDefault(data.attackBaseThunder, 0),
+    holy: ifNotDefault(data.attackBaseDark, 0),
+  };
+
+  // TODO: Include Death Blight status effects (curseAttackPower) for Elden Ring
+  // Reforged and perhaps future content expansions
+
+  const statuses = new Set<StatusType>();
+
+  let statusSpEffectParamIds = [
+    data.spEffectBehaviorId0,
+    data.spEffectBehaviorId1,
+    data.spEffectBehaviorId2,
+  ];
+
+  // Replace SpEffectParams that aren't relevant for status effects with 0, since they don't need
+  // to be included in the data
+  statusSpEffectParamIds = statusSpEffectParamIds.map((spEffectParamId) => {
+    const statusSpEffectParams = parseStatusSpEffectParams(spEffectParamId);
+    if (statusSpEffectParams != null) {
+      (Object.keys(statusSpEffectParams) as StatusType[]).forEach((statusType) => {
+        statuses.add(statusType);
+      });
+      return spEffectParamId;
+    }
+    return 0;
+  });
+
+  // Occult Fingerprint Stone Shield is bugged even though the data looks good.
+  // Manually override this for now.
+  if (data.ID === 32131200) {
+    statusSpEffectParamIds = [0, 0, 0];
+  }
+
+  const calcCorrectGraphIds = {
+    physical: ifNotDefault(attack.physical && data.correctType_Physics, 0),
+    magic: ifNotDefault(attack.magic && data.correctType_Magic, 0),
+    fire: ifNotDefault(attack.fire && data.correctType_Fire, 0),
+    lightning: ifNotDefault(attack.lightning && data.correctType_Thunder, 0),
+    holy: ifNotDefault(attack.holy && data.correctType_Dark, 0),
+    Poison: ifNotDefault(statuses.has("Poison") ? data.correctType_Poison : undefined, 6),
+    Bleed: ifNotDefault(statuses.has("Bleed") ? data.correctType_Blood : undefined, 6),
+    Sleep: ifNotDefault(statuses.has("Sleep") ? data.correctType_Sleep : undefined, 6),
+    Madness: ifNotDefault(statuses.has("Madness") ? data.correctType_Madness : undefined, 6),
+  };
+
+  if (
+    !Object.values(calcCorrectGraphIds).every(
+      (calcCorrectGraphId) =>
+        calcCorrectGraphId == null || calcCorrectGraphs.has(calcCorrectGraphId),
+    )
+  ) {
+    return null;
+  }
+
+  return {
+    name: nameOverrides.get(data.ID) ?? name,
+    weaponName: equipParamWeapons.get(uninfusedWeaponId)!.name,
+    affinityId,
+    weaponType,
+    requirements: {
+      str: ifNotDefault(data.properStrength, 0),
+      dex: ifNotDefault(data.properAgility, 0),
+      int: ifNotDefault(data.properMagic, 0),
+      fai: ifNotDefault(data.properFaith, 0),
+      arc: ifNotDefault(data.properLuck, 0),
+    },
+    attack,
+    attributeScaling: {
+      str: ifNotDefault(data.correctStrength / 100, 0),
+      dex: ifNotDefault(data.correctAgility / 100, 0),
+      int: ifNotDefault(data.correctMagic / 100, 0),
+      fai: ifNotDefault(data.correctFaith / 100, 0),
+      arc: ifNotDefault(data.correctLuck / 100, 0),
+    },
+    statusSpEffectParamIds,
+    reinforceTypeId: data.reinforceTypeId,
+    attackElementCorrectId: data.attackElementCorrectId,
+    calcCorrectGraphIds,
+    paired: data.isDualBlade === 1,
+  };
+}
+
+function parseCalcCorrectGraph({ data }: CsvRow): CalcCorrectGraph {
+  return [
+    {
+      maxVal: data.stageMaxVal0,
+      maxGrowVal: data.stageMaxGrowVal0 / 100,
+      adjPt: data.adjPt_maxGrowVal0,
+    },
+    {
+      maxVal: data.stageMaxVal1,
+      maxGrowVal: data.stageMaxGrowVal1 / 100,
+      adjPt: data.adjPt_maxGrowVal1,
+    },
+    {
+      maxVal: data.stageMaxVal2,
+      maxGrowVal: data.stageMaxGrowVal2 / 100,
+      adjPt: data.adjPt_maxGrowVal2,
+    },
+    {
+      maxVal: data.stageMaxVal3,
+      maxGrowVal: data.stageMaxGrowVal3 / 100,
+      adjPt: data.adjPt_maxGrowVal3,
+    },
+    {
+      maxVal: data.stageMaxVal4,
+      maxGrowVal: data.stageMaxGrowVal4 / 100,
+      adjPt: data.adjPt_maxGrowVal4,
+    },
+  ];
+}
+
+function parseAttackElementCorrect({ data }: CsvRow): Partial<Record<DamageType, Attribute[]>> {
+  function attributeArray(...args: (Attribute | 0)[]) {
+    const attributes = args.filter((attribute): attribute is Attribute => !!attribute);
+    return attributes.length ? attributes : undefined;
+  }
+  return {
+    physical: attributeArray(
+      data.isStrengthCorrect_byPhysics && "str",
+      data.isDexterityCorrect_byPhysics && "dex",
+      data.isFaithCorrect_byPhysics && "fai",
+      data.isMagicCorrect_byPhysics && "int",
+      data.isLuckCorrect_byPhysics && "arc",
+    ),
+    magic: attributeArray(
+      data.isStrengthCorrect_byMagic && "str",
+      data.isDexterityCorrect_byMagic && "dex",
+      data.isFaithCorrect_byMagic && "fai",
+      data.isMagicCorrect_byMagic && "int",
+      data.isLuckCorrect_byMagic && "arc",
+    ),
+    fire: attributeArray(
+      data.isStrengthCorrect_byFire && "str",
+      data.isDexterityCorrect_byFire && "dex",
+      data.isFaithCorrect_byFire && "fai",
+      data.isMagicCorrect_byFire && "int",
+      data.isLuckCorrect_byFire && "arc",
+    ),
+    lightning: attributeArray(
+      data.isStrengthCorrect_byThunder && "str",
+      data.isDexterityCorrect_byThunder && "dex",
+      data.isFaithCorrect_byThunder && "fai",
+      data.isMagicCorrect_byThunder && "int",
+      data.isLuckCorrect_byThunder && "arc",
+    ),
+    holy: attributeArray(
+      data.isStrengthCorrect_byDark && "str",
+      data.isDexterityCorrect_byDark && "dex",
+      data.isFaithCorrect_byDark && "fai",
+      data.isMagicCorrect_byDark && "int",
+      data.isLuckCorrect_byDark && "arc",
+    ),
+  };
+}
+
+function parseReinforceParamWeapon({ data }: CsvRow): ReinforceParamWeapon {
+  return {
+    attack: {
+      physical: data.physicsAtkRate,
+      magic: data.magicAtkRate,
+      fire: data.fireAtkRate,
+      lightning: data.thunderAtkRate,
+      holy: data.darkAtkRate,
+    },
+    attributeScaling: {
+      str: data.correctStrengthRate,
+      dex: data.correctAgilityRate,
+      int: data.correctMagicRate,
+      fai: data.correctFaithRate,
+      arc: data.correctLuckRate,
+    },
+    statusSpEffectId1: ifNotDefault(data.spEffectId1, 0),
+    statusSpEffectId2: ifNotDefault(data.spEffectId2, 0),
+    statusSpEffectId3: ifNotDefault(data.spEffectId3, 0),
+  };
+}
+
+function parseStatusSpEffectParams(
+  statusSpEffectParamId: number,
+): Partial<Record<StatusType, number>> | null {
+  const spEffectParam = spEffectParams.get(statusSpEffectParamId);
+  if (!spEffectParam) {
+    return null;
+  }
+
+  const statuses = {
+    Poison: ifNotDefault(spEffectParam.data.poizonAttackPower, 0),
+    "Scarlet Rot": ifNotDefault(spEffectParam.data.diseaseAttackPower, 0),
+    Bleed: ifNotDefault(spEffectParam.data.bloodAttackPower, 0),
+    Frost: ifNotDefault(spEffectParam.data.freezeAttackPower, 0),
+    Sleep: ifNotDefault(spEffectParam.data.sleepAttackPower, 0),
+    Madness: ifNotDefault(spEffectParam.data.madnessAttackPower, 0),
+  };
+
+  if (Object.values(statuses).some((value) => value !== undefined)) {
+    return statuses;
+  }
+
+  return null;
+}
+
+const calcCorrectGraphsJson = Object.fromEntries(
+  [...calcCorrectGraphs.entries()].map(([id, calcCorrectGraph]) => [
+    id,
+    parseCalcCorrectGraph(calcCorrectGraph),
+  ]),
+);
+
+const weaponsJson = [...equipParamWeapons.values()]
+  .map(parseWeapon)
+  .filter((w): w is EncodedWeaponJson => w != null);
+
+// Accumulate every AttackElementCorrectParam entry used by at least one weapon
+const attackElementCorrectIds = new Set(weaponsJson.map((weapon) => weapon.attackElementCorrectId));
+const attackElementCorrectsJson = Object.fromEntries(
+  [...attackElementCorrectParams.entries()]
+    .filter(([id]) => attackElementCorrectIds.has(id))
+    .map(([id, row]) => [id, parseAttackElementCorrect(row)]),
+);
+
+// Accumulate every ReinforceParamWeapon entry used by at least one weapon
+const reinforceTypeIds = new Set(weaponsJson.map((weapon) => weapon.reinforceTypeId));
+const reinforceTypesJson: { [reinforceId in number]?: ReinforceParamWeapon[] } = {};
+reinforceParamWeapons.forEach((reinforceParamWeapon, reinforceParamId) => {
+  const reinforceLevel = reinforceParamId % 50;
+  const reinforceTypeId = reinforceParamId - reinforceLevel;
+  if (reinforceTypeIds.has(reinforceTypeId)) {
+    (reinforceTypesJson[reinforceTypeId] ??= [])[reinforceLevel] =
+      parseReinforceParamWeapon(reinforceParamWeapon);
+  }
+});
+
+// Accumulate every SpEffectParam entry used by at least one weapon to add innate status effect
+// buildup
+const statusSpEffectParamIds = new Set<number>();
+weaponsJson.forEach((weapon) => {
+  const reinforceParamWeapons = reinforceTypesJson[weapon.reinforceTypeId]!;
+  reinforceParamWeapons.forEach(({ statusSpEffectId1, statusSpEffectId2, statusSpEffectId3 }) => {
+    weapon.statusSpEffectParamIds.forEach((spEffectParamId, i) => {
+      if (spEffectParamId) {
+        const offset = [statusSpEffectId1, statusSpEffectId2, statusSpEffectId3][i] ?? 0;
+        statusSpEffectParamIds.add(spEffectParamId + offset);
+      }
     });
   });
-};
-
-const weapons = loadWeapons();
-
-const indexesByWeaponName = new Map<string, number>();
-for (const weapon of weapons) {
-  if (!indexesByWeaponName.has(weapon.metadata.weaponName)) {
-    indexesByWeaponName.set(weapon.metadata.weaponName, indexesByWeaponName.size);
+});
+const statusSpEffectParamsJson: {
+  [spEffectParamId in number]?: Partial<Record<StatusType, number>>;
+} = {};
+for (const spEffectParamId of spEffectParams.keys()) {
+  if (statusSpEffectParamIds.has(spEffectParamId)) {
+    statusSpEffectParamsJson[spEffectParamId] = parseStatusSpEffectParams(spEffectParamId)!;
   }
 }
 
-// Group every upgrade level for each weapon
-const weaponGroups = (() => {
-  const tmp = new Map<string, Weapon[]>();
-  for (const weapon of weapons) {
-    const key = `${weapon.metadata.weaponName}/${weapon.metadata.affinity}`;
-    if (tmp.has(key)) {
-      tmp.get(key)?.push(weapon);
-    } else {
-      tmp.set(key, [weapon]);
-    }
-  }
-  return [...tmp.values()];
-})();
+const regulationDataJson: EncodedRegulationDataJson = {
+  calcCorrectGraphs: calcCorrectGraphsJson,
+  attackElementCorrects: attackElementCorrectsJson,
+  reinforceTypes: reinforceTypesJson,
+  statusSpEffectParams: statusSpEffectParamsJson,
+  weapons: weaponsJson,
+};
 
-const outputPath = resolve(cwd(), argv[2]);
-writeFileSync(
-  outputPath,
-  JSON.stringify([
-    [...indexesByWeaponName.keys()],
-    weaponGroups
-      .map((weaponGroup) => encodeWeapon(weaponGroup, indexesByWeaponName))
-      .map((encodedWeapon) => encodedWeapon.filter((field) => field !== undefined)),
-  ]),
-);
+writeFileSync(outputFile, JSON.stringify(regulationDataJson));

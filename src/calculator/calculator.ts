@@ -7,24 +7,45 @@ import {
   allStatusTypes,
   adjustAttributesForTwoHanding,
 } from "./utils";
-import { Weapon } from "./weapon";
-import { damageScalingCurves, statusCurve } from "./scalingCurves";
+import { CalcCorrectGraph, Weapon } from "./weapon";
 
 export interface WeaponAttackOptions {
   weapon: Weapon;
   attributes: Attributes;
   twoHanding?: boolean;
-}
-
-export interface AttackPower {
-  baseAttackPower: number;
-  scalingAttackPower: number;
+  upgradeLevel: number;
 }
 
 export interface WeaponAttackResult {
-  attackRating: Partial<Record<DamageType, AttackPower>>;
+  upgradeLevel: number;
+  attackPower: Partial<Record<DamageType, number>>;
   statusBuildup: Partial<Record<StatusType, number>>;
   ineffectiveAttributes: Attribute[];
+}
+
+/**
+ * @param attributeValue a raw player attribute from 1 to 99+
+ * @returns the scaling from that attribute, as a fraction of the weapon's maximum scaling in that attribute
+ */
+function calcCorrect(calcCorrectGraph: CalcCorrectGraph, attributeValue: number) {
+  for (let i = 1; i < calcCorrectGraph.length; i++) {
+    const prevStage = calcCorrectGraph[i - 1];
+    const stage = calcCorrectGraph[i];
+
+    if (attributeValue <= stage.maxVal || i === calcCorrectGraph.length - 1) {
+      let normalizedAttribute =
+        (attributeValue - prevStage.maxVal) / (stage.maxVal - prevStage.maxVal);
+
+      if (prevStage.adjPt > 0) {
+        normalizedAttribute = normalizedAttribute ** prevStage.adjPt;
+      } else if (prevStage.adjPt < 0) {
+        normalizedAttribute = 1 - (1 - normalizedAttribute) ** -prevStage.adjPt;
+      }
+
+      return prevStage.maxGrowVal + (stage.maxGrowVal - prevStage.maxGrowVal) * normalizedAttribute;
+    }
+  }
+  return 0;
 }
 
 /**
@@ -34,6 +55,7 @@ export default function getWeaponAttack({
   weapon,
   attributes,
   twoHanding,
+  upgradeLevel,
 }: WeaponAttackOptions): WeaponAttackResult {
   const effectiveAttributes = adjustAttributesForTwoHanding({ twoHanding, weapon, attributes });
 
@@ -41,12 +63,15 @@ export default function getWeaponAttack({
     .filter(([attribute, requirement]) => effectiveAttributes[attribute] < requirement)
     .map(([attribute]) => attribute);
 
-  const attackRating: Partial<Record<DamageType, AttackPower>> = {};
+  const attack = weapon.attack[upgradeLevel];
+  const attributeScaling = weapon.attributeScaling[upgradeLevel];
+
+  const attackPower: Partial<Record<DamageType, number>> = {};
   for (const damageType of allDamageTypes) {
-    if (damageType in weapon.attack) {
-      const baseAttackPower = weapon.attack[damageType] ?? 0;
-      const scalingAttributes = weapon.damageScalingAttributes[damageType] ?? [];
-      const scalingCurve = damageScalingCurves[weapon.damageScalingCurves[damageType] ?? 0];
+    const baseAttackPower = attack?.[damageType] ?? 0;
+    if (baseAttackPower) {
+      const scalingAttributes = weapon.attackElementCorrect[damageType] ?? [];
+      const calcCorrectGraph = weapon.calcCorrectGraphs[damageType]!;
 
       let scalingMultiplier = 0;
 
@@ -59,47 +84,56 @@ export default function getWeaponAttack({
         // attribute, and the current value of that attribute a curve. If this damage type scales
         // with multiple attributes, the products are added together.
         for (const attribute of scalingAttributes) {
-          const scaling = weapon.attributeScaling[attribute] ?? 0;
-          scalingMultiplier += scalingCurve(effectiveAttributes[attribute]) * scaling;
+          const scaling = attributeScaling[attribute];
+          if (scaling) {
+            scalingMultiplier +=
+              calcCorrect(calcCorrectGraph, effectiveAttributes[attribute]) * scaling;
+          }
         }
       }
 
-      attackRating[damageType] = {
-        baseAttackPower,
-        scalingAttackPower: scalingMultiplier * baseAttackPower,
-      };
+      attackPower[damageType] = baseAttackPower * (1 + scalingMultiplier);
     }
   }
 
   const statusBuildup: Partial<Record<StatusType, number>> = {};
   for (const statusType of allStatusTypes) {
-    if (statusType in weapon.statuses) {
-      const statusBase = weapon.statuses[statusType] ?? 0;
+    const baseStatusBuildup = attack[statusType] ?? 0;
+    if (baseStatusBuildup) {
+      const attribute = "arc";
+      const calcCorrectGraph = weapon.calcCorrectGraphs[statusType]!;
 
       let scalingMultiplier = 0;
-      if (effectiveAttributes.arc < (weapon.requirements.arc ?? 0)) {
-        // If the arcane requirement is not met, a 40% penalty is subtracted instead of a scaling
-        // bonus being added
-        scalingMultiplier = -0.4;
-      } else if (
-        statusType === "Poison" ||
-        statusType === "Bleed" ||
-        statusType === "Madness" ||
-        statusType === "Sleep"
+      if (
+        (statusType === "Poison" ||
+          statusType === "Bleed" ||
+          statusType === "Madness" ||
+          statusType === "Sleep") &&
+        attributeScaling[attribute]
       ) {
-        // Otherwise, the scaling multiplier for certain status types is equal to the product of
-        // the arcane scaling and the current arcane stat on a special curve.
-        scalingMultiplier =
-          (weapon.attributeScaling.arc ?? 0) * statusCurve(effectiveAttributes.arc);
+        if (effectiveAttributes[attribute] < (weapon.requirements[attribute] ?? 0)) {
+          // If the arcane requirement is not met, a 40% penalty is subtracted instead of a scaling
+          // bonus being added
+          scalingMultiplier = -0.4;
+        } else {
+          // Otherwise, the scaling multiplier for certain status types is equal to the product of
+          // the arcane scaling and the current arcane stat on a special curve.
+          const scaling = attributeScaling[attribute];
+          if (scaling) {
+            scalingMultiplier =
+              scaling * calcCorrect(calcCorrectGraph, effectiveAttributes[attribute]);
+          }
+        }
       }
 
-      statusBuildup[statusType] = statusBase * (1 + scalingMultiplier);
+      statusBuildup[statusType] = baseStatusBuildup * (1 + scalingMultiplier);
     }
   }
 
   return {
-    attackRating,
-    statusBuildup: statusBuildup,
+    upgradeLevel,
+    attackPower,
+    statusBuildup,
     ineffectiveAttributes,
   };
 }

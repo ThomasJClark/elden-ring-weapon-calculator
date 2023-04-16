@@ -84,7 +84,7 @@ const useMenuState = () => {
 export default function App() {
   const {
     darkMode,
-    affinities,
+    affinityIds,
     weaponTypes,
     attributes,
     effectiveOnly,
@@ -95,7 +95,7 @@ export default function App() {
     sortBy,
     reverse,
     setDarkMode,
-    setAffinities,
+    setAffinityIds,
     setWeaponTypes,
     setAttribute,
     setEffectiveOnly,
@@ -112,18 +112,26 @@ export default function App() {
   // TODO pagination if there are >200 results
   const offset = 0;
   const limit = 200;
-  const { weapons, loading, error } = useWeapons(upgradeLevel);
+  const { weapons, loading, error } = useWeapons();
+
+  const allAffinityIds = useMemo(
+    () => [...new Set(weapons.map((weapon) => weapon.affinityId))],
+    [weapons],
+  );
+
   const { rowGroups, total } = useWeaponTableRows({
     weapons,
+    allAffinityIds,
     offset,
     limit,
     sortBy,
     reverse,
-    affinities,
+    affinityIds,
     weaponTypes,
     attributes,
     effectiveOnly,
     twoHanding,
+    upgradeLevel,
     groupWeaponTypes,
   });
 
@@ -180,7 +188,11 @@ export default function App() {
 
   const drawerContent = (
     <>
-      <AffinityPicker affinities={affinities} onAffinitiesChanged={setAffinities} />
+      <AffinityPicker
+        allAffinityIds={allAffinityIds}
+        selectedAffinityIds={affinityIds}
+        onAffinityIdsChanged={setAffinityIds}
+      />
       <WeaponTypePicker weaponTypes={weaponTypes} onWeaponTypesChanged={setWeaponTypes} />
     </>
   );
@@ -203,7 +215,7 @@ export default function App() {
         sx={(theme) => ({
           p: 3,
           [theme.breakpoints.up("md")]: {
-            gridTemplateColumns: menuOpen ? `300px 1fr` : "1fr",
+            gridTemplateColumns: menuOpen ? `320px 1fr` : "1fr",
             alignContent: "start",
             alignItems: "start",
             gap: 2,

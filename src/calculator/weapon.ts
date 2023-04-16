@@ -1,22 +1,25 @@
-import type {
-  Affinity,
-  Attribute,
-  DamageType,
-  MaxUpgradeLevel,
-  StatusType,
-  WeaponType,
-} from "./utils";
+import type { Attribute, DamageType, StatusType, WeaponType } from "./utils";
 
 export interface Weapon {
   /**
-   * The full unique name of the weapon, e.g. "Heavy Nightrider Glaive +25"
+   * The full unique name of the weapon, e.g. "Heavy Nightrider Glaive"
    */
   name: string;
 
   /**
-   * Extra info for searching/filtering that doesn't affect the attack rating calculation
+   * The base weapon name without an affinity specified, e.g. "Nightrider Glaive"
    */
-  metadata: WeaponMetadata;
+  weaponName: string;
+
+  /**
+   * The affinity of the weapon for filtering, see uiUtils.tsx for a full list of vanilla affinities
+   */
+  affinityId: number;
+
+  /**
+   * The category of the weapon for filtering
+   */
+  weaponType: WeaponType;
 
   /**
    * Player attribute requirements to use the weapon effectively (without an attack rating penalty)
@@ -24,29 +27,24 @@ export interface Weapon {
   requirements: Partial<Record<Attribute, number>>;
 
   /**
-   * Base attack rating for each damage type
+   * Scaling amount for each player attribute at each upgrade level
    */
-  attack: Partial<Record<DamageType, number>>;
+  attributeScaling: Partial<Record<Attribute, number>>[];
 
   /**
-   * Scaling amount for each player attribute
+   * Base attack power for each damage type and status effect at each upgrade level
    */
-  attributeScaling: Partial<Record<Attribute, number>>;
+  attack: Partial<Record<DamageType | StatusType, number>>[];
 
   /**
    * Map indicating which damage types scale with which player attributes
    */
-  damageScalingAttributes: Partial<Record<DamageType, Attribute[]>>;
+  attackElementCorrect: Partial<Record<DamageType, Attribute[]>>;
 
   /**
-   * Map indicating which scaling curve is used for each damage type
+   * Map indicating which scaling curve is used for each damage type or status effect
    */
-  damageScalingCurves: Partial<Record<DamageType, WeaponScalingCurve>>;
-
-  /**
-   * Map indicating the base buildup amount for any status effects this weapon has
-   */
-  statuses: Partial<Record<StatusType, number>>;
+  calcCorrectGraphs: Record<DamageType | StatusType, CalcCorrectGraph>;
 
   /**
    * True if the weapon doesn't get a strength bonus when two-handing
@@ -54,12 +52,11 @@ export interface Weapon {
   paired: boolean;
 }
 
-export type WeaponScalingCurve = 0 | 1 | 2 | 4 | 7 | 8 | 12 | 14 | 15 | 16;
-
-export interface WeaponMetadata {
-  upgradeLevel: number;
-  maxUpgradeLevel: MaxUpgradeLevel;
-  weaponName: string;
-  affinity: Affinity;
-  weaponType: WeaponType;
-}
+export type CalcCorrectGraph = {
+  /** The highest attribute value where this stage applies (i.e. the "soft cap") */
+  maxVal: number;
+  /** The highest scaling value within this stage */
+  maxGrowVal: number;
+  /** Exponent used for non-linear scaling curves */
+  adjPt: number;
+}[];

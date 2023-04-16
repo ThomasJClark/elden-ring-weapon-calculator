@@ -1,4 +1,4 @@
-import { Affinity, AttackPower, Attribute, DamageType, StatusType } from "../calculator/calculator";
+import { Attribute, DamageType, StatusType } from "../calculator/calculator";
 import specialWeaponIcon from "./img/specialWeapon.webp";
 import standardAffinityIcon from "./img/standardAffinity.webp";
 import heavyAffinityIcon from "./img/heavyAffinity.webp";
@@ -19,44 +19,41 @@ import frostStatusIcon from "./img/frostStatus.webp";
 import poisonStatusIcon from "./img/poisonStatus.webp";
 import bleedStatusIcon from "./img/bleedStatus.webp";
 
-export function getAffinityLabel(affinity: Affinity) {
-  switch (affinity) {
-    case "Special":
-      return "Unique";
-    default:
-      return affinity;
-  }
-}
+export function getAffinityDisplay(affinityId: number) {
+  switch (affinityId) {
+    // Special fake affinity ID for uninfusable weapons
+    case -1:
+      return { label: "Unique", icon: specialWeaponIcon };
 
-export function getAffinityIcon(affinity: Affinity): string {
-  switch (affinity) {
-    case "Standard":
-      return standardAffinityIcon;
-    case "Heavy":
-      return heavyAffinityIcon;
-    case "Keen":
-      return keenAffinityIcon;
-    case "Quality":
-      return qualityAffinityIcon;
-    case "Magic":
-      return magicAffinityIcon;
-    case "Cold":
-      return coldAffinityIcon;
-    case "Fire":
-    case "Flame Art":
-      return fireAffinityIcon;
-    case "Lightning":
-      return lightningAffinityIcon;
-    case "Sacred":
-      return sacredAffinityIcon;
-    case "Poison":
-      return poisonAffinityIcon;
-    case "Blood":
-      return bloodAffinityIcon;
-    case "Occult":
-      return occultAffinityIcon;
-    case "Special":
-      return specialWeaponIcon;
+    case 0:
+      return { label: "Standard", icon: standardAffinityIcon };
+    case 100:
+      return { label: "Heavy", icon: heavyAffinityIcon };
+    case 200:
+      return { label: "Keen", icon: keenAffinityIcon };
+    case 300:
+      return { label: "Quality", icon: qualityAffinityIcon };
+    case 400:
+      return { label: "Fire", icon: fireAffinityIcon };
+    case 500:
+      return { label: "Flame Art", icon: fireAffinityIcon };
+    case 600:
+      return { label: "Lightning", icon: lightningAffinityIcon };
+    case 700:
+      return { label: "Sacred", icon: sacredAffinityIcon };
+    case 800:
+      return { label: "Magic", icon: magicAffinityIcon };
+    case 900:
+      return { label: "Cold", icon: coldAffinityIcon };
+    case 1000:
+      return { label: "Poison", icon: poisonAffinityIcon };
+    case 1100:
+      return { label: "Blood", icon: bloodAffinityIcon };
+    case 1200:
+      return { label: "Occult", icon: occultAffinityIcon };
+
+    default:
+      throw new Error(`Unknown affinity ID: ${affinityId}`);
   }
 }
 
@@ -155,18 +152,9 @@ export function getScalingLabel(scaling: number) {
   }
 }
 
-export function getDamageTypeAttackPower(
-  attackRating: Partial<Record<DamageType, AttackPower>>,
-  damageType: DamageType,
-) {
-  const attackPower = attackRating[damageType];
-  return attackPower != null ? attackPower.baseAttackPower + attackPower.scalingAttackPower : 0;
-}
-
-export function getTotalAttackPower(attackRating: Partial<Record<DamageType, AttackPower>>) {
-  return Object.values(attackRating).reduce(
-    (totalAttackPower, attackPower) =>
-      totalAttackPower + attackPower.baseAttackPower + attackPower.scalingAttackPower,
+export function getTotalAttackPower(attackPower: Partial<Record<DamageType, number>>) {
+  return Object.values(attackPower).reduce(
+    (totalAttackPower, damageTypeAttackPower) => totalAttackPower + damageTypeAttackPower,
     0,
   );
 }
