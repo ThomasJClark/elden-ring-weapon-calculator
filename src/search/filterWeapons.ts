@@ -10,12 +10,12 @@ export interface FilterWeaponsOptions {
   /**
    * Only include these types of weapons
    */
-  weaponTypes: readonly WeaponType[];
+  weaponTypes: ReadonlySet<WeaponType>;
 
   /**
    * Only include weapons infused with one of these affinities
    */
-  affinityIds: readonly number[];
+  affinityIds: ReadonlySet<number>;
 
   /**
    * Only include weapons that are effective with the given player attribute values
@@ -23,40 +23,53 @@ export interface FilterWeaponsOptions {
   effectiveWithAttributes?: Attributes;
 
   twoHanding?: boolean;
+
+  /**
+   * Weapon types where the "Standard" vs. "Special" distinction doesn't exist for affinity
+   * filtering purposes since no weapons can have affinities
+   */
+  uninfusableWeaponTypes?: Set<WeaponType>;
 }
 
-/** Weapon types that can never have an affinity applied, so an affinity filter doesn't make sense */
-export const uninfusableWeaponTypes: WeaponType[] = [
-  "Light Bow",
-  "Bow",
-  "Greatbow",
-  "Crossbow",
-  "Ballista",
-  "Torch",
-  "Glintstone Staff",
-  "Sacred Seal",
-];
-
+/**
+ * Implements the UI/business logic for filtering weapons by type, affinity, etc.
+ */
 export default function filterWeapons(
-  weapons: IterableIterator<Weapon>,
-  { weaponTypes, affinityIds, effectiveWithAttributes, twoHanding }: FilterWeaponsOptions,
+  weapons: readonly Weapon[],
+  {
+    weaponTypes,
+    affinityIds,
+    effectiveWithAttributes,
+    twoHanding,
+    uninfusableWeaponTypes,
+  }: FilterWeaponsOptions,
 ): readonly Weapon[] {
   function filterWeapon(weapon: Weapon): boolean {
-    if (weaponTypes.length > 0 && !weaponTypes.includes(weapon.weaponType)) {
-      return false;
+    if (weaponTypes.size > 0) {
+      if (
+        !weaponTypes.has(weapon.weaponType) &&
+        // Treat hybrid seals/staves as either category
+        !(
+          weapon.weaponType === WeaponType.UNIVERSAL_CATALYST &&
+          (weaponTypes.has(WeaponType.SACRED_SEAL) || weaponTypes.has(WeaponType.GLINTSTONE_STAFF))
+        )
+      ) {
+        return false;
+      }
     }
 
-    if (
-      affinityIds.length > 0 &&
-      !affinityIds.some(
-        (affinityId) =>
-          affinityId === weapon.affinityId ||
-          // Include uninfusable categories of armaments (torches etc.) if special weapons are included,
-          // since the standard vs. unique distinction doesn't apply to these categories
-          (affinityId === -1 && uninfusableWeaponTypes.includes(weapon.weaponType)),
-      )
-    ) {
-      return false;
+    if (affinityIds.size > 0) {
+      if (
+        !affinityIds.has(weapon.affinityId) &&
+        // Treat uninfusable categories of armaments (torches etc.) as either standard or unique,
+        // since the distinction doesn't apply to these categories
+        !(
+          uninfusableWeaponTypes?.has(weapon.weaponType) &&
+          (affinityIds.has(0) || affinityIds.has(-1))
+        )
+      ) {
+        return false;
+      }
     }
 
     if (effectiveWithAttributes != null) {
@@ -78,11 +91,5 @@ export default function filterWeapons(
     return true;
   }
 
-  const filteredWeapons: Weapon[] = [];
-  for (const weapon of weapons) {
-    if (filterWeapon(weapon)) {
-      filteredWeapons.push(weapon);
-    }
-  }
-  return filteredWeapons;
+  return weapons.filter(filterWeapon);
 }

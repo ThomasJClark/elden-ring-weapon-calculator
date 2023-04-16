@@ -1,9 +1,9 @@
 import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { memo } from "react";
-import { getAffinityDisplay } from "./uiUtils";
+import type { AffinityOption } from "./uiUtils";
 
 interface Props {
-  allAffinityIds: readonly number[];
+  affinityOptions: ReadonlyMap<number, AffinityOption>;
   selectedAffinityIds: readonly number[];
   onAffinityIdsChanged(affinityIds: readonly number[]): void;
 }
@@ -11,10 +11,8 @@ interface Props {
 /**
  * Set of checkboxes for selecting which weapon affinities to show
  */
-function AffinityPicker({ allAffinityIds, selectedAffinityIds, onAffinityIdsChanged }: Props) {
-  function renderAffinityCheckbox(affinityId: number) {
-    const { label, icon } = getAffinityDisplay(affinityId);
-
+function AffinityPicker({ affinityOptions, selectedAffinityIds, onAffinityIdsChanged }: Props) {
+  function renderAffinityCheckbox([affinityId, { text, icon }]: [number, AffinityOption]) {
     return (
       <FormControlLabel
         key={affinityId}
@@ -29,7 +27,7 @@ function AffinityPicker({ allAffinityIds, selectedAffinityIds, onAffinityIdsChan
             }}
           >
             {icon && <img src={icon} width={24} height={24} alt="" />}
-            <span>{label}</span>
+            <span>{text}</span>
           </Box>
         }
         sx={{ display: "block", mr: 0, my: "-4px" }}
@@ -37,7 +35,7 @@ function AffinityPicker({ allAffinityIds, selectedAffinityIds, onAffinityIdsChan
           <Checkbox
             size="small"
             checked={selectedAffinityIds.includes(+affinityId)}
-            name={label}
+            name={text}
             onChange={(evt) =>
               onAffinityIdsChanged(
                 evt.currentTarget.checked
@@ -51,6 +49,8 @@ function AffinityPicker({ allAffinityIds, selectedAffinityIds, onAffinityIdsChan
     );
   }
 
+  const affinityList = [...affinityOptions];
+
   return (
     <Box display="grid" sx={{ gap: 1 }}>
       <Typography component="h2" variant="h6">
@@ -59,12 +59,10 @@ function AffinityPicker({ allAffinityIds, selectedAffinityIds, onAffinityIdsChan
 
       <Box display="grid" sx={{ gridTemplateColumns: "1fr 1fr" }}>
         <Box>
-          {allAffinityIds
-            .slice(0, Math.floor(allAffinityIds.length / 2))
-            .map(renderAffinityCheckbox)}
+          {affinityList.slice(0, Math.floor(affinityList.length / 2)).map(renderAffinityCheckbox)}
         </Box>
         <Box>
-          {allAffinityIds.slice(Math.floor(allAffinityIds.length / 2)).map(renderAffinityCheckbox)}
+          {affinityList.slice(Math.floor(affinityList.length / 2)).map(renderAffinityCheckbox)}
         </Box>
       </Box>
     </Box>

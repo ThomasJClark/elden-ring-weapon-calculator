@@ -19,9 +19,10 @@ import WeaponListSettings from "./WeaponListSettings";
 import WeaponTable from "./weaponTable/WeaponTable";
 import useWeaponTableRows from "./weaponTable/useWeaponTableRows";
 import { darkTheme, lightTheme } from "./theme";
-import useWeapons from "./useWeapons";
+import useWeapons, { regulationVersions } from "./useWeapons";
 import useAppState from "./useAppState";
 import AppBar from "./AppBar";
+import RegulationVersionPicker from "./RegulationVersionPicker";
 import WeaponTypePicker from "./WeaponTypePicker";
 import AffinityPicker from "./AffinityPicker";
 import Footer from "./Footer";
@@ -81,8 +82,23 @@ const useMenuState = () => {
   };
 };
 
+function RegulationVersionAlert({ children }: { children: ReactNode }) {
+  const [dismissed, setDismissed] = useState(false);
+
+  if (!children || dismissed) {
+    return null;
+  }
+
+  return (
+    <Alert severity="info" onClose={() => setDismissed(true)}>
+      {children}
+    </Alert>
+  );
+}
+
 export default function App() {
   const {
+    regulationVersionName,
     darkMode,
     affinityIds,
     weaponTypes,
@@ -94,6 +110,7 @@ export default function App() {
     groupWeaponTypes,
     sortBy,
     reverse,
+    setRegulationVersionName,
     setDarkMode,
     setAffinityIds,
     setWeaponTypes,
@@ -112,16 +129,13 @@ export default function App() {
   // TODO pagination if there are >200 results
   const offset = 0;
   const limit = 200;
-  const { weapons, loading, error } = useWeapons();
+  const { weapons, loading, error } = useWeapons(regulationVersionName);
 
-  const allAffinityIds = useMemo(
-    () => [...new Set(weapons.map((weapon) => weapon.affinityId))],
-    [weapons],
-  );
+  const regulationVersion = regulationVersions[regulationVersionName];
 
-  const { rowGroups, total } = useWeaponTableRows({
+  const { rowGroups, statusTypes, total } = useWeaponTableRows({
     weapons,
-    allAffinityIds,
+    regulationVersion,
     offset,
     limit,
     sortBy,
@@ -180,6 +194,7 @@ export default function App() {
         sortBy={sortBy}
         reverse={reverse}
         splitDamage={splitDamage}
+        statusTypes={statusTypes}
         onSortByChanged={setSortBy}
         onReverseChanged={setReverse}
       />
@@ -188,8 +203,12 @@ export default function App() {
 
   const drawerContent = (
     <>
+      <RegulationVersionPicker
+        regulationVersionName={regulationVersionName}
+        onRegulationVersionNameChanged={setRegulationVersionName}
+      />
       <AffinityPicker
-        allAffinityIds={allAffinityIds}
+        affinityOptions={regulationVersion.affinityOptions}
         selectedAffinityIds={affinityIds}
         onAffinityIdsChanged={setAffinityIds}
       />
@@ -215,7 +234,7 @@ export default function App() {
         sx={(theme) => ({
           p: 3,
           [theme.breakpoints.up("md")]: {
-            gridTemplateColumns: menuOpen ? `320px 1fr` : "1fr",
+            gridTemplateColumns: menuOpen ? `300px 1fr` : "1fr",
             alignContent: "start",
             alignItems: "start",
             gap: 2,
@@ -283,6 +302,10 @@ export default function App() {
             onSplitDamageChanged={setSplitDamage}
             onGroupWeaponTypesChanged={setGroupWeaponTypes}
           />
+
+          <RegulationVersionAlert key={regulationVersionName}>
+            {regulationVersion.info}
+          </RegulationVersionAlert>
 
           {mainContent}
 

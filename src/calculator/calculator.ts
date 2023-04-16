@@ -1,51 +1,60 @@
-import {
-  allDamageTypes,
-  DamageType,
-  Attributes,
-  Attribute,
-  StatusType,
-  allStatusTypes,
-  adjustAttributesForTwoHanding,
-} from "./utils";
-import { CalcCorrectGraph, Weapon } from "./weapon";
+import type { Attribute, Attributes } from "./attributes";
+import { type DamageType, allDamageTypes, allStatusTypes } from "./damageTypes";
+import type { Weapon } from "./weapon";
+import { WeaponType } from "./weaponTypes";
 
-export interface WeaponAttackOptions {
+interface WeaponAttackOptions {
   weapon: Weapon;
   attributes: Attributes;
   twoHanding?: boolean;
   upgradeLevel: number;
+  disableTwoHandingAttackPowerBonus?: boolean;
 }
 
 export interface WeaponAttackResult {
   upgradeLevel: number;
   attackPower: Partial<Record<DamageType, number>>;
-  statusBuildup: Partial<Record<StatusType, number>>;
   ineffectiveAttributes: Attribute[];
 }
 
 /**
- * @param attributeValue a raw player attribute from 1 to 99+
- * @returns the scaling from that attribute, as a fraction of the weapon's maximum scaling in that attribute
+ * Adjust a set of character attributes to take into account the 50% Strength bonus when two
+ * handing a weapon
  */
-function calcCorrect(calcCorrectGraph: CalcCorrectGraph, attributeValue: number) {
-  for (let i = 1; i < calcCorrectGraph.length; i++) {
-    const prevStage = calcCorrectGraph[i - 1];
-    const stage = calcCorrectGraph[i];
+export function adjustAttributesForTwoHanding({
+  twoHanding = false,
+  weapon,
+  attributes,
+}: {
+  twoHanding?: boolean;
+  weapon: Weapon;
+  attributes: Attributes;
+}): Attributes {
+  let twoHandingBonus = twoHanding;
 
-    if (attributeValue <= stage.maxVal || i === calcCorrectGraph.length - 1) {
-      let normalizedAttribute =
-        (attributeValue - prevStage.maxVal) / (stage.maxVal - prevStage.maxVal);
-
-      if (prevStage.adjPt > 0) {
-        normalizedAttribute = normalizedAttribute ** prevStage.adjPt;
-      } else if (prevStage.adjPt < 0) {
-        normalizedAttribute = 1 - (1 - normalizedAttribute) ** -prevStage.adjPt;
-      }
-
-      return prevStage.maxGrowVal + (stage.maxGrowVal - prevStage.maxGrowVal) * normalizedAttribute;
-    }
+  // Paired weapons do not get the two handing bonus
+  if (weapon.paired) {
+    twoHandingBonus = false;
   }
-  return 0;
+
+  // Bows and ballistae can only be two handed
+  if (
+    weapon.weaponType === WeaponType.LIGHT_BOW ||
+    weapon.weaponType === WeaponType.BOW ||
+    weapon.weaponType === WeaponType.GREATBOW ||
+    weapon.weaponType === WeaponType.BALLISTA
+  ) {
+    twoHandingBonus = true;
+  }
+
+  if (twoHandingBonus) {
+    return {
+      ...attributes,
+      str: Math.floor(attributes.str * 1.5),
+    };
+  }
+
+  return attributes;
 }
 
 /**
@@ -56,22 +65,25 @@ export default function getWeaponAttack({
   attributes,
   twoHanding,
   upgradeLevel,
+  disableTwoHandingAttackPowerBonus,
 }: WeaponAttackOptions): WeaponAttackResult {
-  const effectiveAttributes = adjustAttributesForTwoHanding({ twoHanding, weapon, attributes });
+  let effectiveAttributes = adjustAttributesForTwoHanding({ twoHanding, weapon, attributes });
 
   const ineffectiveAttributes = (Object.entries(weapon.requirements) as [Attribute, number][])
     .filter(([attribute, requirement]) => effectiveAttributes[attribute] < requirement)
     .map(([attribute]) => attribute);
 
-  const attack = weapon.attack[upgradeLevel];
-  const attributeScaling = weapon.attributeScaling[upgradeLevel];
+  if (disableTwoHandingAttackPowerBonus) {
+    effectiveAttributes = attributes;
+  }
 
   const attackPower: Partial<Record<DamageType, number>> = {};
-  for (const damageType of allDamageTypes) {
-    const baseAttackPower = attack?.[damageType] ?? 0;
+  for (const damageType of [...allDamageTypes, ...allStatusTypes]) {
+    const baseAttackPower = weapon.attack[upgradeLevel][damageType] ?? 0;
     if (baseAttackPower) {
+      // This weapon's AttackElementCorrectParam determines what attributes each damage type scales
+      // with
       const scalingAttributes = weapon.attackElementCorrect[damageType] ?? [];
-      const calcCorrectGraph = weapon.calcCorrectGraphs[damageType]!;
 
       let scalingMultiplier = 0;
 
@@ -80,63 +92,31 @@ export default function getWeaponAttack({
         // of a scaling bonus being added
         scalingMultiplier = -0.4;
       } else {
-        // Otherwise, the scaling multiplier is equal to the product of the scaling for the relevant
-        // attribute, and the current value of that attribute a curve. If this damage type scales
-        // with multiple attributes, the products are added together.
+        // Otherwise, the scaling multiplier is equal to the sum of the corrected attribute values
+        // multiplied by the scaling for that attribute
         for (const attribute of scalingAttributes) {
-          const scaling = attributeScaling[attribute];
+          const scaling = weapon.attributeScaling[upgradeLevel][attribute];
           if (scaling) {
             scalingMultiplier +=
-              calcCorrect(calcCorrectGraph, effectiveAttributes[attribute]) * scaling;
+              weapon.calcCorrectGraphs[damageType][effectiveAttributes[attribute]] * scaling;
           }
         }
       }
 
+      // The final scaling multiplier modifies the attack power for this damage type as a
+      // percentage boost, e.g. 0.5 adds +50% of the base attack power
       attackPower[damageType] = baseAttackPower * (1 + scalingMultiplier);
-    }
-  }
-
-  const statusBuildup: Partial<Record<StatusType, number>> = {};
-  for (const statusType of allStatusTypes) {
-    const baseStatusBuildup = attack[statusType] ?? 0;
-    if (baseStatusBuildup) {
-      const attribute = "arc";
-      const calcCorrectGraph = weapon.calcCorrectGraphs[statusType]!;
-
-      let scalingMultiplier = 0;
-      if (
-        (statusType === "Poison" ||
-          statusType === "Bleed" ||
-          statusType === "Madness" ||
-          statusType === "Sleep") &&
-        attributeScaling[attribute]
-      ) {
-        if (effectiveAttributes[attribute] < (weapon.requirements[attribute] ?? 0)) {
-          // If the arcane requirement is not met, a 40% penalty is subtracted instead of a scaling
-          // bonus being added
-          scalingMultiplier = -0.4;
-        } else {
-          // Otherwise, the scaling multiplier for certain status types is equal to the product of
-          // the arcane scaling and the current arcane stat on a special curve.
-          const scaling = attributeScaling[attribute];
-          if (scaling) {
-            scalingMultiplier =
-              scaling * calcCorrect(calcCorrectGraph, effectiveAttributes[attribute]);
-          }
-        }
-      }
-
-      statusBuildup[statusType] = baseStatusBuildup * (1 + scalingMultiplier);
     }
   }
 
   return {
     upgradeLevel,
     attackPower,
-    statusBuildup,
     ineffectiveAttributes,
   };
 }
 
-export * from "./utils";
+export * from "./attributes";
+export * from "./damageTypes";
 export * from "./weapon";
+export * from "./weaponTypes";

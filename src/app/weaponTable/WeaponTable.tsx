@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { SystemStyleObject, Theme } from "@mui/system";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import { Weapon, WeaponAttackResult } from "../../calculator/calculator";
+import { DamageType, Weapon, WeaponAttackResult } from "../../calculator/calculator";
 import { SortBy } from "../../search/sortWeapons";
 import getWeaponTableColumns from "./getWeaponTableColumns";
 import WeaponTableRow, { WeaponTableBaseRow } from "./WeaponTableRow";
@@ -17,7 +17,8 @@ export interface WeaponTableRowGroup {
 }
 
 export interface WeaponTableColumnDef {
-  key: SortBy;
+  key: string;
+  sortBy?: SortBy;
   header: ReactNode;
   render(row: WeaponTableRowData): ReactNode;
   sx?: SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>);
@@ -36,7 +37,17 @@ interface Props {
   footer?: ReactNode;
   sortBy: SortBy;
   reverse: boolean;
+
+  /**
+   * If true, include columns for each individual damage type as well as total attack power
+   */
   splitDamage: boolean;
+
+  /**
+   * Status types to include columns for in the table
+   */
+  statusTypes: readonly DamageType[];
+
   onSortByChanged(sortBy: SortBy): void;
   onReverseChanged(reverse: boolean): void;
 }
@@ -72,11 +83,13 @@ const ColumnHeaderRow = memo(
     onReverseChanged(reverse: boolean): void;
   }) => {
     const onColumnClicked = (column: WeaponTableColumnDef) => {
-      if (column.key === sortBy) {
-        onReverseChanged(!reverse);
-      } else {
-        onSortByChanged(column.key);
-        onReverseChanged(false);
+      if (column.sortBy) {
+        if (column.sortBy === sortBy) {
+          onReverseChanged(!reverse);
+        } else {
+          onSortByChanged(column.sortBy);
+          onReverseChanged(false);
+        }
       }
     };
 
@@ -96,27 +109,37 @@ const ColumnHeaderRow = memo(
                   alignItems: "start",
                   justifyContent: "center",
                   borderRadius: "9999px",
-                  cursor: "pointer",
-                  userSelect: "none",
                   position: "relative",
                   pt: 1,
-                  ":hover": { backgroundColor: "rgba(245, 189, 99, 0.08)" },
                 },
+                column.sortBy
+                  ? {
+                      cursor: "pointer",
+                      userSelect: "none",
+                      ":hover": { backgroundColor: "rgba(245, 189, 99, 0.08)" },
+                    }
+                  : {},
                 column.sx ?? {},
               ]}
               role="columnheader"
               tabIndex={0}
-              aria-sort={column.key === sortBy ? (reverse ? "ascending" : "descending") : undefined}
-              onClick={() => onColumnClicked(column)}
-              onKeyDown={(evt) => {
-                if (evt.key === " " || evt.key === "Enter") {
-                  onColumnClicked(column);
-                  evt.preventDefault();
-                }
-              }}
+              aria-sort={
+                column.sortBy === sortBy ? (reverse ? "ascending" : "descending") : undefined
+              }
+              onClick={column.sortBy ? () => onColumnClicked(column) : undefined}
+              onKeyDown={
+                column.sortBy
+                  ? (evt) => {
+                      if (evt.key === " " || evt.key === "Enter") {
+                        onColumnClicked(column);
+                        evt.preventDefault();
+                      }
+                    }
+                  : undefined
+              }
             >
               {column.header}
-              {column.key === sortBy &&
+              {column.sortBy === sortBy &&
                 (reverse ? (
                   <ArrowDropUpIcon sx={{ justifySelf: "center" }} fontSize="small" />
                 ) : (
@@ -176,10 +199,14 @@ function WeaponTable({
   sortBy,
   reverse,
   splitDamage,
+  statusTypes,
   onSortByChanged,
   onReverseChanged,
 }: Props) {
-  const columnGroups = useMemo(() => getWeaponTableColumns({ splitDamage }), [splitDamage]);
+  const columnGroups = useMemo(
+    () => getWeaponTableColumns({ splitDamage, statusTypes }),
+    [splitDamage, statusTypes],
+  );
 
   return (
     <Box

@@ -1,11 +1,7 @@
 import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { memo } from "react";
-import {
-  meleeWeaponTypes,
-  rangedWeaponTypes,
-  miscWeaponTypes,
-  WeaponType,
-} from "../calculator/calculator";
+import { WeaponType } from "../calculator/calculator";
+import { meleeWeaponTypes, rangedWeaponTypes, miscWeaponTypes, weaponTypeLabels } from "./uiUtils";
 
 interface Props {
   weaponTypes: readonly WeaponType[];
@@ -51,27 +47,30 @@ function WeaponListFilters({ weaponTypes, onWeaponTypesChanged }: Props) {
     );
   };
 
-  const renderWeaponType = (weaponType: WeaponType) => (
-    <FormControlLabel
-      key={weaponType}
-      label={weaponType}
-      sx={{ display: "block", mr: 0, my: "-4px" }}
-      control={
-        <Checkbox
-          size="small"
-          checked={weaponTypes.includes(weaponType)}
-          name={weaponType}
-          onChange={(evt) =>
-            onWeaponTypesChanged(
-              evt.currentTarget.checked
-                ? [...weaponTypes, weaponType]
-                : weaponTypes.filter((value) => value !== weaponType),
-            )
-          }
-        />
-      }
-    />
-  );
+  const renderWeaponType = (weaponType: WeaponType) => {
+    const label = weaponTypeLabels.get(weaponType)!;
+    return (
+      <FormControlLabel
+        key={weaponType}
+        label={label}
+        sx={{ display: "block", mr: 0, my: "-4px" }}
+        control={
+          <Checkbox
+            size="small"
+            checked={weaponTypes.includes(weaponType)}
+            name={label}
+            onChange={(evt) =>
+              onWeaponTypesChanged(
+                evt.currentTarget.checked
+                  ? [...weaponTypes, weaponType]
+                  : weaponTypes.filter((value) => value !== weaponType),
+              )
+            }
+          />
+        }
+      />
+    );
+  };
 
   return (
     <Box>

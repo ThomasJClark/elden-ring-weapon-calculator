@@ -1,4 +1,6 @@
-import type { Attribute, DamageType, StatusType, WeaponType } from "./utils";
+import type { Attribute } from "./attributes";
+import type { DamageType } from "./damageTypes";
+import type { WeaponType } from "./weaponTypes";
 
 export interface Weapon {
   /**
@@ -10,6 +12,11 @@ export interface Weapon {
    * The base weapon name without an affinity specified, e.g. "Nightrider Glaive"
    */
   weaponName: string;
+
+  /**
+   * A wiki link for the weapon
+   */
+  url: string | null;
 
   /**
    * The affinity of the weapon for filtering, see uiUtils.tsx for a full list of vanilla affinities
@@ -34,7 +41,7 @@ export interface Weapon {
   /**
    * Base attack power for each damage type and status effect at each upgrade level
    */
-  attack: Partial<Record<DamageType | StatusType, number>>[];
+  attack: Partial<Record<DamageType, number>>[];
 
   /**
    * Map indicating which damage types scale with which player attributes
@@ -44,19 +51,10 @@ export interface Weapon {
   /**
    * Map indicating which scaling curve is used for each damage type or status effect
    */
-  calcCorrectGraphs: Record<DamageType | StatusType, CalcCorrectGraph>;
+  calcCorrectGraphs: Record<DamageType, number[]>;
 
   /**
    * True if the weapon doesn't get a strength bonus when two-handing
    */
-  paired: boolean;
+  paired?: boolean;
 }
-
-export type CalcCorrectGraph = {
-  /** The highest attribute value where this stage applies (i.e. the "soft cap") */
-  maxVal: number;
-  /** The highest scaling value within this stage */
-  maxGrowVal: number;
-  /** Exponent used for non-linear scaling curves */
-  adjPt: number;
-}[];

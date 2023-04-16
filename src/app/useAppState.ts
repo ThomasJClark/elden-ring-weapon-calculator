@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Attribute, Attributes, WeaponType } from "../calculator/calculator";
 import { SortBy } from "../search/sortWeapons";
+import { RegulationVersionName } from "./useWeapons";
 
 interface AppState {
+  readonly regulationVersionName: RegulationVersionName;
   readonly darkMode: boolean;
   readonly attributes: Attributes;
   readonly twoHanding: boolean;
@@ -17,6 +19,7 @@ interface AppState {
 }
 
 interface UpdateAppState extends AppState {
+  setRegulationVersionName(regulationVersionName: RegulationVersionName): void;
   setDarkMode(darkMode: boolean): void;
   setAttribute(attribute: Attribute, value: number): void;
   setTwoHanding(twoHanding: boolean): void;
@@ -31,6 +34,7 @@ interface UpdateAppState extends AppState {
 }
 
 const defaultAppState: AppState = {
+  regulationVersionName: "latest",
   darkMode: true,
   attributes: {
     str: 30,
@@ -41,7 +45,7 @@ const defaultAppState: AppState = {
   },
   twoHanding: false,
   upgradeLevel: 25,
-  weaponTypes: ["Axe"],
+  weaponTypes: [WeaponType.AXE],
   affinityIds: [0, -1], // Standard and Special
   effectiveOnly: false,
   splitDamage: true,
@@ -72,6 +76,9 @@ export default function useAppState() {
 
   const changeHandlers = useMemo<Omit<UpdateAppState, keyof AppState>>(
     () => ({
+      setRegulationVersionName(regulationVersionName) {
+        setAppState((prevAppState) => ({ ...prevAppState, regulationVersionName }));
+      },
       setDarkMode(darkMode) {
         setAppState((prevAppState) => ({ ...prevAppState, darkMode }));
       },
