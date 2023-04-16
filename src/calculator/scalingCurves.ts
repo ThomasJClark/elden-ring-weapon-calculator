@@ -95,7 +95,7 @@ export const damageScalingCurves: Record<WeaponScalingCurve, (attributeValue: nu
   },
   15: (attributeValue) => {
     if (attributeValue > 80) {
-      return 0.95 + 0.5 * ((attributeValue - 80) / 19);
+      return 0.95 + 0.05 * ((attributeValue - 80) / 19);
     } else if (attributeValue > 60) {
       return 0.65 + 0.3 * ((attributeValue - 60) / 20);
     } else if (attributeValue > 25) {
