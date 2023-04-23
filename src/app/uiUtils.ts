@@ -1,4 +1,9 @@
-import { allDamageTypes, type Attribute, DamageType, WeaponType } from "../calculator/calculator";
+import {
+  allDamageTypes,
+  AttackPowerType,
+  WeaponType,
+  type Attribute,
+} from "../calculator/calculator";
 import specialWeaponIcon from "./img/specialWeapon.webp";
 import standardAffinityIcon from "./img/standardAffinity.webp";
 import heavyAffinityIcon from "./img/heavyAffinity.webp";
@@ -169,33 +174,33 @@ export const weaponTypeLabels = new Map([
 ]);
 
 export const damageTypeLabels = new Map([
-  [DamageType.PHYSICAL, "Physical Attack"],
-  [DamageType.MAGIC, "Magic Attack"],
-  [DamageType.FIRE, "Fire Attack"],
-  [DamageType.LIGHTNING, "Lightning Attack"],
-  [DamageType.HOLY, "Holy Attack"],
-  [DamageType.SCARLET_ROT, "Scarlet Rot Buildup"],
-  [DamageType.MADNESS, "Madness Buildup"],
-  [DamageType.SLEEP, "Sleep Buildup"],
-  [DamageType.FROST, "Frost Buildup"],
-  [DamageType.POISON, "Poison Buildup"],
-  [DamageType.BLEED, "Bleed Buildup"],
-  [DamageType.DEATH_BLIGHT, "Death Blight Buildup"],
+  [AttackPowerType.PHYSICAL, "Physical Attack"],
+  [AttackPowerType.MAGIC, "Magic Attack"],
+  [AttackPowerType.FIRE, "Fire Attack"],
+  [AttackPowerType.LIGHTNING, "Lightning Attack"],
+  [AttackPowerType.HOLY, "Holy Attack"],
+  [AttackPowerType.SCARLET_ROT, "Scarlet Rot Buildup"],
+  [AttackPowerType.MADNESS, "Madness Buildup"],
+  [AttackPowerType.SLEEP, "Sleep Buildup"],
+  [AttackPowerType.FROST, "Frost Buildup"],
+  [AttackPowerType.POISON, "Poison Buildup"],
+  [AttackPowerType.BLEED, "Bleed Buildup"],
+  [AttackPowerType.DEATH_BLIGHT, "Death Blight Buildup"],
 ]);
 
 export const damageTypeIcons = new Map([
-  [DamageType.PHYSICAL, standardAffinityIcon],
-  [DamageType.MAGIC, magicAffinityIcon],
-  [DamageType.FIRE, fireAffinityIcon],
-  [DamageType.LIGHTNING, lightningAffinityIcon],
-  [DamageType.HOLY, sacredAffinityIcon],
-  [DamageType.SCARLET_ROT, scarletRotStatusIcon],
-  [DamageType.MADNESS, madnessStatusIcon],
-  [DamageType.SLEEP, sleepStatusIcon],
-  [DamageType.FROST, frostStatusIcon],
-  [DamageType.POISON, poisonStatusIcon],
-  [DamageType.BLEED, bleedStatusIcon],
-  [DamageType.DEATH_BLIGHT, deathBlightStatusIcon],
+  [AttackPowerType.PHYSICAL, standardAffinityIcon],
+  [AttackPowerType.MAGIC, magicAffinityIcon],
+  [AttackPowerType.FIRE, fireAffinityIcon],
+  [AttackPowerType.LIGHTNING, lightningAffinityIcon],
+  [AttackPowerType.HOLY, sacredAffinityIcon],
+  [AttackPowerType.SCARLET_ROT, scarletRotStatusIcon],
+  [AttackPowerType.MADNESS, madnessStatusIcon],
+  [AttackPowerType.SLEEP, sleepStatusIcon],
+  [AttackPowerType.FROST, frostStatusIcon],
+  [AttackPowerType.POISON, poisonStatusIcon],
+  [AttackPowerType.BLEED, bleedStatusIcon],
+  [AttackPowerType.DEATH_BLIGHT, deathBlightStatusIcon],
 ]);
 
 export function getAttributeLabel(attribute: Attribute) {
@@ -228,7 +233,7 @@ export function getShortAttributeLabel(attribute: Attribute) {
   }
 }
 
-export function getTotalAttackPower(attackPower: Partial<Record<DamageType, number>>) {
+export function getTotalDamageAttackPower(attackPower: Partial<Record<AttackPowerType, number>>) {
   return allDamageTypes.reduce(
     (totalAttackPower, damageType) => totalAttackPower + (attackPower[damageType] ?? 0),
     0,

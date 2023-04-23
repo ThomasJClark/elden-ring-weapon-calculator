@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { type SystemStyleObject, type Theme } from "@mui/system";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import { DamageType, type Weapon, type WeaponAttackResult } from "../../calculator/calculator";
+import { AttackPowerType, type Weapon, type WeaponAttackResult } from "../../calculator/calculator";
 import type { SortBy } from "../../search/sortWeapons";
 import getWeaponTableColumns from "./getWeaponTableColumns";
 import WeaponTableRow, { WeaponTableBaseRow } from "./WeaponTableRow";
@@ -44,9 +44,9 @@ interface Props {
   splitDamage: boolean;
 
   /**
-   * Status types to include columns for in the table
+   * Attack power types that must be included as columns in the table
    */
-  statusTypes: readonly DamageType[];
+  attackPowerTypes: ReadonlySet<AttackPowerType>;
 
   onSortByChanged(sortBy: SortBy): void;
   onReverseChanged(reverse: boolean): void;
@@ -246,13 +246,13 @@ function WeaponTable({
   sortBy,
   reverse,
   splitDamage,
-  statusTypes,
+  attackPowerTypes,
   onSortByChanged,
   onReverseChanged,
 }: Props) {
   const columnGroups = useMemo(
-    () => getWeaponTableColumns({ splitDamage, statusTypes }),
-    [splitDamage, statusTypes],
+    () => getWeaponTableColumns({ splitDamage, attackPowerTypes }),
+    [splitDamage, attackPowerTypes],
   );
 
   return (

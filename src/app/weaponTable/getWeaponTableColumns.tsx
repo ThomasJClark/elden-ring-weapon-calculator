@@ -1,7 +1,7 @@
 import { Box, Link, Tooltip, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import {
-  DamageType,
+  AttackPowerType,
   allAttributes,
   allDamageTypes,
   allStatusTypes,
@@ -11,7 +11,7 @@ import {
   damageTypeLabels,
   getAttributeLabel,
   getShortAttributeLabel,
-  getTotalAttackPower,
+  getTotalDamageAttackPower,
 } from "../uiUtils";
 import type { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
 
@@ -59,23 +59,25 @@ const nameColumn: WeaponTableColumnDef = {
 };
 
 const attackColumns = Object.fromEntries(
-  [...allDamageTypes, ...allStatusTypes].map((damageType): [DamageType, WeaponTableColumnDef] => [
-    damageType,
-    {
-      key: `${damageType}Attack`,
-      sortBy: `${damageType}Attack`,
-      header: (
-        <Tooltip title={damageTypeLabels.get(damageType)!} placement="top">
-          <img src={damageTypeIcons.get(damageType)!} alt="" width={24} height={24} />
-        </Tooltip>
-      ),
-      render([, { attackPower }]) {
-        const damageTypeAttack = attackPower[damageType];
-        return damageTypeAttack == null ? blankIcon : round(damageTypeAttack);
+  [...allDamageTypes, ...allStatusTypes].map(
+    (attackPowerType): [AttackPowerType, WeaponTableColumnDef] => [
+      attackPowerType,
+      {
+        key: `${attackPowerType}Attack`,
+        sortBy: `${attackPowerType}Attack`,
+        header: (
+          <Tooltip title={damageTypeLabels.get(attackPowerType)!} placement="top">
+            <img src={damageTypeIcons.get(attackPowerType)!} alt="" width={24} height={24} />
+          </Tooltip>
+        ),
+        render([, { attackPower }]) {
+          const damageTypeAttack = attackPower[attackPowerType];
+          return damageTypeAttack == null ? blankIcon : round(damageTypeAttack);
+        },
       },
-    },
-  ]),
-) as Record<DamageType, WeaponTableColumnDef>;
+    ],
+  ),
+) as Record<AttackPowerType, WeaponTableColumnDef>;
 
 const totalSplitAttackPowerColumn: WeaponTableColumnDef = {
   key: "totalAttack",
@@ -86,7 +88,7 @@ const totalSplitAttackPowerColumn: WeaponTableColumnDef = {
     </Typography>
   ),
   render([, { attackPower }]) {
-    return round(getTotalAttackPower(attackPower));
+    return round(getTotalDamageAttackPower(attackPower));
   },
 };
 
@@ -99,7 +101,7 @@ const totalAttackPowerColumn: WeaponTableColumnDef = {
     </Typography>
   ),
   render([, { attackPower }]) {
-    return round(getTotalAttackPower(attackPower));
+    return round(getTotalDamageAttackPower(attackPower));
   },
 };
 
@@ -174,13 +176,17 @@ const requirementColumns = allAttributes.map(
 
 interface WeaponTableColumnsOptions {
   splitDamage: boolean;
-  statusTypes: readonly DamageType[];
+  attackPowerTypes: ReadonlySet<AttackPowerType>;
 }
 
 export default function getWeaponTableColumns({
   splitDamage,
-  statusTypes,
+  attackPowerTypes,
 }: WeaponTableColumnsOptions): WeaponTableColumnGroupDef[] {
+  const includedStatusTypes = allStatusTypes.filter((statusType) =>
+    attackPowerTypes.has(statusType),
+  );
+
   return [
     {
       key: "name",
@@ -209,12 +215,12 @@ export default function getWeaponTableColumns({
     {
       key: "statusEffects",
       sx: {
-        width: Math.max(40 * statusTypes.length + 21, 141),
+        width: Math.max(40 * includedStatusTypes.length + 21, 141),
       },
       header: "Status Effects",
       columns:
-        statusTypes.length > 0
-          ? statusTypes.map((statusType) => attackColumns[statusType])
+        includedStatusTypes.length > 0
+          ? includedStatusTypes.map((statusType) => attackColumns[statusType])
           : [noStatusEffectsColumn],
     },
     {
