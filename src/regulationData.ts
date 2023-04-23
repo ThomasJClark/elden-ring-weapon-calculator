@@ -1,4 +1,9 @@
-import { allDamageTypes, allStatusTypes, DamageType, WeaponType } from "./calculator/calculator";
+import {
+  allDamageTypes,
+  allStatusTypes,
+  AttackPowerType,
+  WeaponType,
+} from "./calculator/calculator";
 import type { Attribute, Weapon } from "./calculator/calculator";
 
 export const defaultDamageCalcCorrectGraphId = 0;
@@ -14,7 +19,7 @@ export type CalcCorrectGraph = {
 }[];
 
 export interface ReinforceParamWeapon {
-  attack: Partial<Record<DamageType, number>>;
+  attack: Partial<Record<AttackPowerType, number>>;
   attributeScaling: Record<Attribute, number>;
   statusSpEffectId1?: number;
   statusSpEffectId2?: number;
@@ -29,13 +34,13 @@ export interface EncodedRegulationDataJson {
     readonly [calcCorrectId in number]?: CalcCorrectGraph;
   };
   readonly attackElementCorrects: {
-    readonly [attackElementCorrectId in number]?: Partial<Record<DamageType, Attribute[]>>;
+    readonly [attackElementCorrectId in number]?: Partial<Record<AttackPowerType, Attribute[]>>;
   };
   readonly reinforceTypes: {
     readonly [reinforceId in number]?: ReinforceParamWeapon[];
   };
   readonly statusSpEffectParams: {
-    readonly [spEffectParamId in number]?: Partial<Record<DamageType, number>>;
+    readonly [spEffectParamId in number]?: Partial<Record<AttackPowerType, number>>;
   };
   readonly scalingNames: [number, string][];
   readonly weapons: readonly EncodedWeaponJson[];
@@ -53,11 +58,11 @@ export interface EncodedWeaponJson {
   weaponType: WeaponType;
   requirements: Partial<Record<Attribute, number>>;
   attributeScaling: Partial<Record<Attribute, number>>;
-  attack: Partial<Record<DamageType, number>>;
+  attack: Partial<Record<AttackPowerType, number>>;
   statusSpEffectParamIds?: number[];
   reinforceTypeId: number;
   attackElementCorrectId: number;
-  calcCorrectGraphIds?: Partial<Record<DamageType, number>>;
+  calcCorrectGraphIds?: Partial<Record<AttackPowerType, number>>;
   paired?: boolean;
 }
 
@@ -115,17 +120,18 @@ export function decodeRegulationData({
     ]),
   );
 
-  const attackElementCorrectsById = new Map<number, Partial<Record<DamageType, Attribute[]>>>(
+  const attackElementCorrectsById = new Map<number, Partial<Record<AttackPowerType, Attribute[]>>>(
     Object.entries(attackElementCorrects).map(([attackElementCorrectId, attackElementCorrect]) => [
       +attackElementCorrectId,
       {
         ...attackElementCorrect,
+
         // Status effects aren't stored in AttackElementCorrectParam because it's the same for all
         // weapons. Manually add it to all entries
-        [DamageType.POISON]: ["arc"],
-        [DamageType.BLEED]: ["arc"],
-        [DamageType.MADNESS]: ["arc"],
-        [DamageType.SLEEP]: ["arc"],
+        [AttackPowerType.POISON]: ["arc"],
+        [AttackPowerType.BLEED]: ["arc"],
+        [AttackPowerType.MADNESS]: ["arc"],
+        [AttackPowerType.SLEEP]: ["arc"],
       },
     ]),
   );
@@ -180,9 +186,9 @@ export function decodeRegulationData({
         const attackAtUpgradeLevel: Weapon["attack"][number] = {};
 
         Object.keys(unupgradedAttack).forEach((key) => {
-          const damageType = +key as DamageType;
-          attackAtUpgradeLevel[damageType] =
-            unupgradedAttack[damageType]! * (reinforceParam.attack?.[damageType] ?? 0);
+          const attackPowerType = +key as AttackPowerType;
+          attackAtUpgradeLevel[attackPowerType] =
+            unupgradedAttack[attackPowerType]! * (reinforceParam.attack?.[attackPowerType] ?? 0);
         });
 
         const offsets = [
