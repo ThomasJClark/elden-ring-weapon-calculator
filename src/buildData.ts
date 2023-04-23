@@ -147,6 +147,7 @@ const urlOverrides = new Map([
         [1170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Nightmaiden's Edge
         [16170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Grave Spear
         [11110000, "https://eldenring.wiki.fextralife.com/Scepter+of+the+All-Knowing"], // Scepter of the All-Knowing Staff
+        [33210000, "https://eldenring.wiki.fextralife.com/Carian+Glintstone+Staff"], // Dark Glintstone Staff
       ] as const)
     : []),
 ]);
