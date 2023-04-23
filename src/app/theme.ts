@@ -1,6 +1,6 @@
 import { createTheme, alpha } from "@mui/material/styles";
 import { TypographyOptions } from "@mui/material/styles/createTypography";
-import backgroundStars from "./img/backgroundStars.png";
+import backgroundStars from "./img/backgroundStars.webp";
 
 const fontFamily = "Prompt";
 
