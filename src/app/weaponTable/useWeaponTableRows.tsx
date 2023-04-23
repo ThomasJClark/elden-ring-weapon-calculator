@@ -1,24 +1,26 @@
 import { useDeferredValue, useMemo } from "react";
 import getWeaponAttack, {
+  allStatusTypes,
   Attributes,
-  maxRegularUpgradeLevel,
-  maxSpecialUpgradeLevel,
-  meleeWeaponTypes,
-  miscWeaponTypes,
-  rangedWeaponTypes,
-  toSpecialUpgradeLevel,
+  DamageType,
   Weapon,
   WeaponType,
 } from "../../calculator/calculator";
 import filterWeapons from "../../search/filterWeapons";
 import { WeaponTableRowData, WeaponTableRowGroup } from "./WeaponTable";
 import { SortBy, sortWeapons } from "../../search/sortWeapons";
-
-const orderedWeaponTypes = [...meleeWeaponTypes, ...rangedWeaponTypes, ...miscWeaponTypes];
+import { RegulationVersion } from "../useWeapons";
+import {
+  allWeaponTypes,
+  weaponTypeLabels,
+  maxRegularUpgradeLevel,
+  maxSpecialUpgradeLevel,
+  toSpecialUpgradeLevel,
+} from "../uiUtils";
 
 interface WeaponTableRowsOptions {
   weapons: readonly Weapon[];
-  allAffinityIds: readonly number[];
+  regulationVersion: RegulationVersion;
   offset: number;
   limit: number;
   sortBy: SortBy;
@@ -34,6 +36,7 @@ interface WeaponTableRowsOptions {
 
 interface WeaponTableRowsResult {
   rowGroups: readonly WeaponTableRowGroup[];
+  statusTypes: readonly DamageType[];
   total: number;
 }
 
@@ -42,7 +45,7 @@ interface WeaponTableRowsResult {
  */
 const useWeaponTableRows = ({
   weapons,
-  allAffinityIds,
+  regulationVersion,
   offset,
   limit,
   upgradeLevel: regularUpgradeLevel,
@@ -61,19 +64,32 @@ const useWeaponTableRows = ({
 
   const specialUpgradeLevel = toSpecialUpgradeLevel(regularUpgradeLevel);
 
-  const filteredRows = useMemo<WeaponTableRowData[]>(() => {
-    const validAffinityIds = affinityIds.filter((affinityId) =>
-      allAffinityIds.includes(affinityId),
-    );
+  // Determine which weapon types can never be given an affinity. It's convenient for them to
+  // show up under both "Standard" and "Unique" filtering options
+  const uninfusableWeaponTypes = useMemo(() => {
+    const tmp = new Set(allWeaponTypes);
+    for (const weapon of weapons) {
+      if (weapon.affinityId !== 0 && weapon.affinityId !== -1) {
+        tmp.delete(weapon.weaponType);
+      }
+    }
+    return tmp;
+  }, [weapons]);
 
-    const filteredWeapons = filterWeapons(weapons.values(), {
-      weaponTypes,
-      affinityIds: validAffinityIds,
+  const [filteredRows, statusTypes] = useMemo<[WeaponTableRowData[], DamageType[]]>(() => {
+    const includedStatusTypes = new Set<DamageType>();
+
+    const filteredWeapons = filterWeapons(weapons, {
+      weaponTypes: new Set(weaponTypes.filter((weaponType) => allWeaponTypes.includes(weaponType))),
+      affinityIds: new Set(
+        affinityIds.filter((affinityId) => regulationVersion.affinityOptions.has(affinityId)),
+      ),
       effectiveWithAttributes: effectiveOnly ? attributes : undefined,
       twoHanding,
+      uninfusableWeaponTypes,
     });
 
-    return filteredWeapons.map((weapon) => {
+    const rows = filteredWeapons.map((weapon): WeaponTableRowData => {
       let upgradeLevel = 0;
       if (weapon.attack.length - 1 === maxRegularUpgradeLevel) {
         upgradeLevel = regularUpgradeLevel;
@@ -81,27 +97,39 @@ const useWeaponTableRows = ({
         upgradeLevel = specialUpgradeLevel;
       }
 
-      return [
+      const weaponAttackResult = getWeaponAttack({
         weapon,
-        getWeaponAttack({
-          weapon,
-          attributes,
-          twoHanding,
-          upgradeLevel,
-        }),
-      ];
+        attributes,
+        twoHanding,
+        upgradeLevel,
+        disableTwoHandingAttackPowerBonus: regulationVersion.disableTwoHandingAttackPowerBonus,
+      });
+
+      for (const statusType of allStatusTypes) {
+        if (weaponAttackResult.attackPower[statusType]) {
+          includedStatusTypes.add(statusType);
+        }
+      }
+
+      return [weapon, weaponAttackResult];
     });
+
+    return [rows, allStatusTypes.filter((statusType) => includedStatusTypes.has(statusType))];
   }, [
     attributes,
     twoHanding,
     weapons,
-    allAffinityIds,
+    regulationVersion,
     regularUpgradeLevel,
     specialUpgradeLevel,
     weaponTypes,
     affinityIds,
     effectiveOnly,
+    uninfusableWeaponTypes,
   ]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const memoizedStatusTypes = useMemo(() => statusTypes, [statusTypes.join(",")]);
 
   const rowGroups = useMemo<WeaponTableRowGroup[]>(() => {
     if (groupWeaponTypes) {
@@ -112,11 +140,11 @@ const useWeaponTableRows = ({
       });
 
       const rowGroups: WeaponTableRowGroup[] = [];
-      orderedWeaponTypes.forEach((weaponType) => {
+      allWeaponTypes.forEach((weaponType) => {
         if (weaponType in rowsByWeaponType) {
           rowGroups.push({
-            key: weaponType,
-            name: weaponType,
+            key: weaponType.toString(),
+            name: weaponTypeLabels.get(weaponType)!,
             rows: sortWeapons(rowsByWeaponType[weaponType]!, sortBy, reverse),
           });
         }
@@ -124,16 +152,19 @@ const useWeaponTableRows = ({
       return rowGroups;
     }
 
-    return [
-      {
-        key: "allWeapons",
-        rows: sortWeapons(filteredRows, sortBy, reverse).slice(offset, limit),
-      },
-    ];
+    return filteredRows.length
+      ? [
+          {
+            key: "allWeapons",
+            rows: sortWeapons(filteredRows, sortBy, reverse).slice(offset, limit),
+          },
+        ]
+      : [];
   }, [filteredRows, reverse, sortBy, groupWeaponTypes, offset, limit]);
 
   return {
     rowGroups,
+    statusTypes: memoizedStatusTypes,
     total: filteredRows.length,
   };
 };

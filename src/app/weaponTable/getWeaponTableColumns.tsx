@@ -1,11 +1,15 @@
 import { Box, Link, Tooltip, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { allAttributes, allDamageTypes, allStatusTypes } from "../../calculator/calculator";
 import {
+  DamageType,
+  allAttributes,
+  allDamageTypes,
+  allStatusTypes,
+} from "../../calculator/calculator";
+import {
+  damageTypeIcons,
+  damageTypeLabels,
   getAttributeLabel,
-  getDamageTypeIcon,
-  getDamageTypeLabel,
-  getStatusTypeIcon,
   getScalingLabel,
   getShortAttributeLabel,
   getTotalAttackPower,
@@ -24,6 +28,7 @@ const blankIcon = <RemoveIcon color="disabled" fontSize="small" />;
 
 const nameColumn: WeaponTableColumnDef = {
   key: "name",
+  sortBy: "name",
   header: (
     <Typography component="span" variant="subtitle2">
       Weapon
@@ -33,53 +38,62 @@ const nameColumn: WeaponTableColumnDef = {
     justifyContent: "start",
   },
   render([weapon, { upgradeLevel }]) {
+    const text = `${weapon.name}${upgradeLevel > 0 ? ` +${upgradeLevel}` : ""}`;
     return (
       <Box>
-        <Link
-          variant="button"
-          underline="hover"
-          href={`https://eldenring.wiki.fextralife.com/${weapon.weaponName.replaceAll(" ", "+")}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {weapon.name}
-          {upgradeLevel > 0 && ` +${upgradeLevel}`}
-        </Link>
+        {weapon.url ? (
+          <Link
+            variant="button"
+            underline="hover"
+            href={weapon.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {text}
+          </Link>
+        ) : (
+          <Typography variant="button">{text}</Typography>
+        )}
       </Box>
     );
   },
 };
 
-const damageAttackPowerColumns: WeaponTableColumnDef[] = [
-  ...allDamageTypes.map(
-    (damageType): WeaponTableColumnDef => ({
+const attackColumns = Object.fromEntries(
+  [...allDamageTypes, ...allStatusTypes].map((damageType): [DamageType, WeaponTableColumnDef] => [
+    damageType,
+    {
       key: `${damageType}Attack`,
+      sortBy: `${damageType}Attack`,
       header: (
-        <Tooltip title={`${getDamageTypeLabel(damageType)} Attack`} placement="top">
-          <img src={getDamageTypeIcon(damageType)} alt="" width={24} height={24} />
+        <Tooltip title={damageTypeLabels.get(damageType)!} placement="top">
+          <img src={damageTypeIcons.get(damageType)!} alt="" width={24} height={24} />
         </Tooltip>
       ),
       render([, { attackPower }]) {
-        const damageTypeAttackPower = attackPower[damageType];
-        return damageTypeAttackPower == null ? blankIcon : round(damageTypeAttackPower);
+        const damageTypeAttack = attackPower[damageType];
+        return damageTypeAttack == null ? blankIcon : round(damageTypeAttack);
       },
-    }),
-  ),
-  {
-    key: "totalAttack",
-    header: (
-      <Typography component="span" variant="subtitle2">
-        Total
-      </Typography>
-    ),
-    render([, { attackPower }]) {
-      return round(getTotalAttackPower(attackPower));
     },
+  ]),
+) as Record<DamageType, WeaponTableColumnDef>;
+
+const totalSplitAttackPowerColumn: WeaponTableColumnDef = {
+  key: "totalAttack",
+  sortBy: "totalAttack",
+  header: (
+    <Typography component="span" variant="subtitle2">
+      Total
+    </Typography>
+  ),
+  render([, { attackPower }]) {
+    return round(getTotalAttackPower(attackPower));
   },
-];
+};
 
 const totalAttackPowerColumn: WeaponTableColumnDef = {
   key: "totalAttack",
+  sortBy: "totalAttack",
   header: (
     <Typography component="span" variant="subtitle2">
       Attack Power
@@ -90,21 +104,17 @@ const totalAttackPowerColumn: WeaponTableColumnDef = {
   },
 };
 
-const passiveEffectsColumns: WeaponTableColumnDef[] = allStatusTypes.map((statusType) => ({
-  key: `${statusType}Buildup`,
-  header: (
-    <Tooltip title={`${statusType} Buildup`} placement="top">
-      <img src={getStatusTypeIcon(statusType)} alt="" width={24} height={24} />
-    </Tooltip>
-  ),
-  render([, { statusBuildup }]) {
-    const buildup = statusBuildup[statusType] ?? 0;
-    return buildup === 0 ? blankIcon : round(buildup);
+const noStatusEffectsColumn: WeaponTableColumnDef = {
+  key: "noStatusEffects",
+  header: null,
+  render() {
+    return blankIcon;
   },
-}));
+};
 
 const scalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => ({
   key: `${attribute}Scaling`,
+  sortBy: `${attribute}Scaling`,
   header: (
     <Tooltip title={`${getAttributeLabel(attribute)} Scaling`} placement="top">
       <Typography component="span" variant="subtitle2">
@@ -127,6 +137,7 @@ const scalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => 
 const requirementColumns = allAttributes.map(
   (attribute): WeaponTableColumnDef => ({
     key: `${attribute}Requirement`,
+    sortBy: `${attribute}Requirement`,
     header: (
       <Tooltip title={`${getAttributeLabel(attribute)} Requirement`} placement="top">
         <Typography component="span" variant="subtitle2">
@@ -163,10 +174,12 @@ const requirementColumns = allAttributes.map(
 
 interface WeaponTableColumnsOptions {
   splitDamage: boolean;
+  statusTypes: readonly DamageType[];
 }
 
 export default function getWeaponTableColumns({
   splitDamage,
+  statusTypes,
 }: WeaponTableColumnsOptions): WeaponTableColumnGroupDef[] {
   return [
     {
@@ -178,14 +191,17 @@ export default function getWeaponTableColumns({
       ? {
           key: "attack",
           sx: {
-            width: 40 * damageAttackPowerColumns.length + 21,
+            width: 40 * (allDamageTypes.length + 1) + 21,
           },
           header: (
             <Typography component="span" variant="subtitle2">
               Attack Power
             </Typography>
           ),
-          columns: damageAttackPowerColumns,
+          columns: [
+            ...allDamageTypes.map((damageType) => attackColumns[damageType]),
+            totalSplitAttackPowerColumn,
+          ],
         }
       : {
           key: "attack",
@@ -195,16 +211,19 @@ export default function getWeaponTableColumns({
           columns: [totalAttackPowerColumn],
         },
     {
-      key: "passives",
+      key: "statusEffects",
       sx: {
-        width: 40 * passiveEffectsColumns.length + 21,
+        width: Math.max(40 * statusTypes.length + 21, 141),
       },
       header: (
         <Typography component="span" variant="subtitle2">
-          Passive Effects
+          Status Effects
         </Typography>
       ),
-      columns: passiveEffectsColumns,
+      columns:
+        statusTypes.length > 0
+          ? statusTypes.map((statusType) => attackColumns[statusType])
+          : [noStatusEffectsColumn],
     },
     {
       key: "scaling",

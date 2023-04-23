@@ -17,10 +17,12 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.7",
     "@types/node": "18.0.0",
     "@types/react": "18.0.14",
     "@types/react-dom": "18.0.5",
     "@vitejs/plugin-react-swc": "^3.0.0",
+    "debug": "^4.3.4",
     "eslint": "^8.36.0",
     "eslint-config-react-app": "^7.0.1",
     "prettier": "2.7.1",
@@ -33,7 +35,7 @@
     "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "rebuildWeaponData": "ts-node-esm src/buildData.ts data/1.09"
+    "rebuildWeaponData": "ts-node-esm src/buildData.ts data/v1.09 && ts-node-esm src/buildData.ts data/reforged"
   },
   "eslintConfig": {
     "extends": [
