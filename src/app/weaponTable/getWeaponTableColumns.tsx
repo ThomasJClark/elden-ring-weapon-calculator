@@ -2,6 +2,7 @@ import { Box, Link, Tooltip, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import {
   AttackPowerType,
+  allAttackPowerTypes,
   allAttributes,
   allDamageTypes,
   allStatusTypes,
@@ -59,24 +60,26 @@ const nameColumn: WeaponTableColumnDef = {
 };
 
 const attackColumns = Object.fromEntries(
-  [...allDamageTypes, ...allStatusTypes].map(
-    (attackPowerType): [AttackPowerType, WeaponTableColumnDef] => [
-      attackPowerType,
-      {
-        key: `${attackPowerType}Attack`,
-        sortBy: `${attackPowerType}Attack`,
-        header: (
-          <Tooltip title={damageTypeLabels.get(attackPowerType)!} placement="top">
-            <img src={damageTypeIcons.get(attackPowerType)!} alt="" width={24} height={24} />
-          </Tooltip>
-        ),
-        render([, { attackPower }]) {
-          const damageTypeAttack = attackPower[attackPowerType];
-          return damageTypeAttack == null ? blankIcon : round(damageTypeAttack);
-        },
+  allAttackPowerTypes.map((attackPowerType): [AttackPowerType, WeaponTableColumnDef] => [
+    attackPowerType,
+    {
+      key: `${attackPowerType}Attack`,
+      sortBy: `${attackPowerType}Attack`,
+      header: damageTypeIcons.has(attackPowerType) ? (
+        <Tooltip title={damageTypeLabels.get(attackPowerType)!} placement="top">
+          <img src={damageTypeIcons.get(attackPowerType)!} alt="" width={24} height={24} />
+        </Tooltip>
+      ) : (
+        <Typography component="span" variant="subtitle2">
+          {damageTypeLabels.get(attackPowerType)}
+        </Typography>
+      ),
+      render([, { attackPower }]) {
+        const damageTypeAttack = attackPower[attackPowerType];
+        return damageTypeAttack == null ? blankIcon : round(damageTypeAttack);
       },
-    ],
-  ),
+    },
+  ]),
 ) as Record<AttackPowerType, WeaponTableColumnDef>;
 
 const totalSplitAttackPowerColumn: WeaponTableColumnDef = {
@@ -183,6 +186,7 @@ export default function getWeaponTableColumns({
   splitDamage,
   attackPowerTypes,
 }: WeaponTableColumnsOptions): WeaponTableColumnGroupDef[] {
+  const includeSpellScaling = attackPowerTypes.has(AttackPowerType.SPELL_SCALING);
   const includedStatusTypes = allStatusTypes.filter((statusType) =>
     attackPowerTypes.has(statusType),
   );
@@ -193,6 +197,17 @@ export default function getWeaponTableColumns({
       sx: { flex: 1, minWidth: 320 },
       columns: [nameColumn],
     },
+    ...(includeSpellScaling
+      ? [
+          {
+            key: "spellScaling",
+            sx: {
+              width: 128,
+            },
+            columns: [attackColumns[AttackPowerType.SPELL_SCALING]],
+          },
+        ]
+      : []),
     splitDamage
       ? {
           key: "attack",

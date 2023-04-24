@@ -64,6 +64,7 @@ export interface EncodedWeaponJson {
   attackElementCorrectId: number;
   calcCorrectGraphIds?: Partial<Record<AttackPowerType, number>>;
   paired?: boolean;
+  spellTool?: boolean;
 }
 
 /**
@@ -132,6 +133,9 @@ export function decodeRegulationData({
         [AttackPowerType.BLEED]: ["arc"],
         [AttackPowerType.MADNESS]: ["arc"],
         [AttackPowerType.SLEEP]: ["arc"],
+
+        // Spell scaling uses the same scaling as magic damage
+        [AttackPowerType.SPELL_SCALING]: attackElementCorrect?.[AttackPowerType.MAGIC],
       },
     ]),
   );
@@ -181,6 +185,12 @@ export function decodeRegulationData({
           calcCorrectGraphIds?.[statusType] ?? defaultStatusCalcCorrectGraphId,
         );
       });
+      if (weapon.spellTool) {
+        // Spell scaling uses the same scaling as magic damage
+        weaponCalcCorrectGraphs[AttackPowerType.SPELL_SCALING] = getCalcCorrectGraph(
+          calcCorrectGraphIds?.[AttackPowerType.MAGIC] ?? defaultDamageCalcCorrectGraphId,
+        );
+      }
 
       const attack: Weapon["attack"] = reinforceParams.map((reinforceParam) => {
         const attackAtUpgradeLevel: Weapon["attack"][number] = {};
@@ -209,6 +219,11 @@ export function decodeRegulationData({
             Object.assign(attackAtUpgradeLevel, statusSpEffectParam);
           }
         });
+
+        // Spell scaling is displayed as a percent (i.e. as if the base damage were 100)
+        if (weapon.spellTool) {
+          attackAtUpgradeLevel[AttackPowerType.SPELL_SCALING] = 100;
+        }
 
         return attackAtUpgradeLevel;
       });

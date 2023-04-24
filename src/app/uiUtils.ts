@@ -186,6 +186,7 @@ export const damageTypeLabels = new Map([
   [AttackPowerType.POISON, "Poison Buildup"],
   [AttackPowerType.BLEED, "Bleed Buildup"],
   [AttackPowerType.DEATH_BLIGHT, "Death Blight Buildup"],
+  [AttackPowerType.SPELL_SCALING, "Spell Scaling"],
 ]);
 
 export const damageTypeIcons = new Map([
