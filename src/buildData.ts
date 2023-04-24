@@ -235,13 +235,16 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     statusSpEffectParamIds = [0, 0, 0];
   }
 
+  // Can this weapon cast spells?
+  const spellTool = !!data.enableMagic || !!data.enableMiracle;
+
   const calcCorrectGraphIds = {
     [AttackPowerType.PHYSICAL]: ifNotDefault(
       attack[AttackPowerType.PHYSICAL] ? data.correctType_Physics : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
     [AttackPowerType.MAGIC]: ifNotDefault(
-      attack[AttackPowerType.MAGIC] ? data.correctType_Magic : undefined,
+      attack[AttackPowerType.MAGIC] || spellTool ? data.correctType_Magic : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
     [AttackPowerType.FIRE]: ifNotDefault(
@@ -307,6 +310,7 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     attackElementCorrectId: data.attackElementCorrectId,
     calcCorrectGraphIds,
     paired: ifNotDefault(data.isDualBlade === 1, false),
+    spellTool: ifNotDefault(spellTool, false),
   };
 }
 

@@ -1,7 +1,6 @@
 import { useDeferredValue, useMemo } from "react";
 import getWeaponAttack, {
-  allDamageTypes,
-  allStatusTypes,
+  allAttackPowerTypes,
   AttackPowerType,
   WeaponType,
   type Attributes,
@@ -111,9 +110,9 @@ const useWeaponTableRows = ({
         disableTwoHandingAttackPowerBonus: regulationVersion.disableTwoHandingAttackPowerBonus,
       });
 
-      for (const damageType of [...allDamageTypes, ...allStatusTypes]) {
-        if (weaponAttackResult.attackPower[damageType]) {
-          includedDamageTypes.add(damageType);
+      for (const statusType of allAttackPowerTypes) {
+        if (weaponAttackResult.attackPower[statusType]) {
+          includedDamageTypes.add(statusType);
         }
       }
 

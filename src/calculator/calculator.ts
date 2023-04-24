@@ -1,5 +1,5 @@
 import type { Attribute, Attributes } from "./attributes";
-import { AttackPowerType, allDamageTypes, allStatusTypes } from "./attackPowerTypes";
+import { AttackPowerType, allAttackPowerTypes, allDamageTypes } from "./attackPowerTypes";
 import type { Weapon } from "./weapon";
 import { WeaponType } from "./weaponTypes";
 
@@ -67,18 +67,14 @@ export default function getWeaponAttack({
   upgradeLevel,
   disableTwoHandingAttackPowerBonus,
 }: WeaponAttackOptions): WeaponAttackResult {
-  let effectiveAttributes = adjustAttributesForTwoHanding({ twoHanding, weapon, attributes });
+  const adjustedAttributes = adjustAttributesForTwoHanding({ twoHanding, weapon, attributes });
 
   const ineffectiveAttributes = (Object.entries(weapon.requirements) as [Attribute, number][])
-    .filter(([attribute, requirement]) => effectiveAttributes[attribute] < requirement)
+    .filter(([attribute, requirement]) => adjustedAttributes[attribute] < requirement)
     .map(([attribute]) => attribute);
 
-  if (disableTwoHandingAttackPowerBonus) {
-    effectiveAttributes = attributes;
-  }
-
   const attackPower: Partial<Record<AttackPowerType, number>> = {};
-  for (const attackPowerType of [...allDamageTypes, ...allStatusTypes]) {
+  for (const attackPowerType of allAttackPowerTypes) {
     const baseAttackPower = weapon.attack[upgradeLevel][attackPowerType] ?? 0;
     if (baseAttackPower) {
       // This weapon's AttackElementCorrectParam determines what attributes each damage type scales
@@ -94,6 +90,10 @@ export default function getWeaponAttack({
       } else {
         // Otherwise, the scaling multiplier is equal to the sum of the corrected attribute values
         // multiplied by the scaling for that attribute
+        const effectiveAttributes =
+          !disableTwoHandingAttackPowerBonus && allDamageTypes.includes(attackPowerType)
+            ? adjustedAttributes
+            : attributes;
         for (const attribute of scalingAttributes) {
           const scaling = weapon.attributeScaling[upgradeLevel][attribute];
           if (scaling) {
