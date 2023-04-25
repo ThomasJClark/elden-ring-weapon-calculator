@@ -50,95 +50,18 @@ function readCsv(filename: string): Map<number, CsvRow> {
   );
 }
 
+/**
+ * Parse a .fmg.json file, which contains translation strings displayed in game
+ */
+function readFmgJson(filename: string): Map<number, string | null> {
+  const json = JSON.parse(readFileSync(filename, "utf-8"));
+  return new Map(json.Fmg.Entries.map(({ ID, Text }: any) => [ID, Text]));
+}
+
 const dataDir = process.argv[2];
 const isReforged = dataDir.includes("reforged");
 const isVanilla = !isReforged;
 const outputFile = join("public", `regulation-${basename(dataDir)}.js`);
-
-// Hack: these weapons have names in the UI that are different from their names in EquipParamWeapon
-const nameOverrides = new Map([
-  [1030000, "Miséricorde"],
-  [6020000, "Great Épée"],
-  [11060000, "Varré's Bouquet"],
-  ...(isVanilla
-    ? ([
-        [1030100, "Heavy Miséricorde"],
-        [1030200, "Keen Miséricorde"],
-        [1030300, "Quality Miséricorde"],
-        [1030400, "Fire Miséricorde"],
-        [1030500, "Flame Art Miséricorde"],
-        [1030600, "Lightning Miséricorde"],
-        [1030700, "Sacred Miséricorde"],
-        [1030800, "Magic Miséricorde"],
-        [1030900, "Cold Miséricorde"],
-        [1031000, "Poison Miséricorde"],
-        [1031100, "Blood Miséricorde"],
-        [1031200, "Occult Miséricorde"],
-        [6020100, "Heavy Great Épée"],
-        [6020200, "Keen Great Épée"],
-        [6020300, "Quality Great Épée"],
-        [6020400, "Fire Great Épée"],
-        [6020500, "Flame Art Great Épée"],
-        [6020600, "Lightning Great Épée"],
-        [6020700, "Sacred Great Épée"],
-        [6020800, "Magic Great Épée"],
-        [6020900, "Cold Great Épée"],
-        [6021000, "Poison Great Épée"],
-        [6021100, "Blood Great Épée"],
-        [6021200, "Occult Great Épée"],
-      ] as const)
-    : []),
-  ...(isReforged
-    ? ([
-        [1030100, "Miséricorde [Heavy]"],
-        [1030200, "Miséricorde [Keen]"],
-        [1030300, "Miséricorde [Quality]"],
-        [1030400, "Miséricorde [Fire]"],
-        [1030500, "Miséricorde [Fell]"],
-        [1030600, "Miséricorde [Lightning]"],
-        [1030700, "Miséricorde [Sacred]"],
-        [1030800, "Miséricorde [Magic]"],
-        [1030900, "Miséricorde [Cold]"],
-        [1031000, "Miséricorde [Poison]"],
-        [1031100, "Miséricorde [Blood]"],
-        [1031200, "Miséricorde [Occult]"],
-        [1031300, "Miséricorde [Bolt]"],
-        [1031400, "Miséricorde [Soporific]"],
-        [1031500, "Miséricorde [Frenzied]"],
-        [1031600, "Miséricorde [Magma]"],
-        [1031700, "Miséricorde [Rotten]"],
-        [1031800, "Miséricorde [Cursed]"],
-        [1031900, "Miséricorde [Night]"],
-        [1032000, "Miséricorde [Gravitational]"],
-        [1032100, "Miséricorde [Blessed]"],
-        [1032200, "Miséricorde [Bestial]"],
-        [1032300, "Miséricorde [Reforged]"],
-        [6020100, "Great Épée [Heavy]"],
-        [6020200, "Great Épée [Keen]"],
-        [6020300, "Great Épée [Quality]"],
-        [6020400, "Great Épée [Fire]"],
-        [6020500, "Great Épée [Fell]"],
-        [6020600, "Great Épée [Lightning]"],
-        [6020700, "Great Épée [Sacred]"],
-        [6020800, "Great Épée [Magic]"],
-        [6020900, "Great Épée [Cold]"],
-        [6021000, "Great Épée [Poison]"],
-        [6021100, "Great Épée [Blood]"],
-        [6021200, "Great Épée [Occult]"],
-        [6021300, "Great Épée [Bolt]"],
-        [6021400, "Great Épée [Soporific]"],
-        [6021500, "Great Épée [Frenzied]"],
-        [6021600, "Great Épée [Magma]"],
-        [6021700, "Great Épée [Rotten]"],
-        [6021800, "Great Épée [Cursed]"],
-        [6021900, "Great Épée [Night]"],
-        [6022000, "Great Épée [Gravitational]"],
-        [6022100, "Great Épée [Blessed]"],
-        [6022200, "Great Épée [Bestial]"],
-        [6022300, "Great Épée [Reforged]"],
-      ] as const)
-    : []),
-]);
 
 const urlOverrides = new Map([
   [110000, null], // Unarmed
@@ -157,6 +80,7 @@ const calcCorrectGraphs = readCsv(join(dataDir, "CalcCorrectGraph.csv"));
 const equipParamWeapons = readCsv(join(dataDir, "EquipParamWeapon.csv"));
 const reinforceParamWeapons = readCsv(join(dataDir, "ReinforceParamWeapon.csv"));
 const spEffectParams = readCsv(join(dataDir, "SpEffectParam.csv"));
+const weaponNames = readFmgJson(join(dataDir, "TitleWeapons.fmg.json"));
 
 function ifNotDefault<T>(value: T, defaultValue: T): T | undefined {
   return value === defaultValue ? undefined : value;
@@ -225,7 +149,8 @@ function isSupportedWeaponType(wepType: number): wepType is WeaponType {
 }
 
 function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
-  if (!name) {
+  if (!weaponNames.has(data.ID) || !name) {
+    debug(`No weapon title found for "${name}", ignoring`);
     return null;
   }
 
@@ -353,8 +278,8 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
   }
 
   return {
-    name: nameOverrides.get(data.ID) ?? name,
-    weaponName: nameOverrides.get(uninfusedWeapon.data.ID) ?? uninfusedWeapon.name,
+    name: weaponNames.get(data.ID)!,
+    weaponName: weaponNames.get(uninfusedWeapon.data.ID)!,
     url: urlOverrides.get(uninfusedWeapon.data.ID),
     affinityId: isUniqueWeapon(data) ? -1 : affinityId,
     weaponType,
