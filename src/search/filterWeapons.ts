@@ -1,9 +1,9 @@
 import {
   adjustAttributesForTwoHanding,
-  Attribute,
-  Attributes,
-  Weapon,
   WeaponType,
+  type Attribute,
+  type Attributes,
+  type Weapon,
 } from "../calculator/calculator";
 
 export interface FilterWeaponsOptions {

@@ -1,4 +1,4 @@
-import { allDamageTypes, Attribute, DamageType, WeaponType } from "../calculator/calculator";
+import { allDamageTypes, type Attribute, DamageType, WeaponType } from "../calculator/calculator";
 import specialWeaponIcon from "./img/specialWeapon.webp";
 import standardAffinityIcon from "./img/standardAffinity.webp";
 import heavyAffinityIcon from "./img/heavyAffinity.webp";

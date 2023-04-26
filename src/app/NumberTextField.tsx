@@ -1,4 +1,4 @@
-import { ChangeEvent, KeyboardEvent, useCallback, useState } from "react";
+import { type ChangeEvent, type KeyboardEvent, useCallback, useState } from "react";
 import type { TextFieldProps } from "@mui/material";
 import { TextField } from "@mui/material";
 

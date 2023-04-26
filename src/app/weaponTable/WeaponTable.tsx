@@ -1,10 +1,10 @@
-import { memo, ReactNode, useMemo } from "react";
+import { memo, type ReactNode, useMemo } from "react";
 import { Box, Typography } from "@mui/material";
-import { SystemStyleObject, Theme } from "@mui/system";
+import { type SystemStyleObject, type Theme } from "@mui/system";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import { DamageType, Weapon, WeaponAttackResult } from "../../calculator/calculator";
-import { SortBy } from "../../search/sortWeapons";
+import { DamageType, type Weapon, type WeaponAttackResult } from "../../calculator/calculator";
+import type { SortBy } from "../../search/sortWeapons";
 import getWeaponTableColumns from "./getWeaponTableColumns";
 import WeaponTableRow, { WeaponTableBaseRow } from "./WeaponTableRow";
 

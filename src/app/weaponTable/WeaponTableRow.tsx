@@ -1,7 +1,7 @@
-import { AriaRole, ReactNode } from "react";
-import { Box, BoxProps } from "@mui/material";
-import { SystemStyleObject, Theme } from "@mui/system";
-import { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
+import type { AriaRole, ReactNode } from "react";
+import { Box, type BoxProps } from "@mui/material";
+import type { SystemStyleObject, Theme } from "@mui/system";
+import type { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
 
 interface BaseProps {
   sx?: SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>);

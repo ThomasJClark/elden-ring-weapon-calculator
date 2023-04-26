@@ -1,6 +1,6 @@
 import { memo, useId } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { RegulationVersionName, regulationVersions } from "./useWeapons";
+import { type RegulationVersionName, regulationVersions } from "./useWeapons";
 
 interface Props {
   regulationVersionName: RegulationVersionName;

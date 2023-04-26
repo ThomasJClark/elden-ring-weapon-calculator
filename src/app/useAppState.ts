@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { Attribute, Attributes, WeaponType } from "../calculator/calculator";
-import { SortBy } from "../search/sortWeapons";
-import { RegulationVersionName } from "./useWeapons";
+import { type Attribute, type Attributes, WeaponType } from "../calculator/calculator";
+import type { SortBy } from "../search/sortWeapons";
+import type { RegulationVersionName } from "./useWeapons";
 
 interface AppState {
   readonly regulationVersionName: RegulationVersionName;
