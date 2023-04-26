@@ -80,6 +80,8 @@ const calcCorrectGraphs = readCsv(join(dataDir, "CalcCorrectGraph.csv"));
 const equipParamWeapons = readCsv(join(dataDir, "EquipParamWeapon.csv"));
 const reinforceParamWeapons = readCsv(join(dataDir, "ReinforceParamWeapon.csv"));
 const spEffectParams = readCsv(join(dataDir, "SpEffectParam.csv"));
+const menuValueTableParams = readCsv(join(dataDir, "MenuValueTableParam.csv"));
+const menuText = readFmgJson(join(dataDir, "Modern_MenuText.fmg.json"));
 const weaponNames = readFmgJson(join(dataDir, "TitleWeapons.fmg.json"));
 
 function ifNotDefault<T>(value: T, defaultValue: T): T | undefined {
@@ -486,11 +488,20 @@ for (const spEffectParamId of spEffectParams.keys()) {
   }
 }
 
+const scalingNamesJson: [number, string][] = [];
+for (const [id, { data }] of menuValueTableParams) {
+  // 1 = scaling labels
+  if (data.compareType === 1 && id >= 100) {
+    scalingNamesJson.push([data.value / 100, menuText.get(data.textId)!]);
+  }
+}
+
 const regulationDataJson: EncodedRegulationDataJson = {
   calcCorrectGraphs: calcCorrectGraphsJson,
   attackElementCorrects: attackElementCorrectsJson,
   reinforceTypes: reinforceTypesJson,
   statusSpEffectParams: statusSpEffectParamsJson,
+  scalingNames: scalingNamesJson,
   weapons: weaponsJson,
 };
 

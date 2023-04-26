@@ -10,7 +10,6 @@ import {
   damageTypeIcons,
   damageTypeLabels,
   getAttributeLabel,
-  getScalingLabel,
   getShortAttributeLabel,
   getTotalAttackPower,
 } from "../uiUtils";
@@ -122,14 +121,15 @@ const scalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => 
       </Typography>
     </Tooltip>
   ),
-  render([weapon, { upgradeLevel }]) {
-    const scaling = weapon.attributeScaling[upgradeLevel][attribute] ?? 0;
-    return scaling === 0 ? (
-      blankIcon
-    ) : (
+  render([{ attributeScaling, scalingNames }, { upgradeLevel }]) {
+    const scaling = attributeScaling[upgradeLevel][attribute];
+    const scalingName = scaling && scalingNames.find(([value]) => scaling >= value)?.[1];
+    return scalingName ? (
       <Tooltip title={`${Math.round(scaling * 1000) / 10}%`} placement="top">
-        <span>{getScalingLabel(scaling)}</span>
+        <span>{scalingName}</span>
       </Tooltip>
+    ) : (
+      blankIcon
     );
   },
 }));
