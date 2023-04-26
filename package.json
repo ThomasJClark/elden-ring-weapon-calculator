@@ -8,11 +8,11 @@
     "email": "tom@tclark.io"
   },
   "dependencies": {
-    "@emotion/react": "11.9.3",
-    "@emotion/styled": "11.9.3",
-    "@mui/icons-material": "5.8.4",
-    "@mui/material": "5.8.6",
-    "@mui/system": "5.8.6",
+    "@emotion/react": "11.10.6",
+    "@emotion/styled": "11.10.6",
+    "@mui/icons-material": "5.11.16",
+    "@mui/material": "5.12.2",
+    "@mui/system": "5.12.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
