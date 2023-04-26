@@ -193,11 +193,7 @@ export default function getWeaponTableColumns({
           sx: {
             width: 40 * (allDamageTypes.length + 1) + 21,
           },
-          header: (
-            <Typography component="span" variant="subtitle2">
-              Attack Power
-            </Typography>
-          ),
+          header: "Attack Power",
           columns: [
             ...allDamageTypes.map((damageType) => attackColumns[damageType]),
             totalSplitAttackPowerColumn,
@@ -215,11 +211,7 @@ export default function getWeaponTableColumns({
       sx: {
         width: Math.max(40 * statusTypes.length + 21, 141),
       },
-      header: (
-        <Typography component="span" variant="subtitle2">
-          Status Effects
-        </Typography>
-      ),
+      header: "Status Effects",
       columns:
         statusTypes.length > 0
           ? statusTypes.map((statusType) => attackColumns[statusType])
@@ -230,11 +222,7 @@ export default function getWeaponTableColumns({
       sx: {
         width: 36 * scalingColumns.length + 21,
       },
-      header: (
-        <Typography component="span" variant="subtitle2">
-          Attribute Scaling
-        </Typography>
-      ),
+      header: "Attribute Scaling",
       columns: scalingColumns,
     },
     {
@@ -242,11 +230,7 @@ export default function getWeaponTableColumns({
       sx: {
         width: 36 * requirementColumns.length + 21,
       },
-      header: (
-        <Typography component="span" variant="subtitle2">
-          Attribute Requirements
-        </Typography>
-      ),
+      header: "Attribute Requirements",
       columns: requirementColumns,
     },
   ];

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { AriaRole, ReactNode } from "react";
 import { Box, BoxProps } from "@mui/material";
 import { SystemStyleObject, Theme } from "@mui/system";
 import { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
@@ -13,6 +13,7 @@ interface Props extends Omit<BaseProps, "children"> {
   columnGroups: readonly WeaponTableColumnGroupDef[];
   columnProps?(column: WeaponTableColumnDef): Omit<BoxProps, "children">;
   renderColumnGroup(column: WeaponTableColumnGroupDef): ReactNode;
+  columnRole?: AriaRole;
 }
 
 export function WeaponTableBaseRow({ sx, children }: BaseProps) {
