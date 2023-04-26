@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useId } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { RegulationVersionName, regulationVersions } from "./useWeapons";
 
@@ -11,11 +11,12 @@ interface Props {
  * Dropdown used to select the version of the game (e.g. a specific patch or mod)
  */
 function RegulationVersionPicker({ regulationVersionName, onRegulationVersionNameChanged }: Props) {
+  const id = useId();
   return (
     <FormControl fullWidth>
-      <InputLabel id="regulationVersion">Game Version / Mod</InputLabel>
+      <InputLabel id={id}>Game Version / Mod</InputLabel>
       <Select
-        labelId="regulationVersion"
+        labelId={id}
         label="Game Version / Mod"
         size="small"
         value={regulationVersionName}
