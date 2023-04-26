@@ -228,24 +228,6 @@ export function getShortAttributeLabel(attribute: Attribute) {
   }
 }
 
-export function getScalingLabel(scaling: number) {
-  if (scaling >= 1.75) {
-    return "S";
-  } else if (scaling >= 1.4) {
-    return "A";
-  } else if (scaling >= 0.9) {
-    return "B";
-  } else if (scaling >= 0.6) {
-    return "C";
-  } else if (scaling >= 0.25) {
-    return "D";
-  } else if (scaling > 0) {
-    return "E";
-  } else {
-    return "-";
-  }
-}
-
 export function getTotalAttackPower(attackPower: Partial<Record<DamageType, number>>) {
   return allDamageTypes.reduce(
     (totalAttackPower, damageType) => totalAttackPower + (attackPower[damageType] ?? 0),

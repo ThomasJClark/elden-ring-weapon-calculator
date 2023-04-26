@@ -43,6 +43,7 @@ export interface EncodedRegulationDataJson {
   readonly statusSpEffectParams: {
     readonly [spEffectParamId in number]?: Partial<Record<DamageType, number>>;
   };
+  readonly scalingNames: [number, string][];
   readonly weapons: readonly EncodedWeaponJson[];
 }
 
@@ -111,6 +112,7 @@ export function decodeRegulationData({
   reinforceTypes,
   statusSpEffectParams,
   weapons,
+  scalingNames,
 }: EncodedRegulationDataJson): Weapon[] {
   const calcCorrectGraphsById = new Map(
     Object.entries(calcCorrectGraphs).map(([calcCorrectGraphId, calcCorrectGraph]) => [
@@ -234,6 +236,7 @@ export function decodeRegulationData({
         attributeScaling,
         attackElementCorrect,
         calcCorrectGraphs: weaponCalcCorrectGraphs,
+        scalingNames,
       };
     },
   );
