@@ -25,7 +25,7 @@ export const regulationVersions: Record<RegulationVersionName, RegulationVersion
   latest: {
     name: "Patch 1.09.1 (latest)",
     affinityOptions,
-    fetch: () => fetch("/regulation-v1.09.js?2"),
+    fetch: () => fetch("/regulation-v1.09.js?3"),
   },
   reforged: {
     name: "Elden Ring Reforged (mod)",
@@ -44,7 +44,7 @@ export const regulationVersions: Record<RegulationVersionName, RegulationVersion
     ),
     affinityOptions: reforgedAffinityOptions,
     disableTwoHandingAttackPowerBonus: true,
-    fetch: () => fetch("/regulation-reforged.js?2"),
+    fetch: () => fetch("/regulation-reforged.js?3"),
   },
 };
 
