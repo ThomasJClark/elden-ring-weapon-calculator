@@ -1,4 +1,4 @@
-import { Fragment, memo, ReactNode, useMemo } from "react";
+import { memo, ReactNode, useMemo } from "react";
 import { Box, Typography } from "@mui/material";
 import { SystemStyleObject, Theme } from "@mui/system";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -26,7 +26,7 @@ export interface WeaponTableColumnDef {
 
 export interface WeaponTableColumnGroupDef {
   key: string;
-  header?: ReactNode;
+  header?: string;
   columns: readonly WeaponTableColumnDef[];
   sx?: SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>);
 }
@@ -60,7 +60,11 @@ const ColumnGroupHeaderGroup = memo(
     <WeaponTableRow
       columnGroupSx={{ alignItems: "center", justifyContent: "center" }}
       columnGroups={columnGroups}
-      renderColumnGroup={({ header }) => header}
+      renderColumnGroup={({ header }) => (
+        <Typography component="span" variant="subtitle2" role="columnheader">
+          {header}
+        </Typography>
+      )}
     />
   ),
 );
@@ -121,8 +125,8 @@ const ColumnHeaderRow = memo(
                   : {},
                 column.sx ?? {},
               ]}
-              role="columnheader"
               tabIndex={0}
+              role="columnheader"
               aria-sort={
                 column.sortBy === sortBy ? (reverse ? "ascending" : "descending") : undefined
               }
@@ -183,6 +187,7 @@ const DataRow = memo(
               },
               column.sx ?? {},
             ]}
+            role="cell"
           >
             {column.render(row)}
           </Box>
@@ -191,6 +196,46 @@ const DataRow = memo(
     />
   ),
 );
+
+function RowGroup({
+  columnGroups,
+  name,
+  rows,
+}: {
+  columnGroups: readonly WeaponTableColumnGroupDef[];
+  name?: string;
+  rows: readonly WeaponTableRowData[];
+}) {
+  return (
+    <Box
+      sx={(theme) => ({
+        ":not(:last-of-type)": {
+          minHeight: "37px",
+          borderBottom: `solid 1px ${theme.palette.divider}`,
+        },
+      })}
+      role="rowgroup"
+    >
+      {name != null && (
+        <WeaponTableBaseRow
+          sx={{
+            padding: "0px 10px",
+            alignItems: "center",
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+          }}
+        >
+          <Typography component="span" variant="subtitle2" role="columnheader">
+            {name}
+          </Typography>
+        </WeaponTableBaseRow>
+      )}
+
+      {rows.map((row) => (
+        <DataRow key={row[0].name} columnGroups={columnGroups} row={row} />
+      ))}
+    </Box>
+  );
+}
 
 function WeaponTable({
   rowGroups,
@@ -235,25 +280,7 @@ function WeaponTable({
       />
       {rowGroups.length > 0 ? (
         rowGroups.map(({ key, name, rows }) => (
-          <Fragment key={key}>
-            {name != null && (
-              <WeaponTableBaseRow
-                sx={{
-                  padding: "0px 10px",
-                  alignItems: "center",
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                }}
-              >
-                <Typography component="span" variant="subtitle2">
-                  {name}
-                </Typography>
-              </WeaponTableBaseRow>
-            )}
-
-            {rows.map((row) => (
-              <DataRow key={row[0].name} columnGroups={columnGroups} row={row} />
-            ))}
-          </Fragment>
+          <RowGroup key={key} columnGroups={columnGroups} name={name} rows={rows} />
         ))
       ) : (
         <Box display="grid" sx={{ minHeight: "480px", px: "10px", gap: 3 }}>
