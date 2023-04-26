@@ -34,7 +34,7 @@ function readCsv(filename: string): Map<number, CsvRow> {
 
   return new Map<number, CsvRow>(
     lines.map((line) => {
-      let name: string = "";
+      let name = "";
       const data: { [key: string]: number } = {};
 
       cols.forEach((key, index) => {
@@ -55,7 +55,9 @@ function readCsv(filename: string): Map<number, CsvRow> {
  */
 function readFmgJson(filename: string): Map<number, string | null> {
   const json = JSON.parse(readFileSync(filename, "utf-8"));
-  return new Map(json.Fmg.Entries.map(({ ID, Text }: any) => [ID, Text]));
+  return new Map(
+    json.Fmg.Entries.map(({ ID, Text }: { ID: string; Text: string | null }) => [ID, Text]),
+  );
 }
 
 const dataDir = process.argv[2];

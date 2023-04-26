@@ -21,18 +21,24 @@ interface AttributeInputProps {
 /**
  * Form control for picking the value of a single attribute (str/dex/int/fai/arc)
  */
-const AttributeInput = memo(({ attribute, value, onAttributeChanged }: AttributeInputProps) => (
-  <NumberTextField
-    key={attribute}
-    label={getAttributeLabel(attribute)}
-    size="small"
-    variant="outlined"
-    value={value}
-    min={1}
-    max={99}
-    onChange={(newValue) => onAttributeChanged(attribute, newValue)}
-  />
-));
+const AttributeInput = memo(function AttributeInput({
+  attribute,
+  value,
+  onAttributeChanged,
+}: AttributeInputProps) {
+  return (
+    <NumberTextField
+      key={attribute}
+      label={getAttributeLabel(attribute)}
+      size="small"
+      variant="outlined"
+      value={value}
+      min={1}
+      max={99}
+      onChange={(newValue) => onAttributeChanged(attribute, newValue)}
+    />
+  );
+});
 
 interface WeaponLevelInputProps {
   upgradeLevel: number;
@@ -42,24 +48,29 @@ interface WeaponLevelInputProps {
 /**
  * Form control for picking the weapon upgrade level (+1, +2, etc.)
  */
-const WeaponLevelInput = memo(({ upgradeLevel, onUpgradeLevelChanged }: WeaponLevelInputProps) => (
-  <FormControl fullWidth>
-    <InputLabel id="upgradeLevelLabel">Weapon Level</InputLabel>
-    <Select
-      labelId="upgradeLevelLabel"
-      label="Weapon Level"
-      size="small"
-      value={upgradeLevel}
-      onChange={(evt) => onUpgradeLevelChanged(+evt.target.value)}
-    >
-      {Array.from({ length: maxRegularUpgradeLevel + 1 }, (_, upgradeLevelOption) => (
-        <MenuItem key={upgradeLevelOption} value={upgradeLevelOption}>
-          +{upgradeLevelOption} / +{toSpecialUpgradeLevel(upgradeLevelOption)}
-        </MenuItem>
-      ))}
-    </Select>
-  </FormControl>
-));
+const WeaponLevelInput = memo(function WeaponLevelInput({
+  upgradeLevel,
+  onUpgradeLevelChanged,
+}: WeaponLevelInputProps) {
+  return (
+    <FormControl fullWidth>
+      <InputLabel id="upgradeLevelLabel">Weapon Level</InputLabel>
+      <Select
+        labelId="upgradeLevelLabel"
+        label="Weapon Level"
+        size="small"
+        value={upgradeLevel}
+        onChange={(evt) => onUpgradeLevelChanged(+evt.target.value)}
+      >
+        {Array.from({ length: maxRegularUpgradeLevel + 1 }, (_, upgradeLevelOption) => (
+          <MenuItem key={upgradeLevelOption} value={upgradeLevelOption}>
+            +{upgradeLevelOption} / +{toSpecialUpgradeLevel(upgradeLevelOption)}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+});
 
 interface BooleanInputProps {
   label: string;
@@ -70,20 +81,22 @@ interface BooleanInputProps {
 /**
  * Form control for one of the weapon list checkboxes (two hadning, effective only, show split damage)
  */
-const BooleanInput = memo(({ label, checked, onChange }: BooleanInputProps) => (
-  <FormControlLabel
-    label={label}
-    sx={{ mr: 0 }}
-    control={
-      <Checkbox
-        size="small"
-        checked={checked}
-        name={label}
-        onChange={(evt) => onChange(evt.currentTarget.checked)}
-      />
-    }
-  />
-));
+const BooleanInput = memo(function BooleanInput({ label, checked, onChange }: BooleanInputProps) {
+  return (
+    <FormControlLabel
+      label={label}
+      sx={{ mr: 0 }}
+      control={
+        <Checkbox
+          size="small"
+          checked={checked}
+          name={label}
+          onChange={(evt) => onChange(evt.currentTarget.checked)}
+        />
+      }
+    />
+  );
+});
 
 interface Props {
   breakpoint: "md" | "lg";

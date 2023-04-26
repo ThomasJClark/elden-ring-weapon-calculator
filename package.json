@@ -21,10 +21,13 @@
     "@types/node": "18.0.0",
     "@types/react": "18.0.14",
     "@types/react-dom": "18.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
     "@vitejs/plugin-react-swc": "^3.0.0",
     "debug": "^4.3.4",
     "eslint": "^8.36.0",
-    "eslint-config-react-app": "^7.0.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "2.7.1",
     "ts-node": "10.8.1",
     "typescript": "5.0.2",
@@ -33,13 +36,34 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "rebuildWeaponData": "ts-node-esm src/buildData.ts data/v1.09 && ts-node-esm src/buildData.ts data/reforged"
   },
   "eslintConfig": {
     "extends": [
-      "react-app"
-    ]
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended",
+      "plugin:react/jsx-runtime",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "@typescript-eslint/no-non-null-assertion": "off"
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    },
+    "root": true
+  },
+  "prettier": {
+    "printWidth": 100,
+    "trailingComma": "all"
   }
 }
