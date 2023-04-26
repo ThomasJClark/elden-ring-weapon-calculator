@@ -8,7 +8,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { allAttributes, Attribute, Attributes } from "../calculator/calculator";
+import { allAttributes, type Attribute, type Attributes } from "../calculator/calculator";
 import NumberTextField from "./NumberTextField";
 import { getAttributeLabel, maxRegularUpgradeLevel, toSpecialUpgradeLevel } from "./uiUtils";
 

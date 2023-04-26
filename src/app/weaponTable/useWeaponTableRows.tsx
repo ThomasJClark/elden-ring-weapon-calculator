@@ -1,15 +1,15 @@
 import { useDeferredValue, useMemo } from "react";
 import getWeaponAttack, {
   allStatusTypes,
-  Attributes,
   DamageType,
-  Weapon,
   WeaponType,
+  type Attributes,
+  type Weapon,
 } from "../../calculator/calculator";
 import filterWeapons from "../../search/filterWeapons";
-import { WeaponTableRowData, WeaponTableRowGroup } from "./WeaponTable";
-import { SortBy, sortWeapons } from "../../search/sortWeapons";
-import { RegulationVersion } from "../useWeapons";
+import { type WeaponTableRowData, type WeaponTableRowGroup } from "./WeaponTable";
+import { type SortBy, sortWeapons } from "../../search/sortWeapons";
+import { type RegulationVersion } from "../useWeapons";
 import {
   allWeaponTypes,
   weaponTypeLabels,

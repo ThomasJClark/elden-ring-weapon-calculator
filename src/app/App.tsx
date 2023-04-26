@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Box,
@@ -7,12 +7,12 @@ import {
   Divider,
   Drawer,
   IconButton,
-  Theme,
   ThemeProvider,
   Toolbar,
   Typography,
   useMediaQuery,
   useTheme,
+  type Theme,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBackRounded";
 import WeaponListSettings from "./WeaponListSettings";

@@ -1,8 +1,8 @@
 import { Link } from "@mui/material";
-import { ReactNode, useEffect, useState } from "react";
-import { Weapon } from "../calculator/calculator";
+import { type ReactNode, useEffect, useState } from "react";
+import type { Weapon } from "../calculator/calculator";
 import { decodeRegulationData } from "../regulationData";
-import { AffinityOption, affinityOptions, reforgedAffinityOptions } from "./uiUtils";
+import { type AffinityOption, affinityOptions, reforgedAffinityOptions } from "./uiUtils";
 
 export type RegulationVersionName = "latest" | "reforged";
 

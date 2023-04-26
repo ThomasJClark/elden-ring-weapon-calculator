@@ -4,7 +4,7 @@
 import { readFileSync, writeFileSync } from "fs";
 import { basename, join } from "path";
 import makeDebug from "debug";
-import { Attribute, WeaponType, DamageType } from "./calculator/calculator";
+import { type Attribute, WeaponType, DamageType } from "./calculator/calculator";
 import {
   type EncodedWeaponJson,
   type EncodedRegulationDataJson,

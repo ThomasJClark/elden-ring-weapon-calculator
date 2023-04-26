@@ -1,11 +1,5 @@
-import {
-  allDamageTypes,
-  allStatusTypes,
-  Attribute,
-  DamageType,
-  Weapon,
-  WeaponType,
-} from "./calculator/calculator";
+import { allDamageTypes, allStatusTypes, DamageType, WeaponType } from "./calculator/calculator";
+import type { Attribute, Weapon } from "./calculator/calculator";
 
 export const defaultDamageCalcCorrectGraphId = 0;
 export const defaultStatusCalcCorrectGraphId = 6;

@@ -1,6 +1,6 @@
 import { getTotalAttackPower } from "../app/uiUtils";
-import { WeaponTableRowData } from "../app/weaponTable/WeaponTable";
-import { Attribute, DamageType } from "../calculator/calculator";
+import { type WeaponTableRowData } from "../app/weaponTable/WeaponTable";
+import { type Attribute, DamageType } from "../calculator/calculator";
 
 export type SortBy =
   | "name"

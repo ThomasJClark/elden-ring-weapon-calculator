@@ -13,7 +13,7 @@ import {
   getShortAttributeLabel,
   getTotalAttackPower,
 } from "../uiUtils";
-import { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
+import type { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
 
 /**
  * @returns the given value truncated to an integer
