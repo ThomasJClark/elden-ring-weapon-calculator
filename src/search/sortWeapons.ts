@@ -17,7 +17,7 @@ export function sortWeapons(
   sortBy: SortBy,
   reverse: boolean,
 ): WeaponTableRowData[] {
-  const getSortValue = ((): ((row: WeaponTableRowData) => any) => {
+  const getSortValue = ((): ((row: WeaponTableRowData) => number | string) => {
     if (sortBy === "name") {
       return ([weapon]) => `${weapon.weaponName},${weapon.affinityId.toString().padStart(4, "0")}`;
     }
@@ -42,11 +42,10 @@ export function sortWeapons(
       return ([weapon]) => -(weapon.requirements[attribute] ?? 0);
     }
 
-    return () => {};
+    return () => "";
   })();
 
   return [...rows].sort((row1, row2) =>
-    // eslint-disable-next-line no-mixed-operators
     getSortValue(row1) > getSortValue(row2) !== reverse ? 1 : -1,
   );
 }

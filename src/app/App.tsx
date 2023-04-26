@@ -60,7 +60,6 @@ const useMenuState = () => {
       if (!isMobile) {
         history.back();
         setMenuOpenMobile(false);
-        return () => {};
       }
 
       const onPopState = (evt: PopStateEvent) => {

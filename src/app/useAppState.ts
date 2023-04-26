@@ -65,7 +65,9 @@ export default function useAppState() {
       if (value) {
         return { ...defaultAppState, ...JSON.parse(value) };
       }
-    } catch {}
+    } catch {
+      /* ignored */
+    }
 
     return defaultAppState;
   });

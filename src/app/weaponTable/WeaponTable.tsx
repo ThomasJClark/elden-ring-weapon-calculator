@@ -55,8 +55,12 @@ interface Props {
 /**
  * The first row in the weapon table containing headers for each column group
  */
-const ColumnGroupHeaderGroup = memo(
-  ({ columnGroups }: { columnGroups: readonly WeaponTableColumnGroupDef[] }) => (
+const ColumnGroupHeaderGroup = memo(function ColumnGroupHeaderGroup({
+  columnGroups,
+}: {
+  columnGroups: readonly WeaponTableColumnGroupDef[];
+}) {
+  return (
     <WeaponTableRow
       columnGroupSx={{ alignItems: "center", justifyContent: "center" }}
       columnGroups={columnGroups}
@@ -66,108 +70,106 @@ const ColumnGroupHeaderGroup = memo(
         </Typography>
       )}
     />
-  ),
-);
+  );
+});
 
 /**
  * The row in the weapon table containing headers for each column
  */
-const ColumnHeaderRow = memo(
-  ({
-    columnGroups,
-    sortBy,
-    reverse,
-    onSortByChanged,
-    onReverseChanged,
-  }: {
-    columnGroups: readonly WeaponTableColumnGroupDef[];
-    sortBy: SortBy;
-    reverse: boolean;
-    onSortByChanged(sortBy: SortBy): void;
-    onReverseChanged(reverse: boolean): void;
-  }) => {
-    const onColumnClicked = (column: WeaponTableColumnDef) => {
-      if (column.sortBy) {
-        if (column.sortBy === sortBy) {
-          onReverseChanged(!reverse);
-        } else {
-          onSortByChanged(column.sortBy);
-          onReverseChanged(false);
-        }
+const ColumnHeaderRow = memo(function ColumnHeaderRow({
+  columnGroups,
+  sortBy,
+  reverse,
+  onSortByChanged,
+  onReverseChanged,
+}: {
+  columnGroups: readonly WeaponTableColumnGroupDef[];
+  sortBy: SortBy;
+  reverse: boolean;
+  onSortByChanged(sortBy: SortBy): void;
+  onReverseChanged(reverse: boolean): void;
+}) {
+  const onColumnClicked = (column: WeaponTableColumnDef) => {
+    if (column.sortBy) {
+      if (column.sortBy === sortBy) {
+        onReverseChanged(!reverse);
+      } else {
+        onSortByChanged(column.sortBy);
+        onReverseChanged(false);
       }
-    };
+    }
+  };
 
-    return (
-      <WeaponTableRow
-        sx={{ minHeight: 41 }}
-        columnGroups={columnGroups}
-        renderColumnGroup={({ columns }) =>
-          columns.map((column) => (
-            <Box
-              key={column.key}
-              display="grid"
-              sx={[
-                {
-                  flex: "1 1 0",
-                  gridTemplateRows: "24px 1fr",
-                  alignItems: "start",
-                  justifyContent: "center",
-                  borderRadius: "9999px",
-                  position: "relative",
-                  pt: 1,
-                },
-                column.sortBy
-                  ? {
-                      cursor: "pointer",
-                      userSelect: "none",
-                      ":hover": { backgroundColor: "rgba(245, 189, 99, 0.08)" },
+  return (
+    <WeaponTableRow
+      sx={{ minHeight: 41 }}
+      columnGroups={columnGroups}
+      renderColumnGroup={({ columns }) =>
+        columns.map((column) => (
+          <Box
+            key={column.key}
+            display="grid"
+            sx={[
+              {
+                flex: "1 1 0",
+                gridTemplateRows: "24px 1fr",
+                alignItems: "start",
+                justifyContent: "center",
+                borderRadius: "9999px",
+                position: "relative",
+                pt: 1,
+              },
+              column.sortBy
+                ? {
+                    cursor: "pointer",
+                    userSelect: "none",
+                    ":hover": { backgroundColor: "rgba(245, 189, 99, 0.08)" },
+                  }
+                : {},
+              column.sx ?? {},
+            ]}
+            tabIndex={0}
+            role="columnheader"
+            aria-sort={
+              column.sortBy === sortBy ? (reverse ? "ascending" : "descending") : undefined
+            }
+            onClick={column.sortBy ? () => onColumnClicked(column) : undefined}
+            onKeyDown={
+              column.sortBy
+                ? (evt) => {
+                    if (evt.key === " " || evt.key === "Enter") {
+                      onColumnClicked(column);
+                      evt.preventDefault();
                     }
-                  : {},
-                column.sx ?? {},
-              ]}
-              tabIndex={0}
-              role="columnheader"
-              aria-sort={
-                column.sortBy === sortBy ? (reverse ? "ascending" : "descending") : undefined
-              }
-              onClick={column.sortBy ? () => onColumnClicked(column) : undefined}
-              onKeyDown={
-                column.sortBy
-                  ? (evt) => {
-                      if (evt.key === " " || evt.key === "Enter") {
-                        onColumnClicked(column);
-                        evt.preventDefault();
-                      }
-                    }
-                  : undefined
-              }
-            >
-              {column.header}
-              {column.sortBy === sortBy &&
-                (reverse ? (
-                  <ArrowDropUpIcon sx={{ justifySelf: "center" }} fontSize="small" />
-                ) : (
-                  <ArrowDropDownIcon sx={{ justifySelf: "center" }} fontSize="small" />
-                ))}
-            </Box>
-          ))
-        }
-      />
-    );
-  },
-);
+                  }
+                : undefined
+            }
+          >
+            {column.header}
+            {column.sortBy === sortBy &&
+              (reverse ? (
+                <ArrowDropUpIcon sx={{ justifySelf: "center" }} fontSize="small" />
+              ) : (
+                <ArrowDropDownIcon sx={{ justifySelf: "center" }} fontSize="small" />
+              ))}
+          </Box>
+        ))
+      }
+    />
+  );
+});
 
 /**
  * A row in the weapon table containing a single weapon
  */
-const DataRow = memo(
-  ({
-    columnGroups,
-    row,
-  }: {
-    columnGroups: readonly WeaponTableColumnGroupDef[];
-    row: WeaponTableRowData;
-  }) => (
+const DataRow = memo(function DataRow({
+  columnGroups,
+  row,
+}: {
+  columnGroups: readonly WeaponTableColumnGroupDef[];
+  row: WeaponTableRowData;
+}) {
+  return (
     <WeaponTableRow
       columnGroups={columnGroups}
       sx={{
@@ -194,8 +196,8 @@ const DataRow = memo(
         ))
       }
     />
-  ),
-);
+  );
+});
 
 function RowGroup({
   columnGroups,
