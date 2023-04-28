@@ -31,8 +31,8 @@ function AppBar({ menuOpen, darkMode, onMenuOpenChanged, onDarkModeChanged }: Pr
         <MenuIcon />
       </IconButton>
 
-      <Typography variant="h6" component="span" sx={{ flexGrow: 1 }}>
-        Elden Ring Weapon Calculator
+      <Typography variant="h1" component="span" sx={{ flexGrow: 1 }}>
+        Elden&nbsp;Ring Weapon&nbsp;Calculator
       </Typography>
 
       <IconButton

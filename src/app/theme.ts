@@ -16,6 +16,12 @@ const fontDefinition = [
 
 const typography: TypographyOptions = {
   fontFamily: `${fontFamily}, sans-serif`,
+  h1: {
+    fontSize: "1.0625rem",
+    "@media (min-width: 600px)": {
+      fontSize: "1.25rem",
+    },
+  },
   button: {
     textTransform: "none",
   },
