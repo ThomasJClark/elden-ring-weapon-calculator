@@ -221,7 +221,7 @@ function RowGroup({
       {name != null && (
         <WeaponTableBaseRow
           sx={{
-            padding: "0px 10px",
+            px: "13px",
             alignItems: "center",
             backgroundColor: "rgba(255, 255, 255, 0.1)",
           }}
@@ -261,10 +261,15 @@ function WeaponTable({
       role="table"
       sx={(theme) => ({
         overflowX: "auto",
+        [theme.breakpoints.only("xs")]: {
+          mx: -2,
+        },
+        [theme.breakpoints.only("sm")]: {
+          mx: -3,
+        },
         [theme.breakpoints.down("md")]: {
           borderTop: `solid 1px ${theme.palette.divider}`,
           borderBottom: `solid 1px ${theme.palette.divider}`,
-          marginX: -3,
         },
         [theme.breakpoints.up("md")]: {
           border: `solid 1px ${theme.palette.divider}`,

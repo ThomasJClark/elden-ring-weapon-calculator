@@ -231,12 +231,17 @@ export default function App() {
       <Box
         display="grid"
         sx={(theme) => ({
-          p: 3,
+          px: 2,
+          py: 3,
+          [theme.breakpoints.up("sm")]: {
+            px: 3,
+          },
           [theme.breakpoints.up("md")]: {
             gridTemplateColumns: menuOpen ? `300px 1fr` : "1fr",
             alignContent: "start",
             alignItems: "start",
             gap: 2,
+            px: 3,
           },
         })}
       >
