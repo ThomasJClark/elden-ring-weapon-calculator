@@ -52,7 +52,7 @@ export default function WeaponTableRow({
           display="flex"
           sx={[
             (theme) => ({
-              padding: "0px 10px",
+              px: "13px",
               alignItems: "stretch",
               ":not(:first-of-type)": {
                 borderLeft: `solid 1px ${theme.palette.divider}`,
