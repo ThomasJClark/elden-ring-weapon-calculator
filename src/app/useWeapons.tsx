@@ -39,7 +39,7 @@ export const regulationVersions: Record<RegulationVersionName, RegulationVersion
         >
           Elden Ring Reforged
         </Link>{" "}
-        mod v0.6.6A.
+        mod v0.6.6
       </>
     ),
     affinityOptions: reforgedAffinityOptions,
