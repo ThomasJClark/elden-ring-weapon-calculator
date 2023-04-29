@@ -509,11 +509,11 @@ for (const spEffectParamId of spEffectParams.keys()) {
   }
 }
 
-const scalingNamesJson: [number, string][] = [];
+const scalingTiersJson: [number, string][] = [];
 for (const [id, { data }] of menuValueTableParams) {
   // 1 = scaling labels
   if (data.compareType === 1 && id >= 100) {
-    scalingNamesJson.push([data.value / 100, menuText.get(data.textId)!]);
+    scalingTiersJson.push([data.value / 100, menuText.get(data.textId)!]);
   }
 }
 
@@ -522,7 +522,7 @@ const regulationDataJson: EncodedRegulationDataJson = {
   attackElementCorrects: attackElementCorrectsJson,
   reinforceTypes: reinforceTypesJson,
   statusSpEffectParams: statusSpEffectParamsJson,
-  scalingNames: scalingNamesJson,
+  scalingTiers: scalingTiersJson,
   weapons: weaponsJson,
 };
 
