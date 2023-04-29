@@ -67,5 +67,5 @@ export interface Weapon {
    * Thresholds and labels for each scaling grade (S, A, B, etc.) for this weapon. This isn't
    * hardcoded for all weapons because it can be changed by mods.
    */
-  scalingNames: [number, string][];
+  scalingTiers: [number, string][];
 }
