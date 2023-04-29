@@ -44,7 +44,7 @@ export const regulationVersions: Record<RegulationVersionName, RegulationVersion
     ),
     affinityOptions: reforgedAffinityOptions,
     disableTwoHandingAttackPowerBonus: true,
-    fetch: () => fetch("/regulation-reforged.js?3"),
+    fetch: () => fetch("/regulation-reforged.js?4"),
   },
 };
 
