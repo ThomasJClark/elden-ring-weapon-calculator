@@ -196,15 +196,7 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     return null;
   }
 
-  const attack = {
-    [AttackPowerType.PHYSICAL]: ifNotDefault(data.attackBasePhysics, 0),
-    [AttackPowerType.MAGIC]: ifNotDefault(data.attackBaseMagic, 0),
-    [AttackPowerType.FIRE]: ifNotDefault(data.attackBaseFire, 0),
-    [AttackPowerType.LIGHTNING]: ifNotDefault(data.attackBaseThunder, 0),
-    [AttackPowerType.HOLY]: ifNotDefault(data.attackBaseDark, 0),
-  };
-
-  const statuses = new Set<AttackPowerType>();
+  const attackPowerTypes = new Set<AttackPowerType>();
 
   let statusSpEffectParamIds: number[] | undefined = [
     data.spEffectBehaviorId0,
@@ -218,7 +210,7 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     const statusSpEffectParams = parseStatusSpEffectParams(spEffectParamId);
     if (statusSpEffectParams != null) {
       Object.keys(statusSpEffectParams).forEach((statusType) => {
-        statuses.add(+statusType as AttackPowerType);
+        attackPowerTypes.add(+statusType as AttackPowerType);
       });
       return spEffectParamId;
     }
@@ -235,44 +227,63 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     statusSpEffectParamIds = [0, 0, 0];
   }
 
+  const attack: (readonly [AttackPowerType, number])[] = (
+    [
+      [AttackPowerType.PHYSICAL, data.attackBasePhysics],
+      [AttackPowerType.MAGIC, data.attackBaseMagic],
+      [AttackPowerType.FIRE, data.attackBaseFire],
+      [AttackPowerType.LIGHTNING, data.attackBaseThunder],
+      [AttackPowerType.HOLY, data.attackBaseDark],
+    ] as const
+  ).filter(([attackPowerType, attackPower]) => {
+    if (attackPower) {
+      attackPowerTypes.add(attackPowerType);
+      return true;
+    }
+    return false;
+  });
+
   // Can this weapon cast spells?
   const spellTool = !!data.enableMagic || !!data.enableMiracle;
+  if (spellTool) {
+    attackPowerTypes.add(AttackPowerType.MAGIC);
+  }
 
   const calcCorrectGraphIds = {
     [AttackPowerType.PHYSICAL]: ifNotDefault(
-      attack[AttackPowerType.PHYSICAL] ? data.correctType_Physics : undefined,
+      attackPowerTypes.has(AttackPowerType.PHYSICAL) ? data.correctType_Physics : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
     [AttackPowerType.MAGIC]: ifNotDefault(
-      attack[AttackPowerType.MAGIC] || spellTool ? data.correctType_Magic : undefined,
+      attackPowerTypes.has(AttackPowerType.MAGIC) ? data.correctType_Magic : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
     [AttackPowerType.FIRE]: ifNotDefault(
-      attack[AttackPowerType.FIRE] ? data.correctType_Fire : undefined,
+      attackPowerTypes.has(AttackPowerType.FIRE) ? data.correctType_Fire : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
     [AttackPowerType.LIGHTNING]: ifNotDefault(
-      attack[AttackPowerType.LIGHTNING] ? data.correctType_Thunder : undefined,
+      attackPowerTypes.has(AttackPowerType.LIGHTNING) ? data.correctType_Thunder : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
     [AttackPowerType.HOLY]: ifNotDefault(
-      attack[AttackPowerType.HOLY] ? data.correctType_Dark : undefined,
+      attackPowerTypes.has(AttackPowerType.HOLY) ? data.correctType_Dark : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
     [AttackPowerType.POISON]: ifNotDefault(
-      statuses.has(AttackPowerType.POISON) ? data.correctType_Poison : undefined,
+      attackPowerTypes.has(AttackPowerType.POISON) ? data.correctType_Poison : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
     [AttackPowerType.BLEED]: ifNotDefault(
-      statuses.has(AttackPowerType.BLEED) ? data.correctType_Blood : undefined,
+      attackPowerTypes.has(AttackPowerType.BLEED) ? data.correctType_Blood : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
     [AttackPowerType.SLEEP]: ifNotDefault(
-      statuses.has(AttackPowerType.SLEEP) ? data.correctType_Sleep : undefined,
+      attackPowerTypes.has(AttackPowerType.SLEEP) ? data.correctType_Sleep : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
     [AttackPowerType.MADNESS]: ifNotDefault(
-      statuses.has(AttackPowerType.MADNESS) ? data.correctType_Madness : undefined,
+      attackPowerTypes.has(AttackPowerType.MADNESS) ? data.correctType_Madness : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
   };
@@ -298,13 +309,15 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
       arc: ifNotDefault(data.properLuck, 0),
     },
     attack,
-    attributeScaling: {
-      str: ifNotDefault(data.correctStrength / 100, 0),
-      dex: ifNotDefault(data.correctAgility / 100, 0),
-      int: ifNotDefault(data.correctMagic / 100, 0),
-      fai: ifNotDefault(data.correctFaith / 100, 0),
-      arc: ifNotDefault(data.correctLuck / 100, 0),
-    },
+    attributeScaling: (
+      [
+        ["str", data.correctStrength / 100],
+        ["dex", data.correctAgility / 100],
+        ["int", data.correctMagic / 100],
+        ["fai", data.correctFaith / 100],
+        ["arc", data.correctLuck / 100],
+      ] as const
+    ).filter(([, attributeScaling]) => attributeScaling),
     statusSpEffectParamIds,
     reinforceTypeId: data.reinforceTypeId,
     attackElementCorrectId: data.attackElementCorrectId,

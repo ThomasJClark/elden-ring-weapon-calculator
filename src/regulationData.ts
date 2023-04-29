@@ -57,8 +57,8 @@ export interface EncodedWeaponJson {
   affinityId: number;
   weaponType: WeaponType;
   requirements: Partial<Record<Attribute, number>>;
-  attributeScaling: Partial<Record<Attribute, number>>;
-  attack: Partial<Record<AttackPowerType, number>>;
+  attributeScaling: (readonly [Attribute, number])[];
+  attack: (readonly [AttackPowerType, number])[];
   statusSpEffectParamIds?: number[];
   reinforceTypeId: number;
   attackElementCorrectId: number;
@@ -192,13 +192,14 @@ export function decodeRegulationData({
         );
       }
 
+      // Using the base unupgraded attack and ReinforceParamWeapon for this weapon, calculate the
+      // base attack at each upgrade level
       const attack: Weapon["attack"] = reinforceParams.map((reinforceParam) => {
         const attackAtUpgradeLevel: Weapon["attack"][number] = {};
 
-        Object.keys(unupgradedAttack).forEach((key) => {
-          const attackPowerType = +key as AttackPowerType;
+        unupgradedAttack.forEach(([attackPowerType, unupgradedAttackPower]) => {
           attackAtUpgradeLevel[attackPowerType] =
-            unupgradedAttack[attackPowerType]! * (reinforceParam.attack?.[attackPowerType] ?? 0);
+            unupgradedAttackPower * (reinforceParam.attack[attackPowerType] ?? 0);
         });
 
         const offsets = [
@@ -228,15 +229,14 @@ export function decodeRegulationData({
         return attackAtUpgradeLevel;
       });
 
+      // Using the base unupgraded scaling and ReinforceParamWeapon for this weapon, calculate the
+      // base scaling at each upgrade level
       const attributeScaling: Weapon["attributeScaling"] = reinforceParams.map((reinforceParam) => {
         const attributeScalingAtUpgradeLevel: Weapon["attributeScaling"][number] = {};
-
-        (Object.entries(unupgradedAttributeScaling) as [Attribute, number][]).forEach(
-          ([attribute, unupgradedScaling]) => {
-            attributeScalingAtUpgradeLevel[attribute] =
-              unupgradedScaling * (reinforceParam.attributeScaling?.[attribute] ?? 0);
-          },
-        );
+        unupgradedAttributeScaling.forEach(([attribute, unupgradedScaling]) => {
+          attributeScalingAtUpgradeLevel[attribute] =
+            unupgradedScaling * reinforceParam.attributeScaling[attribute];
+        });
 
         return attributeScalingAtUpgradeLevel;
       });
