@@ -135,14 +135,14 @@ function WeaponListSettings({
   return (
     <Box
       display="grid"
-      sx={{
+      sx={(theme) => ({
         gap: 2,
-        gridTemplateColumns: {
-          xs: "1fr",
-          [breakpoint]: "332px 128px auto auto 1fr",
-        },
+        gridTemplateColumns: "1fr",
         alignItems: "start",
-      }}
+        [theme.breakpoints.up(breakpoint)]: {
+          gridTemplateColumns: "320px 120px auto",
+        },
+      })}
     >
       <Box display="grid" sx={{ gap: 2, gridTemplateColumns: "1fr 1fr 1fr" }}>
         {allAttributes.map((attribute) => (
@@ -155,15 +155,29 @@ function WeaponListSettings({
         ))}
       </Box>
 
-      <Box display="grid" sx={{ gap: 2 }}>
-        <WeaponLevelInput
-          upgradeLevel={upgradeLevel}
-          onUpgradeLevelChanged={onUpgradeLevelChanged}
-        />
-      </Box>
+      <WeaponLevelInput upgradeLevel={upgradeLevel} onUpgradeLevelChanged={onUpgradeLevelChanged} />
 
-      <Box display="grid" sx={{ gridTemplateColumns: "1fr 1fr", gap: 2 }}>
-        <BooleanInput label="Two Handing" checked={twoHanding} onChange={onTwoHandingChanged} />
+      <Box
+        display="grid"
+        sx={(theme) => ({
+          mt: -1,
+          columnGap: 2,
+          gridTemplateColumns: "1fr auto",
+          [theme.breakpoints.up("sm")]: {
+            gridTemplateColumns: "1fr 1fr",
+          },
+          [theme.breakpoints.up(breakpoint)]: {
+            gridTemplateColumns: "1fr auto",
+            justifySelf: "start",
+          },
+        })}
+      >
+        <BooleanInput label="Two handing" checked={twoHanding} onChange={onTwoHandingChanged} />
+        <BooleanInput
+          label="Group by type"
+          checked={groupWeaponTypes}
+          onChange={onGroupWeaponTypesChanged}
+        />
         <BooleanInput
           label="Effective only"
           checked={effectiveOnly}
@@ -173,11 +187,6 @@ function WeaponListSettings({
           label="Show damage split"
           checked={splitDamage}
           onChange={onSplitDamageChanged}
-        />
-        <BooleanInput
-          label="Group weapon types"
-          checked={groupWeaponTypes}
-          onChange={onGroupWeaponTypesChanged}
         />
       </Box>
     </Box>
