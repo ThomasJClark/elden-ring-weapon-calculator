@@ -12,7 +12,9 @@ This was inspired the [Dark Souls Weapons Attack Calculator](https://soulsplanne
 
 Regulation data was extracted from the game using [DSMapStudio](https://github.com/soulsmods/DSMapStudio).
 
-Elden Ring Reforged support uses data extracted from the [Elden Ring Reforged](https://www.nexusmods.com/eldenring/mods/541) mod files on Nexus Mods.
+Elden Ring Reforged support uses data from the [Elden Ring Reforged](https://www.nexusmods.com/eldenring/mods/541) mod provided by [ivi](https://github.com/ividyon) from the ERR team.
+
+The Convergence Mod support uses data extracted from [The Convergence Mod](https://www.nexusmods.com/eldenring/mods/3419) public alpha on Nexus Mods.
 
 ## Reporting Issues
 
