@@ -67,9 +67,9 @@ export const regulationVersions: Record<RegulationVersionName, RegulationVersion
           target="_blank"
           rel="noopener noreferer"
         >
-          The Convergence
+          The Convergence Mod
         </Link>{" "}
-        mod (public alpha)
+        public alpha
       </>
     ),
     affinityOptions: convergenceAffinityOptions,
