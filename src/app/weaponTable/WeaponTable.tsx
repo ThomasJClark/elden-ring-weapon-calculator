@@ -6,7 +6,16 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { AttackPowerType, type Weapon, type WeaponAttackResult } from "../../calculator/calculator";
 import type { SortBy } from "../../search/sortWeapons";
 import getWeaponTableColumns from "./getWeaponTableColumns";
-import WeaponTableRow, { WeaponTableBaseRow } from "./WeaponTableRow";
+import {
+  WeaponTableBody,
+  WeaponTableColumn,
+  WeaponTableColumnGroup,
+  WeaponTableColumnGroupHeaderRow,
+  WeaponTableColumnHeaderRow,
+  WeaponTableDataRow,
+  WeaponTableGroup,
+  WeaponTableGroupHeaderRow,
+} from "./tableStyledComponents";
 
 export type WeaponTableRowData = [Weapon, WeaponAttackResult];
 
@@ -53,27 +62,6 @@ interface Props {
 }
 
 /**
- * The first row in the weapon table containing headers for each column group
- */
-const ColumnGroupHeaderGroup = memo(function ColumnGroupHeaderGroup({
-  columnGroups,
-}: {
-  columnGroups: readonly WeaponTableColumnGroupDef[];
-}) {
-  return (
-    <WeaponTableRow
-      columnGroupSx={{ alignItems: "center", justifyContent: "center" }}
-      columnGroups={columnGroups}
-      renderColumnGroup={({ header }) => (
-        <Typography component="span" variant="subtitle2" role="columnheader">
-          {header}
-        </Typography>
-      )}
-    />
-  );
-});
-
-/**
  * The row in the weapon table containing headers for each column
  */
 const ColumnHeaderRow = memo(function ColumnHeaderRow({
@@ -101,61 +89,61 @@ const ColumnHeaderRow = memo(function ColumnHeaderRow({
   };
 
   return (
-    <WeaponTableRow
-      sx={{ minHeight: 41 }}
-      columnGroups={columnGroups}
-      renderColumnGroup={({ columns }) =>
-        columns.map((column) => (
-          <Box
-            key={column.key}
-            display="grid"
-            sx={[
-              {
-                flex: "1 1 0",
-                gridTemplateRows: "24px 1fr",
-                alignItems: "start",
-                justifyContent: "center",
-                borderRadius: "9999px",
-                position: "relative",
-                pt: 1,
-              },
-              column.sortBy
-                ? {
-                    cursor: "pointer",
-                    userSelect: "none",
-                    ":hover": { backgroundColor: "rgba(245, 189, 99, 0.08)" },
-                  }
-                : {},
-              column.sx ?? {},
-            ]}
-            tabIndex={0}
-            role="columnheader"
-            aria-sort={
-              column.sortBy === sortBy ? (reverse ? "ascending" : "descending") : undefined
-            }
-            onClick={column.sortBy ? () => onColumnClicked(column) : undefined}
-            onKeyDown={
-              column.sortBy
-                ? (evt) => {
-                    if (evt.key === " " || evt.key === "Enter") {
-                      onColumnClicked(column);
-                      evt.preventDefault();
+    <WeaponTableColumnHeaderRow role="row">
+      {columnGroups.map(({ key, sx, columns }) => (
+        <WeaponTableColumnGroup key={key} sx={sx}>
+          {columns.map((column) => (
+            <Box
+              key={column.key}
+              display="grid"
+              sx={[
+                {
+                  flex: "1 1 0",
+                  gridTemplateRows: "24px 1fr",
+                  alignItems: "start",
+                  justifyContent: "center",
+                  borderRadius: "9999px",
+                  position: "relative",
+                  pt: 1,
+                },
+                column.sortBy
+                  ? {
+                      cursor: "pointer",
+                      userSelect: "none",
+                      ":hover": { backgroundColor: "rgba(245, 189, 99, 0.08)" },
                     }
-                  }
-                : undefined
-            }
-          >
-            {column.header}
-            {column.sortBy === sortBy &&
-              (reverse ? (
-                <ArrowDropUpIcon sx={{ justifySelf: "center" }} fontSize="small" />
-              ) : (
-                <ArrowDropDownIcon sx={{ justifySelf: "center" }} fontSize="small" />
-              ))}
-          </Box>
-        ))
-      }
-    />
+                  : {},
+                column.sx ?? {},
+              ]}
+              tabIndex={0}
+              role="columnheader"
+              aria-sort={
+                column.sortBy === sortBy ? (reverse ? "ascending" : "descending") : undefined
+              }
+              onClick={column.sortBy ? () => onColumnClicked(column) : undefined}
+              onKeyDown={
+                column.sortBy
+                  ? (evt) => {
+                      if (evt.key === " " || evt.key === "Enter") {
+                        onColumnClicked(column);
+                        evt.preventDefault();
+                      }
+                    }
+                  : undefined
+              }
+            >
+              {column.header}
+              {column.sortBy === sortBy &&
+                (reverse ? (
+                  <ArrowDropUpIcon sx={{ justifySelf: "center" }} fontSize="small" />
+                ) : (
+                  <ArrowDropDownIcon sx={{ justifySelf: "center" }} fontSize="small" />
+                ))}
+            </Box>
+          ))}
+        </WeaponTableColumnGroup>
+      ))}
+    </WeaponTableColumnHeaderRow>
   );
 });
 
@@ -170,74 +158,19 @@ const DataRow = memo(function DataRow({
   row: WeaponTableRowData;
 }) {
   return (
-    <WeaponTableRow
-      columnGroups={columnGroups}
-      sx={{
-        ":nth-of-type(2n+1)": { backgroundColor: "rgba(255, 255, 255, 0.02)" },
-        ":hover": { backgroundColor: "rgba(255, 255, 255, 0.08)" },
-      }}
-      renderColumnGroup={({ columns }) =>
-        columns.map((column) => (
-          <Box
-            key={column.key}
-            display="grid"
-            sx={[
-              {
-                flex: "1 1 0",
-                alignItems: "center",
-                justifyContent: "center",
-              },
-              column.sx ?? {},
-            ]}
-            role="cell"
-          >
-            {column.render(row)}
-          </Box>
-        ))
-      }
-    />
+    <WeaponTableDataRow role="row">
+      {columnGroups.map(({ key, sx, columns }) => (
+        <WeaponTableColumnGroup key={key} sx={sx}>
+          {columns.map((column) => (
+            <WeaponTableColumn key={column.key} role="cell" sx={column.sx}>
+              {column.render(row)}
+            </WeaponTableColumn>
+          ))}
+        </WeaponTableColumnGroup>
+      ))}
+    </WeaponTableDataRow>
   );
 });
-
-function RowGroup({
-  columnGroups,
-  name,
-  rows,
-}: {
-  columnGroups: readonly WeaponTableColumnGroupDef[];
-  name?: string;
-  rows: readonly WeaponTableRowData[];
-}) {
-  return (
-    <Box
-      sx={(theme) => ({
-        ":not(:last-of-type)": {
-          minHeight: "37px",
-          borderBottom: `solid 1px ${theme.palette.divider}`,
-        },
-      })}
-      role="rowgroup"
-    >
-      {name != null && (
-        <WeaponTableBaseRow
-          sx={{
-            px: "13px",
-            alignItems: "center",
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-          }}
-        >
-          <Typography component="span" variant="subtitle2" role="columnheader">
-            {name}
-          </Typography>
-        </WeaponTableBaseRow>
-      )}
-
-      {rows.map((row) => (
-        <DataRow key={row[0].name} columnGroups={columnGroups} row={row} />
-      ))}
-    </Box>
-  );
-}
 
 function WeaponTable({
   rowGroups,
@@ -256,28 +189,22 @@ function WeaponTable({
   );
 
   return (
-    <Box
-      display="grid"
-      role="table"
-      sx={(theme) => ({
-        overflowX: "auto",
-        [theme.breakpoints.only("xs")]: {
-          mx: -2,
-        },
-        [theme.breakpoints.only("sm")]: {
-          mx: -3,
-        },
-        [theme.breakpoints.down("md")]: {
-          borderTop: `solid 1px ${theme.palette.divider}`,
-          borderBottom: `solid 1px ${theme.palette.divider}`,
-        },
-        [theme.breakpoints.up("md")]: {
-          border: `solid 1px ${theme.palette.divider}`,
-          borderRadius: `${theme.shape.borderRadius}px`,
-        },
-      })}
-    >
-      <ColumnGroupHeaderGroup columnGroups={columnGroups} />
+    <WeaponTableBody role="table">
+      <WeaponTableColumnGroupHeaderRow role="row">
+        {columnGroups.map(({ key, sx, header }) => (
+          <WeaponTableColumnGroup
+            key={key}
+            sx={[sx ?? {}, { alignItems: "center", justifyContent: "center" }]}
+          >
+            {header && (
+              <Typography component="span" variant="subtitle2" role="columnheader">
+                {header}
+              </Typography>
+            )}
+          </WeaponTableColumnGroup>
+        ))}
+      </WeaponTableColumnGroupHeaderRow>
+
       <ColumnHeaderRow
         columnGroups={columnGroups}
         sortBy={sortBy}
@@ -287,7 +214,19 @@ function WeaponTable({
       />
       {rowGroups.length > 0 ? (
         rowGroups.map(({ key, name, rows }) => (
-          <RowGroup key={key} columnGroups={columnGroups} name={name} rows={rows} />
+          <WeaponTableGroup key={key} role="rowgroup">
+            {name != null && (
+              <WeaponTableGroupHeaderRow role="row">
+                <Typography component="span" variant="subtitle2" role="columnheader">
+                  {name}
+                </Typography>
+              </WeaponTableGroupHeaderRow>
+            )}
+
+            {rows.map((row) => (
+              <DataRow key={row[0].name} columnGroups={columnGroups} row={row} />
+            ))}
+          </WeaponTableGroup>
         ))
       ) : (
         <Box display="grid" sx={{ minHeight: "480px", px: "10px", gap: 3 }}>
@@ -299,7 +238,7 @@ function WeaponTable({
           {footer}
         </Box>
       )}
-    </Box>
+    </WeaponTableBody>
   );
 }
 
