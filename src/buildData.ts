@@ -62,7 +62,8 @@ function readFmgJson(filename: string): Map<number, string | null> {
 
 const dataDir = process.argv[2];
 const isReforged = dataDir.includes("reforged");
-const isVanilla = !isReforged;
+const isConvergence = dataDir.includes("convergence");
+const isVanilla = !isReforged && !isConvergence;
 const outputFile = join("public", `regulation-${basename(dataDir)}.js`);
 
 const urlOverrides = new Map([
@@ -73,6 +74,46 @@ const urlOverrides = new Map([
         [16170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Grave Spear
         [11110000, "https://eldenring.wiki.fextralife.com/Scepter+of+the+All-Knowing"], // Scepter of the All-Knowing Staff
         [33210000, "https://eldenring.wiki.fextralife.com/Carian+Glintstone+Staff"], // Dark Glintstone Staff
+      ] as const)
+    : []),
+  ...(isConvergence
+    ? ([
+        [1120000, null], // Surgeon's Catlinger
+        [1170000, null], // Midnight Dagger
+        [3110000, null], // Celestial Blade
+        [3120000, null], // Sword of the Cyclops
+        [5070000, null], // Thorn of the Guilty
+        [5080000, null], // Foil of Caddock
+        [5090000, null], // Quicksilver Rapier
+        [7160000, null], // Blade of Scarlet Bloom
+        [7180000, null], // Nomad's Kilij
+        [8090000, null], // Three Finger Blade
+        [10020000, null], // Sulien's Razors
+        [10040000, null], // Frozen Twinshards
+        [10070000, null], // Godwyn's Cragblades
+        [11020000, null], // Leaden Maul
+        [11160000, null], // Zamor Star Mace
+        [12030000, null], // Underworld Greatmace
+        [12040000, null], // Crimson Briar-Bough
+        [13050000, null], // Mohgwyn Censer
+        [13060000, null], // Seething Flail
+        [14070000, null], // Glintstone Cleaver
+        [14090000, null], // Axe of Epiphany
+        [14130000, null], // Axe of Fell Prophecy
+        [15090000, null], // Axe of Rust
+        [18120000, null], // Glaive of the Ancients
+        [22040000, null], // Stone Claws
+        [1050000, "https://eldenring.wiki.fextralife.com/Crystal+Knife"], // Underworld Dagger
+        [2070000, "https://eldenring.wiki.fextralife.com/Golden+Epitaph"], // Draconic Epitaph
+        [2140000, "https://eldenring.wiki.fextralife.com/Sword+of+Night+and+Flame"], // Sword of the Cosmos
+        [2150000, "https://eldenring.wiki.fextralife.com/Crystal+Sword"], // Molten Sword
+        [2200000, "https://eldenring.wiki.fextralife.com/Miquellan+Knight's+Sword"], // Fell Flame Sword
+        [2250000, "https://eldenring.wiki.fextralife.com/Lazuli+Glintstone+Sword"], // Dragonkin Seeker Sword
+        [18140000, "https://eldenring.wiki.fextralife.com/Dragon+Halberd"], // Dragonkin Halberd
+        [33050000, "https://eldenring.wiki.fextralife.com/Gelmir+Glintstone+Staff"], // Gelmir Lava Staff
+        [33060000, "https://eldenring.wiki.fextralife.com/Demi-Human+Queen's+Staff"], // Blighted Branch
+        [33200000, "https://eldenring.wiki.fextralife.com/Academy+Glintstone+Staff"], // Dragon Student Staff
+        [33240000, "https://eldenring.wiki.fextralife.com/Lusat's+Glintstone+Staff"], // Lusat's Night Staff
       ] as const)
     : []),
 ]);
@@ -96,6 +137,41 @@ function ifNotDefault<T>(value: T, defaultValue: T): T | undefined {
  * for filtering purposes.
  */
 function isUniqueWeapon(data: CsvRow["data"]) {
+  // Hack: The Convergence allows these to be given affinities, but they don't do anything. They're
+  // supposed to be unique weapons.
+  if (
+    isConvergence &&
+    [
+      1120000, // Surgeon's Catlinger
+      1170000, // Midnight Dagger
+      3110000, // Celestial Blade
+      3120000, // Sword of the Cyclops
+      5070000, // Thorn of the Guilty
+      5080000, // Foil of Caddock
+      5090000, // Quicksilver Rapier
+      7160000, // Blade of Scarlet Bloom
+      7180000, // Nomad's Kilij
+      8090000, // Three Finger Blade
+      10020000, // Sulien's Razors
+      10040000, // Frozen Twinshards
+      10070000, // Godwyn's Cragblades
+      11020000, // Leaden Maul
+      11160000, // Zamor Star Mace
+      12030000, // Underworld Greatmace
+      12040000, // Crimson Briar-Bough
+      13050000, // Mohgwyn Censer
+      13060000, // Seething Flail
+      14070000, // Glintstone Cleaver
+      14090000, // Axe of Epiphany
+      14130000, // Axe of Fell Prophecy
+      15090000, // Axe of Rust
+      18120000, // Glaive of the Ancients
+      22040000, // Stone Claws
+    ].includes(data.ID)
+  ) {
+    return true;
+  }
+
   // Consider a weapon unique if it can't have Ashes of War (e.g. torches, moonveil) or can't have
   // affinities selected when applying Ashes of War (e.g. bows)
   return data.gemMountType === 0 || data.disableGemAttr === 1;
@@ -106,6 +182,35 @@ const unobtainableWeapons = new Set(
     ? [
         1910000, // Reduvia (Esgar- Priest of Blood)
         11170000, // Gideon's Scepter of the All-Knowing
+      ]
+    : // These aren't mentioned in the notes for the public alpha, likely WIP
+    isConvergence
+    ? [
+        3230000, // Sword of Hadea
+        6050000, // Estoc of the Serpent Priest
+        7170000, // Matriarch's Shotel
+        10060000, // Caimar's Battlestaff
+        10060000, // Caimar's Battlestaff
+        19030000, // Moon Breaker Scythe
+        30300000, // Crest of the Dragon Cult
+        33290000, // Dragonkin Scepter
+        33300000, // Ranni's Staff
+        33310000, // Snow Witch Staff
+        33320000, // Staff of Briar
+        33330000, // Lavastone Staff
+        33340000, // Tempestcaller Staff
+        33350000, // Stormcaller Staff
+        34100000, // Godskin Seal
+        34110000, // Fire Monk's Seal
+        34120000, // Dragon Cult Seal
+        34130000, // Earthbreaker Seal
+        34140000, // Fingerprint Seal
+        34150000, // Mohgwyn Seal
+        34160000, // War Surgeon's Seal
+        34170000, // Seal of Rot
+        34180000, // Pest's Seal
+        34190000, // Spiritshaper Seal
+        34200000, // Mystic Seal
       ]
     : [],
 );
@@ -480,6 +585,13 @@ const reinforceTypesJson: { [reinforceId in number]?: ReinforceParamWeapon[] } =
 reinforceParamWeapons.forEach((reinforceParamWeapon, reinforceParamId) => {
   const reinforceLevel = reinforceParamId % 50;
   const reinforceTypeId = reinforceParamId - reinforceLevel;
+
+  // Hack: Reinforcement in The Convergence is only available up to +10, but some reinforcement
+  // paths in the public alpha go to +25.
+  if (isConvergence && reinforceLevel > 10) {
+    return;
+  }
+
   if (reinforceTypeIds.has(reinforceTypeId)) {
     (reinforceTypesJson[reinforceTypeId] ??= [])[reinforceLevel] =
       parseReinforceParamWeapon(reinforceParamWeapon);
