@@ -1,7 +1,7 @@
 import { useDeferredValue, useMemo } from "react";
 import getWeaponAttack, {
-  allStatusTypes,
-  DamageType,
+  allAttackPowerTypes,
+  AttackPowerType,
   WeaponType,
   type Attributes,
   type Weapon,
@@ -36,7 +36,10 @@ interface WeaponTableRowsOptions {
 
 interface WeaponTableRowsResult {
   rowGroups: readonly WeaponTableRowGroup[];
-  statusTypes: readonly DamageType[];
+
+  /** Attack power types included in at least one weapon in the filtered results */
+  attackPowerTypes: ReadonlySet<AttackPowerType>;
+
   total: number;
 }
 
@@ -76,8 +79,10 @@ const useWeaponTableRows = ({
     return tmp;
   }, [weapons]);
 
-  const [filteredRows, statusTypes] = useMemo<[WeaponTableRowData[], DamageType[]]>(() => {
-    const includedStatusTypes = new Set<DamageType>();
+  const [filteredRows, attackPowerTypes] = useMemo<
+    [WeaponTableRowData[], Set<AttackPowerType>]
+  >(() => {
+    const includedDamageTypes = new Set<AttackPowerType>();
 
     const filteredWeapons = filterWeapons(weapons, {
       weaponTypes: new Set(weaponTypes.filter((weaponType) => allWeaponTypes.includes(weaponType))),
@@ -105,16 +110,16 @@ const useWeaponTableRows = ({
         disableTwoHandingAttackPowerBonus: regulationVersion.disableTwoHandingAttackPowerBonus,
       });
 
-      for (const statusType of allStatusTypes) {
+      for (const statusType of allAttackPowerTypes) {
         if (weaponAttackResult.attackPower[statusType]) {
-          includedStatusTypes.add(statusType);
+          includedDamageTypes.add(statusType);
         }
       }
 
       return [weapon, weaponAttackResult];
     });
 
-    return [rows, allStatusTypes.filter((statusType) => includedStatusTypes.has(statusType))];
+    return [rows, includedDamageTypes];
   }, [
     attributes,
     twoHanding,
@@ -128,8 +133,11 @@ const useWeaponTableRows = ({
     uninfusableWeaponTypes,
   ]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const memoizedStatusTypes = useMemo(() => statusTypes, [statusTypes.join(",")]);
+  const memoizedAttackPowerTypes = useMemo(
+    () => attackPowerTypes,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [[...attackPowerTypes].sort().join(",")],
+  );
 
   const rowGroups = useMemo<WeaponTableRowGroup[]>(() => {
     if (groupWeaponTypes) {
@@ -164,7 +172,7 @@ const useWeaponTableRows = ({
 
   return {
     rowGroups,
-    statusTypes: memoizedStatusTypes,
+    attackPowerTypes: memoizedAttackPowerTypes,
     total: filteredRows.length,
   };
 };

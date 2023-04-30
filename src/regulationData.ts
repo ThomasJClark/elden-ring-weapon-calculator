@@ -1,4 +1,9 @@
-import { allDamageTypes, allStatusTypes, DamageType, WeaponType } from "./calculator/calculator";
+import {
+  allDamageTypes,
+  allStatusTypes,
+  AttackPowerType,
+  WeaponType,
+} from "./calculator/calculator";
 import type { Attribute, Weapon } from "./calculator/calculator";
 
 export const defaultDamageCalcCorrectGraphId = 0;
@@ -14,7 +19,7 @@ export type CalcCorrectGraph = {
 }[];
 
 export interface ReinforceParamWeapon {
-  attack: Partial<Record<DamageType, number>>;
+  attack: Partial<Record<AttackPowerType, number>>;
   attributeScaling: Record<Attribute, number>;
   statusSpEffectId1?: number;
   statusSpEffectId2?: number;
@@ -29,15 +34,15 @@ export interface EncodedRegulationDataJson {
     readonly [calcCorrectId in number]?: CalcCorrectGraph;
   };
   readonly attackElementCorrects: {
-    readonly [attackElementCorrectId in number]?: Partial<Record<DamageType, Attribute[]>>;
+    readonly [attackElementCorrectId in number]?: Partial<Record<AttackPowerType, Attribute[]>>;
   };
   readonly reinforceTypes: {
     readonly [reinforceId in number]?: ReinforceParamWeapon[];
   };
   readonly statusSpEffectParams: {
-    readonly [spEffectParamId in number]?: Partial<Record<DamageType, number>>;
+    readonly [spEffectParamId in number]?: Partial<Record<AttackPowerType, number>>;
   };
-  readonly scalingNames: [number, string][];
+  readonly scalingTiers: [number, string][];
   readonly weapons: readonly EncodedWeaponJson[];
 }
 
@@ -52,13 +57,14 @@ export interface EncodedWeaponJson {
   affinityId: number;
   weaponType: WeaponType;
   requirements: Partial<Record<Attribute, number>>;
-  attributeScaling: Partial<Record<Attribute, number>>;
-  attack: Partial<Record<DamageType, number>>;
+  attributeScaling: (readonly [Attribute, number])[];
+  attack: (readonly [AttackPowerType, number])[];
   statusSpEffectParamIds?: number[];
   reinforceTypeId: number;
   attackElementCorrectId: number;
-  calcCorrectGraphIds?: Partial<Record<DamageType, number>>;
+  calcCorrectGraphIds?: Partial<Record<AttackPowerType, number>>;
   paired?: boolean;
+  spellTool?: boolean;
 }
 
 /**
@@ -106,7 +112,7 @@ export function decodeRegulationData({
   reinforceTypes,
   statusSpEffectParams,
   weapons,
-  scalingNames,
+  scalingTiers,
 }: EncodedRegulationDataJson): Weapon[] {
   const calcCorrectGraphsById = new Map(
     Object.entries(calcCorrectGraphs).map(([calcCorrectGraphId, calcCorrectGraph]) => [
@@ -115,17 +121,21 @@ export function decodeRegulationData({
     ]),
   );
 
-  const attackElementCorrectsById = new Map<number, Partial<Record<DamageType, Attribute[]>>>(
+  const attackElementCorrectsById = new Map<number, Partial<Record<AttackPowerType, Attribute[]>>>(
     Object.entries(attackElementCorrects).map(([attackElementCorrectId, attackElementCorrect]) => [
       +attackElementCorrectId,
       {
         ...attackElementCorrect,
+
         // Status effects aren't stored in AttackElementCorrectParam because it's the same for all
         // weapons. Manually add it to all entries
-        [DamageType.POISON]: ["arc"],
-        [DamageType.BLEED]: ["arc"],
-        [DamageType.MADNESS]: ["arc"],
-        [DamageType.SLEEP]: ["arc"],
+        [AttackPowerType.POISON]: ["arc"],
+        [AttackPowerType.BLEED]: ["arc"],
+        [AttackPowerType.MADNESS]: ["arc"],
+        [AttackPowerType.SLEEP]: ["arc"],
+
+        // Spell scaling uses the same scaling as magic damage
+        [AttackPowerType.SPELL_SCALING]: attackElementCorrect?.[AttackPowerType.MAGIC],
       },
     ]),
   );
@@ -175,14 +185,21 @@ export function decodeRegulationData({
           calcCorrectGraphIds?.[statusType] ?? defaultStatusCalcCorrectGraphId,
         );
       });
+      if (weapon.spellTool) {
+        // Spell scaling uses the same scaling as magic damage
+        weaponCalcCorrectGraphs[AttackPowerType.SPELL_SCALING] = getCalcCorrectGraph(
+          calcCorrectGraphIds?.[AttackPowerType.MAGIC] ?? defaultDamageCalcCorrectGraphId,
+        );
+      }
 
+      // Using the base unupgraded attack and ReinforceParamWeapon for this weapon, calculate the
+      // base attack at each upgrade level
       const attack: Weapon["attack"] = reinforceParams.map((reinforceParam) => {
         const attackAtUpgradeLevel: Weapon["attack"][number] = {};
 
-        Object.keys(unupgradedAttack).forEach((key) => {
-          const damageType = +key as DamageType;
-          attackAtUpgradeLevel[damageType] =
-            unupgradedAttack[damageType]! * (reinforceParam.attack?.[damageType] ?? 0);
+        unupgradedAttack.forEach(([attackPowerType, unupgradedAttackPower]) => {
+          attackAtUpgradeLevel[attackPowerType] =
+            unupgradedAttackPower * (reinforceParam.attack[attackPowerType] ?? 0);
         });
 
         const offsets = [
@@ -204,18 +221,22 @@ export function decodeRegulationData({
           }
         });
 
+        // Spell scaling is displayed as a percent (i.e. as if the base damage were 100)
+        if (weapon.spellTool) {
+          attackAtUpgradeLevel[AttackPowerType.SPELL_SCALING] = 100;
+        }
+
         return attackAtUpgradeLevel;
       });
 
+      // Using the base unupgraded scaling and ReinforceParamWeapon for this weapon, calculate the
+      // base scaling at each upgrade level
       const attributeScaling: Weapon["attributeScaling"] = reinforceParams.map((reinforceParam) => {
         const attributeScalingAtUpgradeLevel: Weapon["attributeScaling"][number] = {};
-
-        (Object.entries(unupgradedAttributeScaling) as [Attribute, number][]).forEach(
-          ([attribute, unupgradedScaling]) => {
-            attributeScalingAtUpgradeLevel[attribute] =
-              unupgradedScaling * (reinforceParam.attributeScaling?.[attribute] ?? 0);
-          },
-        );
+        unupgradedAttributeScaling.forEach(([attribute, unupgradedScaling]) => {
+          attributeScalingAtUpgradeLevel[attribute] =
+            unupgradedScaling * reinforceParam.attributeScaling[attribute];
+        });
 
         return attributeScalingAtUpgradeLevel;
       });
@@ -230,7 +251,7 @@ export function decodeRegulationData({
         attributeScaling,
         attackElementCorrect,
         calcCorrectGraphs: weaponCalcCorrectGraphs,
-        scalingNames,
+        scalingTiers,
       };
     },
   );

@@ -1,5 +1,5 @@
 import type { Attribute } from "./attributes";
-import type { DamageType } from "./damageTypes";
+import type { AttackPowerType } from "./attackPowerTypes";
 import type { WeaponType } from "./weaponTypes";
 
 export interface Weapon {
@@ -39,19 +39,19 @@ export interface Weapon {
   attributeScaling: Partial<Record<Attribute, number>>[];
 
   /**
-   * Base attack power for each damage type and status effect at each upgrade level
+   * Base attack power for each damage type, status effect, and spell scaling at each upgrade level
    */
-  attack: Partial<Record<DamageType, number>>[];
+  attack: Partial<Record<AttackPowerType, number>>[];
 
   /**
    * Map indicating which damage types scale with which player attributes
    */
-  attackElementCorrect: Partial<Record<DamageType, Attribute[]>>;
+  attackElementCorrect: Partial<Record<AttackPowerType, Attribute[]>>;
 
   /**
-   * Map indicating which scaling curve is used for each damage type or status effect
+   * Map indicating which scaling curve is used for each damage type, status effect, or spell scaling
    */
-  calcCorrectGraphs: Record<DamageType, number[]>;
+  calcCorrectGraphs: Record<AttackPowerType, number[]>;
 
   /**
    * True if the weapon doesn't get a strength bonus when two-handing
@@ -59,8 +59,13 @@ export interface Weapon {
   paired?: boolean;
 
   /**
+   * True if this weapon can cast incantations or glintstone sorceries
+   */
+  spellTool?: boolean;
+
+  /**
    * Thresholds and labels for each scaling grade (S, A, B, etc.) for this weapon. This isn't
    * hardcoded for all weapons because it can be changed by mods.
    */
-  scalingNames: [number, string][];
+  scalingTiers: [number, string][];
 }

@@ -1,11 +1,11 @@
-import { getTotalAttackPower } from "../app/uiUtils";
+import { getTotalDamageAttackPower } from "../app/uiUtils";
 import { type WeaponTableRowData } from "../app/weaponTable/WeaponTable";
-import { type Attribute, DamageType } from "../calculator/calculator";
+import { type Attribute, AttackPowerType } from "../calculator/calculator";
 
 export type SortBy =
   | "name"
   | "totalAttack"
-  | `${DamageType}Attack`
+  | `${AttackPowerType}Attack`
   | `${Attribute}Scaling`
   | `${Attribute}Requirement`;
 
@@ -23,12 +23,12 @@ export function sortWeapons(
     }
 
     if (sortBy === "totalAttack") {
-      return ([, { attackPower }]) => -getTotalAttackPower(attackPower);
+      return ([, { attackPower }]) => -getTotalDamageAttackPower(attackPower);
     }
 
     if (sortBy.endsWith("Attack")) {
-      const damageType = +sortBy.slice(0, -1 * "Attack".length) as DamageType;
-      return ([, { attackPower }]) => -(attackPower[damageType] ?? 0);
+      const attackPowerType = +sortBy.slice(0, -1 * "Attack".length) as AttackPowerType;
+      return ([, { attackPower }]) => -(attackPower[attackPowerType] ?? 0);
     }
 
     if (sortBy.endsWith("Scaling")) {

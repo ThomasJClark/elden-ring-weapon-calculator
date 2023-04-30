@@ -4,7 +4,7 @@
 import { readFileSync, writeFileSync } from "fs";
 import { basename, join } from "path";
 import makeDebug from "debug";
-import { type Attribute, WeaponType, DamageType } from "./calculator/calculator";
+import { type Attribute, WeaponType, AttackPowerType } from "./calculator/calculator";
 import {
   type EncodedWeaponJson,
   type EncodedRegulationDataJson,
@@ -196,15 +196,7 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     return null;
   }
 
-  const attack = {
-    [DamageType.PHYSICAL]: ifNotDefault(data.attackBasePhysics, 0),
-    [DamageType.MAGIC]: ifNotDefault(data.attackBaseMagic, 0),
-    [DamageType.FIRE]: ifNotDefault(data.attackBaseFire, 0),
-    [DamageType.LIGHTNING]: ifNotDefault(data.attackBaseThunder, 0),
-    [DamageType.HOLY]: ifNotDefault(data.attackBaseDark, 0),
-  };
-
-  const statuses = new Set<DamageType>();
+  const attackPowerTypes = new Set<AttackPowerType>();
 
   let statusSpEffectParamIds: number[] | undefined = [
     data.spEffectBehaviorId0,
@@ -218,7 +210,7 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     const statusSpEffectParams = parseStatusSpEffectParams(spEffectParamId);
     if (statusSpEffectParams != null) {
       Object.keys(statusSpEffectParams).forEach((statusType) => {
-        statuses.add(+statusType as DamageType);
+        attackPowerTypes.add(+statusType as AttackPowerType);
       });
       return spEffectParamId;
     }
@@ -235,41 +227,63 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     statusSpEffectParamIds = [0, 0, 0];
   }
 
+  const attack: (readonly [AttackPowerType, number])[] = (
+    [
+      [AttackPowerType.PHYSICAL, data.attackBasePhysics],
+      [AttackPowerType.MAGIC, data.attackBaseMagic],
+      [AttackPowerType.FIRE, data.attackBaseFire],
+      [AttackPowerType.LIGHTNING, data.attackBaseThunder],
+      [AttackPowerType.HOLY, data.attackBaseDark],
+    ] as const
+  ).filter(([attackPowerType, attackPower]) => {
+    if (attackPower) {
+      attackPowerTypes.add(attackPowerType);
+      return true;
+    }
+    return false;
+  });
+
+  // Can this weapon cast spells?
+  const spellTool = !!data.enableMagic || !!data.enableMiracle;
+  if (spellTool) {
+    attackPowerTypes.add(AttackPowerType.MAGIC);
+  }
+
   const calcCorrectGraphIds = {
-    [DamageType.PHYSICAL]: ifNotDefault(
-      attack[DamageType.PHYSICAL] ? data.correctType_Physics : undefined,
+    [AttackPowerType.PHYSICAL]: ifNotDefault(
+      attackPowerTypes.has(AttackPowerType.PHYSICAL) ? data.correctType_Physics : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
-    [DamageType.MAGIC]: ifNotDefault(
-      attack[DamageType.MAGIC] ? data.correctType_Magic : undefined,
+    [AttackPowerType.MAGIC]: ifNotDefault(
+      attackPowerTypes.has(AttackPowerType.MAGIC) ? data.correctType_Magic : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
-    [DamageType.FIRE]: ifNotDefault(
-      attack[DamageType.FIRE] ? data.correctType_Fire : undefined,
+    [AttackPowerType.FIRE]: ifNotDefault(
+      attackPowerTypes.has(AttackPowerType.FIRE) ? data.correctType_Fire : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
-    [DamageType.LIGHTNING]: ifNotDefault(
-      attack[DamageType.LIGHTNING] ? data.correctType_Thunder : undefined,
+    [AttackPowerType.LIGHTNING]: ifNotDefault(
+      attackPowerTypes.has(AttackPowerType.LIGHTNING) ? data.correctType_Thunder : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
-    [DamageType.HOLY]: ifNotDefault(
-      attack[DamageType.HOLY] ? data.correctType_Dark : undefined,
+    [AttackPowerType.HOLY]: ifNotDefault(
+      attackPowerTypes.has(AttackPowerType.HOLY) ? data.correctType_Dark : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
-    [DamageType.POISON]: ifNotDefault(
-      statuses.has(DamageType.POISON) ? data.correctType_Poison : undefined,
+    [AttackPowerType.POISON]: ifNotDefault(
+      attackPowerTypes.has(AttackPowerType.POISON) ? data.correctType_Poison : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
-    [DamageType.BLEED]: ifNotDefault(
-      statuses.has(DamageType.BLEED) ? data.correctType_Blood : undefined,
+    [AttackPowerType.BLEED]: ifNotDefault(
+      attackPowerTypes.has(AttackPowerType.BLEED) ? data.correctType_Blood : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
-    [DamageType.SLEEP]: ifNotDefault(
-      statuses.has(DamageType.SLEEP) ? data.correctType_Sleep : undefined,
+    [AttackPowerType.SLEEP]: ifNotDefault(
+      attackPowerTypes.has(AttackPowerType.SLEEP) ? data.correctType_Sleep : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
-    [DamageType.MADNESS]: ifNotDefault(
-      statuses.has(DamageType.MADNESS) ? data.correctType_Madness : undefined,
+    [AttackPowerType.MADNESS]: ifNotDefault(
+      attackPowerTypes.has(AttackPowerType.MADNESS) ? data.correctType_Madness : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
   };
@@ -295,18 +309,21 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
       arc: ifNotDefault(data.properLuck, 0),
     },
     attack,
-    attributeScaling: {
-      str: ifNotDefault(data.correctStrength / 100, 0),
-      dex: ifNotDefault(data.correctAgility / 100, 0),
-      int: ifNotDefault(data.correctMagic / 100, 0),
-      fai: ifNotDefault(data.correctFaith / 100, 0),
-      arc: ifNotDefault(data.correctLuck / 100, 0),
-    },
+    attributeScaling: (
+      [
+        ["str", data.correctStrength / 100],
+        ["dex", data.correctAgility / 100],
+        ["int", data.correctMagic / 100],
+        ["fai", data.correctFaith / 100],
+        ["arc", data.correctLuck / 100],
+      ] as const
+    ).filter(([, attributeScaling]) => attributeScaling),
     statusSpEffectParamIds,
     reinforceTypeId: data.reinforceTypeId,
     attackElementCorrectId: data.attackElementCorrectId,
     calcCorrectGraphIds,
     paired: ifNotDefault(data.isDualBlade === 1, false),
+    spellTool: ifNotDefault(spellTool, false),
   };
 }
 
@@ -340,41 +357,43 @@ function parseCalcCorrectGraph({ data }: CsvRow): CalcCorrectGraph {
   ];
 }
 
-function parseAttackElementCorrect({ data }: CsvRow): Partial<Record<DamageType, Attribute[]>> {
+function parseAttackElementCorrect({
+  data,
+}: CsvRow): Partial<Record<AttackPowerType, Attribute[]>> {
   function attributeArray(...args: (Attribute | 0)[]) {
     const attributes = args.filter((attribute): attribute is Attribute => !!attribute);
     return attributes.length ? attributes : undefined;
   }
   return {
-    [DamageType.PHYSICAL]: attributeArray(
+    [AttackPowerType.PHYSICAL]: attributeArray(
       data.isStrengthCorrect_byPhysics && "str",
       data.isDexterityCorrect_byPhysics && "dex",
       data.isFaithCorrect_byPhysics && "fai",
       data.isMagicCorrect_byPhysics && "int",
       data.isLuckCorrect_byPhysics && "arc",
     ),
-    [DamageType.MAGIC]: attributeArray(
+    [AttackPowerType.MAGIC]: attributeArray(
       data.isStrengthCorrect_byMagic && "str",
       data.isDexterityCorrect_byMagic && "dex",
       data.isFaithCorrect_byMagic && "fai",
       data.isMagicCorrect_byMagic && "int",
       data.isLuckCorrect_byMagic && "arc",
     ),
-    [DamageType.FIRE]: attributeArray(
+    [AttackPowerType.FIRE]: attributeArray(
       data.isStrengthCorrect_byFire && "str",
       data.isDexterityCorrect_byFire && "dex",
       data.isFaithCorrect_byFire && "fai",
       data.isMagicCorrect_byFire && "int",
       data.isLuckCorrect_byFire && "arc",
     ),
-    [DamageType.LIGHTNING]: attributeArray(
+    [AttackPowerType.LIGHTNING]: attributeArray(
       data.isStrengthCorrect_byThunder && "str",
       data.isDexterityCorrect_byThunder && "dex",
       data.isFaithCorrect_byThunder && "fai",
       data.isMagicCorrect_byThunder && "int",
       data.isLuckCorrect_byThunder && "arc",
     ),
-    [DamageType.HOLY]: attributeArray(
+    [AttackPowerType.HOLY]: attributeArray(
       data.isStrengthCorrect_byDark && "str",
       data.isDexterityCorrect_byDark && "dex",
       data.isFaithCorrect_byDark && "fai",
@@ -387,11 +406,11 @@ function parseAttackElementCorrect({ data }: CsvRow): Partial<Record<DamageType,
 function parseReinforceParamWeapon({ data }: CsvRow): ReinforceParamWeapon {
   return {
     attack: {
-      [DamageType.PHYSICAL]: data.physicsAtkRate,
-      [DamageType.MAGIC]: data.magicAtkRate,
-      [DamageType.FIRE]: data.fireAtkRate,
-      [DamageType.LIGHTNING]: data.thunderAtkRate,
-      [DamageType.HOLY]: data.darkAtkRate,
+      [AttackPowerType.PHYSICAL]: data.physicsAtkRate,
+      [AttackPowerType.MAGIC]: data.magicAtkRate,
+      [AttackPowerType.FIRE]: data.fireAtkRate,
+      [AttackPowerType.LIGHTNING]: data.thunderAtkRate,
+      [AttackPowerType.HOLY]: data.darkAtkRate,
     },
     attributeScaling: {
       str: data.correctStrengthRate,
@@ -408,20 +427,20 @@ function parseReinforceParamWeapon({ data }: CsvRow): ReinforceParamWeapon {
 
 function parseStatusSpEffectParams(
   statusSpEffectParamId: number,
-): Partial<Record<DamageType, number>> | null {
+): Partial<Record<AttackPowerType, number>> | null {
   const spEffectParam = spEffectParams.get(statusSpEffectParamId);
   if (!spEffectParam) {
     return null;
   }
 
   const statuses = {
-    [DamageType.POISON]: ifNotDefault(spEffectParam.data.poizonAttackPower, 0),
-    [DamageType.SCARLET_ROT]: ifNotDefault(spEffectParam.data.diseaseAttackPower, 0),
-    [DamageType.BLEED]: ifNotDefault(spEffectParam.data.bloodAttackPower, 0),
-    [DamageType.FROST]: ifNotDefault(spEffectParam.data.freezeAttackPower, 0),
-    [DamageType.SLEEP]: ifNotDefault(spEffectParam.data.sleepAttackPower, 0),
-    [DamageType.MADNESS]: ifNotDefault(spEffectParam.data.madnessAttackPower, 0),
-    [DamageType.DEATH_BLIGHT]: ifNotDefault(spEffectParam.data.curseAttackPower, 0),
+    [AttackPowerType.POISON]: ifNotDefault(spEffectParam.data.poizonAttackPower, 0),
+    [AttackPowerType.SCARLET_ROT]: ifNotDefault(spEffectParam.data.diseaseAttackPower, 0),
+    [AttackPowerType.BLEED]: ifNotDefault(spEffectParam.data.bloodAttackPower, 0),
+    [AttackPowerType.FROST]: ifNotDefault(spEffectParam.data.freezeAttackPower, 0),
+    [AttackPowerType.SLEEP]: ifNotDefault(spEffectParam.data.sleepAttackPower, 0),
+    [AttackPowerType.MADNESS]: ifNotDefault(spEffectParam.data.madnessAttackPower, 0),
+    [AttackPowerType.DEATH_BLIGHT]: ifNotDefault(spEffectParam.data.curseAttackPower, 0),
   };
 
   if (Object.values(statuses).some((value) => value !== undefined)) {
@@ -482,7 +501,7 @@ weaponsJson.forEach((weapon) => {
   });
 });
 const statusSpEffectParamsJson: {
-  [spEffectParamId in number]?: Partial<Record<DamageType, number>>;
+  [spEffectParamId in number]?: Partial<Record<AttackPowerType, number>>;
 } = {};
 for (const spEffectParamId of spEffectParams.keys()) {
   if (statusSpEffectParamIds.has(spEffectParamId)) {
@@ -490,11 +509,11 @@ for (const spEffectParamId of spEffectParams.keys()) {
   }
 }
 
-const scalingNamesJson: [number, string][] = [];
+const scalingTiersJson: [number, string][] = [];
 for (const [id, { data }] of menuValueTableParams) {
   // 1 = scaling labels
   if (data.compareType === 1 && id >= 100) {
-    scalingNamesJson.push([data.value / 100, menuText.get(data.textId)!]);
+    scalingTiersJson.push([data.value / 100, menuText.get(data.textId)!]);
   }
 }
 
@@ -503,7 +522,7 @@ const regulationDataJson: EncodedRegulationDataJson = {
   attackElementCorrects: attackElementCorrectsJson,
   reinforceTypes: reinforceTypesJson,
   statusSpEffectParams: statusSpEffectParamsJson,
-  scalingNames: scalingNamesJson,
+  scalingTiers: scalingTiersJson,
   weapons: weaponsJson,
 };
 

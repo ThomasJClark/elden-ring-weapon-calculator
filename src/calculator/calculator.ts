@@ -1,5 +1,5 @@
 import type { Attribute, Attributes } from "./attributes";
-import { type DamageType, allDamageTypes, allStatusTypes } from "./damageTypes";
+import { AttackPowerType, allAttackPowerTypes, allDamageTypes } from "./attackPowerTypes";
 import type { Weapon } from "./weapon";
 import { WeaponType } from "./weaponTypes";
 
@@ -13,7 +13,7 @@ interface WeaponAttackOptions {
 
 export interface WeaponAttackResult {
   upgradeLevel: number;
-  attackPower: Partial<Record<DamageType, number>>;
+  attackPower: Partial<Record<AttackPowerType, number>>;
   ineffectiveAttributes: Attribute[];
 }
 
@@ -67,23 +67,19 @@ export default function getWeaponAttack({
   upgradeLevel,
   disableTwoHandingAttackPowerBonus,
 }: WeaponAttackOptions): WeaponAttackResult {
-  let effectiveAttributes = adjustAttributesForTwoHanding({ twoHanding, weapon, attributes });
+  const adjustedAttributes = adjustAttributesForTwoHanding({ twoHanding, weapon, attributes });
 
   const ineffectiveAttributes = (Object.entries(weapon.requirements) as [Attribute, number][])
-    .filter(([attribute, requirement]) => effectiveAttributes[attribute] < requirement)
+    .filter(([attribute, requirement]) => adjustedAttributes[attribute] < requirement)
     .map(([attribute]) => attribute);
 
-  if (disableTwoHandingAttackPowerBonus) {
-    effectiveAttributes = attributes;
-  }
-
-  const attackPower: Partial<Record<DamageType, number>> = {};
-  for (const damageType of [...allDamageTypes, ...allStatusTypes]) {
-    const baseAttackPower = weapon.attack[upgradeLevel][damageType] ?? 0;
+  const attackPower: Partial<Record<AttackPowerType, number>> = {};
+  for (const attackPowerType of allAttackPowerTypes) {
+    const baseAttackPower = weapon.attack[upgradeLevel][attackPowerType] ?? 0;
     if (baseAttackPower) {
       // This weapon's AttackElementCorrectParam determines what attributes each damage type scales
       // with
-      const scalingAttributes = weapon.attackElementCorrect[damageType] ?? [];
+      const scalingAttributes = weapon.attackElementCorrect[attackPowerType] ?? [];
 
       let scalingMultiplier = 0;
 
@@ -94,18 +90,22 @@ export default function getWeaponAttack({
       } else {
         // Otherwise, the scaling multiplier is equal to the sum of the corrected attribute values
         // multiplied by the scaling for that attribute
+        const effectiveAttributes =
+          !disableTwoHandingAttackPowerBonus && allDamageTypes.includes(attackPowerType)
+            ? adjustedAttributes
+            : attributes;
         for (const attribute of scalingAttributes) {
           const scaling = weapon.attributeScaling[upgradeLevel][attribute];
           if (scaling) {
             scalingMultiplier +=
-              weapon.calcCorrectGraphs[damageType][effectiveAttributes[attribute]] * scaling;
+              weapon.calcCorrectGraphs[attackPowerType][effectiveAttributes[attribute]] * scaling;
           }
         }
       }
 
       // The final scaling multiplier modifies the attack power for this damage type as a
       // percentage boost, e.g. 0.5 adds +50% of the base attack power
-      attackPower[damageType] = baseAttackPower * (1 + scalingMultiplier);
+      attackPower[attackPowerType] = baseAttackPower * (1 + scalingMultiplier);
     }
   }
 
@@ -117,6 +117,6 @@ export default function getWeaponAttack({
 }
 
 export * from "./attributes";
-export * from "./damageTypes";
+export * from "./attackPowerTypes";
 export * from "./weapon";
 export * from "./weaponTypes";
