@@ -10,7 +10,13 @@ import {
 } from "@mui/material";
 import { allAttributes, type Attribute, type Attributes } from "../calculator/calculator";
 import NumberTextField from "./NumberTextField";
-import { getAttributeLabel, maxRegularUpgradeLevel, toSpecialUpgradeLevel } from "./uiUtils";
+import {
+  getAttributeLabel,
+  maxRegularUpgradeLevel,
+  maxSpecialUpgradeLevel,
+  toRegularUpgradeLevel,
+  toSpecialUpgradeLevel,
+} from "./uiUtils";
 
 interface AttributeInputProps {
   attribute: Attribute;
@@ -42,6 +48,7 @@ const AttributeInput = memo(function AttributeInput({
 
 interface WeaponLevelInputProps {
   upgradeLevel: number;
+  maxUpgradeLevel?: number;
   onUpgradeLevelChanged(upgradeLevel: number): void;
 }
 
@@ -50,6 +57,7 @@ interface WeaponLevelInputProps {
  */
 const WeaponLevelInput = memo(function WeaponLevelInput({
   upgradeLevel,
+  maxUpgradeLevel = maxRegularUpgradeLevel,
   onUpgradeLevelChanged,
 }: WeaponLevelInputProps) {
   return (
@@ -59,12 +67,22 @@ const WeaponLevelInput = memo(function WeaponLevelInput({
         labelId="upgradeLevelLabel"
         label="Weapon Level"
         size="small"
-        value={upgradeLevel}
-        onChange={(evt) => onUpgradeLevelChanged(+evt.target.value)}
+        value={
+          maxUpgradeLevel === maxSpecialUpgradeLevel
+            ? toSpecialUpgradeLevel(upgradeLevel)
+            : upgradeLevel
+        }
+        onChange={(evt) =>
+          maxUpgradeLevel === maxSpecialUpgradeLevel
+            ? onUpgradeLevelChanged(toRegularUpgradeLevel(+evt.target.value))
+            : onUpgradeLevelChanged(+evt.target.value)
+        }
       >
-        {Array.from({ length: maxRegularUpgradeLevel + 1 }, (_, upgradeLevelOption) => (
+        {Array.from({ length: maxUpgradeLevel + 1 }, (_, upgradeLevelOption) => (
           <MenuItem key={upgradeLevelOption} value={upgradeLevelOption}>
-            +{upgradeLevelOption} / +{toSpecialUpgradeLevel(upgradeLevelOption)}
+            {maxUpgradeLevel === maxSpecialUpgradeLevel
+              ? `+${upgradeLevelOption}`
+              : `+${upgradeLevelOption} / +${toSpecialUpgradeLevel(upgradeLevelOption)}`}
           </MenuItem>
         ))}
       </Select>
@@ -103,6 +121,7 @@ interface Props {
   attributes: Attributes;
   twoHanding: boolean;
   upgradeLevel: number;
+  maxUpgradeLevel?: number;
   effectiveOnly: boolean;
   splitDamage: boolean;
   groupWeaponTypes: boolean;
@@ -122,6 +141,7 @@ function WeaponListSettings({
   attributes,
   twoHanding,
   upgradeLevel,
+  maxUpgradeLevel,
   effectiveOnly,
   splitDamage,
   groupWeaponTypes,
@@ -155,7 +175,11 @@ function WeaponListSettings({
         ))}
       </Box>
 
-      <WeaponLevelInput upgradeLevel={upgradeLevel} onUpgradeLevelChanged={onUpgradeLevelChanged} />
+      <WeaponLevelInput
+        upgradeLevel={upgradeLevel}
+        maxUpgradeLevel={maxUpgradeLevel}
+        onUpgradeLevelChanged={onUpgradeLevelChanged}
+      />
 
       <Box
         display="grid"

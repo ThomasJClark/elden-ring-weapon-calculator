@@ -2,9 +2,15 @@ import { Link } from "@mui/material";
 import { type ReactNode, useEffect, useState } from "react";
 import type { Weapon } from "../calculator/calculator";
 import { decodeRegulationData } from "../regulationData";
-import { type AffinityOption, affinityOptions, reforgedAffinityOptions } from "./uiUtils";
+import {
+  type AffinityOption,
+  affinityOptions,
+  reforgedAffinityOptions,
+  convergenceAffinityOptions,
+  maxSpecialUpgradeLevel,
+} from "./uiUtils";
 
-export type RegulationVersionName = "latest" | "reforged";
+export type RegulationVersionName = "latest" | "reforged" | "convergence";
 
 export interface RegulationVersion {
   name: string;
@@ -17,6 +23,11 @@ export interface RegulationVersion {
    * Hack: in Elden Ring Reforged there is no attack power bonus for two handing
    */
   disableTwoHandingAttackPowerBonus?: boolean;
+
+  /**
+   * The Convergence mod makes all weapons only go up to +10
+   */
+  maxUpgradeLevel?: number;
 
   fetch(): Promise<Response>;
 }
@@ -45,6 +56,25 @@ export const regulationVersions: Record<RegulationVersionName, RegulationVersion
     affinityOptions: reforgedAffinityOptions,
     disableTwoHandingAttackPowerBonus: true,
     fetch: () => fetch(`/regulation-reforged.js?${import.meta.env.VITE_DATA_FORMAT}`),
+  },
+  convergence: {
+    name: "The Convergence (mod)",
+    info: (
+      <>
+        Using regulation data from{" "}
+        <Link
+          href="https://www.nexusmods.com/eldenring/mods/3419"
+          target="_blank"
+          rel="noopener noreferer"
+        >
+          The Convergence
+        </Link>{" "}
+        mod (public alpha)
+      </>
+    ),
+    affinityOptions: convergenceAffinityOptions,
+    maxUpgradeLevel: maxSpecialUpgradeLevel,
+    fetch: () => fetch(`/regulation-convergence.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
 };
 
