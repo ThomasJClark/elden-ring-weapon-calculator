@@ -80,6 +80,35 @@ export const reforgedAffinityOptions = new Map<number, AffinityOption>([
 ]);
 
 /**
+ * Affinity names from The Convergence mod
+ */
+export const convergenceAffinityOptions = new Map<number, AffinityOption>([
+  [0, { text: "Standard" }],
+  [1, { text: "Heavy" }],
+  [2, { text: "Keen" }],
+  [3, { text: "Quality" }],
+  [4, { text: "Glint" }],
+  [5, { text: "Dragonkin" }],
+  [6, { text: "Gravity" }],
+  [7, { text: "Flame" }],
+  [8, { text: "Golden" }],
+  [9, { text: "Draconic" }],
+  [10, { text: "Bestial" }],
+  [11, { text: "Night" }],
+  [12, { text: "Lava" }],
+  [13, { text: "Frenzy" }],
+  [14, { text: "Death" }],
+  [15, { text: "Godslayer" }],
+  [16, { text: "Frost" }],
+  [17, { text: "Aberrant" }],
+  [18, { text: "Bloodflame" }],
+  [19, { text: "Rotten" }],
+  [20, { text: "Storm" }],
+  [21, { text: "Mystic" }],
+  [-1, { text: "Unique" }], // Special fake affinity ID for uninfusable weapons
+]);
+
+/**
  * Might as well hide these by default. If you really need to know which small shield has the
  * highest AR... good luck.
  */
@@ -256,4 +285,12 @@ export function toSpecialUpgradeLevel(regularUpgradeLevel: number) {
   return Math.floor(
     (regularUpgradeLevel + 0.5) * (maxSpecialUpgradeLevel / maxRegularUpgradeLevel),
   );
+}
+
+/**
+ * @param regularUpgradeLevel the upgrade level of a somber weapon
+ * @returns the corresponding upgrade level for a regular weapon
+ */
+export function toRegularUpgradeLevel(specialUpgradeLevel: number) {
+  return Math.floor(specialUpgradeLevel * 2.5);
 }

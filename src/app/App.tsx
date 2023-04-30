@@ -296,6 +296,7 @@ export default function App() {
             attributes={attributes}
             twoHanding={twoHanding}
             upgradeLevel={upgradeLevel}
+            maxUpgradeLevel={regulationVersion.maxUpgradeLevel}
             effectiveOnly={effectiveOnly}
             splitDamage={splitDamage}
             groupWeaponTypes={groupWeaponTypes}

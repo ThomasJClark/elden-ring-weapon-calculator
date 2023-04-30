@@ -38,7 +38,7 @@
     "start": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "rebuildWeaponData": "ts-node-esm src/buildData.ts data/v1.09 && ts-node-esm src/buildData.ts data/reforged"
+    "rebuildWeaponData": "ts-node-esm src/buildData.ts data/v1.09 && ts-node-esm src/buildData.ts data/reforged && ts-node-esm src/buildData.ts data/convergence"
   },
   "eslintConfig": {
     "extends": [
