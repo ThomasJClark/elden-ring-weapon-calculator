@@ -1,6 +1,6 @@
 import { Link } from "@mui/material";
 import { type ReactNode, useEffect, useState } from "react";
-import type { Weapon } from "../calculator/calculator";
+import type { Weapon } from "../calculator/weapon";
 import { decodeRegulationData } from "../regulationData";
 import {
   type AffinityOption,
@@ -50,7 +50,7 @@ export const regulationVersions: Record<RegulationVersionName, RegulationVersion
         >
           Elden Ring Reforged
         </Link>{" "}
-        mod v0.6.7
+        mod v0.6.7A
       </>
     ),
     affinityOptions: reforgedAffinityOptions,
