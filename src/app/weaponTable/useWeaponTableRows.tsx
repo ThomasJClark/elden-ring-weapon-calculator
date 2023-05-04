@@ -108,6 +108,7 @@ const useWeaponTableRows = ({
         twoHanding,
         upgradeLevel,
         disableTwoHandingAttackPowerBonus: regulationVersion.disableTwoHandingAttackPowerBonus,
+        ineffectiveAttributePenalty: regulationVersion.ineffectiveAttributePenalty,
       });
 
       for (const statusType of allAttackPowerTypes) {

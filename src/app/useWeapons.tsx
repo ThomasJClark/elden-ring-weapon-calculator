@@ -29,6 +29,11 @@ export interface RegulationVersion {
    */
   maxUpgradeLevel?: number;
 
+  /**
+   * Elden Ring Reforged changes the penalty for not having the required attributes for a weapon
+   */
+  ineffectiveAttributePenalty?: number;
+
   fetch(): Promise<Response>;
 }
 
@@ -55,6 +60,7 @@ export const regulationVersions: Record<RegulationVersionName, RegulationVersion
     ),
     affinityOptions: reforgedAffinityOptions,
     disableTwoHandingAttackPowerBonus: true,
+    ineffectiveAttributePenalty: 0.5,
     fetch: () => fetch(`/regulation-reforged.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   convergence: {
