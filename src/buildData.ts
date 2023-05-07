@@ -586,12 +586,6 @@ reinforceParamWeapons.forEach((reinforceParamWeapon, reinforceParamId) => {
   const reinforceLevel = reinforceParamId % 50;
   const reinforceTypeId = reinforceParamId - reinforceLevel;
 
-  // Hack: Reinforcement in The Convergence is only available up to +10, but some reinforcement
-  // paths in the public alpha go to +25.
-  if (isConvergence && reinforceLevel > 10) {
-    return;
-  }
-
   if (reinforceTypeIds.has(reinforceTypeId)) {
     (reinforceTypesJson[reinforceTypeId] ??= [])[reinforceLevel] =
       parseReinforceParamWeapon(reinforceParamWeapon);
