@@ -57,7 +57,11 @@ export const ScalingTierRenderer = memo(function ScalingTierRenderer({
 }) {
   const scalingValue = attributeScaling[upgradeLevel][attribute];
   const scalingTier = scalingValue && scalingTiers.find(([value]) => scalingValue >= value);
-  return scalingTier ? <>{scalingTier[1]}</> : blankIcon;
+  return scalingTier ? (
+    <span title={`${Math.round(scalingValue * 100000) / 1000}%`}>{scalingTier[1]}</span>
+  ) : (
+    blankIcon
+  );
 });
 
 /**
