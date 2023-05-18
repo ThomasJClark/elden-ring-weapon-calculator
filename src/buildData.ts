@@ -61,16 +61,17 @@ function readFmgJson(filename: string): Map<number, string | null> {
 }
 
 const dataDir = process.argv[2];
+const outputFile = process.argv[3];
 const isReforged = dataDir.includes("reforged");
 const isConvergence = dataDir.includes("convergence");
 const isVanilla = !isReforged && !isConvergence;
-const outputFile = join("public", `regulation-${basename(dataDir)}.js`);
 
 const urlOverrides = new Map([
   [110000, null], // Unarmed
   ...(isReforged
     ? ([
         [1170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Nightmaiden's Edge
+        [8090000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Fury of Azash
         [16170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Grave Spear
         [11110000, "https://eldenring.wiki.fextralife.com/Scepter+of+the+All-Knowing"], // Scepter of the All-Knowing Staff
         [33210000, "https://eldenring.wiki.fextralife.com/Carian+Glintstone+Staff"], // Dark Glintstone Staff
