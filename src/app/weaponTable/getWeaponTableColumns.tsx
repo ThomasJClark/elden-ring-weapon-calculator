@@ -224,7 +224,7 @@ export default function getWeaponTableColumns({
       sx: {
         width: 36 * requirementColumns.length + 21,
       },
-      header: "Attribute Requirements",
+      header: "Attributes Required",
       columns: requirementColumns,
     },
   ];
