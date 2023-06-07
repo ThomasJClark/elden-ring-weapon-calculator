@@ -238,7 +238,7 @@ export default function App() {
             px: 3,
           },
           [theme.breakpoints.up("md")]: {
-            gridTemplateColumns: menuOpen ? `300px 1fr` : "1fr",
+            gridTemplateColumns: menuOpen ? `320px 1fr` : "1fr",
             alignContent: "start",
             alignItems: "start",
             gap: 2,
