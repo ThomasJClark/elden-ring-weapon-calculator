@@ -432,7 +432,7 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     attackElementCorrectId: data.attackElementCorrectId,
     calcCorrectGraphIds,
     paired: ifNotDefault(data.isDualBlade === 1, false),
-    spellTool: ifNotDefault(!!spellScalingCorrectType, false),
+    spellTool: ifNotDefault(spellScalingCorrectType != -1, false),
   };
 }
 
