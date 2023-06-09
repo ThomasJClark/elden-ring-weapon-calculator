@@ -185,12 +185,9 @@ export function decodeRegulationData({
           calcCorrectGraphIds?.[statusType] ?? defaultStatusCalcCorrectGraphId,
         );
       });
-      if (weapon.spellTool) {
-        // Spell scaling uses the same scaling as magic damage
-        weaponCalcCorrectGraphs[AttackPowerType.SPELL_SCALING] = getCalcCorrectGraph(
-          calcCorrectGraphIds?.[AttackPowerType.MAGIC] ?? defaultDamageCalcCorrectGraphId,
-        );
-      }
+      weaponCalcCorrectGraphs[AttackPowerType.SPELL_SCALING] = getCalcCorrectGraph(
+        calcCorrectGraphIds?.[AttackPowerType.SPELL_SCALING] ?? defaultDamageCalcCorrectGraphId,
+      );
 
       // Using the base unupgraded attack and ReinforceParamWeapon for this weapon, calculate the
       // base attack at each upgrade level

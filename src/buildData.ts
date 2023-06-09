@@ -349,10 +349,12 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     return false;
   });
 
-  // Can this weapon cast spells?
-  const spellTool = !!data.enableMagic || !!data.enableMiracle;
-  if (spellTool) {
-    attackPowerTypes.add(AttackPowerType.MAGIC);
+  // Spell scaling uses the same correct graph as magic (staves) or holy (seals)
+  let spellScalingCorrectType = -1;
+  if (data.enableMagic) {
+    spellScalingCorrectType = data.correctType_Magic;
+  } else if (data.enableMiracle) {
+    spellScalingCorrectType = data.correctType_Dark;
   }
 
   const calcCorrectGraphIds = {
@@ -392,6 +394,7 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
       attackPowerTypes.has(AttackPowerType.MADNESS) ? data.correctType_Madness : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
+    [AttackPowerType.SPELL_SCALING]: ifNotDefault(spellScalingCorrectType, -1),
   };
 
   for (const calcCorrectGraphId of Object.values(calcCorrectGraphIds)) {
@@ -429,7 +432,7 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     attackElementCorrectId: data.attackElementCorrectId,
     calcCorrectGraphIds,
     paired: ifNotDefault(data.isDualBlade === 1, false),
-    spellTool: ifNotDefault(spellTool, false),
+    spellTool: ifNotDefault(!!spellScalingCorrectType, false),
   };
 }
 
