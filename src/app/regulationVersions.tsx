@@ -78,7 +78,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
     ),
     affinityOptions: convergenceAffinityOptions,
     maxUpgradeLevel: maxSpecialUpgradeLevel,
-    fetch: () => fetch(`/regulation-convergence-v1.2.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-convergence-v1.2-B.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
 };
 

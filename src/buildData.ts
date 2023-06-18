@@ -190,6 +190,7 @@ const unobtainableWeapons = new Set(
         3230000, // Sword of Hadea
         6050000, // Estoc of the Serpent Priest
         7170000, // Matriarch's Shotel
+        17030000, // Serpent-Hunter
         10060000, // Caimar's Battlestaff
         10060000, // Caimar's Battlestaff
         19030000, // Moon Breaker Scythe
