@@ -9,6 +9,7 @@ interface WeaponAttackOptions {
   twoHanding?: boolean;
   upgradeLevel: number;
   disableTwoHandingAttackPowerBonus?: boolean;
+  ineffectiveAttributePenalty?: number;
 }
 
 export interface WeaponAttackResult {
@@ -66,6 +67,7 @@ export default function getWeaponAttack({
   twoHanding,
   upgradeLevel,
   disableTwoHandingAttackPowerBonus,
+  ineffectiveAttributePenalty = 0.4,
 }: WeaponAttackOptions): WeaponAttackResult {
   const adjustedAttributes = adjustAttributesForTwoHanding({ twoHanding, weapon, attributes });
 
@@ -84,9 +86,9 @@ export default function getWeaponAttack({
       let scalingMultiplier = 0;
 
       if (ineffectiveAttributes.some((attribute) => scalingAttributes.includes(attribute))) {
-        // If the requirements for this damage type are not met, a 40% penalty is subtracted instead
+        // If the requirements for this damage type are not met, a penalty is subtracted instead
         // of a scaling bonus being added
-        scalingMultiplier = -0.4;
+        scalingMultiplier = -ineffectiveAttributePenalty;
       } else {
         // Otherwise, the scaling multiplier is equal to the sum of the corrected attribute values
         // multiplied by the scaling for that attribute

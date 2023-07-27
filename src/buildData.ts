@@ -61,16 +61,17 @@ function readFmgJson(filename: string): Map<number, string | null> {
 }
 
 const dataDir = process.argv[2];
+const outputFile = process.argv[3];
 const isReforged = dataDir.includes("reforged");
 const isConvergence = dataDir.includes("convergence");
 const isVanilla = !isReforged && !isConvergence;
-const outputFile = join("public", `regulation-${basename(dataDir)}.js`);
 
 const urlOverrides = new Map([
   [110000, null], // Unarmed
   ...(isReforged
     ? ([
         [1170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Nightmaiden's Edge
+        [8090000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Fury of Azash
         [16170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Grave Spear
         [11110000, "https://eldenring.wiki.fextralife.com/Scepter+of+the+All-Knowing"], // Scepter of the All-Knowing Staff
         [33210000, "https://eldenring.wiki.fextralife.com/Carian+Glintstone+Staff"], // Dark Glintstone Staff
@@ -189,6 +190,7 @@ const unobtainableWeapons = new Set(
         3230000, // Sword of Hadea
         6050000, // Estoc of the Serpent Priest
         7170000, // Matriarch's Shotel
+        17030000, // Serpent-Hunter
         10060000, // Caimar's Battlestaff
         10060000, // Caimar's Battlestaff
         19030000, // Moon Breaker Scythe
@@ -348,10 +350,12 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     return false;
   });
 
-  // Can this weapon cast spells?
-  const spellTool = !!data.enableMagic || !!data.enableMiracle;
-  if (spellTool) {
-    attackPowerTypes.add(AttackPowerType.MAGIC);
+  // Spell scaling uses the same correct graph as magic (staves) or holy (seals)
+  let spellScalingCorrectType = -1;
+  if (data.enableMagic) {
+    spellScalingCorrectType = data.correctType_Magic;
+  } else if (data.enableMiracle) {
+    spellScalingCorrectType = data.correctType_Dark;
   }
 
   const calcCorrectGraphIds = {
@@ -391,6 +395,7 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
       attackPowerTypes.has(AttackPowerType.MADNESS) ? data.correctType_Madness : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
+    [AttackPowerType.SPELL_SCALING]: ifNotDefault(spellScalingCorrectType, -1),
   };
 
   for (const calcCorrectGraphId of Object.values(calcCorrectGraphIds)) {
@@ -428,7 +433,7 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     attackElementCorrectId: data.attackElementCorrectId,
     calcCorrectGraphIds,
     paired: ifNotDefault(data.isDualBlade === 1, false),
-    spellTool: ifNotDefault(spellTool, false),
+    spellTool: ifNotDefault(spellScalingCorrectType != -1, false),
   };
 }
 
@@ -585,12 +590,6 @@ const reinforceTypesJson: { [reinforceId in number]?: ReinforceParamWeapon[] } =
 reinforceParamWeapons.forEach((reinforceParamWeapon, reinforceParamId) => {
   const reinforceLevel = reinforceParamId % 50;
   const reinforceTypeId = reinforceParamId - reinforceLevel;
-
-  // Hack: Reinforcement in The Convergence is only available up to +10, but some reinforcement
-  // paths in the public alpha go to +25.
-  if (isConvergence && reinforceLevel > 10) {
-    return;
-  }
 
   if (reinforceTypeIds.has(reinforceTypeId)) {
     (reinforceTypesJson[reinforceTypeId] ??= [])[reinforceLevel] =

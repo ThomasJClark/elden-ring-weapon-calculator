@@ -224,7 +224,11 @@ function WeaponTable({
             )}
 
             {rows.map((row) => (
-              <DataRow key={row[0].name} columnGroups={columnGroups} row={row} />
+              <DataRow
+                key={`${row[0].weaponName},${row[0].affinityId}`}
+                columnGroups={columnGroups}
+                row={row}
+              />
             ))}
           </WeaponTableGroup>
         ))

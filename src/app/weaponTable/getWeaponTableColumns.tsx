@@ -1,4 +1,4 @@
-import { Tooltip, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import {
   AttackPowerType,
   allAttackPowerTypes,
@@ -52,9 +52,13 @@ const attackColumns = Object.fromEntries(
       key: `${attackPowerType}Attack`,
       sortBy: `${attackPowerType}Attack`,
       header: damageTypeIcons.has(attackPowerType) ? (
-        <Tooltip title={damageTypeLabels.get(attackPowerType)!} placement="top">
-          <img src={damageTypeIcons.get(attackPowerType)!} alt="" width={24} height={24} />
-        </Tooltip>
+        <img
+          src={damageTypeIcons.get(attackPowerType)!}
+          alt={damageTypeLabels.get(attackPowerType)!}
+          title={damageTypeLabels.get(attackPowerType)!}
+          width={24}
+          height={24}
+        />
       ) : (
         <Typography component="span" variant="subtitle2">
           {damageTypeLabels.get(attackPowerType)}
@@ -106,11 +110,13 @@ const scalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => 
   key: `${attribute}Scaling`,
   sortBy: `${attribute}Scaling`,
   header: (
-    <Tooltip title={`${getAttributeLabel(attribute)} Scaling`} placement="top">
-      <Typography component="span" variant="subtitle2">
-        {getShortAttributeLabel(attribute)}
-      </Typography>
-    </Tooltip>
+    <Typography
+      component="span"
+      variant="subtitle2"
+      title={`${getAttributeLabel(attribute)} Scaling`}
+    >
+      {getShortAttributeLabel(attribute)}
+    </Typography>
   ),
   render([weapon, { upgradeLevel }]) {
     return (
@@ -124,11 +130,13 @@ const requirementColumns = allAttributes.map(
     key: `${attribute}Requirement`,
     sortBy: `${attribute}Requirement`,
     header: (
-      <Tooltip title={`${getAttributeLabel(attribute)} Requirement`} placement="top">
-        <Typography component="span" variant="subtitle2">
-          {getShortAttributeLabel(attribute)}
-        </Typography>
-      </Tooltip>
+      <Typography
+        component="span"
+        variant="subtitle2"
+        title={`${getAttributeLabel(attribute)} Requirement`}
+      >
+        {getShortAttributeLabel(attribute)}
+      </Typography>
     ),
     render([weapon, { ineffectiveAttributes }]) {
       return (
@@ -216,7 +224,7 @@ export default function getWeaponTableColumns({
       sx: {
         width: 36 * requirementColumns.length + 21,
       },
-      header: "Attribute Requirements",
+      header: "Attributes Required",
       columns: requirementColumns,
     },
   ];

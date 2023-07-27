@@ -19,7 +19,8 @@ import WeaponListSettings from "./WeaponListSettings";
 import WeaponTable from "./weaponTable/WeaponTable";
 import useWeaponTableRows from "./weaponTable/useWeaponTableRows";
 import { darkTheme, lightTheme } from "./theme";
-import useWeapons, { regulationVersions } from "./useWeapons";
+import regulationVersions from "./regulationVersions";
+import useWeapons from "./useWeapons";
 import useAppState from "./useAppState";
 import AppBar from "./AppBar";
 import RegulationVersionPicker from "./RegulationVersionPicker";
@@ -237,7 +238,7 @@ export default function App() {
             px: 3,
           },
           [theme.breakpoints.up("md")]: {
-            gridTemplateColumns: menuOpen ? `300px 1fr` : "1fr",
+            gridTemplateColumns: menuOpen ? `320px 1fr` : "1fr",
             alignContent: "start",
             alignItems: "start",
             gap: 2,
@@ -266,7 +267,7 @@ export default function App() {
           ModalProps={{ keepMounted: true }}
           sx={{
             display: { xs: "block", md: "none" },
-            "& .MuiDrawer-paper": { boxSizing: "border-box", width: "348px" },
+            "& .MuiDrawer-paper": { boxSizing: "border-box", width: "368px", maxWidth: "100vw" },
           }}
         >
           <Toolbar>

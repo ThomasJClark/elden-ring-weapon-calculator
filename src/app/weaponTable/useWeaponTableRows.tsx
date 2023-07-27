@@ -9,7 +9,7 @@ import getWeaponAttack, {
 import filterWeapons from "../../search/filterWeapons";
 import { type WeaponTableRowData, type WeaponTableRowGroup } from "./WeaponTable";
 import { type SortBy, sortWeapons } from "../../search/sortWeapons";
-import { type RegulationVersion } from "../useWeapons";
+import { type RegulationVersion } from "../regulationVersions";
 import {
   allWeaponTypes,
   weaponTypeLabels,
@@ -108,6 +108,7 @@ const useWeaponTableRows = ({
         twoHanding,
         upgradeLevel,
         disableTwoHandingAttackPowerBonus: regulationVersion.disableTwoHandingAttackPowerBonus,
+        ineffectiveAttributePenalty: regulationVersion.ineffectiveAttributePenalty,
       });
 
       for (const statusType of allAttackPowerTypes) {

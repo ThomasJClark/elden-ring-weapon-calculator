@@ -17,6 +17,21 @@ import sacredAffinityIcon from "./img/sacredAffinity.webp";
 import poisonAffinityIcon from "./img/poisonAffinity.webp";
 import bloodAffinityIcon from "./img/bloodAffinity.webp";
 import occultAffinityIcon from "./img/occultAffinity.webp";
+import errBestialAffinityIcon from "./img/errBestialAffinity.webp";
+import errBlessedAffinityIcon from "./img/errBlessedAffinity.webp";
+import errBoltAffinityIcon from "./img/errBoltAffinity.webp";
+import errCursedAffinityIcon from "./img/errCursedAffinity.webp";
+import errFatedAffinityIcon from "./img/errFatedAffinity.webp";
+import errFellAffinityIcon from "./img/errFellAffinity.webp";
+import errFrenziedAffinityIcon from "./img/errFrenziedAffinity.webp";
+import errGravitationalAffinityIcon from "./img/errGravitationalAffinity.webp";
+import errMagicAffinityIcon from "./img/errMagicAffinity.webp";
+import errMagmaAffinityIcon from "./img/errMagmaAffinity.webp";
+import errNightAffinityIcon from "./img/errNightAffinity.webp";
+import errOccultAffinityIcon from "./img/errOccultAffinity.webp";
+import errRottenAffinityIcon from "./img/errRottenAffinity.webp";
+import errSacredAffinityIcon from "./img/errSacredAffinity.webp";
+import errSoporificAffinityIcon from "./img/errSoporificAffinity.webp";
 import scarletRotStatusIcon from "./img/scarletRotStatus.webp";
 import madnessStatusIcon from "./img/madnessStatus.webp";
 import sleepStatusIcon from "./img/sleepStatus.webp";
@@ -44,38 +59,68 @@ export const affinityOptions = new Map<number, AffinityOption>([
   [10, { text: "Poison", icon: poisonAffinityIcon }],
   [11, { text: "Blood", icon: bloodAffinityIcon }],
   [12, { text: "Occult", icon: occultAffinityIcon }],
-  [-1, { text: "Unique", icon: specialWeaponIcon }], // Special fake affinity ID for uninfusable weapons
+  [-1, { text: "Unique", icon: specialWeaponIcon }], // Special fake affinity ID for uninfusable weapon s
 ]);
 
 /**
- * Affinity names from the Elden Ring Reforged Mod. Note that ERR doesn't have affinity icons
+ * Affinity names from the Elden Ring Reforged Mod
  *
  * @see https://err.fandom.com/wiki/Affinities
  */
 export const reforgedAffinityOptions = new Map<number, AffinityOption>([
+  [0, { text: "Standard", icon: standardAffinityIcon }],
+  [1, { text: "Heavy", icon: heavyAffinityIcon }],
+  [2, { text: "Keen", icon: keenAffinityIcon }],
+  [3, { text: "Quality", icon: qualityAffinityIcon }],
+  [8, { text: "Magic", icon: errMagicAffinityIcon }],
+  [16, { text: "Magma", icon: errMagmaAffinityIcon }],
+  [5, { text: "Fell", icon: errFellAffinityIcon }],
+  [13, { text: "Bolt", icon: errBoltAffinityIcon }],
+  [7, { text: "Sacred", icon: errSacredAffinityIcon }],
+  [19, { text: "Night", icon: errNightAffinityIcon }],
+  [4, { text: "Fire", icon: fireAffinityIcon }],
+  [6, { text: "Lightning", icon: lightningAffinityIcon }],
+  [21, { text: "Blessed", icon: errBlessedAffinityIcon }],
+  [10, { text: "Poison", icon: poisonAffinityIcon }],
+  [11, { text: "Blood", icon: bloodAffinityIcon }],
+  [12, { text: "Occult", icon: errOccultAffinityIcon }],
+  [22, { text: "Bestial", icon: errBestialAffinityIcon }],
+  [20, { text: "Gravitational", icon: errGravitationalAffinityIcon }],
+  [17, { text: "Rotten", icon: errRottenAffinityIcon }],
+  [18, { text: "Cursed", icon: errCursedAffinityIcon }],
+  [9, { text: "Cold", icon: coldAffinityIcon }],
+  [14, { text: "Soporific", icon: errSoporificAffinityIcon }],
+  [15, { text: "Frenzied", icon: errFrenziedAffinityIcon }],
+  [23, { text: "Fated", icon: errFatedAffinityIcon }],
+  [-1, { text: "Unique", icon: specialWeaponIcon }], // Special fake affinity ID for uninfusable weapons
+]);
+
+/**
+ * Affinity names from The Convergence mod
+ */
+export const convergenceAffinityOptions = new Map<number, AffinityOption>([
   [0, { text: "Standard" }],
   [1, { text: "Heavy" }],
   [2, { text: "Keen" }],
   [3, { text: "Quality" }],
-  [8, { text: "Magic" }],
-  [16, { text: "Magma" }],
-  [5, { text: "Fell" }],
-  [13, { text: "Bolt" }],
-  [7, { text: "Sacred" }],
-  [19, { text: "Night" }],
-  [4, { text: "Fire" }],
-  [6, { text: "Lightning" }],
-  [21, { text: "Blessed" }],
-  [10, { text: "Poison" }],
-  [11, { text: "Blood" }],
-  [12, { text: "Occult" }],
-  [22, { text: "Bestial" }],
-  [20, { text: "Gravitational" }],
-  [17, { text: "Rotten" }],
-  [18, { text: "Cursed" }],
-  [9, { text: "Cold" }],
-  [14, { text: "Soporific" }],
-  [15, { text: "Frenzied" }],
+  [4, { text: "Glint" }],
+  [5, { text: "Dragonkin" }],
+  [6, { text: "Gravity" }],
+  [7, { text: "Flame" }],
+  [8, { text: "Golden" }],
+  [9, { text: "Draconic" }],
+  [10, { text: "Bestial" }],
+  [11, { text: "Night" }],
+  [12, { text: "Lava" }],
+  [13, { text: "Frenzy" }],
+  [14, { text: "Death" }],
+  [15, { text: "Godslayer" }],
+  [16, { text: "Frost" }],
+  [17, { text: "Aberrant" }],
+  [18, { text: "Bloodflame" }],
+  [19, { text: "Rotten" }],
+  [20, { text: "Storm" }],
+  [21, { text: "Mystic" }],
   [-1, { text: "Unique" }], // Special fake affinity ID for uninfusable weapons
 ]);
 
