@@ -6,7 +6,7 @@ function Footer() {
     <Typography component="div" variant="body1" align="center">
       <h1 style={{ display: "inline", font: "inherit", margin: 0, padding: 0 }}>
         Elden Ring Weapon Attack Calculator - optimize any weapon or build for Elden Ring patch
-        1.09, Elden Ring Reforged, or The Convergence Mod.
+        1.10, Elden Ring Reforged, or The Convergence Mod.
       </h1>
       <br />
       Made by Tom Clark (

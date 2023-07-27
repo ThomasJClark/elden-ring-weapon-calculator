@@ -38,10 +38,10 @@
     "start": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "buildData:v1.09": "ts-node-esm src/buildData.ts data/v1.09 public/regulation-vanilla-v1.09.js",
+    "buildData:v1.10": "ts-node-esm src/buildData.ts data/v1.10 public/regulation-vanilla-v1.09.js",
     "buildData:reforged": "ts-node-esm src/buildData.ts data/reforged public/regulation-reforged-v0.7.5.js",
     "buildData:convergence": "ts-node-esm src/buildData.ts data/convergence public/regulation-convergence-v1.2-B.js",
-    "rebuildWeaponData": "yarn buildData:v1.09 && yarn buildData:reforged && yarn buildData:convergence"
+    "rebuildWeaponData": "yarn buildData:v1.10 && yarn buildData:reforged && yarn buildData:convergence"
   },
   "eslintConfig": {
     "extends": [
