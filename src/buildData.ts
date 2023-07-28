@@ -70,9 +70,23 @@ const urlOverrides = new Map([
   [110000, null], // Unarmed
   ...(isReforged
     ? ([
+        [1120000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Iron Spike
         [1170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Nightmaiden's Edge
+        [2100000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Marionette Short Sword
+        [7130000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Red Wolf's Fang
+        [7160000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Avionette Scimitar
         [8090000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Fury of Azash
+        [8110000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Makar's Ceremonial Cleaver
+        [12030000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Pumpkin Head Sledgehammer
+        [14070000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Vulgar Militia Chain Sickle
+        [16100000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Disciple's Rotten Branch
         [16170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Grave Spear
+        [16180000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Lordsworn's Spear
+        [18120000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Avionette Pig Sticker
+        [18170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Starcaller Spire
+        [20300000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Sun Realm Sword
+        [21050000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Nox Flowing Fist
+        [22040000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Crude Iron Claws
         [11110000, "https://eldenring.wiki.fextralife.com/Scepter+of+the+All-Knowing"], // Scepter of the All-Knowing Staff
         [33210000, "https://eldenring.wiki.fextralife.com/Carian+Glintstone+Staff"], // Dark Glintstone Staff
       ] as const)
@@ -173,6 +187,17 @@ function isUniqueWeapon(data: CsvRow["data"]) {
     return true;
   }
 
+  // Hack: This weapon is allowed to have AoWs, but it doesn't actually support any AoWs and
+  // can't have affinities
+  if (
+    isReforged &&
+    [
+      21050000, // Nox Flowing Fist
+    ].includes(data.ID)
+  ) {
+    return true;
+  }
+
   // Consider a weapon unique if it can't have Ashes of War (e.g. torches, moonveil) or can't have
   // affinities selected when applying Ashes of War (e.g. bows)
   return data.gemMountType === 0 || data.disableGemAttr === 1;
@@ -216,6 +241,24 @@ const unobtainableWeapons = new Set(
       ]
     : [],
 );
+
+const wepTypeOverrides = new Map([
+  // Categorize unarmed as a fist weapon I guess
+  [110000, WeaponType.FIST],
+  ...(isReforged
+    ? ([
+        // Categorized Reforged hybrid casting tools by their melee movesets
+        [1070000, WeaponType.DAGGER], // Glintstone Kris
+        [2180000, WeaponType.STRAIGHT_SWORD], // Carian Knight's Sword
+        [2250000, WeaponType.STRAIGHT_SWORD], // Lazuli Glintstone Sword
+        [4110000, WeaponType.COLOSSAL_SWORD], // Troll Knight's Sword
+        [11060000, WeaponType.HAMMER], // Varre's Bouquet
+        [16100000, WeaponType.SPEAR], // Disciple's Rotten Branch
+        [18100000, WeaponType.HALBERD], // Loretta's War Sickle
+        [18170000, WeaponType.HALBERD], // Starcaller Spire
+      ] as const)
+    : []),
+]);
 
 const supportedWeaponTypes = new Set([
   WeaponType.DAGGER,
@@ -265,8 +308,7 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     return null;
   }
 
-  // Categorize unarmed as a fist weapon I guess
-  const weaponType = data.wepType === 33 ? WeaponType.FIST : data.wepType;
+  const weaponType = wepTypeOverrides.get(data.ID) ?? data.wepType;
   if (!isSupportedWeaponType(weaponType)) {
     if (weaponType) {
       debug(`Unknown weapon type ${weaponType} on "${name}", ignoring`);

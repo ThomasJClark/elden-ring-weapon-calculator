@@ -66,7 +66,10 @@
       { "ID": 6108, "Text": null },
       { "ID": 6109, "Text": null },
       { "ID": 6110, "Text": "Number Held" },
-      { "ID": 6111, "Text": "Weight" },
+      {
+        "ID": 6111,
+        "Text": "<img src='img://SB_ERR_Weight.png' height='22' width='22' vspace='-14'/>Weight"
+      },
       { "ID": 6112, "Text": null },
       { "ID": 6113, "Text": null },
       { "ID": 6114, "Text": null },
@@ -75,8 +78,14 @@
       { "ID": 6117, "Text": null },
       { "ID": 6118, "Text": null },
       { "ID": 6119, "Text": null },
-      { "ID": 6120, "Text": "FP Cost" },
-      { "ID": 6121, "Text": "Slots Used" },
+      {
+        "ID": 6120,
+        "Text": "<img src='img://SB_ERR_FP.png' height='22' width='22' vspace='-14'/>FP Cost"
+      },
+      {
+        "ID": 6121,
+        "Text": "<img src='img://SB_ERR_MemorySlot.png' height='22' width='22' vspace='-14'/>Slots Used"
+      },
       { "ID": 6122, "Text": null },
       { "ID": 6123, "Text": null },
       { "ID": 6124, "Text": null },
@@ -121,26 +130,68 @@
       { "ID": 10101, "Text": "Body Type" },
       { "ID": 10102, "Text": "Origin" },
       { "ID": 10103, "Text": "Keepsake" },
-      { "ID": 10200, "Text": "Level" },
-      { "ID": 10201, "Text": "Runes Held" },
-      { "ID": 10202, "Text": "Runes Needed" },
+      {
+        "ID": 10200,
+        "Text": "<img src='img://SB_ERR_Level.png' height='22' width='22' vspace='-14'/>Level"
+      },
+      {
+        "ID": 10201,
+        "Text": "<img src='img://SB_ERR_RunesHeld.png' height='22' width='22' vspace='-14'/>Runes Held"
+      },
+      {
+        "ID": 10202,
+        "Text": "<img src='img://SB_ERR_RunesNeeded.png' height='22' width='22' vspace='-14'/>Runes Needed"
+      },
       { "ID": 10203, "Text": null },
       { "ID": 10204, "Text": "Great Runes" },
       { "ID": 10300, "Text": "Faction" },
       { "ID": 10301, "Text": "Age" },
-      { "ID": 10400, "Text": "Vigor" },
-      { "ID": 10401, "Text": "Endurance" },
-      { "ID": 10402, "Text": "Mind" },
-      { "ID": 10403, "Text": "Strength" },
-      { "ID": 10404, "Text": "Dexterity" },
+      {
+        "ID": 10400,
+        "Text": "<img src='img://SB_ERR_A_Vigor.png' height='22' width='22' vspace='-14'/>Vigor"
+      },
+      {
+        "ID": 10401,
+        "Text": "<img src='img://SB_ERR_A_Endurance.png' height='22' width='22' vspace='-14'/>Endurance"
+      },
+      {
+        "ID": 10402,
+        "Text": "<img src='img://SB_ERR_A_Mind.png' height='22' width='22' vspace='-14'/>Mind"
+      },
+      {
+        "ID": 10403,
+        "Text": "<img src='img://SB_ERR_A_Strength.png' height='22' width='22' vspace='-14'/>Strength"
+      },
+      {
+        "ID": 10404,
+        "Text": "<img src='img://SB_ERR_A_Dexterity.png' height='22' width='22' vspace='-14'/>Dexterity"
+      },
       { "ID": 10405, "Text": null },
-      { "ID": 10406, "Text": "Intelligence" },
-      { "ID": 10407, "Text": "Faith" },
+      {
+        "ID": 10406,
+        "Text": "<img src='img://SB_ERR_A_Intelligence.png' height='22' width='22' vspace='-14'/>Intelligence"
+      },
+      {
+        "ID": 10407,
+        "Text": "<img src='img://SB_ERR_A_Faith.png' height='22' width='22' vspace='-14'/>Faith"
+      },
       { "ID": 10408, "Text": null },
-      { "ID": 10409, "Text": "Arcane" },
-      { "ID": 10500, "Text": "HP" },
-      { "ID": 10501, "Text": "FP" },
-      { "ID": 10502, "Text": "Stamina" },
+      {
+        "ID": 10409,
+        "Text": "<img src='img://SB_ERR_A_Arcane.png' height='22' width='22' vspace='-14'/>Arcane"
+      },
+      {
+        "ID": 10500,
+        "Text": "<img src='img://SB_ERR_HP.png' height='22' width='22' vspace='-14'/>HP"
+      },
+      {
+        "ID": 10501,
+        "Text": "<img src='img://SB_ERR_FP.png' height='22' width='22' vspace='-14'/>FP"
+      },
+      {
+        "ID": 10502,
+        "Text": "<img src='img://SB_ERR_Stamina.png' height='22' width='22' vspace='-14'/>Stamina"
+      },
       { "ID": 10503, "Text": null },
       { "ID": 10504, "Text": null },
       { "ID": 10505, "Text": null },
@@ -148,9 +199,15 @@
       { "ID": 10507, "Text": null },
       { "ID": 10508, "Text": null },
       { "ID": 10509, "Text": null },
-      { "ID": 10510, "Text": "Equip Load" },
+      {
+        "ID": 10510,
+        "Text": "<img src='img://SB_ERR_EquipLoad.png' height='22' width='22' vspace='-14'/>Equip Load"
+      },
       { "ID": 10511, "Text": null },
-      { "ID": 10512, "Text": "Max Equip Load" },
+      {
+        "ID": 10512,
+        "Text": "<img src='img://SB_ERR_EquipLoad.png' height='22' width='22' vspace='-14'/>Max Equip Load"
+      },
       { "ID": 10513, "Text": "Light Load" },
       { "ID": 10514, "Text": "Med. Load" },
       { "ID": 10515, "Text": "Heavy Load" },
@@ -158,32 +215,92 @@
       { "ID": 10517, "Text": null },
       { "ID": 10518, "Text": null },
       { "ID": 10519, "Text": null },
-      { "ID": 10520, "Text": "R Armament 1" },
-      { "ID": 10521, "Text": "R Armament 2" },
-      { "ID": 10522, "Text": "R Armament 3" },
-      { "ID": 10523, "Text": "L Armament 1" },
-      { "ID": 10524, "Text": "L Armament 2" },
-      { "ID": 10525, "Text": "L Armament 3" },
+      {
+        "ID": 10520,
+        "Text": "<img src='img://SB_ERR_Armament_R.png' height='22' width='22' vspace='-14'/>R Armament 1"
+      },
+      {
+        "ID": 10521,
+        "Text": "<img src='img://SB_ERR_Armament_R.png' height='22' width='22' vspace='-14'/>R Armament 2"
+      },
+      {
+        "ID": 10522,
+        "Text": "<img src='img://SB_ERR_Armament_R.png' height='22' width='22' vspace='-14'/>R Armament 3"
+      },
+      {
+        "ID": 10523,
+        "Text": "<img src='img://SB_ERR_Armament_L.png' height='22' width='22' vspace='-14'/>L Armament 1"
+      },
+      {
+        "ID": 10524,
+        "Text": "<img src='img://SB_ERR_Armament_L.png' height='22' width='22' vspace='-14'/>L Armament 2"
+      },
+      {
+        "ID": 10525,
+        "Text": "<img src='img://SB_ERR_Armament_L.png' height='22' width='22' vspace='-14'/>L Armament 3"
+      },
       { "ID": 10526, "Text": null },
       { "ID": 10527, "Text": null },
       { "ID": 10528, "Text": null },
       { "ID": 10529, "Text": null },
-      { "ID": 10530, "Text": "Physical" },
-      { "ID": 10531, "Text": "VS Strike" },
-      { "ID": 10532, "Text": "VS Slash" },
-      { "ID": 10533, "Text": "VS Pierce" },
-      { "ID": 10534, "Text": "Magic" },
-      { "ID": 10535, "Text": "Fire" },
-      { "ID": 10536, "Text": "Lightning" },
-      { "ID": 10537, "Text": "Holy" },
+      {
+        "ID": 10530,
+        "Text": "<img src='img://SB_ERR_N_Standard.png' height='22' width='22' vspace='-14'/>Standard"
+      },
+      {
+        "ID": 10531,
+        "Text": "<img src='img://SB_ERR_N_Strike.png' height='22' width='22' vspace='-14'/>Strike"
+      },
+      {
+        "ID": 10532,
+        "Text": "<img src='img://SB_ERR_N_Slash.png' height='22' width='22' vspace='-14'/>Slash"
+      },
+      {
+        "ID": 10533,
+        "Text": "<img src='img://SB_ERR_N_Pierce.png' height='22' width='22' vspace='-14'/>Pierce"
+      },
+      {
+        "ID": 10534,
+        "Text": "<img src='img://SB_ERR_N_Magic.png' height='22' width='22' vspace='-14'/>Magic"
+      },
+      {
+        "ID": 10535,
+        "Text": "<img src='img://SB_ERR_N_Fire.png' height='22' width='22' vspace='-14'/>Fire"
+      },
+      {
+        "ID": 10536,
+        "Text": "<img src='img://SB_ERR_N_Lightning.png' height='22' width='22' vspace='-14'/>Lightning"
+      },
+      {
+        "ID": 10537,
+        "Text": "<img src='img://SB_ERR_N_Holy.png' height='22' width='22' vspace='-14'/>Holy"
+      },
       { "ID": 10538, "Text": null },
       { "ID": 10539, "Text": null },
-      { "ID": 10540, "Text": "Immunity" },
-      { "ID": 10541, "Text": "Robustness" },
-      { "ID": 10542, "Text": "Concentration" },
-      { "ID": 10543, "Text": "Vitality" },
-      { "ID": 10561, "Text": "Memory Slots" },
-      { "ID": 10562, "Text": "Discovery" },
+      {
+        "ID": 10540,
+        "Text": "<img src='img://SB_ERR_R_Immunity.png' height='22' width='22' vspace='-14'/>Immunity"
+      },
+      {
+        "ID": 10541,
+        "Text": "<img src='img://SB_ERR_R_Robustness.png' height='22' width='22' vspace='-14'/>Robustness"
+      },
+      {
+        "ID": 10542,
+        "Text": "<img src='img://SB_ERR_R_Concentration.png' height='22' width='22' vspace='-14'/>Concentration"
+      },
+      {
+        "ID": 10543,
+        "Text": "<img src='img://SB_ERR_R_Vitality.png' height='22' width='22' vspace='-14'/>Vitality"
+      },
+      {
+        "ID": 10561,
+        "Text": "<img src='img://SB_ERR_MemorySlot.png' height='22' width='22' vspace='-14'/>Memory Slots"
+      },
+      {
+        "ID": 10562,
+        "Text": "<img src='img://SB_ERR_Discovery.png' height='22' width='22' vspace='-14'/>Discovery"
+      },
       { "ID": 10563, "Text": null },
       { "ID": 10564, "Text": null },
       { "ID": 10565, "Text": null },
@@ -191,91 +308,244 @@
       { "ID": 10567, "Text": null },
       { "ID": 10568, "Text": null },
       { "ID": 10569, "Text": null },
-      { "ID": 10570, "Text": "Poise" },
+      {
+        "ID": 10570,
+        "Text": "<img src='img://SB_ERR_Poise.png' height='22' width='22' vspace='-14'/>Poise"
+      },
       { "ID": 11001, "Text": "Armament Type" },
       { "ID": 11002, "Text": "Spell Type" },
       { "ID": 11003, "Text": "Attack Affinity" },
-      { "ID": 11004, "Text": "No. Held" },
-      { "ID": 11005, "Text": "Stored" },
+      {
+        "ID": 11004,
+        "Text": "<img src='img://SB_ERR_NoHeld.png' height='22' width='22' vspace='-14'/>No. Held"
+      },
+      {
+        "ID": 11005,
+        "Text": "<img src='img://SB_ERR_NoStored.png' height='22' width='22' vspace='-14'/>Stored"
+      },
       { "ID": 11006, "Text": "Skill" },
       { "ID": 11007, "Text": "Held" },
       { "ID": 11008, "Text": null },
       { "ID": 11009, "Text": "Containers" },
-      { "ID": 11010, "Text": "Physical" },
-      { "ID": 11011, "Text": "Magic" },
-      { "ID": 11012, "Text": "Fire" },
-      { "ID": 11013, "Text": "Lightning" },
-      { "ID": 11014, "Text": "Holy" },
+      {
+        "ID": 11010,
+        "Text": "<img src='img://SB_ERR_AP_Physical.png' height='22' width='22' vspace='-14'/>Physical"
+      },
+      {
+        "ID": 11011,
+        "Text": "<img src='img://SB_ERR_AP_Magic.png' height='22' width='22' vspace='-14'/>Magic"
+      },
+      {
+        "ID": 11012,
+        "Text": "<img src='img://SB_ERR_AP_Fire.png' height='22' width='22' vspace='-14'/>Fire"
+      },
+      {
+        "ID": 11013,
+        "Text": "<img src='img://SB_ERR_AP_Lightning.png' height='22' width='22' vspace='-14'/>Lightning"
+      },
+      {
+        "ID": 11014,
+        "Text": "<img src='img://SB_ERR_AP_Holy.png' height='22' width='22' vspace='-14'/>Holy"
+      },
       { "ID": 11015, "Text": null },
       { "ID": 11016, "Text": null },
       { "ID": 11017, "Text": null },
       { "ID": 11018, "Text": null },
       { "ID": 11019, "Text": null },
-      { "ID": 11020, "Text": "Physical" },
-      { "ID": 11021, "Text": "Magic" },
-      { "ID": 11022, "Text": "Fire" },
-      { "ID": 11023, "Text": "Lightning" },
-      { "ID": 11024, "Text": "Holy" },
+      {
+        "ID": 11020,
+        "Text": "<img src='img://SB_ERR_B_Physical.png' height='22' width='22' vspace='-14'/>Physical"
+      },
+      {
+        "ID": 11021,
+        "Text": "<img src='img://SB_ERR_B_Magic.png' height='22' width='22' vspace='-14'/>Magic"
+      },
+      {
+        "ID": 11022,
+        "Text": "<img src='img://SB_ERR_B_Fire.png' height='22' width='22' vspace='-14'/>Fire"
+      },
+      {
+        "ID": 11023,
+        "Text": "<img src='img://SB_ERR_B_Lightning.png' height='22' width='22' vspace='-14'/>Lightning"
+      },
+      {
+        "ID": 11024,
+        "Text": "<img src='img://SB_ERR_B_Holy.png' height='22' width='22' vspace='-14'/>Holy"
+      },
       { "ID": 11025, "Text": null },
       { "ID": 11026, "Text": null },
       { "ID": 11027, "Text": null },
       { "ID": 11028, "Text": null },
       { "ID": 11029, "Text": null },
-      { "ID": 11030, "Text": "Critical" },
-      { "ID": 11031, "Text": "Guard Boost" },
-      { "ID": 11032, "Text": "Range" },
+      {
+        "ID": 11030,
+        "Text": "<img src='img://SB_ERR_Critical.png' height='22' width='22' vspace='-14'/>Critical"
+      },
+      {
+        "ID": 11031,
+        "Text": "<img src='img://SB_ERR_GuardBoost.png' height='22' width='22' vspace='-14'/>Guard Boost"
+      },
+      {
+        "ID": 11032,
+        "Text": "<img src='img://SB_ERR_Range.png' height='22' width='22' vspace='-14'/>Range"
+      },
       { "ID": 11033, "Text": null },
-      { "ID": 11034, "Text": "FP Cost" },
-      { "ID": 11035, "Text": "Spell Scaling" },
-      { "ID": 11036, "Text": "Spell Scaling" },
+      {
+        "ID": 11034,
+        "Text": "<img src='img://SB_ERR_FP.png' height='22' width='22' vspace='-14'/>FP Cost"
+      },
+      {
+        "ID": 11035,
+        "Text": "<img src='img://SB_ERR_SpellScaling.png' height='22' width='22' vspace='-14'/>Spell Scaling"
+      },
+      {
+        "ID": 11036,
+        "Text": "<img src='img://SB_ERR_SpellScaling.png' height='22' width='22' vspace='-14'/>Spell Scaling"
+      },
       { "ID": 11037, "Text": null },
       { "ID": 11038, "Text": null },
       { "ID": 11039, "Text": null },
-      { "ID": 11040, "Text": "Slots Used" },
-      { "ID": 11041, "Text": "FP Cost" },
-      { "ID": 11042, "Text": "FP Cost" },
-      { "ID": 11043, "Text": "HP Cost" },
-      { "ID": 11180, "Text": "Physical" },
-      { "ID": 11181, "Text": "VS Strike" },
-      { "ID": 11182, "Text": "VS Slash" },
-      { "ID": 11183, "Text": "VS Pierce" },
-      { "ID": 11184, "Text": "Magic" },
-      { "ID": 11185, "Text": "Fire" },
-      { "ID": 11186, "Text": "Lightning" },
-      { "ID": 11187, "Text": "Holy" },
+      {
+        "ID": 11040,
+        "Text": "<img src='img://SB_ERR_MemorySlot.png' height='22' width='22' vspace='-14'/>Slots Used"
+      },
+      {
+        "ID": 11041,
+        "Text": "<img src='img://SB_ERR_FP.png' height='22' width='22' vspace='-14'/>FP Cost"
+      },
+      {
+        "ID": 11042,
+        "Text": "<img src='img://SB_ERR_FP.png' height='22' width='22' vspace='-14'/>FP Cost"
+      },
+      {
+        "ID": 11043,
+        "Text": "<img src='img://SB_ERR_HP.png' height='22' width='22' vspace='-14'/>HP Cost"
+      },
+      {
+        "ID": 11180,
+        "Text": "<img src='img://SB_ERR_N_Standard.png' height='22' width='22' vspace='-14'/>Standard"
+      },
+      {
+        "ID": 11181,
+        "Text": "<img src='img://SB_ERR_N_Strike.png' height='22' width='22' vspace='-14'/>Strike"
+      },
+      {
+        "ID": 11182,
+        "Text": "<img src='img://SB_ERR_N_Slash.png' height='22' width='22' vspace='-14'/>Slash"
+      },
+      {
+        "ID": 11183,
+        "Text": "<img src='img://SB_ERR_N_Pierce.png' height='22' width='22' vspace='-14'/>Pierce"
+      },
+      {
+        "ID": 11184,
+        "Text": "<img src='img://SB_ERR_N_Magic.png' height='22' width='22' vspace='-14'/>Magic"
+      },
+      {
+        "ID": 11185,
+        "Text": "<img src='img://SB_ERR_N_Fire.png' height='22' width='22' vspace='-14'/>Fire"
+      },
+      {
+        "ID": 11186,
+        "Text": "<img src='img://SB_ERR_N_Lightning.png' height='22' width='22' vspace='-14'/>Lightning"
+      },
+      {
+        "ID": 11187,
+        "Text": "<img src='img://SB_ERR_N_Holy.png' height='22' width='22' vspace='-14'/>Holy"
+      },
       { "ID": 11188, "Text": null },
       { "ID": 11189, "Text": null },
-      { "ID": 11190, "Text": "Immunity" },
-      { "ID": 11191, "Text": "Robustness" },
-      { "ID": 11192, "Text": "Concentration" },
-      { "ID": 11193, "Text": "Vitality" },
+      {
+        "ID": 11190,
+        "Text": "<img src='img://SB_ERR_R_Immunity.png' height='22' width='22' vspace='-14'/>Immunity"
+      },
+      {
+        "ID": 11191,
+        "Text": "<img src='img://SB_ERR_R_Robustness.png' height='22' width='22' vspace='-14'/>Robustness"
+      },
+      {
+        "ID": 11192,
+        "Text": "<img src='img://SB_ERR_R_Concentration.png' height='22' width='22' vspace='-14'/>Concentration"
+      },
+      {
+        "ID": 11193,
+        "Text": "<img src='img://SB_ERR_R_Vitality.png' height='22' width='22' vspace='-14'/>Vitality"
+      },
       { "ID": 11194, "Text": null },
       { "ID": 11195, "Text": null },
       { "ID": 11196, "Text": null },
       { "ID": 11197, "Text": null },
       { "ID": 11198, "Text": null },
       { "ID": 11199, "Text": null },
-      { "ID": 11200, "Text": "Poise" },
-      { "ID": 11300, "Text": "Str" },
-      { "ID": 11301, "Text": "Dex" },
-      { "ID": 11302, "Text": "Int" },
-      { "ID": 11303, "Text": "Fai" },
-      { "ID": 11304, "Text": "Arc" },
+      {
+        "ID": 11200,
+        "Text": "<img src='img://SB_ERR_Poise.png' height='22' width='22' vspace='-14'/>Poise"
+      },
+      {
+        "ID": 11300,
+        "Text": "<img src='img://SB_ERR_A_Strength.png' height='22' width='22' vspace='-14'/>Str"
+      },
+      {
+        "ID": 11301,
+        "Text": "<img src='img://SB_ERR_A_Dexterity.png' height='22' width='22' vspace='-14'/>Dex"
+      },
+      {
+        "ID": 11302,
+        "Text": "<img src='img://SB_ERR_A_Intelligence.png' height='22' width='22' vspace='-14'/>Int"
+      },
+      {
+        "ID": 11303,
+        "Text": "<img src='img://SB_ERR_A_Faith.png' height='22' width='22' vspace='-14'/>Fai"
+      },
+      {
+        "ID": 11304,
+        "Text": "<img src='img://SB_ERR_A_Arcane.png' height='22' width='22' vspace='-14'/>Arc"
+      },
       { "ID": 11305, "Text": null },
       { "ID": 11306, "Text": null },
       { "ID": 11307, "Text": null },
       { "ID": 11308, "Text": null },
       { "ID": 11309, "Text": null },
-      { "ID": 11310, "Text": "Str" },
-      { "ID": 11311, "Text": "Dex" },
-      { "ID": 11312, "Text": "Int" },
-      { "ID": 11313, "Text": "Fai" },
-      { "ID": 11314, "Text": "Str" },
-      { "ID": 11315, "Text": "Dex" },
-      { "ID": 11316, "Text": "Int" },
-      { "ID": 11317, "Text": "Fai" },
-      { "ID": 11318, "Text": "Arc" },
-      { "ID": 11319, "Text": "Arc" },
+      {
+        "ID": 11310,
+        "Text": "<img src='img://SB_ERR_A_Strength.png' height='22' width='22' vspace='-14'/>Str"
+      },
+      {
+        "ID": 11311,
+        "Text": "<img src='img://SB_ERR_A_Dexterity.png' height='22' width='22' vspace='-14'/>Dex"
+      },
+      {
+        "ID": 11312,
+        "Text": "<img src='img://SB_ERR_A_Intelligence.png' height='22' width='22' vspace='-14'/>Int"
+      },
+      {
+        "ID": 11313,
+        "Text": "<img src='img://SB_ERR_A_Faith.png' height='22' width='22' vspace='-14'/>Fai"
+      },
+      {
+        "ID": 11314,
+        "Text": "<img src='img://SB_ERR_A_Strength.png' height='22' width='22' vspace='-14'/>Str"
+      },
+      {
+        "ID": 11315,
+        "Text": "<img src='img://SB_ERR_A_Dexterity.png' height='22' width='22' vspace='-14'/>Dex"
+      },
+      {
+        "ID": 11316,
+        "Text": "<img src='img://SB_ERR_A_Intelligence.png' height='22' width='22' vspace='-14'/>Int"
+      },
+      {
+        "ID": 11317,
+        "Text": "<img src='img://SB_ERR_A_Faith.png' height='22' width='22' vspace='-14'/>Fai"
+      },
+      {
+        "ID": 11318,
+        "Text": "<img src='img://SB_ERR_A_Arcane.png' height='22' width='22' vspace='-14'/>Arc"
+      },
+      {
+        "ID": 11319,
+        "Text": "<img src='img://SB_ERR_A_Arcane.png' height='22' width='22' vspace='-14'/>Arc"
+      },
       { "ID": 11320, "Text": "-" },
       { "ID": 11321, "Text": "S" },
       { "ID": 11322, "Text": "A" },
@@ -288,7 +558,10 @@
       { "ID": 11329, "Text": null },
       { "ID": 11330, "Text": "Consumable" },
       { "ID": 11331, "Text": "Reusable" },
-      { "ID": 11351, "Text": "Weight" },
+      {
+        "ID": 11351,
+        "Text": "<img src='img://SB_ERR_Weight.png' height='22' width='22' vspace='-14'/>Weight"
+      },
       { "ID": 11352, "Text": null },
       { "ID": 11353, "Text": null },
       { "ID": 11354, "Text": null },
@@ -314,7 +587,10 @@
       { "ID": 11551, "Text": "D" },
       { "ID": 11552, "Text": "D-" },
       { "ID": 11560, "Text": "E" },
-      { "ID": 12000, "Text": "Runes Required" },
+      {
+        "ID": 12000,
+        "Text": "<img src='img://SB_ERR_RunesNeeded.png' height='22' width='22' vspace='-14'/>Runes Required"
+      },
       { "ID": 12001, "Text": null },
       { "ID": 12002, "Text": null },
       { "ID": 12003, "Text": null },
@@ -445,7 +721,7 @@
       { "ID": 30527, "Text": null },
       { "ID": 30528, "Text": null },
       { "ID": 30529, "Text": null },
-      { "ID": 30530, "Text": "The body's capacity to endure\nstandard physical damage" },
+      { "ID": 30530, "Text": "The body's capacity to endure\nstandard damage" },
       { "ID": 30531, "Text": "The body's capacity to endure\nstriking physical damage" },
       { "ID": 30532, "Text": "The body's capacity to endure\nslashing physical damage" },
       { "ID": 30533, "Text": "The body's capacity to endure\npiercing physical damage" },
@@ -498,7 +774,7 @@
       { "ID": 30579, "Text": null },
       {
         "ID": 30580,
-        "Text": "Your defense power and damage negation\nagainst standard physical attacks. The\nformer is calculated via attributes, while\nthe latter is calculated via defensive gear\nand any additional effects."
+        "Text": "Your defense power and damage negation\nagainst standard attacks. The\nformer is calculated via attributes, while\nthe latter is calculated via additional effects."
       },
       {
         "ID": 30581,
@@ -610,7 +886,7 @@
       { "ID": 31041, "Text": "The amount of FP required to\ncast this spell" },
       { "ID": 31042, "Text": "The amount of FP required to\nuse this item" },
       { "ID": 31043, "Text": "The amount of HP required to use this item" },
-      { "ID": 31180, "Text": "The degree to which incoming\nstandard physical damage is negated" },
+      { "ID": 31180, "Text": "The degree to which incoming\nstandard damage is negated" },
       { "ID": 31181, "Text": "The degree to which incoming\nstriking physical damage is negated" },
       { "ID": 31182, "Text": "The degree to which incoming\nslashing physical damage is negated" },
       { "ID": 31183, "Text": "The degree to which incoming\npiercing physical damage is negated" },
@@ -1062,7 +1338,7 @@
       { "ID": 60072, "Text": null },
       { "ID": 60073, "Text": null },
       { "ID": 60074, "Text": null },
-      { "ID": 60075, "Text": null },
+      { "ID": 60075, "Text": "Weapon Catalyst" },
       { "ID": 60076, "Text": null },
       { "ID": 60077, "Text": "Great Spear" },
       { "ID": 60078, "Text": null },
@@ -1313,12 +1589,30 @@
       { "ID": 80008, "Text": null },
       { "ID": 80009, "Text": null },
       { "ID": 80010, "Text": "Ritual Pot" },
-      { "ID": 90000, "Text": "Morning" },
-      { "ID": 90001, "Text": "Early Day" },
-      { "ID": 90002, "Text": "Late Day" },
-      { "ID": 90003, "Text": "Evening" },
-      { "ID": 90004, "Text": "Night" },
-      { "ID": 90005, "Text": "Late Night" },
+      {
+        "ID": 90000,
+        "Text": "<img src='img://SB_ERR_Grace_Morning_Color.png' height='32' width='32' vspace='-16'/> Morning"
+      },
+      {
+        "ID": 90001,
+        "Text": "<img src='img://SB_ERR_Grace_EarlyDay_Color.png' height='32' width='32' vspace='-16'/> Early Day"
+      },
+      {
+        "ID": 90002,
+        "Text": "<img src='img://SB_ERR_Grace_LateDay_Color.png' height='32' width='32' vspace='-16'/> Late Day"
+      },
+      {
+        "ID": 90003,
+        "Text": "<img src='img://SB_ERR_Grace_Evening_Color.png' height='32' width='32' vspace='-16'/> Evening"
+      },
+      {
+        "ID": 90004,
+        "Text": "<img src='img://SB_ERR_Grace_Night_Color.png' height='32' width='32' vspace='-16'/> Night"
+      },
+      {
+        "ID": 90005,
+        "Text": "<img src='img://SB_ERR_Grace_LateNight_Color.png' height='32' width='32' vspace='-16'/> Late Night"
+      },
       { "ID": 101000, "Text": "Equipment" },
       { "ID": 101001, "Text": "Inventory" },
       { "ID": 101002, "Text": "Status" },
@@ -1762,7 +2056,10 @@
       { "ID": 225017, "Text": null },
       { "ID": 225018, "Text": null },
       { "ID": 225019, "Text": null },
-      { "ID": 225020, "Text": "No. Required (No. Held)" },
+      {
+        "ID": 225020,
+        "Text": "<img src='img://SB_ERR_NoHeld.png' height='22' width='22' vspace='-14'/>No. Required (No. Held)"
+      },
       { "ID": 226000, "Text": "Puppet" },
       { "ID": 226001, "Text": null },
       { "ID": 226002, "Text": null },
@@ -1832,14 +2129,26 @@
       { "ID": 232000, "Text": "Sell Item" },
       { "ID": 232001, "Text": "Runes Offered" },
       { "ID": 233000, "Text": "Memorize Spells" },
-      { "ID": 233101, "Text": "Memory Slots" },
-      { "ID": 233102, "Text": "Empty Slots" },
-      { "ID": 233103, "Text": "FP" },
+      {
+        "ID": 233101,
+        "Text": "<img src='img://SB_ERR_MemorySlot.png' height='22' width='22' vspace='-14'/>Memory Slots"
+      },
+      {
+        "ID": 233102,
+        "Text": "<img src='img://SB_ERR_MemorySlotEmpty.png' height='22' width='22' vspace='-14'/>Empty Slots"
+      },
+      {
+        "ID": 233103,
+        "Text": "<img src='img://SB_ERR_FP.png' height='22' width='22' vspace='-14'/>FP"
+      },
       { "ID": 234020, "Text": "----" },
       { "ID": 235000, "Text": "Please allocate your flask uses" },
       { "ID": 236000, "Text": "Item Crafting" },
       { "ID": 236001, "Text": "Required Items" },
-      { "ID": 236002, "Text": "No. Required (No. Held)" },
+      {
+        "ID": 236002,
+        "Text": "<img src='img://SB_ERR_NoHeld.png' height='22' width='22' vspace='-14'/>No. Required (No. Held)"
+      },
       { "ID": 236003, "Text": "Created Items" },
       { "ID": 236200, "Text": "Power of Remembrance" },
       { "ID": 236201, "Text": null },
@@ -2044,6 +2353,10 @@
       { "ID": 288107, "Text": "Samurai" },
       { "ID": 288108, "Text": "Prisoner" },
       { "ID": 288109, "Text": "Wretch" },
+      { "ID": 288110, "Text": "Perfumer" },
+      { "ID": 288111, "Text": "Scout" },
+      { "ID": 288112, "Text": "Gladiator" },
+      { "ID": 288113, "Text": "Guide" },
       { "ID": 288500, "Text": "Please choose a body type" },
       { "ID": 288501, "Text": "Type A" },
       { "ID": 288502, "Text": "Type B" },
@@ -2646,10 +2959,10 @@
       { "ID": 297137, "Text": "Prisoner" },
       { "ID": 297138, "Text": "Confessor" },
       { "ID": 297139, "Text": "Wretch" },
-      { "ID": 297140, "Text": null },
-      { "ID": 297141, "Text": null },
-      { "ID": 297142, "Text": null },
-      { "ID": 297143, "Text": null },
+      { "ID": 297140, "Text": "Perfumer" },
+      { "ID": 297141, "Text": "Scout" },
+      { "ID": 297142, "Text": "Gladiator" },
+      { "ID": 297143, "Text": "Guide" },
       { "ID": 297144, "Text": null },
       { "ID": 297145, "Text": null },
       { "ID": 297146, "Text": null },
@@ -2966,7 +3279,7 @@
       { "ID": 401321, "Text": "Server Ver." },
       {
         "ID": 401322,
-        "Text": "<font color=\"#beac8b\">ELDEN RING Reforged</font> Ver. 0.7.5 / Calibrations Ver."
+        "Text": "<font color=\"#beac8b\">ELDEN RING Reforged</font> Ver. 0.9.0 / Calibrations Ver."
       },
       { "ID": 401400, "Text": "INFORMATION" },
       { "ID": 401401, "Text": "There is no new information" },
