@@ -70,9 +70,23 @@ const urlOverrides = new Map([
   [110000, null], // Unarmed
   ...(isReforged
     ? ([
+        [1120000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Iron Spike
         [1170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Nightmaiden's Edge
+        [2100000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Marionette Short Sword
+        [7130000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Red Wolf's Fang
+        [7160000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Avionette Scimitar
         [8090000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Fury of Azash
+        [8110000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Makar's Ceremonial Cleaver
+        [12030000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Pumpkin Head Sledgehammer
+        [14070000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Vulgar Militia Chain Sickle
+        [16100000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Disciple's Rotten Branch
         [16170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Grave Spear
+        [16180000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Lordsworn's Spear
+        [18120000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Avionette Pig Sticker
+        [18170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Starcaller Spire
+        [20300000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Sun Realm Sword
+        [21050000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Nox Flowing Fist
+        [22040000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Crude Iron Claws
         [11110000, "https://eldenring.wiki.fextralife.com/Scepter+of+the+All-Knowing"], // Scepter of the All-Knowing Staff
         [33210000, "https://eldenring.wiki.fextralife.com/Carian+Glintstone+Staff"], // Dark Glintstone Staff
       ] as const)
