@@ -37,7 +37,7 @@ export interface RegulationVersion {
 
 const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
   latest: {
-    name: "Patch 1.10",
+    name: "Patch 1.10 (latest)",
     affinityOptions,
     fetch: () => fetch(`/regulation-vanilla-v1.09.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
