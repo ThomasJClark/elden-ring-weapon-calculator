@@ -228,6 +228,24 @@ const unobtainableWeapons = new Set(
     : [],
 );
 
+const wepTypeOverrides = new Map([
+  // Categorize unarmed as a fist weapon I guess
+  [110000, WeaponType.FIST],
+  ...(isReforged
+    ? ([
+        // Categorized Reforged hybrid casting tools by their melee movesets
+        [1070000, WeaponType.DAGGER], // Glintstone Kris
+        [2180000, WeaponType.STRAIGHT_SWORD], // Carian Knight's Sword
+        [2250000, WeaponType.STRAIGHT_SWORD], // Lazuli Glintstone Sword
+        [4110000, WeaponType.COLOSSAL_SWORD], // Troll Knight's Sword
+        [11060000, WeaponType.HAMMER], // Varre's Bouquet
+        [16100000, WeaponType.SPEAR], // Disciple's Rotten Branch
+        [18100000, WeaponType.HALBERD], // Loretta's War Sickle
+        [18170000, WeaponType.HALBERD], // Starcaller Spire
+      ] as const)
+    : []),
+]);
+
 const supportedWeaponTypes = new Set([
   WeaponType.DAGGER,
   WeaponType.STRAIGHT_SWORD,
@@ -276,8 +294,7 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     return null;
   }
 
-  // Categorize unarmed as a fist weapon I guess
-  const weaponType = data.wepType === 33 ? WeaponType.FIST : data.wepType;
+  const weaponType = wepTypeOverrides.get(data.ID) ?? data.wepType;
   if (!isSupportedWeaponType(weaponType)) {
     if (weaponType) {
       debug(`Unknown weapon type ${weaponType} on "${name}", ignoring`);
