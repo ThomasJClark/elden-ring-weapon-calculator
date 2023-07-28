@@ -1,4 +1,4 @@
-ID,Name,stageMaxVal0,stageMaxVal1,stageMaxVal2,stageMaxVal3,stageMaxVal4,stageMaxGrowVal0,stageMaxGrowVal1,stageMaxGrowVal2,stageMaxGrowVal3,stageMaxGrowVal4,adjPt_maxGrowVal0,adjPt_maxGrowVal1,adjPt_maxGrowVal2,adjPt_maxGrowVal3,adjPt_maxGrowVal4,init_inclination_soul,adjustment_value,boundry_inclination_soul,boundry_value,pad,
+ID,Name,stageMaxVal0,stageMaxVal1,stageMaxVal2,stageMaxVal3,stageMaxVal4,stageMaxGrowVal0,stageMaxGrowVal1,stageMaxGrowVal2,stageMaxGrowVal3,stageMaxGrowVal4,adjPt_maxGrowVal0,adjPt_maxGrowVal1,adjPt_maxGrowVal2,adjPt_maxGrowVal3,adjPt_maxGrowVal4,init_inclination_soul,adjustment_value,boundry_inclination_soul,boundry_value,pad
 0,Weapon - Standard x1.5,0,30,50,80,99,0,45,67.5,95,100,1.322,-1.152,1,1,1,0,0,0,0,[0|0|0|0]
 1,Weapon - Heavy x1,0,30,50,80,99,0,40,60,85,100,1.041,1,0.834,-0.927,1,0,0,0,0,[0|0|0|0]
 2,Weapon - Keen x1,0,30,50,80,99,0,40,60,85,100,1.041,1,0.834,-0.927,1,0,0,0,0,[0|0|0|0]
@@ -25,20 +25,25 @@ ID,Name,stageMaxVal0,stageMaxVal1,stageMaxVal2,stageMaxVal3,stageMaxVal4,stageMa
 25,Weapon - Generic 1 (Mid Invest),0,20,55,80,99,0,25,80,90,100,1,1,1,1,1,0,0,0,0,[0|0|0|0]
 26,Weapon - Generic 2 (Low Invest),0,15,50,80,99,0,25,80,90,100,1,1,1,1,1,0,0,0,0,[0|0|0|0]
 27,Weapon - Generic 2 (High Invest),0,20,60,85,99,0,25,80,90,100,1,1,1,1,1,0,0,0,0,[0|0|0|0]
-29,Weapon - Bleed / Poison/ Sleep / Madnes,0,30,50,80,99,0,15,25,45,50,1.465,1,1.262,-0.545,1,0,0,0,0,[0|0|0|0]
+29,Weapon - Bleed / Poison
+/ Sleep / Madnes,0,30,50,80,99,0,15,25,45,50,1.465,1,1.262,-0.545,1,0,0,0,0,[0|0|0|0]
 30,Catalyst (Mid Invest),0,30,50,80,99,0,40,65,85,100,1.523,0.737,0.834,-0.927,1,0,0,0,0,[0|0|0|0]
 31,Catalyst (Low Invest),0,30,50,80,99,0,45,70,80,100,-0.848,0.737,-2.71,-0.543,1,0,0,0,0,[0|0|0|0]
 32,Catalyst (High Invest),0,30,50,80,99,0,35,60,90,100,1.771,-0.737,0.83,-0.928,1,0,0,0,0,[0|0|0|0]
 33,Split Catalyst (Mid Invest),0,30,50,80,99,0,50,85,95,100,1.514,0.807,0.631,-0.93,1,0,0,0,0,[0|0|0|0]
 34,Split Catalyst (Low Invest),0,30,50,80,99,0,55,82.5,90,100,1.263,0.874,-2,-0.928,1,0,0,0,0,[0|0|0|0]
 35,Quad Catalyst,0,30,50,80,99,0,75,90,95,100,1.465,-2.0000002,-1.706,-0.928,1,0,0,0,0,[0|0|0|0]
-39,Catalyst - Bleed / Poison/ Sleep / Madnes,0,30,50,80,99,0,13.333333,20,26.666666,33.333332,1.262,1,-1.263,-0.783,1,0,0,0,0,[0|0|0|0]
+39,Catalyst - Bleed / Poison
+/ Sleep / Madnes,0,30,50,80,99,0,13.333333,20,26.666666,33.333332,1.262,1,-1.263,-0.783,1,0,0,0,0,[0|0|0|0]
 40,Goods (Mid Invest),0,30,50,80,99,0,30,60,85,100,1.631,-1.1,-1.158,1,1,0,0,0,0,[0|0|0|0]
 41,Split Goods (Mid Invest),0,30,50,80,99,0,50,80,95,100,1.465,0.585,1,-0.93,1,0,0,0,0,[0|0|0|0]
 42,Partial Split Goods (Mid Invest),0,30,50,80,99,0,40,70,90,100,1.524,0.737,0.956,-0.927,1,0,0,0,0,[0|0|0|0]
-45,Goods - Bleed / Poison/ Sleep / Madnes,0,30,50,80,99,0,13.333333,20,26.666666,33.333332,1.262,1,-1.263,-0.783,1,0,0,0,0,[0|0|0|0]
-46,Arrow - Bleed / Poison/ Sleep / Madnes,0,30,50,80,99,0,20,30,40,50,1.262,1,-1.263,-0.783,1,0,0,0,0,[0|0|0|0]
-47,Arcane Goods - Bleed / Poison/ Sleep / Madnes,0,30,50,80,99,0,6.6666665,10,13.333333,16.666666,1.262,1,-1.263,-0.783,1,0,0,0,0,[0|0|0|0]
+45,Goods - Bleed / Poison
+/ Sleep / Madnes,0,30,50,80,99,0,13.333333,20,26.666666,33.333332,1.262,1,-1.263,-0.783,1,0,0,0,0,[0|0|0|0]
+46,Arrow - Bleed / Poison
+/ Sleep / Madnes,0,30,50,80,99,0,20,30,40,50,1.262,1,-1.263,-0.783,1,0,0,0,0,[0|0|0|0]
+47,Arcane Goods - Bleed / Poison
+/ Sleep / Madnes,0,30,50,80,99,0,6.6666665,10,13.333333,16.666666,1.262,1,-1.263,-0.783,1,0,0,0,0,[0|0|0|0]
 50,BDC,0.1,0.15,0.2,0.25,0.3,1,0.9,0.7,0.4,0,1,1,1,1,1,0,0,0,0,[0|0|0|0]
 51,BDCR,0,0.1,0.3,0.5,1,0,0,0.3,0.6,1,1,1,1,1,1,0,0,0,0,[0|0|0|0]
 100,HP Scaling - Vigor 10/500 x5,0,30,50,80,99,0,1000,1400,2000,2500,0.584,1,-1.195,-0.61,1,0,0,0,0,[0|0|0|0]
