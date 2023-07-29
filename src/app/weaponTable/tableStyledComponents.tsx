@@ -91,17 +91,13 @@ export const WeaponTableGroup = styled("div", {
 export const WeaponTableDataRow = styled("div", {
   skipSx: true,
   skipVariantsResolver: true,
-})(({ theme }) => ({
+})({
   display: "flex",
   alignItems: "stretch",
   minHeight: 36,
-  ":not(:last-of-type)": {
-    minHeight: 37,
-    borderBottom: `solid 1px ${theme.palette.divider}`,
-  },
-  ":nth-of-type(2n+1)": { backgroundColor: "rgba(255, 255, 255, 0.02)" },
-  ":hover": { backgroundColor: "rgba(255, 255, 255, 0.08)" },
-}));
+  ":nth-of-type(2n+1)": { backgroundColor: "rgba(255, 255, 255, 0.05)" },
+  ":hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
+});
 
 /**
  * A group of related columns within a row, such as Attribute Scaling
