@@ -69,7 +69,8 @@ export const WeaponTableGroupHeaderRow = styled("div", {
   minHeight: 37,
   paddingLeft: 13,
   paddingRight: 13,
-  backgroundColor: "rgba(255, 255, 255, 0.1)",
+  backgroundColor:
+    theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
   borderBottom: `solid 1px ${theme.palette.divider}`,
 }));
 
@@ -91,13 +92,19 @@ export const WeaponTableGroup = styled("div", {
 export const WeaponTableDataRow = styled("div", {
   skipSx: true,
   skipVariantsResolver: true,
-})({
+})(({ theme }) => ({
   display: "flex",
   alignItems: "stretch",
   minHeight: 36,
-  ":nth-of-type(2n+1)": { backgroundColor: "rgba(255, 255, 255, 0.05)" },
-  ":hover": { backgroundColor: "rgba(255, 255, 255, 0.1)" },
-});
+  ":nth-of-type(2n+1)": {
+    backgroundColor:
+      theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
+  },
+  ":hover": {
+    backgroundColor:
+      theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
+  },
+}));
 
 /**
  * A group of related columns within a row, such as Attribute Scaling
