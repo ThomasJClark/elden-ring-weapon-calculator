@@ -205,12 +205,6 @@ export function decodeRegulationData({
           reinforceParam.statusSpEffectId3,
         ];
 
-        // Hack: Cold Antspur Rapier has the same reinforceTypeId as every other cold weapon, but
-        // in the game it doesn't seem to get more frostbite from upgrading.
-        if (weapon.name === "Cold Antspur Rapier") {
-          offsets[1] = 0;
-        }
-
         statusSpEffectParamIds?.forEach((spEffectParamId, i) => {
           if (spEffectParamId) {
             const statusSpEffectParam = statusSpEffectParams[spEffectParamId + (offsets[i] ?? 0)];
