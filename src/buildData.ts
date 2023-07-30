@@ -187,17 +187,6 @@ function isUniqueWeapon(data: CsvRow["data"]) {
     return true;
   }
 
-  // Hack: This weapon is allowed to have AoWs, but it doesn't actually support any AoWs and
-  // can't have affinities
-  if (
-    isReforged &&
-    [
-      21050000, // Nox Flowing Fist
-    ].includes(data.ID)
-  ) {
-    return true;
-  }
-
   // Consider a weapon unique if it can't have Ashes of War (e.g. torches, moonveil) or can't have
   // affinities selected when applying Ashes of War (e.g. bows)
   return data.gemMountType === 0 || data.disableGemAttr === 1;
