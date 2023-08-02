@@ -573,7 +573,10 @@
       { "ID": 11360, "Text": "Item Type" },
       { "ID": 11400, "Text": "Containers Held" },
       { "ID": 11500, "Text": "-" },
-      { "ID": 11510, "Text": "S" },
+      { "ID": 11510, "Text": "S+++" },
+      { "ID": 11511, "Text": "S++" },
+      { "ID": 11512, "Text": "S+" },
+      { "ID": 11513, "Text": "S" },
       { "ID": 11520, "Text": "A+" },
       { "ID": 11521, "Text": "A" },
       { "ID": 11522, "Text": "A-" },
@@ -586,7 +589,10 @@
       { "ID": 11550, "Text": "D+" },
       { "ID": 11551, "Text": "D" },
       { "ID": 11552, "Text": "D-" },
-      { "ID": 11560, "Text": "E" },
+      { "ID": 11560, "Text": "E+" },
+      { "ID": 11561, "Text": "E" },
+      { "ID": 11562, "Text": "E-" },
+      { "ID": 11570, "Text": "F" },
       {
         "ID": 12000,
         "Text": "<img src='img://SB_ERR_RunesNeeded.png' height='22' width='22' vspace='-14'/>Runes Required"
@@ -3279,7 +3285,7 @@
       { "ID": 401321, "Text": "Server Ver." },
       {
         "ID": 401322,
-        "Text": "<font color=\"#beac8b\">ELDEN RING Reforged</font> Ver. 0.9.0 / Calibrations Ver."
+        "Text": "<font color=\"#beac8b\">ELDEN RING Reforged</font> Ver. 0.9.3 / Calibrations Ver."
       },
       { "ID": 401400, "Text": "INFORMATION" },
       { "ID": 401401, "Text": "There is no new information" },
