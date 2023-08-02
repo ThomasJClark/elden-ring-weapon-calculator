@@ -48,11 +48,11 @@ export default function filterWeapons(
     if (weaponTypes.size > 0) {
       if (
         !weaponTypes.has(weapon.weaponType) &&
-        // Treat hybrid seals/staves as either category
-        !(
-          weapon.weaponType === WeaponType.UNIVERSAL_CATALYST &&
-          (weaponTypes.has(WeaponType.SACRED_SEAL) || weaponTypes.has(WeaponType.GLINTSTONE_STAFF))
-        )
+        // Treat weapons that can cast sorceries and incantations as Glintstone Staves and Sacred
+        // Seals respectively. This is to support hybrid casting tools and weapons in Elden Ring
+        // Reforged.
+        !(weapon.sorceryTool && weaponTypes.has(WeaponType.GLINTSTONE_STAFF)) &&
+        !(weapon.incantationTool && weaponTypes.has(WeaponType.SACRED_SEAL))
       ) {
         return false;
       }

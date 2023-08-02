@@ -171,7 +171,7 @@ export const meleeWeaponTypes = [
   WeaponType.WHIP,
 ];
 
-export const hiddenWeaponTypes = [WeaponType.UNIVERSAL_CATALYST];
+export const hiddenWeaponTypes = [WeaponType.DUAL_CATALYST];
 
 export const allWeaponTypes = [
   ...meleeWeaponTypes,
@@ -210,7 +210,7 @@ export const weaponTypeLabels = new Map([
   [WeaponType.CROSSBOW, "Crossbow"],
   [WeaponType.BALLISTA, "Ballista"],
   [WeaponType.GLINTSTONE_STAFF, "Glintstone Staff"],
-  [WeaponType.UNIVERSAL_CATALYST, "Hybrid Glintstone Staff / Sacred Seal"],
+  [WeaponType.DUAL_CATALYST, "Dual Catalyst"],
   [WeaponType.SACRED_SEAL, "Sacred Seal"],
   [WeaponType.SMALL_SHIELD, "Small Shield"],
   [WeaponType.MEDIUM_SHIELD, "Medium Shield"],

@@ -59,9 +59,14 @@ export interface Weapon {
   paired?: boolean;
 
   /**
-   * True if this weapon can cast incantations or glintstone sorceries
+   * True if this weapon can cast glintstone sorceries
    */
-  spellTool?: boolean;
+  sorceryTool?: boolean;
+
+  /**
+   * True if this weapon can cast incantations
+   */
+  incantationTool?: boolean;
 
   /**
    * Thresholds and labels for each scaling grade (S, A, B, etc.) for this weapon. This isn't

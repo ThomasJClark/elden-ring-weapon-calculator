@@ -64,7 +64,8 @@ export interface EncodedWeaponJson {
   attackElementCorrectId: number;
   calcCorrectGraphIds?: Partial<Record<AttackPowerType, number>>;
   paired?: boolean;
-  spellTool?: boolean;
+  sorceryTool?: boolean;
+  incantationTool?: boolean;
 }
 
 /**
@@ -213,7 +214,7 @@ export function decodeRegulationData({
         });
 
         // Spell scaling is displayed as a percent (i.e. as if the base damage were 100)
-        if (weapon.spellTool) {
+        if (weapon.sorceryTool || weapon.incantationTool) {
           attackAtUpgradeLevel[AttackPowerType.SPELL_SCALING] = 100;
         }
 

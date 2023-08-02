@@ -279,7 +279,7 @@ const supportedWeaponTypes = new Set([
   WeaponType.CROSSBOW,
   WeaponType.BALLISTA,
   WeaponType.GLINTSTONE_STAFF,
-  WeaponType.UNIVERSAL_CATALYST,
+  WeaponType.DUAL_CATALYST,
   WeaponType.SACRED_SEAL,
   WeaponType.SMALL_SHIELD,
   WeaponType.MEDIUM_SHIELD,
@@ -464,7 +464,8 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     attackElementCorrectId: data.attackElementCorrectId,
     calcCorrectGraphIds,
     paired: ifNotDefault(data.isDualBlade === 1, false),
-    spellTool: ifNotDefault(spellScalingCorrectType != -1, false),
+    sorceryTool: ifNotDefault(data.enableMagic === 1, false),
+    incantationTool: ifNotDefault(data.enableMiracle === 1, false),
   };
 }
 
