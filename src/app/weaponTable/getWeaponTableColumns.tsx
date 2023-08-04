@@ -20,7 +20,6 @@ import {
   ScalingTierRenderer,
   AttributeRequirementRenderer,
   AttackPowerRenderer,
-  round,
 } from "./tableRenderers";
 
 const nameColumn: WeaponTableColumnDef = {
