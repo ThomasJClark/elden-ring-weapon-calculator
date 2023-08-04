@@ -78,8 +78,15 @@ const totalSplitAttackPowerColumn: WeaponTableColumnDef = {
       Total
     </Typography>
   ),
-  render([, { attackPower }]) {
-    return round(getTotalDamageAttackPower(attackPower));
+  render([, { attackPower, ineffectiveAttackPowerTypes }]) {
+    return (
+      <AttackPowerRenderer
+        value={getTotalDamageAttackPower(attackPower)}
+        ineffective={ineffectiveAttackPowerTypes.some((attackPowerType) =>
+          allDamageTypes.includes(attackPowerType),
+        )}
+      />
+    );
   },
 };
 
