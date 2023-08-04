@@ -14,6 +14,14 @@ import { getAttributeLabel } from "../uiUtils";
 export const blankIcon = <RemoveIcon color="disabled" fontSize="small" />;
 
 /**
+ * @returns the given value truncated to an integer
+ */
+export function round(value: number) {
+  // Add a small offset to prevent off-by-ones due to floating point error
+  return Math.floor(value + 0.000000001);
+}
+
+/**
  * Component that displays the weapon name as a wiki link.
  */
 export const WeaponNameRenderer = memo(function WeaponNameRenderer({
@@ -96,4 +104,32 @@ export const AttributeRequirementRenderer = memo(function AttributeRequirementRe
   }
 
   return <>{requirement}</>;
+});
+
+/**
+ * Component that displays one damage type / status effect / spell scaling of a weapon.
+ */
+export const AttackPowerRenderer = memo(function AttackPowerRenderer({
+  value,
+  ineffective,
+}: {
+  value?: number;
+  ineffective: boolean;
+}) {
+  if (value == null) {
+    return blankIcon;
+  }
+
+  if (ineffective) {
+    return (
+      <Typography
+        sx={{ color: (theme) => theme.palette.error.main }}
+        aria-label={`${round(value)}. Unable to wield this weapon effectively with present stats`}
+      >
+        {round(value)}
+      </Typography>
+    );
+  }
+
+  return <>{round(value)}</>;
 });

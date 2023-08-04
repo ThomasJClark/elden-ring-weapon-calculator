@@ -19,15 +19,9 @@ import {
   WeaponNameRenderer,
   ScalingTierRenderer,
   AttributeRequirementRenderer,
+  AttackPowerRenderer,
+  round,
 } from "./tableRenderers";
-
-/**
- * @returns the given value truncated to an integer
- */
-function round(value: number) {
-  // Add a small offset to prevent off-by-ones due to floating point error
-  return Math.floor(value + 0.000000001);
-}
 
 const nameColumn: WeaponTableColumnDef = {
   key: "name",
@@ -64,9 +58,13 @@ const attackColumns = Object.fromEntries(
           {damageTypeLabels.get(attackPowerType)}
         </Typography>
       ),
-      render([, { attackPower }]) {
-        const damageTypeAttack = attackPower[attackPowerType];
-        return damageTypeAttack == null ? blankIcon : round(damageTypeAttack);
+      render([, { attackPower, ineffectiveAttackPowerTypes }]) {
+        return (
+          <AttackPowerRenderer
+            value={attackPower[attackPowerType]}
+            ineffective={ineffectiveAttackPowerTypes.includes(attackPowerType)}
+          />
+        );
       },
     },
   ]),
@@ -93,8 +91,15 @@ const totalAttackPowerColumn: WeaponTableColumnDef = {
       Attack Power
     </Typography>
   ),
-  render([, { attackPower }]) {
-    return round(getTotalDamageAttackPower(attackPower));
+  render([, { attackPower, ineffectiveAttackPowerTypes }]) {
+    return (
+      <AttackPowerRenderer
+        value={getTotalDamageAttackPower(attackPower)}
+        ineffective={ineffectiveAttackPowerTypes.some((attackPowerType) =>
+          allDamageTypes.includes(attackPowerType),
+        )}
+      />
+    );
   },
 };
 

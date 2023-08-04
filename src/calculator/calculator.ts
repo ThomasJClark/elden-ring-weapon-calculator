@@ -16,6 +16,7 @@ export interface WeaponAttackResult {
   upgradeLevel: number;
   attackPower: Partial<Record<AttackPowerType, number>>;
   ineffectiveAttributes: Attribute[];
+  ineffectiveAttackPowerTypes: AttackPowerType[];
 }
 
 /**
@@ -75,6 +76,8 @@ export default function getWeaponAttack({
     .filter(([attribute, requirement]) => adjustedAttributes[attribute] < requirement)
     .map(([attribute]) => attribute);
 
+  const ineffectiveAttackPowerTypes: AttackPowerType[] = [];
+
   const attackPower: Partial<Record<AttackPowerType, number>> = {};
   for (const attackPowerType of allAttackPowerTypes) {
     const baseAttackPower = weapon.attack[upgradeLevel][attackPowerType] ?? 0;
@@ -89,6 +92,7 @@ export default function getWeaponAttack({
         // If the requirements for this damage type are not met, a penalty is subtracted instead
         // of a scaling bonus being added
         scalingMultiplier = -ineffectiveAttributePenalty;
+        ineffectiveAttackPowerTypes.push(attackPowerType);
       } else {
         // Otherwise, the scaling multiplier is equal to the sum of the corrected attribute values
         // multiplied by the scaling for that attribute
@@ -115,6 +119,7 @@ export default function getWeaponAttack({
     upgradeLevel,
     attackPower,
     ineffectiveAttributes,
+    ineffectiveAttackPowerTypes,
   };
 }
 
