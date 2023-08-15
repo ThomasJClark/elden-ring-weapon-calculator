@@ -17,7 +17,7 @@ import type { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTa
 import {
   blankIcon,
   WeaponNameRenderer,
-  ScalingTierRenderer,
+  ScalingRenderer,
   AttributeRequirementRenderer,
   AttackPowerRenderer,
 } from "./tableRenderers";
@@ -130,8 +130,30 @@ const scalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => 
     </Typography>
   ),
   render([weapon, { upgradeLevel }]) {
+    return <ScalingRenderer weapon={weapon} upgradeLevel={upgradeLevel} attribute={attribute} />;
+  },
+}));
+
+const numericalScalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => ({
+  key: `${attribute}Scaling`,
+  sortBy: `${attribute}Scaling`,
+  header: (
+    <Typography
+      component="span"
+      variant="subtitle2"
+      title={`${getAttributeLabel(attribute)} Scaling`}
+    >
+      {getShortAttributeLabel(attribute)}
+    </Typography>
+  ),
+  render([weapon, { upgradeLevel }]) {
     return (
-      <ScalingTierRenderer weapon={weapon} upgradeLevel={upgradeLevel} attribute={attribute} />
+      <ScalingRenderer
+        weapon={weapon}
+        upgradeLevel={upgradeLevel}
+        attribute={attribute}
+        numerical
+      />
     );
   },
 }));
@@ -163,11 +185,13 @@ const requirementColumns = allAttributes.map(
 
 interface WeaponTableColumnsOptions {
   splitDamage: boolean;
+  numericalScaling: boolean;
   attackPowerTypes: ReadonlySet<AttackPowerType>;
 }
 
 export default function getWeaponTableColumns({
   splitDamage,
+  numericalScaling,
   attackPowerTypes,
 }: WeaponTableColumnsOptions): WeaponTableColumnGroupDef[] {
   const includeSpellScaling = attackPowerTypes.has(AttackPowerType.SPELL_SCALING);
@@ -225,10 +249,10 @@ export default function getWeaponTableColumns({
     {
       key: "scaling",
       sx: {
-        width: 36 * scalingColumns.length + 21,
+        width: (numericalScaling ? 40 : 36) * scalingColumns.length + 21,
       },
       header: "Attribute Scaling",
-      columns: scalingColumns,
+      columns: numericalScaling ? numericalScalingColumns : scalingColumns,
     },
     {
       key: "requirements",

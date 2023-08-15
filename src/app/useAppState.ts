@@ -14,6 +14,7 @@ interface AppState {
   readonly effectiveOnly: boolean;
   readonly splitDamage: boolean;
   readonly groupWeaponTypes: boolean;
+  readonly numericalScaling: boolean;
   readonly sortBy: SortBy;
   readonly reverse: boolean;
 }
@@ -29,6 +30,7 @@ interface UpdateAppState extends AppState {
   setEffectiveOnly(effectiveOnly: boolean): void;
   setSplitDamage(splitDamage: boolean): void;
   setGroupWeaponTypes(groupWeaponTypes: boolean): void;
+  setNumericalScaling(numericalScaling: boolean): void;
   setSortBy(sortBy: SortBy): void;
   setReverse(reverse: boolean): void;
 }
@@ -50,6 +52,7 @@ const defaultAppState: AppState = {
   effectiveOnly: false,
   splitDamage: true,
   groupWeaponTypes: false,
+  numericalScaling: false,
   sortBy: "totalAttack",
   reverse: false,
 };
@@ -110,6 +113,9 @@ export default function useAppState() {
       },
       setGroupWeaponTypes(groupWeaponTypes) {
         setAppState((prevAppState) => ({ ...prevAppState, groupWeaponTypes }));
+      },
+      setNumericalScaling(numericalScaling) {
+        setAppState((prevAppState) => ({ ...prevAppState, numericalScaling }));
       },
       setSortBy(sortBy) {
         setAppState((prevAppState) => ({ ...prevAppState, sortBy }));

@@ -53,6 +53,11 @@ interface Props {
   splitDamage: boolean;
 
   /**
+   * If true, show scaling as integers instead of S/A/B/C/D/E ranks
+   */
+  numericalScaling: boolean;
+
+  /**
    * Attack power types that must be included as columns in the table
    */
   attackPowerTypes: ReadonlySet<AttackPowerType>;
@@ -179,13 +184,14 @@ function WeaponTable({
   sortBy,
   reverse,
   splitDamage,
+  numericalScaling,
   attackPowerTypes,
   onSortByChanged,
   onReverseChanged,
 }: Props) {
   const columnGroups = useMemo(
-    () => getWeaponTableColumns({ splitDamage, attackPowerTypes }),
-    [splitDamage, attackPowerTypes],
+    () => getWeaponTableColumns({ splitDamage, numericalScaling, attackPowerTypes }),
+    [splitDamage, numericalScaling, attackPowerTypes],
   );
 
   return (

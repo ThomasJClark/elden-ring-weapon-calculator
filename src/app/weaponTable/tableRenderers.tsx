@@ -52,21 +52,26 @@ export const WeaponNameRenderer = memo(function WeaponNameRenderer({
 });
 
 /**
- * Component that displays the name of a scaling tier for an attribute on a weapon.
+ * Component that displays the scaling for an attribute on a weapon.
  */
-export const ScalingTierRenderer = memo(function ScalingTierRenderer({
+export const ScalingRenderer = memo(function ScalingRenderer({
   weapon: { attributeScaling, scalingTiers },
   upgradeLevel,
   attribute,
+  numerical,
 }: {
   weapon: Weapon;
   upgradeLevel: number;
   attribute: Attribute;
+  numerical?: boolean;
 }) {
   const scalingValue = attributeScaling[upgradeLevel][attribute];
-  const scalingTier = scalingValue && scalingTiers.find(([value]) => scalingValue >= value);
-  return scalingTier ? (
-    <span title={`${Math.round(scalingValue * 100000) / 1000}%`}>{scalingTier[1]}</span>
+  return scalingValue ? (
+    <span title={`${Math.round(scalingValue! * 100000) / 1000}%`}>
+      {numerical
+        ? round(scalingValue * 100)
+        : scalingTiers.find(([value]) => scalingValue >= value)?.[1]}
+    </span>
   ) : (
     blankIcon
   );

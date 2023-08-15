@@ -125,12 +125,14 @@ interface Props {
   effectiveOnly: boolean;
   splitDamage: boolean;
   groupWeaponTypes: boolean;
+  numericalScaling: boolean;
   onAttributeChanged(attribute: Attribute, value: number): void;
   onTwoHandingChanged(twoHanding: boolean): void;
   onUpgradeLevelChanged(upgradeLevel: number): void;
   onEffectiveOnlyChanged(effectiveOnly: boolean): void;
   onSplitDamageChanged(splitDamage: boolean): void;
   onGroupWeaponTypesChanged(groupWeaponTypes: boolean): void;
+  onNumericalScalingChanged(numericalScaling: boolean): void;
 }
 
 /**
@@ -145,12 +147,14 @@ function WeaponListSettings({
   effectiveOnly,
   splitDamage,
   groupWeaponTypes,
+  numericalScaling,
   onAttributeChanged,
   onTwoHandingChanged,
   onUpgradeLevelChanged,
   onEffectiveOnlyChanged,
   onSplitDamageChanged,
   onGroupWeaponTypesChanged,
+  onNumericalScalingChanged,
 }: Props) {
   return (
     <Box
@@ -211,6 +215,11 @@ function WeaponListSettings({
           label="Show damage split"
           checked={splitDamage}
           onChange={onSplitDamageChanged}
+        />
+        <BooleanInput
+          label="Show numerical scaling"
+          checked={numericalScaling}
+          onChange={onNumericalScalingChanged}
         />
       </Box>
     </Box>

@@ -108,6 +108,7 @@ export default function App() {
     twoHanding,
     upgradeLevel,
     groupWeaponTypes,
+    numericalScaling,
     sortBy,
     reverse,
     setRegulationVersionName,
@@ -120,6 +121,7 @@ export default function App() {
     setTwoHanding,
     setUpgradeLevel,
     setGroupWeaponTypes,
+    setNumericalScaling,
     setSortBy,
     setReverse,
   } = useAppState();
@@ -194,6 +196,7 @@ export default function App() {
         sortBy={sortBy}
         reverse={reverse}
         splitDamage={splitDamage}
+        numericalScaling={numericalScaling}
         attackPowerTypes={attackPowerTypes}
         onSortByChanged={setSortBy}
         onReverseChanged={setReverse}
@@ -301,12 +304,14 @@ export default function App() {
             effectiveOnly={effectiveOnly}
             splitDamage={splitDamage}
             groupWeaponTypes={groupWeaponTypes}
+            numericalScaling={numericalScaling}
             onAttributeChanged={setAttribute}
             onTwoHandingChanged={setTwoHanding}
             onUpgradeLevelChanged={setUpgradeLevel}
             onEffectiveOnlyChanged={setEffectiveOnly}
             onSplitDamageChanged={setSplitDamage}
             onGroupWeaponTypesChanged={setGroupWeaponTypes}
+            onNumericalScalingChanged={setNumericalScaling}
           />
 
           <RegulationVersionAlert key={regulationVersionName}>
