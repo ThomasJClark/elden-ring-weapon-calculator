@@ -67,7 +67,6 @@ const isConvergence = dataDir.includes("convergence");
 const isVanilla = !isReforged && !isConvergence;
 
 const urlOverrides = new Map([
-  [110000, null], // Unarmed
   ...(isReforged
     ? ([
         [1120000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Iron Spike
@@ -87,8 +86,8 @@ const urlOverrides = new Map([
         [18170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Starcaller Spire
         [21050000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Nox Flowing Fist
         [22040000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Crude Iron Claws
-        [11110000, "https://eldenring.wiki.fextralife.com/Scepter+of+the+All-Knowing"], // Scepter of the All-Knowing Staff
-        [33210000, "https://eldenring.wiki.fextralife.com/Carian+Glintstone+Staff"], // Dark Glintstone Staff
+        [11110000, "https://eldenring.fandom.com/Scepter_of_the_All-Knowing"], // Scepter of the All-Knowing Staff
+        [33210000, "https://eldenring.fandom.com/Carian_Glintstone_Staff"], // Dark Glintstone Staff
       ] as const)
     : []),
   ...(isConvergence
@@ -155,18 +154,18 @@ const urlOverrides = new Map([
         [34180000, null], // Pest's Seal
         [34190000, null], // Spiritshaper Seal
         [34200000, null], // Mystic Seal
-        [1050000, "https://eldenring.wiki.fextralife.com/Crystal+Knife"], // Underworld Dagger
-        [2070000, "https://eldenring.wiki.fextralife.com/Golden+Epitaph"], // Draconic Epitaph
-        [2140000, "https://eldenring.wiki.fextralife.com/Sword+of+Night+and+Flame"], // Sword of the Cosmos
-        [2150000, "https://eldenring.wiki.fextralife.com/Crystal+Sword"], // Molten Sword
-        [2200000, "https://eldenring.wiki.fextralife.com/Miquellan+Knight's+Sword"], // Fell Flame Sword
-        [2250000, "https://eldenring.wiki.fextralife.com/Lazuli+Glintstone+Sword"], // Dragonkin Seeker Sword
-        [18110000, "https://eldenring.wiki.fextralife.com/Guardian's+Swordspear"], // Guardian Spearblade
-        [18140000, "https://eldenring.wiki.fextralife.com/Dragon+Halberd"], // Dragonkin Halberd
-        [33050000, "https://eldenring.wiki.fextralife.com/Gelmir+Glintstone+Staff"], // Gelmir Lava Staff
-        [33060000, "https://eldenring.wiki.fextralife.com/Demi-Human+Queen's+Staff"], // Blighted Branch
-        [33200000, "https://eldenring.wiki.fextralife.com/Academy+Glintstone+Staff"], // Dragon Student Staff
-        [33240000, "https://eldenring.wiki.fextralife.com/Lusat's+Glintstone+Staff"], // Lusat's Night Staff
+        [1050000, "https://eldenring.fandom.com/Crystal_Knife"], // Underworld Dagger
+        [2070000, "https://eldenring.fandom.com/Golden_Epitaph"], // Draconic Epitaph
+        [2140000, "https://eldenring.fandom.com/Sword_of_Night_and_Flame"], // Sword of the Cosmos
+        [2150000, "https://eldenring.fandom.com/Crystal_Sword"], // Molten Sword
+        [2200000, "https://eldenring.fandom.com/Miquellan_Knight's_Sword"], // Fell Flame Sword
+        [2250000, "https://eldenring.fandom.com/Lazuli_Glintstone_Sword"], // Dragonkin Seeker Sword
+        [18110000, "https://eldenring.fandom.com/Guardian's_Swordspear"], // Guardian Spearblade
+        [18140000, "https://eldenring.fandom.com/Dragon_Halberd"], // Dragonkin Halberd
+        [33050000, "https://eldenring.fandom.com/Gelmir_Glintstone_Staff"], // Gelmir Lava Staff
+        [33060000, "https://eldenring.fandom.com/Demi-Human_Queen's_Staff"], // Blighted Branch
+        [33200000, "https://eldenring.fandom.com/Academy_Glintstone_Staff"], // Dragon Student Staff
+        [33240000, "https://eldenring.fandom.com/Lusat's_Glintstone_Staff"], // Lusat's Night Staff
       ] as const)
     : []),
 ]);
