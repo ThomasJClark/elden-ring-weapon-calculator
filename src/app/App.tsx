@@ -305,14 +305,12 @@ export default function App() {
             twoHanding={twoHanding}
             upgradeLevel={upgradeLevel}
             maxUpgradeLevel={regulationVersion.maxUpgradeLevel}
-            effectiveOnly={effectiveOnly}
             splitDamage={splitDamage}
             groupWeaponTypes={groupWeaponTypes}
             numericalScaling={numericalScaling}
             onAttributeChanged={setAttribute}
             onTwoHandingChanged={setTwoHanding}
             onUpgradeLevelChanged={setUpgradeLevel}
-            onEffectiveOnlyChanged={setEffectiveOnly}
             onSplitDamageChanged={setSplitDamage}
             onGroupWeaponTypesChanged={setGroupWeaponTypes}
             onNumericalScalingChanged={setNumericalScaling}

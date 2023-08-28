@@ -1,7 +1,13 @@
 import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { memo } from "react";
 import { WeaponType } from "../calculator/calculator";
-import { meleeWeaponTypes, rangedWeaponTypes, miscWeaponTypes, weaponTypeLabels } from "./uiUtils";
+import {
+  meleeWeaponTypes,
+  rangedWeaponTypes,
+  catalystTypes,
+  shieldTypes,
+  weaponTypeLabels,
+} from "./uiUtils";
 
 interface Props {
   weaponTypes: readonly WeaponType[];
@@ -84,8 +90,11 @@ function WeaponTypePicker({ weaponTypes, onWeaponTypesChanged }: Props) {
       {renderWeaponCategory("Ranged Weapons", rangedWeaponTypes)}
       <Box sx={{ ml: 3 }}>{rangedWeaponTypes.map(renderWeaponType)}</Box>
 
-      {renderWeaponCategory("Other Armaments", miscWeaponTypes)}
-      <Box sx={{ ml: 3 }}>{miscWeaponTypes.map(renderWeaponType)}</Box>
+      {renderWeaponCategory("Catalysts", catalystTypes)}
+      <Box sx={{ ml: 3 }}>{catalystTypes.map(renderWeaponType)}</Box>
+
+      {renderWeaponCategory("Shields", shieldTypes)}
+      <Box sx={{ ml: 3 }}>{shieldTypes.map(renderWeaponType)}</Box>
     </Box>
   );
 }

@@ -97,7 +97,7 @@ interface BooleanInputProps {
 }
 
 /**
- * Form control for one of the weapon list checkboxes (two hadning, effective only, show split damage)
+ * Form control for one of the weapon list checkboxes (two handing, show split damage)
  */
 const BooleanInput = memo(function BooleanInput({ label, checked, onChange }: BooleanInputProps) {
   return (
@@ -122,14 +122,12 @@ interface Props {
   twoHanding: boolean;
   upgradeLevel: number;
   maxUpgradeLevel?: number;
-  effectiveOnly: boolean;
   splitDamage: boolean;
   groupWeaponTypes: boolean;
   numericalScaling: boolean;
   onAttributeChanged(attribute: Attribute, value: number): void;
   onTwoHandingChanged(twoHanding: boolean): void;
   onUpgradeLevelChanged(upgradeLevel: number): void;
-  onEffectiveOnlyChanged(effectiveOnly: boolean): void;
   onSplitDamageChanged(splitDamage: boolean): void;
   onGroupWeaponTypesChanged(groupWeaponTypes: boolean): void;
   onNumericalScalingChanged(numericalScaling: boolean): void;
@@ -144,14 +142,12 @@ function WeaponListSettings({
   twoHanding,
   upgradeLevel,
   maxUpgradeLevel,
-  effectiveOnly,
   splitDamage,
   groupWeaponTypes,
   numericalScaling,
   onAttributeChanged,
   onTwoHandingChanged,
   onUpgradeLevelChanged,
-  onEffectiveOnlyChanged,
   onSplitDamageChanged,
   onGroupWeaponTypesChanged,
   onNumericalScalingChanged,

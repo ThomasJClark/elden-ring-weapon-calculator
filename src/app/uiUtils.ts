@@ -136,13 +136,12 @@ export const rangedWeaponTypes = [
   WeaponType.BALLISTA,
 ];
 
-export const miscWeaponTypes = [
-  WeaponType.TORCH,
+export const catalystTypes = [WeaponType.GLINTSTONE_STAFF, WeaponType.SACRED_SEAL];
+
+export const shieldTypes = [
   WeaponType.SMALL_SHIELD,
   WeaponType.MEDIUM_SHIELD,
   WeaponType.GREATSHIELD,
-  WeaponType.GLINTSTONE_STAFF,
-  WeaponType.SACRED_SEAL,
 ];
 
 export const meleeWeaponTypes = [
@@ -167,6 +166,7 @@ export const meleeWeaponTypes = [
   WeaponType.SPEAR,
   WeaponType.STRAIGHT_SWORD,
   WeaponType.THRUSTING_SWORD,
+  WeaponType.TORCH,
   WeaponType.TWINBLADE,
   WeaponType.WHIP,
 ];
@@ -176,7 +176,8 @@ export const hiddenWeaponTypes = [WeaponType.DUAL_CATALYST];
 export const allWeaponTypes = [
   ...meleeWeaponTypes,
   ...rangedWeaponTypes,
-  ...miscWeaponTypes,
+  ...catalystTypes,
+  ...shieldTypes,
   ...hiddenWeaponTypes,
 ];
 
