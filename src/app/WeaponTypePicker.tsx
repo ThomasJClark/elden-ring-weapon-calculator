@@ -11,7 +11,7 @@ interface Props {
 /**
  * Set of checkboxes for selecting weapon types to include in the search results
  */
-function WeaponListFilters({ weaponTypes, onWeaponTypesChanged }: Props) {
+function WeaponTypePicker({ weaponTypes, onWeaponTypesChanged }: Props) {
   const renderWeaponCategory = (label: string, weaponTypesInCategory: WeaponType[]) => {
     let checked = false;
     let indeterminate = false;
@@ -90,4 +90,4 @@ function WeaponListFilters({ weaponTypes, onWeaponTypesChanged }: Props) {
   );
 }
 
-export default memo(WeaponListFilters);
+export default memo(WeaponTypePicker);

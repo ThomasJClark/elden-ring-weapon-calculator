@@ -207,19 +207,14 @@ function WeaponListSettings({
           onChange={onGroupWeaponTypesChanged}
         />
         <BooleanInput
-          label="Effective only"
-          checked={effectiveOnly}
-          onChange={onEffectiveOnlyChanged}
+          label="Numeric scaling"
+          checked={numericalScaling}
+          onChange={onNumericalScalingChanged}
         />
         <BooleanInput
           label="Show damage split"
           checked={splitDamage}
           onChange={onSplitDamageChanged}
-        />
-        <BooleanInput
-          label="Show numerical scaling"
-          checked={numericalScaling}
-          onChange={onNumericalScalingChanged}
         />
       </Box>
     </Box>

@@ -12,6 +12,8 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  FormControlLabel,
+  Checkbox,
   type Theme,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBackRounded";
@@ -27,6 +29,7 @@ import RegulationVersionPicker from "./RegulationVersionPicker";
 import WeaponTypePicker from "./WeaponTypePicker";
 import AffinityPicker from "./AffinityPicker";
 import Footer from "./Footer";
+import MiscFilterPicker from "./MiscFilterPicker";
 
 const useMenuState = () => {
   const theme = useTheme();
@@ -210,6 +213,7 @@ export default function App() {
         regulationVersionName={regulationVersionName}
         onRegulationVersionNameChanged={setRegulationVersionName}
       />
+      <MiscFilterPicker effectiveOnly={effectiveOnly} onEffectiveOnlyChanged={setEffectiveOnly} />
       <AffinityPicker
         affinityOptions={regulationVersion.affinityOptions}
         selectedAffinityIds={affinityIds}
