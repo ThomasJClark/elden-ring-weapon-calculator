@@ -70,12 +70,12 @@ const urlOverrides = new Map([
   ...(isReforged
     ? ([
         [1120000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Iron Spike
-        [1170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Nightmaiden's Edge
+        [1170000, "https://err.fandom.com/wiki/Nightmaiden%27s_Edge"], // Nightmaiden's Edge
         [2030000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Sun Realm Sword
         [2100000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Marionette Short Sword
         [7130000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Red Wolf's Fang
         [7160000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Avionette Scimitar
-        [8090000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Fury of Azash
+        [8090000, "https://err.fandom.com/wiki/Fury_of_Azash"], // Fury of Azash
         [8110000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Makar's Ceremonial Cleaver
         [12030000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Pumpkin Head Sledgehammer
         [14070000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Vulgar Militia Chain Sickle
