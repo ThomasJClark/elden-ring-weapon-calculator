@@ -12,8 +12,6 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
-  FormControlLabel,
-  Checkbox,
   type Theme,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBackRounded";
