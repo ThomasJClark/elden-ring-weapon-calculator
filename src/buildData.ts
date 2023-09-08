@@ -1,9 +1,15 @@
 /*
  * Usage: yarn rebuildWeaponData
  */
-import { readFileSync, writeFileSync } from "fs";
-import { basename, join } from "path";
+import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join, parse } from "node:path";
+import { env } from "node:process";
+import { spawnSync } from "node:child_process";
+import { rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import makeDebug from "debug";
+import dotenv from "dotenv";
+import { XMLParser } from "fast-xml-parser";
 import { type Attribute, WeaponType, AttackPowerType } from "./calculator/calculator";
 import {
   type EncodedWeaponJson,
@@ -16,57 +22,144 @@ import {
 
 const debug = makeDebug("buildData");
 
-interface CsvRow {
-  name: string;
-  data: {
-    [key: string]: number;
-  };
-}
+const envFile = "buildData.env";
 
-/**
- * Parse a CSV file with "ID", "Name", and numeric columns
- */
-function readCsv(filename: string): Map<number, CsvRow> {
-  const [cols, ...lines] = readFileSync(filename, "utf-8")
-    .split("\n")
-    .filter((row) => !!row)
-    .map((row) => row.split(","));
-
-  return new Map<number, CsvRow>(
-    lines.map((line) => {
-      let name = "";
-      const data: { [key: string]: number } = {};
-
-      cols.forEach((key, index) => {
-        if (key === "Name") {
-          name = line[index];
-        } else if (key) {
-          data[key] = +line[index];
-        }
-      });
-
-      return [data.ID, { name, data }];
-    }),
+// Read the local env file with buildData configuration, creating a new (probably initially wrong)
+// file if it doesn't exist
+if (!existsSync(envFile)) {
+  writeFileSync(
+    envFile,
+    `WITCHY_PATH=C:\\Program Files (x86)\\WitchyBND\\
+VANILLA_PATH=C:\\Program Files (x86)\\Steam\\steamapps\\common\\ELDEN RING\\Game\\
+REFORGED_PATH=C:\\ERR\\
+CONVERGENCE_PATH=C:\\ConvergenceER\\mod\\
+SKIP_UNPACK=0`,
   );
 }
 
-/**
- * Parse a .fmg.json file, which contains translation strings displayed in game
- */
-function readFmgJson(filename: string): Map<number, string | null> {
-  const json = JSON.parse(readFileSync(filename, "utf-8"));
-  return new Map(
-    json.Fmg.Entries.map(({ ID, Text }: { ID: string; Text: string | null }) => [ID, Text]),
-  );
+dotenv.config({ path: envFile });
+
+function getWitchyDir() {
+  const witchyDir = env.WITCHY_PATH;
+  console.log(witchyDir);
+  if (!witchyDir || !existsSync(witchyDir)) {
+    throw new Error(
+      "Variable WITCHY_PATH must point to a folder. Please install WitchyBND " +
+        `(https://github.com/ividyon/WitchyBND/releases/latest) and update your ${envFile} file.`,
+    );
+  }
+
+  return witchyDir;
 }
 
-const dataDir = process.argv[2];
+// The paths to each mod and the vanilla game are supplied in the env file, and the command like
+// argument (specified in package.json) says which one to use
+function getDataDir() {
+  const dataEnvVariable = `${process.argv[2].toUpperCase()}_PATH`;
+  const dataDir = process.env[dataEnvVariable];
+
+  if (!dataDir || !existsSync(dataDir)) {
+    throw new Error(
+      `Variable ${dataEnvVariable} must point to a folder. Please update your ${envFile} file.`,
+    );
+  }
+
+  return dataDir;
+}
+
+const xmlParser = new XMLParser({
+  ignoreAttributes: false,
+  parseAttributeValue: true,
+  attributeNamePrefix: "",
+});
+
+const dataDir = getDataDir();
 const outputFile = process.argv[3];
-const isReforged = dataDir.includes("reforged");
-const isConvergence = dataDir.includes("convergence");
+const isReforged = outputFile.includes("reforged");
+const isConvergence = outputFile.includes("convergence");
 const isVanilla = !isReforged && !isConvergence;
 
-const urlOverrides = new Map([
+const tmpDir = join(tmpdir(), "elden-ring-weapon-calculator", parse(outputFile).name);
+
+const attackElementCorrectFile = join(tmpDir, "regulation-bin", "AttackElementCorrectParam.param");
+const calcCorrectGraphFile = join(tmpDir, "regulation-bin", "CalcCorrectGraph.param");
+const equipParamWeaponFile = join(tmpDir, "regulation-bin", "EquipParamWeapon.param");
+const reinforceParamWeaponFile = join(tmpDir, "regulation-bin", "ReinforceParamWeapon.param");
+const spEffectFile = join(tmpDir, "regulation-bin", "SpEffectParam.param");
+const menuValueTableFile = join(tmpDir, "regulation-bin", "MenuValueTableParam.param");
+const weaponNameFmgFile = join(tmpDir, "item-msgbnd-dcx", "WeaponName.fmg");
+const menuTextFmgFile = join(tmpDir, "menu-msgbnd-dcx", "GR_MenuText.fmg");
+
+/**
+ * Unpack the .param and .fmg files from the game or mod into an XML format we can read
+ */
+function unpackFiles() {
+  const regulationBinFile = join(tmpDir, "regulation.bin");
+  const itemMsgFile = join(tmpDir, "item.msgbnd.dcx");
+  const menuMsgFile = join(tmpDir, "menu.msgbnd.dcx");
+
+  mkdirSync(tmpDir, { recursive: true });
+
+  cpSync(join(dataDir, "regulation.bin"), regulationBinFile);
+  cpSync(join(dataDir, "msg", "engus", "item.msgbnd.dcx"), itemMsgFile);
+  cpSync(join(dataDir, "msg", "engus", "menu.msgbnd.dcx"), menuMsgFile);
+
+  const { error } = spawnSync(
+    join(getWitchyDir(), "WitchyBND.exe"),
+    [
+      regulationBinFile,
+      attackElementCorrectFile,
+      calcCorrectGraphFile,
+      equipParamWeaponFile,
+      reinforceParamWeaponFile,
+      spEffectFile,
+      menuValueTableFile,
+      itemMsgFile,
+      weaponNameFmgFile,
+      menuMsgFile,
+      menuTextFmgFile,
+    ],
+    { stdio: "inherit", windowsHide: true },
+  );
+
+  if (error) {
+    throw error;
+  }
+
+  rmSync(regulationBinFile);
+  rmSync(itemMsgFile);
+  rmSync(menuMsgFile);
+}
+
+type ParamRow = Record<string, number>;
+
+/**
+ * Parse an XML param file extracted by unpackFiles()
+ */
+function readParam(filename: string): Map<number, ParamRow> {
+  const data = xmlParser.parse(readFileSync(`${filename}.xml`, "utf-8"));
+
+  const defaultValues = Object.fromEntries(
+    (data.param.fields.field as { name: string; defaultValue: unknown }[])
+      .filter(({ defaultValue }) => typeof defaultValue === "number")
+      .map(({ name, defaultValue }) => [name, defaultValue]),
+  );
+
+  return new Map<number, ParamRow>(
+    data.param.rows.row.map(({ name, ...data }: any) => [data.id, { ...defaultValues, ...data }]),
+  );
+}
+
+/**
+ * Parse an XML fmg file extracted by unpackFiles(), which contains translation strings displayed
+ * in the game
+ */
+function readFmgJson(filename: string): Map<number, string | null> {
+  const data = xmlParser.parse(readFileSync(`${filename}.xml`, "utf-8"));
+  return new Map(data.fmg.entries.text.map((entry: any) => [entry.id, entry["#text"]]));
+}
+
+const urlOverrides = new Map<number, string | null>([
   ...(isReforged
     ? ([
         [1120000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Iron Spike
@@ -170,14 +263,20 @@ const urlOverrides = new Map([
     : []),
 ]);
 
-const attackElementCorrectParams = readCsv(join(dataDir, "AttackElementCorrectParam.csv"));
-const calcCorrectGraphs = readCsv(join(dataDir, "CalcCorrectGraph.csv"));
-const equipParamWeapons = readCsv(join(dataDir, "EquipParamWeapon.csv"));
-const reinforceParamWeapons = readCsv(join(dataDir, "ReinforceParamWeapon.csv"));
-const spEffectParams = readCsv(join(dataDir, "SpEffectParam.csv"));
-const menuValueTableParams = readCsv(join(dataDir, "MenuValueTableParam.csv"));
-const menuText = readFmgJson(join(dataDir, "Modern_MenuText.fmg.json"));
-const weaponNames = readFmgJson(join(dataDir, "TitleWeapons.fmg.json"));
+// Allow skipping the unpack step (which is pretty slow) if it's already been done on a previous run.
+if (env.SKIP_UNPACK && env.SKIP_UNPACK !== "0") {
+  debug("Skipping unpack because environment variable SKIP_UNPACK is defined");
+} else {
+  unpackFiles();
+}
+const attackElementCorrectParams = readParam(attackElementCorrectFile);
+const calcCorrectGraphs = readParam(calcCorrectGraphFile);
+const equipParamWeapons = readParam(equipParamWeaponFile);
+const reinforceParamWeapons = readParam(reinforceParamWeaponFile);
+const spEffectParams = readParam(spEffectFile);
+const menuValueTableParams = readParam(menuValueTableFile);
+const menuText = readFmgJson(menuTextFmgFile);
+const weaponNames = readFmgJson(weaponNameFmgFile);
 
 function ifNotDefault<T>(value: T, defaultValue: T): T | undefined {
   return value === defaultValue ? undefined : value;
@@ -188,10 +287,10 @@ function ifNotDefault<T>(value: T, defaultValue: T): T | undefined {
  * filter out invalid EquipParamWeapons like Fire Treespear, and is used as a special fake affinity
  * for filtering purposes.
  */
-function isUniqueWeapon(data: CsvRow["data"]) {
+function isUniqueWeapon(row: ParamRow) {
   // Consider a weapon unique if it can't have Ashes of War (e.g. torches, moonveil) or can't have
   // affinities selected when applying Ashes of War (e.g. bows)
-  return data.gemMountType === 0 || data.disableGemAttr === 1;
+  return row.gemMountType === 0 || row.disableGemAttr === 1;
 }
 
 const unobtainableWeapons = new Set(
@@ -269,13 +368,18 @@ function isSupportedWeaponType(wepType: number): wepType is WeaponType {
   return supportedWeaponTypes.has(wepType);
 }
 
-function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
-  if (!weaponNames.has(data.ID) || !name) {
-    debug(`No weapon title found for "${name}", ignoring`);
+function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
+  const name = weaponNames.get(row.id);
+  if (!name) {
+    debug(`No weapon title found for ${row.id}, ignoring`);
+    return null;
+  }
+  if (name.includes("[ERROR]") || name.includes("%null%")) {
+    debug(`Excluded weapon title "${name}" for ${row.id}, ignoring`);
     return null;
   }
 
-  const weaponType = wepTypeOverrides.get(data.ID) ?? data.wepType;
+  const weaponType = wepTypeOverrides.get(row.id) ?? row.wepType;
   if (!isSupportedWeaponType(weaponType)) {
     if (weaponType) {
       debug(`Unknown weapon type ${weaponType} on "${name}", ignoring`);
@@ -283,31 +387,34 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
     return null;
   }
 
-  if (unobtainableWeapons.has(data.ID)) {
+  if (unobtainableWeapons.has(row.id)) {
     return null;
   }
 
-  if (!reinforceParamWeapons.has(data.reinforceTypeId)) {
-    debug(`Unknown reinforceTypeId ${data.reinforceTypeId} on "${name}", ignoring`);
+  if (!reinforceParamWeapons.has(row.reinforceTypeId)) {
+    debug(`Unknown reinforceTypeId ${row.reinforceTypeId} on "${name}", ignoring`);
     return null;
   }
 
-  if (!attackElementCorrectParams.has(data.attackElementCorrectId)) {
-    debug(`Unknown AttackElementCorrectParam ${data.attackElementCorrectId} on "${name}, ignoring`);
+  if (!attackElementCorrectParams.has(row.attackElementCorrectId)) {
+    debug(`Unknown AttackElementCorrectParam ${row.attackElementCorrectId} on "${name}, ignoring`);
     return null;
   }
 
-  const affinityId = (data.ID % 10000) / 100;
-  const uninfusedWeapon = equipParamWeapons.get(data.ID - 100 * affinityId)!;
+  const affinityId = (row.id % 10000) / 100;
+  const uninfusedWeapon = equipParamWeapons.get(row.id - 100 * affinityId)!;
+  if (!uninfusedWeapon) {
+    throw new Error(`No uninfused weapon ${row.id - 100 * affinityId} for ${row.id} ${name}`);
+  }
 
   if (affinityId !== Math.floor(affinityId)) {
-    debug(`Unknown affinity for ID ${data.ID} on "${name}", ignoring`);
+    debug(`Unknown affinity for ID ${row.id} on "${name}", ignoring`);
     return null;
   }
 
   // Some weapons have infused versions in EquipParamWeapon even though ashes of war can't be
   // applied to them, e.g. Magic Great Club. Exclude these fake weapons from the list.
-  if (affinityId !== 0 && isUniqueWeapon(uninfusedWeapon.data)) {
+  if (affinityId !== 0 && isUniqueWeapon(uninfusedWeapon)) {
     debug(`Cannot apply affinity ${affinityId} on unique weapon "${name}", ignoring`);
     return null;
   }
@@ -315,9 +422,9 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
   const attackPowerTypes = new Set<AttackPowerType>();
 
   let statusSpEffectParamIds: number[] | undefined = [
-    data.spEffectBehaviorId0,
-    data.spEffectBehaviorId1,
-    data.spEffectBehaviorId2,
+    row.spEffectBehaviorId0,
+    row.spEffectBehaviorId1,
+    row.spEffectBehaviorId2,
   ];
 
   // Replace SpEffectParams that aren't relevant for status effects with 0, since they don't need
@@ -339,17 +446,17 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
 
   // Occult Fingerprint Stone Shield is bugged even though the data looks good.
   // Manually override this for now.
-  if (isVanilla && data.ID === 32131200) {
+  if (isVanilla && row.id === 32131200) {
     statusSpEffectParamIds = [0, 0, 0];
   }
 
   const attack: (readonly [AttackPowerType, number])[] = (
     [
-      [AttackPowerType.PHYSICAL, data.attackBasePhysics],
-      [AttackPowerType.MAGIC, data.attackBaseMagic],
-      [AttackPowerType.FIRE, data.attackBaseFire],
-      [AttackPowerType.LIGHTNING, data.attackBaseThunder],
-      [AttackPowerType.HOLY, data.attackBaseDark],
+      [AttackPowerType.PHYSICAL, row.attackBasePhysics],
+      [AttackPowerType.MAGIC, row.attackBaseMagic],
+      [AttackPowerType.FIRE, row.attackBaseFire],
+      [AttackPowerType.LIGHTNING, row.attackBaseThunder],
+      [AttackPowerType.HOLY, row.attackBaseDark],
     ] as const
   ).filter(([attackPowerType, attackPower]) => {
     if (attackPower) {
@@ -361,47 +468,47 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
 
   // Spell scaling uses the same correct graph as magic (staves) or holy (seals)
   let spellScalingCorrectType = -1;
-  if (data.enableMagic) {
-    spellScalingCorrectType = data.correctType_Magic;
-  } else if (data.enableMiracle) {
-    spellScalingCorrectType = data.correctType_Dark;
+  if (row.enableMagic) {
+    spellScalingCorrectType = row.correctType_Magic;
+  } else if (row.enableMiracle) {
+    spellScalingCorrectType = row.correctType_Dark;
   }
 
   const calcCorrectGraphIds = {
     [AttackPowerType.PHYSICAL]: ifNotDefault(
-      attackPowerTypes.has(AttackPowerType.PHYSICAL) ? data.correctType_Physics : undefined,
+      attackPowerTypes.has(AttackPowerType.PHYSICAL) ? row.correctType_Physics : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
     [AttackPowerType.MAGIC]: ifNotDefault(
-      attackPowerTypes.has(AttackPowerType.MAGIC) ? data.correctType_Magic : undefined,
+      attackPowerTypes.has(AttackPowerType.MAGIC) ? row.correctType_Magic : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
     [AttackPowerType.FIRE]: ifNotDefault(
-      attackPowerTypes.has(AttackPowerType.FIRE) ? data.correctType_Fire : undefined,
+      attackPowerTypes.has(AttackPowerType.FIRE) ? row.correctType_Fire : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
     [AttackPowerType.LIGHTNING]: ifNotDefault(
-      attackPowerTypes.has(AttackPowerType.LIGHTNING) ? data.correctType_Thunder : undefined,
+      attackPowerTypes.has(AttackPowerType.LIGHTNING) ? row.correctType_Thunder : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
     [AttackPowerType.HOLY]: ifNotDefault(
-      attackPowerTypes.has(AttackPowerType.HOLY) ? data.correctType_Dark : undefined,
+      attackPowerTypes.has(AttackPowerType.HOLY) ? row.correctType_Dark : undefined,
       defaultDamageCalcCorrectGraphId,
     ),
     [AttackPowerType.POISON]: ifNotDefault(
-      attackPowerTypes.has(AttackPowerType.POISON) ? data.correctType_Poison : undefined,
+      attackPowerTypes.has(AttackPowerType.POISON) ? row.correctType_Poison : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
     [AttackPowerType.BLEED]: ifNotDefault(
-      attackPowerTypes.has(AttackPowerType.BLEED) ? data.correctType_Blood : undefined,
+      attackPowerTypes.has(AttackPowerType.BLEED) ? row.correctType_Blood : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
     [AttackPowerType.SLEEP]: ifNotDefault(
-      attackPowerTypes.has(AttackPowerType.SLEEP) ? data.correctType_Sleep : undefined,
+      attackPowerTypes.has(AttackPowerType.SLEEP) ? row.correctType_Sleep : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
     [AttackPowerType.MADNESS]: ifNotDefault(
-      attackPowerTypes.has(AttackPowerType.MADNESS) ? data.correctType_Madness : undefined,
+      attackPowerTypes.has(AttackPowerType.MADNESS) ? row.correctType_Madness : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
     [AttackPowerType.SPELL_SCALING]: ifNotDefault(spellScalingCorrectType, -1),
@@ -415,152 +522,150 @@ function parseWeapon({ name, data }: CsvRow): EncodedWeaponJson | null {
   }
 
   return {
-    name: weaponNames.get(data.ID)!,
-    weaponName: weaponNames.get(uninfusedWeapon.data.ID)!,
-    url: urlOverrides.get(uninfusedWeapon.data.ID),
-    affinityId: isUniqueWeapon(data) ? -1 : affinityId,
+    name,
+    weaponName: weaponNames.get(uninfusedWeapon.id)!,
+    url: urlOverrides.get(uninfusedWeapon.id),
+    affinityId: isUniqueWeapon(row) ? -1 : affinityId,
     weaponType,
     requirements: {
-      str: ifNotDefault(data.properStrength, 0),
-      dex: ifNotDefault(data.properAgility, 0),
-      int: ifNotDefault(data.properMagic, 0),
-      fai: ifNotDefault(data.properFaith, 0),
-      arc: ifNotDefault(data.properLuck, 0),
+      str: ifNotDefault(row.properStrength, 0),
+      dex: ifNotDefault(row.properAgility, 0),
+      int: ifNotDefault(row.properMagic, 0),
+      fai: ifNotDefault(row.properFaith, 0),
+      arc: ifNotDefault(row.properLuck, 0),
     },
     attack,
     attributeScaling: (
       [
-        ["str", data.correctStrength / 100],
-        ["dex", data.correctAgility / 100],
-        ["int", data.correctMagic / 100],
-        ["fai", data.correctFaith / 100],
-        ["arc", data.correctLuck / 100],
+        ["str", row.correctStrength / 100],
+        ["dex", row.correctAgility / 100],
+        ["int", row.correctMagic / 100],
+        ["fai", row.correctFaith / 100],
+        ["arc", row.correctLuck / 100],
       ] as const
     ).filter(([, attributeScaling]) => attributeScaling),
     statusSpEffectParamIds,
-    reinforceTypeId: data.reinforceTypeId,
-    attackElementCorrectId: data.attackElementCorrectId,
+    reinforceTypeId: row.reinforceTypeId,
+    attackElementCorrectId: row.attackElementCorrectId,
     calcCorrectGraphIds,
-    paired: ifNotDefault(data.isDualBlade === 1, false),
-    sorceryTool: ifNotDefault(data.enableMagic === 1, false),
-    incantationTool: ifNotDefault(data.enableMiracle === 1, false),
+    paired: ifNotDefault(row.isDualBlade === 1, false),
+    sorceryTool: ifNotDefault(row.enableMagic === 1, false),
+    incantationTool: ifNotDefault(row.enableMiracle === 1, false),
   };
 }
 
-function parseCalcCorrectGraph({ data }: CsvRow): CalcCorrectGraph {
+function parseCalcCorrectGraph(row: ParamRow): CalcCorrectGraph {
   return [
     {
-      maxVal: data.stageMaxVal0,
-      maxGrowVal: data.stageMaxGrowVal0 / 100,
-      adjPt: data.adjPt_maxGrowVal0,
+      maxVal: row.stageMaxVal0,
+      maxGrowVal: row.stageMaxGrowVal0 / 100,
+      adjPt: row.adjPt_maxGrowVal0,
     },
     {
-      maxVal: data.stageMaxVal1,
-      maxGrowVal: data.stageMaxGrowVal1 / 100,
-      adjPt: data.adjPt_maxGrowVal1,
+      maxVal: row.stageMaxVal1,
+      maxGrowVal: row.stageMaxGrowVal1 / 100,
+      adjPt: row.adjPt_maxGrowVal1,
     },
     {
-      maxVal: data.stageMaxVal2,
-      maxGrowVal: data.stageMaxGrowVal2 / 100,
-      adjPt: data.adjPt_maxGrowVal2,
+      maxVal: row.stageMaxVal2,
+      maxGrowVal: row.stageMaxGrowVal2 / 100,
+      adjPt: row.adjPt_maxGrowVal2,
     },
     {
-      maxVal: data.stageMaxVal3,
-      maxGrowVal: data.stageMaxGrowVal3 / 100,
-      adjPt: data.adjPt_maxGrowVal3,
+      maxVal: row.stageMaxVal3,
+      maxGrowVal: row.stageMaxGrowVal3 / 100,
+      adjPt: row.adjPt_maxGrowVal3,
     },
     {
-      maxVal: data.stageMaxVal4,
-      maxGrowVal: data.stageMaxGrowVal4 / 100,
-      adjPt: data.adjPt_maxGrowVal4,
+      maxVal: row.stageMaxVal4,
+      maxGrowVal: row.stageMaxGrowVal4 / 100,
+      adjPt: row.adjPt_maxGrowVal4,
     },
   ];
 }
 
-function parseAttackElementCorrect({
-  data,
-}: CsvRow): Partial<Record<AttackPowerType, Attribute[]>> {
+function parseAttackElementCorrect(row: ParamRow): Partial<Record<AttackPowerType, Attribute[]>> {
   function attributeArray(...args: (Attribute | 0)[]) {
     const attributes = args.filter((attribute): attribute is Attribute => !!attribute);
     return attributes.length ? attributes : undefined;
   }
   return {
     [AttackPowerType.PHYSICAL]: attributeArray(
-      data.isStrengthCorrect_byPhysics && "str",
-      data.isDexterityCorrect_byPhysics && "dex",
-      data.isFaithCorrect_byPhysics && "fai",
-      data.isMagicCorrect_byPhysics && "int",
-      data.isLuckCorrect_byPhysics && "arc",
+      row.isStrengthCorrect_byPhysics && "str",
+      row.isDexterityCorrect_byPhysics && "dex",
+      row.isFaithCorrect_byPhysics && "fai",
+      row.isMagicCorrect_byPhysics && "int",
+      row.isLuckCorrect_byPhysics && "arc",
     ),
     [AttackPowerType.MAGIC]: attributeArray(
-      data.isStrengthCorrect_byMagic && "str",
-      data.isDexterityCorrect_byMagic && "dex",
-      data.isFaithCorrect_byMagic && "fai",
-      data.isMagicCorrect_byMagic && "int",
-      data.isLuckCorrect_byMagic && "arc",
+      row.isStrengthCorrect_byMagic && "str",
+      row.isDexterityCorrect_byMagic && "dex",
+      row.isFaithCorrect_byMagic && "fai",
+      row.isMagicCorrect_byMagic && "int",
+      row.isLuckCorrect_byMagic && "arc",
     ),
     [AttackPowerType.FIRE]: attributeArray(
-      data.isStrengthCorrect_byFire && "str",
-      data.isDexterityCorrect_byFire && "dex",
-      data.isFaithCorrect_byFire && "fai",
-      data.isMagicCorrect_byFire && "int",
-      data.isLuckCorrect_byFire && "arc",
+      row.isStrengthCorrect_byFire && "str",
+      row.isDexterityCorrect_byFire && "dex",
+      row.isFaithCorrect_byFire && "fai",
+      row.isMagicCorrect_byFire && "int",
+      row.isLuckCorrect_byFire && "arc",
     ),
     [AttackPowerType.LIGHTNING]: attributeArray(
-      data.isStrengthCorrect_byThunder && "str",
-      data.isDexterityCorrect_byThunder && "dex",
-      data.isFaithCorrect_byThunder && "fai",
-      data.isMagicCorrect_byThunder && "int",
-      data.isLuckCorrect_byThunder && "arc",
+      row.isStrengthCorrect_byThunder && "str",
+      row.isDexterityCorrect_byThunder && "dex",
+      row.isFaithCorrect_byThunder && "fai",
+      row.isMagicCorrect_byThunder && "int",
+      row.isLuckCorrect_byThunder && "arc",
     ),
     [AttackPowerType.HOLY]: attributeArray(
-      data.isStrengthCorrect_byDark && "str",
-      data.isDexterityCorrect_byDark && "dex",
-      data.isFaithCorrect_byDark && "fai",
-      data.isMagicCorrect_byDark && "int",
-      data.isLuckCorrect_byDark && "arc",
+      row.isStrengthCorrect_byDark && "str",
+      row.isDexterityCorrect_byDark && "dex",
+      row.isFaithCorrect_byDark && "fai",
+      row.isMagicCorrect_byDark && "int",
+      row.isLuckCorrect_byDark && "arc",
     ),
   };
 }
 
-function parseReinforceParamWeapon({ data }: CsvRow): ReinforceParamWeapon {
+function parseReinforceParamWeapon(row: ParamRow): ReinforceParamWeapon {
   return {
     attack: {
-      [AttackPowerType.PHYSICAL]: data.physicsAtkRate,
-      [AttackPowerType.MAGIC]: data.magicAtkRate,
-      [AttackPowerType.FIRE]: data.fireAtkRate,
-      [AttackPowerType.LIGHTNING]: data.thunderAtkRate,
-      [AttackPowerType.HOLY]: data.darkAtkRate,
+      [AttackPowerType.PHYSICAL]: row.physicsAtkRate,
+      [AttackPowerType.MAGIC]: row.magicAtkRate,
+      [AttackPowerType.FIRE]: row.fireAtkRate,
+      [AttackPowerType.LIGHTNING]: row.thunderAtkRate,
+      [AttackPowerType.HOLY]: row.darkAtkRate,
     },
     attributeScaling: {
-      str: data.correctStrengthRate,
-      dex: data.correctAgilityRate,
-      int: data.correctMagicRate,
-      fai: data.correctFaithRate,
-      arc: data.correctLuckRate,
+      str: row.correctStrengthRate,
+      dex: row.correctAgilityRate,
+      int: row.correctMagicRate,
+      fai: row.correctFaithRate,
+      arc: row.correctLuckRate,
     },
-    statusSpEffectId1: ifNotDefault(data.spEffectId1, 0),
-    statusSpEffectId2: ifNotDefault(data.spEffectId2, 0),
-    statusSpEffectId3: ifNotDefault(data.spEffectId3, 0),
+    statusSpEffectId1: ifNotDefault(row.spEffectId1, 0),
+    statusSpEffectId2: ifNotDefault(row.spEffectId2, 0),
+    statusSpEffectId3: ifNotDefault(row.spEffectId3, 0),
   };
 }
 
 function parseStatusSpEffectParams(
   statusSpEffectParamId: number,
 ): Partial<Record<AttackPowerType, number>> | null {
-  const spEffectParam = spEffectParams.get(statusSpEffectParamId);
-  if (!spEffectParam) {
+  const spEffectRow = spEffectParams.get(statusSpEffectParamId);
+  if (!spEffectRow) {
     return null;
   }
 
   const statuses = {
-    [AttackPowerType.POISON]: ifNotDefault(spEffectParam.data.poizonAttackPower, 0),
-    [AttackPowerType.SCARLET_ROT]: ifNotDefault(spEffectParam.data.diseaseAttackPower, 0),
-    [AttackPowerType.BLEED]: ifNotDefault(spEffectParam.data.bloodAttackPower, 0),
-    [AttackPowerType.FROST]: ifNotDefault(spEffectParam.data.freezeAttackPower, 0),
-    [AttackPowerType.SLEEP]: ifNotDefault(spEffectParam.data.sleepAttackPower, 0),
-    [AttackPowerType.MADNESS]: ifNotDefault(spEffectParam.data.madnessAttackPower, 0),
-    [AttackPowerType.DEATH_BLIGHT]: ifNotDefault(spEffectParam.data.curseAttackPower, 0),
+    [AttackPowerType.POISON]: ifNotDefault(spEffectRow.poizonAttackPower, 0),
+    [AttackPowerType.SCARLET_ROT]: ifNotDefault(spEffectRow.diseaseAttackPower, 0),
+    [AttackPowerType.BLEED]: ifNotDefault(spEffectRow.bloodAttackPower, 0),
+    [AttackPowerType.FROST]: ifNotDefault(spEffectRow.freezeAttackPower, 0),
+    [AttackPowerType.SLEEP]: ifNotDefault(spEffectRow.sleepAttackPower, 0),
+    [AttackPowerType.MADNESS]: ifNotDefault(spEffectRow.madnessAttackPower, 0),
+    [AttackPowerType.DEATH_BLIGHT]: ifNotDefault(spEffectRow.curseAttackPower, 0),
   };
 
   if (Object.values(statuses).some((value) => value !== undefined)) {
@@ -631,10 +736,10 @@ for (const spEffectParamId of spEffectParams.keys()) {
 }
 
 const scalingTiersJson: [number, string][] = [];
-for (const [id, { data }] of menuValueTableParams) {
+for (const [id, row] of menuValueTableParams) {
   // 1 = scaling labels
-  if (data.compareType === 1 && id >= 100) {
-    scalingTiersJson.push([data.value / 100, menuText.get(data.textId)!]);
+  if (row.compareType === 1 && id >= 100) {
+    scalingTiersJson.push([row.value / 100, menuText.get(row.textId)!]);
   }
 }
 
