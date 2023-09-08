@@ -53,13 +53,13 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
         >
           Elden Ring Reforged
         </Link>{" "}
-        mod v0.9.4
+        mod v0.9.5D
       </>
     ),
     affinityOptions: reforgedAffinityOptions,
     disableTwoHandingAttackPowerBonus: true,
     ineffectiveAttributePenalty: 0.5,
-    fetch: () => fetch(`/regulation-reforged-v0.9.4.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-reforged-v0.9.5D.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   convergence: {
     name: "The Convergence (mod)",
@@ -73,12 +73,12 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
         >
           The Convergence Mod
         </Link>{" "}
-        v1.3.1
+        v1.3.3
       </>
     ),
     affinityOptions: convergenceAffinityOptions,
     maxUpgradeLevel: maxSpecialUpgradeLevel,
-    fetch: () => fetch(`/regulation-convergence-v1.3.1.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-convergence-v1.3.3.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
 };
 
