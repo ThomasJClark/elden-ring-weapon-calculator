@@ -5,7 +5,6 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { AttackPowerType, type Weapon, type WeaponAttackResult } from "../../calculator/calculator";
 import type { SortBy } from "../../search/sortWeapons";
-import type { RegulationVersion } from "../regulationVersions";
 import getWeaponTableColumns from "./getWeaponTableColumns";
 import {
   WeaponTableBody,

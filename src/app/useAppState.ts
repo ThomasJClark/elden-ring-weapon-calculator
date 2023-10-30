@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { type Attribute, type Attributes, WeaponType } from "../calculator/calculator";
 import type { SortBy } from "../search/sortWeapons";
 import type { RegulationVersionName } from "./regulationVersions";
+import regulationVersions from "./regulationVersions";
 
 interface AppState {
   readonly regulationVersionName: RegulationVersionName;
@@ -58,25 +59,52 @@ const defaultAppState: AppState = {
 };
 
 /**
+ * @returns the initial state of the app, restored from localstorage and the URL if available
+ */
+function getInitialAppState() {
+  const appState = { ...defaultAppState };
+
+  try {
+    const storedAppState = localStorage.getItem("appState");
+    if (storedAppState) {
+      Object.assign(appState, JSON.parse(storedAppState));
+    }
+  } catch {
+    /* ignored */
+  }
+
+  const regulationVersionName = window.location.pathname.substring(1);
+  if (regulationVersionName && regulationVersionName in regulationVersions) {
+    appState.regulationVersionName = regulationVersionName as RegulationVersionName;
+  }
+
+  return appState;
+}
+
+/**
+ * Store the state of the app in localstorage and the URL so it can be restored on future visits
+ */
+function onAppStateChanged(appState: AppState) {
+  localStorage.setItem("appState", JSON.stringify(appState));
+
+  window.history.replaceState(
+    null,
+    "",
+    `/${appState.regulationVersionName === "latest" ? "" : appState.regulationVersionName}`,
+  );
+}
+
+/**
  * Manages all of the user selectable filters and display options, and saves/loads them in
  * localStorage for use on future page loads
  */
 export default function useAppState() {
   const [appState, setAppState] = useState<AppState>(() => {
-    try {
-      const value = localStorage.getItem("appState");
-      if (value) {
-        return { ...defaultAppState, ...JSON.parse(value) };
-      }
-    } catch {
-      /* ignored */
-    }
-
-    return defaultAppState;
+    return getInitialAppState();
   });
 
   useEffect(() => {
-    localStorage.setItem("appState", JSON.stringify(appState));
+    onAppStateChanged(appState);
   }, [appState]);
 
   const changeHandlers = useMemo<Omit<UpdateAppState, keyof AppState>>(
