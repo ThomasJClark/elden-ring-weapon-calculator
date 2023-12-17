@@ -166,10 +166,12 @@ const urlOverrides = new Map<number, string | null>([
         [1170000, "https://err.fandom.com/wiki/Nightmaiden%27s_Edge"], // Nightmaiden's Edge
         [2030000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Sun Realm Sword
         [2100000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Marionette Short Sword
+        [2120000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Broken Straight Sword
         [7130000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Red Wolf's Fang
         [7160000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Avionette Scimitar
         [8090000, "https://err.fandom.com/wiki/Fury_of_Azash"], // Fury of Azash
         [8110000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Makar's Ceremonial Cleaver
+        [10100000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Goldvine Branchstaff
         [12030000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Pumpkin Head Sledgehammer
         [14070000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Vulgar Militia Chain Sickle
         [16100000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Disciple's Rotten Branch
@@ -180,6 +182,9 @@ const urlOverrides = new Map<number, string | null>([
         [21050000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Nox Flowing Fist
         [22040000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Crude Iron Claws
         [11110000, "https://eldenring.fandom.com/Scepter_of_the_All-Knowing"], // Scepter of the All-Knowing Staff
+        [16140000, "https://eldenring.fandom.com/wiki/Spiked_Spear"], // Marionette Spiked Spear
+        [18140000, "https://eldenring.fandom.com/wiki/Dragon_Halberd"], // Dragonscale Halberd
+        [23150000, "https://eldenring.fandom.com/wiki/Rotten_Greataxe"], // Rotten Duelist Greataxe
         [33210000, "https://eldenring.fandom.com/Carian_Glintstone_Staff"], // Dark Glintstone Staff
       ] as const)
     : []),
@@ -298,6 +303,30 @@ const unobtainableWeapons = new Set(
     ? [
         1910000, // Reduvia (Esgar- Priest of Blood)
         11170000, // Gideon's Scepter of the All-Knowing
+        17080000, // Vyke's War Spear NXE
+        17080100, // Vyke's War Spear NXE [Heavy]
+        17080200, // Vyke's War Spear NXE [Keen]
+        17080300, // Vyke's War Spear NXE [Quality]
+        17080400, // Vyke's War Spear NXE [Fire]
+        17080500, // Vyke's War Spear NXE [Fell]
+        17080600, // Vyke's War Spear NXE [Lightning]
+        17080700, // Vyke's War Spear NXE [Sacred]
+        17080800, // Vyke's War Spear NXE [Magic]
+        17080900, // Vyke's War Spear NXE [Cold]
+        17081000, // Vyke's War Spear NXE [Poison]
+        17081100, // Vyke's War Spear NXE [Blood]
+        17081200, // Vyke's War Spear NXE [Occult]
+        17081300, // Vyke's War Spear NXE [Bolt]
+        17081400, // Vyke's War Spear NXE [Soporific]
+        17081500, // Vyke's War Spear NXE [Frenzied]
+        17081600, // Vyke's War Spear NXE [Magma]
+        17081700, // Vyke's War Spear NXE [Rotten]
+        17081800, // Vyke's War Spear NXE [Cursed]
+        17081900, // Vyke's War Spear NXE [Night]
+        17082000, // Vyke's War Spear NXE [Gravitational]
+        17082100, // Vyke's War Spear NXE [Blessed]
+        17082200, // Vyke's War Spear NXE [Bestial]
+        17082300, // Vyke's War Spear NXE [Fated]
       ]
     : // These aren't mentioned in the notes for the public alpha, likely WIP
     isConvergence
