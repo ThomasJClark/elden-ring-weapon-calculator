@@ -192,8 +192,10 @@ const urlOverrides = new Map<number, string | null>([
     ? ([
         [1120000, null], // Surgeon's Catlinger
         [1170000, null], // Midnight Dagger
+        [1180000, null], // Deathrite Dagger
         [2030000, null], // Yura's Kanabo
         [2100000, null], // Zephyr Blades
+        [2120000, null], // Blade of Valor
         [3110000, null], // Celestial Blade
         [3120000, null], // Sword of the Cyclops
         [3230000, null], // Sword of Hadea
@@ -208,6 +210,7 @@ const urlOverrides = new Map<number, string | null>([
         [7170000, null], // Matriarch's Shotel
         [7180000, null], // Nomad's Kilij
         [8090000, null], // Three Finger Blade
+        [9050000, null], // Star Shadow
         [10020000, null], // Sulien's Razors
         [10040000, null], // Frozen Twinshards
         [10060000, null], // Caimar's Battlestaff
@@ -217,6 +220,7 @@ const urlOverrides = new Map<number, string | null>([
         [10110000, null], // Gilded Quarterstaff
         [11020000, null], // Leaden Maul
         [11160000, null], // Zamor Star Mace
+        [11180000, null], // Hammer of Virtue
         [12030000, null], // Underworld Greatmace
         [12040000, null], // Crimson Briar-Bough
         [12070000, null], // Sigur's Greatmace
@@ -226,11 +230,14 @@ const urlOverrides = new Map<number, string | null>([
         [14090000, null], // Axe of Epiphany
         [14130000, null], // Axe of Fell Prophecy
         [14150000, null], // Bloodhound Hookblade
+        [14160000, null], // Rimeheart
         [15090000, null], // Axe of Rust
         [16100000, null], // Spear of Tranquility
         [18120000, null], // Glaive of the Ancients
         [18170000, null], // Reaver's Odachi
         [19040000, null], // War Scythe
+        [19050000, null], // Rosus' Harvester
+        [21020000, null], // Daergraf's Opus
         [22040000, null], // Stone Claws
         [23160000, null], // Lodestone of Gelmir
         [30300000, null], // Crest of the Dragon Cult
@@ -258,6 +265,7 @@ const urlOverrides = new Map<number, string | null>([
         [2150000, "https://eldenring.fandom.com/Crystal_Sword"], // Molten Sword
         [2200000, "https://eldenring.fandom.com/Miquellan_Knight's_Sword"], // Fell Flame Sword
         [2250000, "https://eldenring.fandom.com/Lazuli_Glintstone_Sword"], // Dragonkin Seeker Sword
+        [3070000, "https://eldenring.fandom.com/Alabaster_Lord's_Sword"], // Alabaster Lord's Greatsword
         [18110000, "https://eldenring.fandom.com/Guardian's_Swordspear"], // Guardian Spearblade
         [18140000, "https://eldenring.fandom.com/Dragon_Halberd"], // Dragonkin Halberd
         [33050000, "https://eldenring.fandom.com/Gelmir_Glintstone_Staff"], // Gelmir Lava Staff
