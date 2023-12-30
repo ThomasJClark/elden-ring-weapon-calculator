@@ -241,6 +241,7 @@ const urlOverrides = new Map<number, string | null>([
         [22040000, null], // Stone Claws
         [23160000, null], // Lodestone of Gelmir
         [30300000, null], // Crest of the Dragon Cult
+        [33060000, null], // Blighted Branch
         [33290000, null], // Dragonkin Scepter
         [33300000, null], // Ranni's Staff
         [33310000, null], // Snow Witch Staff
@@ -269,7 +270,6 @@ const urlOverrides = new Map<number, string | null>([
         [18110000, "https://eldenring.fandom.com/Guardian's_Swordspear"], // Guardian Spearblade
         [18140000, "https://eldenring.fandom.com/Dragon_Halberd"], // Dragonkin Halberd
         [33050000, "https://eldenring.fandom.com/Gelmir_Glintstone_Staff"], // Gelmir Lava Staff
-        [33060000, "https://eldenring.fandom.com/Demi-Human_Queen's_Staff"], // Blighted Branch
         [33200000, "https://eldenring.fandom.com/Academy_Glintstone_Staff"], // Dragon Student Staff
         [33240000, "https://eldenring.fandom.com/Lusat's_Glintstone_Staff"], // Lusat's Night Staff
       ] as const)
