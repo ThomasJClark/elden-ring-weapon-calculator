@@ -154,7 +154,7 @@ function readParam(filename: string): Map<number, ParamRow> {
  * Parse an XML fmg file extracted by unpackFiles(), which contains translation strings displayed
  * in the game
  */
-function readFmgJson(filename: string): Map<number, string | null> {
+function readFmgXml(filename: string): Map<number, string | null> {
   const data = xmlParser.parse(readFileSync(`${filename}.xml`, "utf-8"));
   return new Map(data.fmg.entries.text.map((entry: any) => [entry.id, entry["#text"]]));
 }
@@ -288,8 +288,8 @@ const equipParamWeapons = readParam(equipParamWeaponFile);
 const reinforceParamWeapons = readParam(reinforceParamWeaponFile);
 const spEffectParams = readParam(spEffectFile);
 const menuValueTableParams = readParam(menuValueTableFile);
-const menuText = readFmgJson(menuTextFmgFile);
-const weaponNames = readFmgJson(weaponNameFmgFile);
+const menuText = readFmgXml(menuTextFmgFile);
+const weaponNames = readFmgXml(weaponNameFmgFile);
 
 function ifNotDefault<T>(value: T, defaultValue: T): T | undefined {
   return value === defaultValue ? undefined : value;
@@ -336,11 +336,22 @@ const unobtainableWeapons = new Set(
         17082200, // Vyke's War Spear NXE [Bestial]
         17082300, // Vyke's War Spear NXE [Fated]
       ]
-    : // These aren't mentioned in the notes for the public alpha, likely WIP
-    isConvergence
+    : isConvergence
     ? [
+        // These aren't mentioned in the notes for the public alpha, likely WIP
         6050000, // Estoc of the Serpent Priest
         19030000, // Moon Breaker Scythe
+
+        // Removed vanilla catalysts
+        33040000, // Crystal Staff
+        33090000, // Carian Regal Scepter
+        33130000, // Astrologer's Staff
+        33170000, // Carian Glintblade Staff
+        33190000, // Albinauric Staff
+        33210000, // Carian Glintstone Staff
+        33270000, // Rotten Crystal Staff
+        34070000, // Erdtree Seal
+        34080000, // Dragon Communion Seal
       ]
     : [],
 );
