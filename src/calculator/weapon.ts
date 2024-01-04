@@ -73,4 +73,13 @@ export interface Weapon {
    * hardcoded for all weapons because it can be changed by mods.
    */
   scalingTiers: [number, string][];
+
+  /**
+   * Convergence-specific sorcery/incantation catalyst data. The Convergence uses a system of
+   * affinities and tiers instead of spell casting.
+   */
+  convergenceData?: {
+    spellAffinity: string;
+    spellTier: number;
+  };
 }

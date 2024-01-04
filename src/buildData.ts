@@ -88,6 +88,7 @@ const reinforceParamWeaponFile = join(tmpDir, "regulation-bin", "ReinforceParamW
 const spEffectFile = join(tmpDir, "regulation-bin", "SpEffectParam.param");
 const menuValueTableFile = join(tmpDir, "regulation-bin", "MenuValueTableParam.param");
 const weaponNameFmgFile = join(tmpDir, "item-msgbnd-dcx", "WeaponName.fmg");
+const weaponCaptionFmgFile = join(tmpDir, "item-msgbnd-dcx", "WeaponCaption.fmg");
 const menuTextFmgFile = join(tmpDir, "menu-msgbnd-dcx", "GR_MenuText.fmg");
 
 /**
@@ -116,6 +117,7 @@ function unpackFiles() {
       menuValueTableFile,
       itemMsgFile,
       weaponNameFmgFile,
+      weaponCaptionFmgFile,
       menuMsgFile,
       menuTextFmgFile,
     ],
@@ -290,6 +292,7 @@ const spEffectParams = readParam(spEffectFile);
 const menuValueTableParams = readParam(menuValueTableFile);
 const menuText = readFmgXml(menuTextFmgFile);
 const weaponNames = readFmgXml(weaponNameFmgFile);
+const weaponCaptions = readFmgXml(weaponCaptionFmgFile);
 
 function ifNotDefault<T>(value: T, defaultValue: T): T | undefined {
   return value === defaultValue ? undefined : value;
@@ -342,7 +345,7 @@ const unobtainableWeapons = new Set(
         6050000, // Estoc of the Serpent Priest
         19030000, // Moon Breaker Scythe
 
-        // Removed vanilla catalysts
+        // Removed vanilla
         33040000, // Crystal Staff
         33090000, // Carian Regal Scepter
         33130000, // Astrologer's Staff
@@ -514,12 +517,29 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     return false;
   });
 
-  // Spell scaling uses the same correct graph as magic (staves) or holy (seals)
   let spellScalingCorrectType = -1;
-  if (row.enableMagic) {
-    spellScalingCorrectType = row.correctType_Magic;
-  } else if (row.enableMiracle) {
-    spellScalingCorrectType = row.correctType_Dark;
+  let convergenceData: EncodedWeaponJson["convergenceData"];
+
+  if (row.enableMagic || row.enableMiracle) {
+    if (isConvergence) {
+      // Convergence doesn't use spell scaling. Add Convergence affinity info, which can be
+      // extracted from the item description.
+      const line = weaponCaptions.get(row.id)!.split("\n")[1];
+      const match = line.match(/^(Lesser|Greater) (.*) Affinity$/);
+      if (match) {
+        convergenceData = {
+          spellTier: match[1] === "Lesser" ? 1 : 2,
+          spellAffinity: match[2],
+        };
+      }
+    } else {
+      // Spell scaling uses the same correct graph as magic (staves) or holy (seals)
+      if (row.enableMagic) {
+        spellScalingCorrectType = row.correctType_Magic;
+      } else if (row.enableMiracle) {
+        spellScalingCorrectType = row.correctType_Dark;
+      }
+    }
   }
 
   const calcCorrectGraphIds = {
@@ -599,6 +619,7 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     paired: ifNotDefault(row.isDualBlade === 1, false),
     sorceryTool: ifNotDefault(row.enableMagic === 1, false),
     incantationTool: ifNotDefault(row.enableMiracle === 1, false),
+    convergenceData,
   };
 }
 

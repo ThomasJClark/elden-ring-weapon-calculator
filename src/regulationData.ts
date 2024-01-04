@@ -66,6 +66,7 @@ export interface EncodedWeaponJson {
   paired?: boolean;
   sorceryTool?: boolean;
   incantationTool?: boolean;
+  convergenceData?: Weapon["convergenceData"];
 }
 
 /**
