@@ -183,16 +183,49 @@ const requirementColumns = allAttributes.map(
   }),
 );
 
+const convergenceSpellAffinityColumn: WeaponTableColumnDef = {
+  key: "convergenceSpellAffinity",
+  sortBy: "convergenceSpellAffinity",
+  header: (
+    <Typography component="span" variant="subtitle2">
+      Affinity
+    </Typography>
+  ),
+  sx: {
+    flex: "0 0 138px",
+    textAlign: "left",
+    justifyContent: "start",
+  },
+  render([{ convergenceData }]) {
+    return convergenceData?.spellAffinity ?? blankIcon;
+  },
+};
+
+const convergenceSpellTierColumn: WeaponTableColumnDef = {
+  key: "convergenceSpellTier",
+  sortBy: "convergenceSpellTier",
+  header: (
+    <Typography component="span" variant="subtitle2">
+      Tier
+    </Typography>
+  ),
+  render([{ convergenceData }]) {
+    return convergenceData?.spellTier ?? blankIcon;
+  },
+};
+
 interface WeaponTableColumnsOptions {
   splitDamage: boolean;
   numericalScaling: boolean;
   attackPowerTypes: ReadonlySet<AttackPowerType>;
+  includeConvergenceSpellData: boolean;
 }
 
 export default function getWeaponTableColumns({
   splitDamage,
   numericalScaling,
   attackPowerTypes,
+  includeConvergenceSpellData,
 }: WeaponTableColumnsOptions): WeaponTableColumnGroupDef[] {
   const includeSpellScaling = attackPowerTypes.has(AttackPowerType.SPELL_SCALING);
   const includedStatusTypes = allStatusTypes.filter((statusType) =>
@@ -213,6 +246,18 @@ export default function getWeaponTableColumns({
               width: 128,
             },
             columns: [attackColumns[AttackPowerType.SPELL_SCALING]],
+          },
+        ]
+      : []),
+    ...(includeConvergenceSpellData
+      ? [
+          {
+            key: "spellScaling",
+            header: "Spellcasting Power",
+            sx: {
+              width: 200,
+            },
+            columns: [convergenceSpellAffinityColumn, convergenceSpellTierColumn],
           },
         ]
       : []),

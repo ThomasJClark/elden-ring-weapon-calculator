@@ -215,7 +215,7 @@ export function decodeRegulationData({
         });
 
         // Spell scaling is displayed as a percent (i.e. as if the base damage were 100)
-        if (weapon.sorceryTool || weapon.incantationTool) {
+        if ((weapon.sorceryTool || weapon.incantationTool) && !weapon.convergenceData?.spellTier) {
           attackAtUpgradeLevel[AttackPowerType.SPELL_SCALING] = 100;
         }
 

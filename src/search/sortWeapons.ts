@@ -7,7 +7,9 @@ export type SortBy =
   | "totalAttack"
   | `${AttackPowerType}Attack`
   | `${Attribute}Scaling`
-  | `${Attribute}Requirement`;
+  | `${Attribute}Requirement`
+  | "convergenceSpellAffinity"
+  | "convergenceSpellTier";
 
 /**
  * Sort and paginate a filtered list of weapons for display in the weapon table
@@ -40,6 +42,16 @@ export function sortWeapons(
     if (sortBy.endsWith("Requirement")) {
       const attribute = sortBy.slice(0, -1 * "Requirement".length) as Attribute;
       return ([weapon]) => -(weapon.requirements[attribute] ?? 0);
+    }
+
+    if (sortBy === "convergenceSpellAffinity") {
+      return ([{ convergenceData }]) =>
+        (convergenceData?.spellAffinity ?? " ") + (1 - (convergenceData?.spellTier ?? 0));
+    }
+
+    if (sortBy === "convergenceSpellTier") {
+      return ([{ convergenceData }]) =>
+        1 - (convergenceData?.spellTier ?? 0) + (convergenceData?.spellAffinity ?? " ");
     }
 
     return () => "";

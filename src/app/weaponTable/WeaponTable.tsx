@@ -189,9 +189,20 @@ function WeaponTable({
   onSortByChanged,
   onReverseChanged,
 }: Props) {
+  const includeConvergenceSpellData = useMemo(
+    () => rowGroups.some(({ rows }) => rows.some(([weapon]) => weapon.convergenceData?.spellTier)),
+    [rowGroups],
+  );
+
   const columnGroups = useMemo(
-    () => getWeaponTableColumns({ splitDamage, numericalScaling, attackPowerTypes }),
-    [splitDamage, numericalScaling, attackPowerTypes],
+    () =>
+      getWeaponTableColumns({
+        splitDamage,
+        numericalScaling,
+        attackPowerTypes,
+        includeConvergenceSpellData,
+      }),
+    [splitDamage, numericalScaling, attackPowerTypes, includeConvergenceSpellData],
   );
 
   return (
