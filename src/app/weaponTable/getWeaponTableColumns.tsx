@@ -109,14 +109,6 @@ const totalAttackPowerColumn: WeaponTableColumnDef = {
   },
 };
 
-const noStatusEffectsColumn: WeaponTableColumnDef = {
-  key: "noStatusEffects",
-  header: null,
-  render() {
-    return blankIcon;
-  },
-};
-
 const scalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => ({
   key: `${attribute}Scaling`,
   sortBy: `${attribute}Scaling`,
@@ -280,17 +272,18 @@ export default function getWeaponTableColumns({
           },
           columns: [totalAttackPowerColumn],
         },
-    {
-      key: "statusEffects",
-      sx: {
-        width: Math.max(40 * includedStatusTypes.length + 21, 141),
-      },
-      header: "Status Effects",
-      columns:
-        includedStatusTypes.length > 0
-          ? includedStatusTypes.map((statusType) => attackColumns[statusType])
-          : [noStatusEffectsColumn],
-    },
+    ...(includedStatusTypes.length > 0
+      ? [
+          {
+            key: "statusEffects",
+            sx: {
+              width: Math.max(40 * includedStatusTypes.length + 21, 141),
+            },
+            header: "Status Effects",
+            columns: includedStatusTypes.map((statusType) => attackColumns[statusType]),
+          },
+        ]
+      : []),
     {
       key: "scaling",
       sx: {
