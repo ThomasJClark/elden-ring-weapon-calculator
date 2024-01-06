@@ -12,8 +12,6 @@ export const enum AttackPowerType {
   SLEEP = 9,
   MADNESS = 10,
   DEATH_BLIGHT = 11,
-
-  SPELL_SCALING = 12,
 }
 
 export const allDamageTypes = [
@@ -34,8 +32,4 @@ export const allStatusTypes = [
   AttackPowerType.DEATH_BLIGHT,
 ];
 
-export const allAttackPowerTypes = [
-  ...allDamageTypes,
-  ...allStatusTypes,
-  AttackPowerType.SPELL_SCALING,
-];
+export const allAttackPowerTypes = [...allDamageTypes, ...allStatusTypes];

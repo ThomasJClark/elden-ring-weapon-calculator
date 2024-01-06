@@ -10,7 +10,12 @@ import { tmpdir } from "node:os";
 import makeDebug from "debug";
 import dotenv from "dotenv";
 import { XMLParser } from "fast-xml-parser";
-import { type Attribute, WeaponType, AttackPowerType } from "./calculator/calculator";
+import {
+  type Attribute,
+  WeaponType,
+  AttackPowerType,
+  allDamageTypes,
+} from "./calculator/calculator";
 import {
   type EncodedWeaponJson,
   type EncodedRegulationDataJson,
@@ -88,7 +93,6 @@ const reinforceParamWeaponFile = join(tmpDir, "regulation-bin", "ReinforceParamW
 const spEffectFile = join(tmpDir, "regulation-bin", "SpEffectParam.param");
 const menuValueTableFile = join(tmpDir, "regulation-bin", "MenuValueTableParam.param");
 const weaponNameFmgFile = join(tmpDir, "item-msgbnd-dcx", "WeaponName.fmg");
-const weaponCaptionFmgFile = join(tmpDir, "item-msgbnd-dcx", "WeaponCaption.fmg");
 const menuTextFmgFile = join(tmpDir, "menu-msgbnd-dcx", "GR_MenuText.fmg");
 
 /**
@@ -117,7 +121,6 @@ function unpackFiles() {
       menuValueTableFile,
       itemMsgFile,
       weaponNameFmgFile,
-      weaponCaptionFmgFile,
       menuMsgFile,
       menuTextFmgFile,
     ],
@@ -292,7 +295,6 @@ const spEffectParams = readParam(spEffectFile);
 const menuValueTableParams = readParam(menuValueTableFile);
 const menuText = readFmgXml(menuTextFmgFile);
 const weaponNames = readFmgXml(weaponNameFmgFile);
-const weaponCaptions = readFmgXml(weaponCaptionFmgFile);
 
 function ifNotDefault<T>(value: T, defaultValue: T): T | undefined {
   return value === defaultValue ? undefined : value;
@@ -517,29 +519,11 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     return false;
   });
 
-  let spellScalingCorrectType = -1;
-  let convergenceData: EncodedWeaponJson["convergenceData"];
-
+  // Spells use a CalcCorrectGraph based on the type of damage they deal. These are normally the
+  // same, but The Convergence has different CalcCorrectGraphs to give spell tools varying
+  // effectiveness with different damage types.
   if (row.enableMagic || row.enableMiracle) {
-    if (isConvergence) {
-      // Convergence doesn't use spell scaling. Add Convergence affinity info, which can be
-      // extracted from the item description.
-      const line = weaponCaptions.get(row.id)!.split("\n")[1];
-      const match = line.match(/^(Lesser|Greater) (.*) Affinity$/);
-      if (match) {
-        convergenceData = {
-          spellTier: match[1] === "Lesser" ? 1 : 2,
-          spellAffinity: match[2],
-        };
-      }
-    } else {
-      // Spell scaling uses the same correct graph as magic (staves) or holy (seals)
-      if (row.enableMagic) {
-        spellScalingCorrectType = row.correctType_Magic;
-      } else if (row.enableMiracle) {
-        spellScalingCorrectType = row.correctType_Dark;
-      }
-    }
+    allDamageTypes.forEach((damageType) => attackPowerTypes.add(damageType));
   }
 
   const calcCorrectGraphIds = {
@@ -579,7 +563,6 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
       attackPowerTypes.has(AttackPowerType.MADNESS) ? row.correctType_Madness : undefined,
       defaultStatusCalcCorrectGraphId,
     ),
-    [AttackPowerType.SPELL_SCALING]: ifNotDefault(spellScalingCorrectType, -1),
   };
 
   for (const calcCorrectGraphId of Object.values(calcCorrectGraphIds)) {
@@ -619,7 +602,6 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     paired: ifNotDefault(row.isDualBlade === 1, false),
     sorceryTool: ifNotDefault(row.enableMagic === 1, false),
     incantationTool: ifNotDefault(row.enableMiracle === 1, false),
-    convergenceData,
   };
 }
 

@@ -66,7 +66,6 @@ export interface EncodedWeaponJson {
   paired?: boolean;
   sorceryTool?: boolean;
   incantationTool?: boolean;
-  convergenceData?: Weapon["convergenceData"];
 }
 
 /**
@@ -135,9 +134,6 @@ export function decodeRegulationData({
         [AttackPowerType.BLEED]: ["arc"],
         [AttackPowerType.MADNESS]: ["arc"],
         [AttackPowerType.SLEEP]: ["arc"],
-
-        // Spell scaling uses the same scaling as magic damage
-        [AttackPowerType.SPELL_SCALING]: attackElementCorrect?.[AttackPowerType.MAGIC],
       },
     ]),
   );
@@ -187,9 +183,6 @@ export function decodeRegulationData({
           calcCorrectGraphIds?.[statusType] ?? defaultStatusCalcCorrectGraphId,
         );
       });
-      weaponCalcCorrectGraphs[AttackPowerType.SPELL_SCALING] = getCalcCorrectGraph(
-        calcCorrectGraphIds?.[AttackPowerType.SPELL_SCALING] ?? defaultDamageCalcCorrectGraphId,
-      );
 
       // Using the base unupgraded attack and ReinforceParamWeapon for this weapon, calculate the
       // base attack at each upgrade level
@@ -213,11 +206,6 @@ export function decodeRegulationData({
             Object.assign(attackAtUpgradeLevel, statusSpEffectParam);
           }
         });
-
-        // Spell scaling is displayed as a percent (i.e. as if the base damage were 100)
-        if ((weapon.sorceryTool || weapon.incantationTool) && !weapon.convergenceData?.spellTier) {
-          attackAtUpgradeLevel[AttackPowerType.SPELL_SCALING] = 100;
-        }
 
         return attackAtUpgradeLevel;
       });

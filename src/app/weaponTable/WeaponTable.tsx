@@ -5,6 +5,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { AttackPowerType, type Weapon, type WeaponAttackResult } from "../../calculator/calculator";
 import type { SortBy } from "../../search/sortWeapons";
+import type { RegulationVersion } from "../regulationVersions";
 import getWeaponTableColumns from "./getWeaponTableColumns";
 import {
   WeaponTableBody,
@@ -53,6 +54,11 @@ interface Props {
   splitDamage: boolean;
 
   /**
+   * If true, include columns for each individual damage type for Spell Scaling
+   */
+  splitSpellScaling: boolean;
+
+  /**
    * If true, show scaling as integers instead of S/A/B/C/D/E ranks
    */
   numericalScaling: boolean;
@@ -61,6 +67,11 @@ interface Props {
    * Attack power types that must be included as columns in the table
    */
   attackPowerTypes: ReadonlySet<AttackPowerType>;
+
+  /**
+   * Include spell scaling columns in the table
+   */
+  spellScaling: boolean;
 
   onSortByChanged(sortBy: SortBy): void;
   onReverseChanged(reverse: boolean): void;
@@ -184,25 +195,23 @@ function WeaponTable({
   sortBy,
   reverse,
   splitDamage,
+  splitSpellScaling,
   numericalScaling,
   attackPowerTypes,
+  spellScaling,
   onSortByChanged,
   onReverseChanged,
 }: Props) {
-  const includeConvergenceSpellData = useMemo(
-    () => rowGroups.some(({ rows }) => rows.some(([weapon]) => weapon.convergenceData?.spellTier)),
-    [rowGroups],
-  );
-
   const columnGroups = useMemo(
     () =>
       getWeaponTableColumns({
         splitDamage,
+        splitSpellScaling,
         numericalScaling,
         attackPowerTypes,
-        includeConvergenceSpellData,
+        spellScaling,
       }),
-    [splitDamage, numericalScaling, attackPowerTypes, includeConvergenceSpellData],
+    [splitDamage, splitSpellScaling, numericalScaling, attackPowerTypes, spellScaling],
   );
 
   return (

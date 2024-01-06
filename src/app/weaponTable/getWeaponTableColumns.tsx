@@ -15,7 +15,6 @@ import {
 } from "../uiUtils";
 import type { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
 import {
-  blankIcon,
   WeaponNameRenderer,
   ScalingRenderer,
   AttributeRequirementRenderer,
@@ -68,6 +67,59 @@ const attackColumns = Object.fromEntries(
     },
   ]),
 ) as Record<AttackPowerType, WeaponTableColumnDef>;
+
+const splitSpellScalingColumns: WeaponTableColumnDef[] = allDamageTypes.map((damageType) => ({
+  key: `${damageType}SpellScaling`,
+  sortBy: `${damageType}SpellScaling`,
+  header: damageTypeIcons.has(damageType) ? (
+    <img
+      src={damageTypeIcons.get(damageType)!}
+      alt={damageTypeLabels.get(damageType)!}
+      title={damageTypeLabels.get(damageType)!}
+      width={24}
+      height={24}
+    />
+  ) : (
+    <Typography component="span" variant="subtitle2">
+      {damageTypeLabels.get(damageType)}
+    </Typography>
+  ),
+  render([, { spellScaling, ineffectiveAttackPowerTypes }]) {
+    return (
+      <AttackPowerRenderer
+        value={spellScaling?.[damageType]}
+        ineffective={ineffectiveAttackPowerTypes.includes(damageType)}
+      />
+    );
+  },
+}));
+
+const spellScalingColumn: WeaponTableColumnDef = {
+  key: "spellScaling",
+  sortBy: `${AttackPowerType.MAGIC}SpellScaling`,
+  header: (
+    <Typography component="span" variant="subtitle2">
+      Spell scaling
+    </Typography>
+  ),
+  render([weapon, { spellScaling, ineffectiveAttackPowerTypes }]) {
+    let attackPowerType: AttackPowerType | undefined;
+    if (weapon.sorceryTool) {
+      attackPowerType = AttackPowerType.MAGIC;
+    } else if (weapon.incantationTool) {
+      attackPowerType = AttackPowerType.HOLY;
+    }
+
+    return (
+      <AttackPowerRenderer
+        value={attackPowerType != null ? spellScaling?.[attackPowerType] : undefined}
+        ineffective={
+          attackPowerType != null && ineffectiveAttackPowerTypes.includes(attackPowerType)
+        }
+      />
+    );
+  },
+};
 
 const totalSplitAttackPowerColumn: WeaponTableColumnDef = {
   key: "totalAttack",
@@ -175,54 +227,46 @@ const requirementColumns = allAttributes.map(
   }),
 );
 
-const convergenceSpellAffinityColumn: WeaponTableColumnDef = {
-  key: "convergenceSpellAffinity",
-  sortBy: "convergenceSpellAffinity",
-  header: (
-    <Typography component="span" variant="subtitle2">
-      Affinity
-    </Typography>
-  ),
-  sx: {
-    flex: "0 0 138px",
-    textAlign: "left",
-    justifyContent: "start",
-  },
-  render([{ convergenceData }]) {
-    return convergenceData?.spellAffinity ?? blankIcon;
-  },
-};
-
-const convergenceSpellTierColumn: WeaponTableColumnDef = {
-  key: "convergenceSpellTier",
-  sortBy: "convergenceSpellTier",
-  header: (
-    <Typography component="span" variant="subtitle2">
-      Tier
-    </Typography>
-  ),
-  render([{ convergenceData }]) {
-    return convergenceData?.spellTier ?? blankIcon;
-  },
-};
-
 interface WeaponTableColumnsOptions {
   splitDamage: boolean;
+  splitSpellScaling: boolean;
   numericalScaling: boolean;
   attackPowerTypes: ReadonlySet<AttackPowerType>;
-  includeConvergenceSpellData: boolean;
+  spellScaling: boolean;
 }
 
 export default function getWeaponTableColumns({
   splitDamage,
+  splitSpellScaling,
   numericalScaling,
   attackPowerTypes,
-  includeConvergenceSpellData,
+  spellScaling,
 }: WeaponTableColumnsOptions): WeaponTableColumnGroupDef[] {
-  const includeSpellScaling = attackPowerTypes.has(AttackPowerType.SPELL_SCALING);
   const includedStatusTypes = allStatusTypes.filter((statusType) =>
     attackPowerTypes.has(statusType),
   );
+
+  let spellScalingColumnGroup: WeaponTableColumnGroupDef | undefined;
+  if (spellScaling) {
+    if (splitSpellScaling) {
+      spellScalingColumnGroup = {
+        key: "spellScaling",
+        sx: {
+          width: 40 * splitSpellScalingColumns.length + 27,
+        },
+        header: "Spell Scaling",
+        columns: splitSpellScalingColumns,
+      };
+    } else {
+      spellScalingColumnGroup = {
+        key: "spellScaling",
+        sx: {
+          width: 128,
+        },
+        columns: [spellScalingColumn],
+      };
+    }
+  }
 
   return [
     {
@@ -230,34 +274,12 @@ export default function getWeaponTableColumns({
       sx: { flex: 1, minWidth: 320 },
       columns: [nameColumn],
     },
-    ...(includeSpellScaling
-      ? [
-          {
-            key: "spellScaling",
-            sx: {
-              width: 128,
-            },
-            columns: [attackColumns[AttackPowerType.SPELL_SCALING]],
-          },
-        ]
-      : []),
-    ...(includeConvergenceSpellData
-      ? [
-          {
-            key: "spellScaling",
-            header: "Spellcasting Power",
-            sx: {
-              width: 200,
-            },
-            columns: [convergenceSpellAffinityColumn, convergenceSpellTierColumn],
-          },
-        ]
-      : []),
+    ...(spellScalingColumnGroup ? [spellScalingColumnGroup] : []),
     splitDamage
       ? {
           key: "attack",
           sx: {
-            width: 40 * (allDamageTypes.length + 1) + 21,
+            width: 40 * (allDamageTypes.length + 1) + 27,
           },
           header: "Attack Power",
           columns: [

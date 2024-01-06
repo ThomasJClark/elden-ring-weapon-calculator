@@ -28,6 +28,11 @@ export interface RegulationVersion {
   maxUpgradeLevel?: number;
 
   /**
+   * The Convergence mod has separate spell scaling for each damage type
+   */
+  splitSpellScaling?: boolean;
+
+  /**
    * Elden Ring Reforged changes the penalty for not having the required attributes for a weapon
    */
   ineffectiveAttributePenalty?: number;
@@ -78,6 +83,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
     ),
     affinityOptions: convergenceAffinityOptions,
     maxUpgradeLevel: maxSpecialUpgradeLevel,
+    splitSpellScaling: true,
     fetch: () => fetch(`/regulation-convergence-v1.4.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
 };

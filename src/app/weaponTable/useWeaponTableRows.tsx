@@ -40,6 +40,9 @@ interface WeaponTableRowsResult {
   /** Attack power types included in at least one weapon in the filtered results */
   attackPowerTypes: ReadonlySet<AttackPowerType>;
 
+  /**True if at least one weapon in the filtered results can cast spells */
+  spellScaling: boolean;
+
   total: number;
 }
 
@@ -79,10 +82,11 @@ const useWeaponTableRows = ({
     return tmp;
   }, [weapons]);
 
-  const [filteredRows, attackPowerTypes] = useMemo<
-    [WeaponTableRowData[], Set<AttackPowerType>]
+  const [filteredRows, attackPowerTypes, spellScaling] = useMemo<
+    [WeaponTableRowData[], Set<AttackPowerType>, boolean]
   >(() => {
     const includedDamageTypes = new Set<AttackPowerType>();
+    let includeSpellScaling = false;
 
     const filteredWeapons = filterWeapons(weapons, {
       weaponTypes: new Set(weaponTypes.filter((weaponType) => allWeaponTypes.includes(weaponType))),
@@ -117,10 +121,14 @@ const useWeaponTableRows = ({
         }
       }
 
+      if (weapon.sorceryTool || weapon.incantationTool) {
+        includeSpellScaling = true;
+      }
+
       return [weapon, weaponAttackResult];
     });
 
-    return [rows, includedDamageTypes];
+    return [rows, includedDamageTypes, includeSpellScaling];
   }, [
     attributes,
     twoHanding,
@@ -174,6 +182,7 @@ const useWeaponTableRows = ({
   return {
     rowGroups,
     attackPowerTypes: memoizedAttackPowerTypes,
+    spellScaling,
     total: filteredRows.length,
   };
 };
