@@ -164,28 +164,36 @@ function readFmgXml(filename: string): Map<number, string | null> {
   return new Map(data.fmg.entries.text.map((entry: any) => [entry.id, entry["#text"]]));
 }
 
+const reforgedWeaponsUrl = "https://err.fandom.com/wiki/Weapons#New_Weapons";
+const convergence10NotesUrl =
+  "https://docs.google.com/document/d/1JHX3bMxnIIct8MSZnXkyqpmhYKLPt8p8HY9FUcXKUNE/edit#heading=h.79qlt4tgl68h";
+const convergence13NotesUrl =
+  "https://docs.google.com/document/d/1turQis8MDvZOCVeY0hrTGXtGtBoGurZBXTUUIuu2CcA/edit#heading=h.z5p5qg2guq5o";
+const convergence14NotesUrl =
+  "https://docs.google.com/document/d/12q9PLwWQDZZfKfpu-MQD-QK7GfiAFw6YNYKrPYiDrUg/edit#heading=h.9jtgsttalig";
+
 const urlOverrides = new Map<number, string | null>([
   ...(isReforged
     ? ([
-        [1120000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Iron Spike
+        [1120000, reforgedWeaponsUrl], // Iron Spike
         [1170000, "https://err.fandom.com/wiki/Nightmaiden%27s_Edge"], // Nightmaiden's Edge
-        [2030000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Sun Realm Sword
-        [2100000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Marionette Short Sword
-        [2120000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Broken Straight Sword
-        [7130000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Red Wolf's Fang
-        [7160000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Avionette Scimitar
+        [2030000, reforgedWeaponsUrl], // Sun Realm Sword
+        [2100000, reforgedWeaponsUrl], // Marionette Short Sword
+        [2120000, reforgedWeaponsUrl], // Broken Straight Sword
+        [7130000, reforgedWeaponsUrl], // Red Wolf's Fang
+        [7160000, reforgedWeaponsUrl], // Avionette Scimitar
         [8090000, "https://err.fandom.com/wiki/Fury_of_Azash"], // Fury of Azash
-        [8110000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Makar's Ceremonial Cleaver
-        [10100000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Goldvine Branchstaff
-        [12030000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Pumpkin Head Sledgehammer
-        [14070000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Vulgar Militia Chain Sickle
-        [16100000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Disciple's Rotten Branch
-        [16170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Grave Spear
-        [16180000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Lordsworn's Spear
-        [18120000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Avionette Pig Sticker
-        [18170000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Starcaller Spire
-        [21050000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Nox Flowing Fist
-        [22040000, "https://err.fandom.com/wiki/Weapons#New_Weapons"], // Crude Iron Claws
+        [8110000, reforgedWeaponsUrl], // Makar's Ceremonial Cleaver
+        [10100000, reforgedWeaponsUrl], // Goldvine Branchstaff
+        [12030000, reforgedWeaponsUrl], // Pumpkin Head Sledgehammer
+        [14070000, reforgedWeaponsUrl], // Vulgar Militia Chain Sickle
+        [16100000, reforgedWeaponsUrl], // Disciple's Rotten Branch
+        [16170000, reforgedWeaponsUrl], // Grave Spear
+        [16180000, reforgedWeaponsUrl], // Lordsworn's Spear
+        [18120000, reforgedWeaponsUrl], // Avionette Pig Sticker
+        [18170000, reforgedWeaponsUrl], // Starcaller Spire
+        [21050000, reforgedWeaponsUrl], // Nox Flowing Fist
+        [22040000, reforgedWeaponsUrl], // Crude Iron Claws
         [11110000, "https://eldenring.fandom.com/Scepter_of_the_All-Knowing"], // Scepter of the All-Knowing Staff
         [16140000, "https://eldenring.fandom.com/wiki/Spiked_Spear"], // Marionette Spiked Spear
         [18140000, "https://eldenring.fandom.com/wiki/Dragon_Halberd"], // Dragonscale Halberd
@@ -195,76 +203,76 @@ const urlOverrides = new Map<number, string | null>([
     : []),
   ...(isConvergence
     ? ([
-        [1120000, null], // Surgeon's Catlinger
-        [1170000, null], // Midnight Dagger
-        [1180000, null], // Deathrite Dagger
-        [2030000, null], // Yura's Kanabo
-        [2100000, null], // Zephyr Blades
-        [2120000, null], // Blade of Valor
-        [3110000, null], // Celestial Blade
-        [3120000, null], // Sword of the Cyclops
-        [3230000, null], // Sword of Hadea
-        [4120000, null], // Gravelstone Arcblades
-        [4130000, null], // Osian's Greatsword
-        [5070000, null], // Thorn of the Guilty
-        [5080000, null], // Foil of Caddock
-        [5090000, null], // Quicksilver Rapier
-        [6030000, null], // Carwyn's Épée
-        [7160000, null], // Blade of Scarlet Bloom
-        [7170000, null], // Godskin Flayer
-        [7170000, null], // Matriarch's Shotel
-        [7180000, null], // Nomad's Kilij
-        [8090000, null], // Three Finger Blade
-        [9050000, null], // Star Shadow
-        [10020000, null], // Sulien's Razors
-        [10040000, null], // Frozen Twinshards
-        [10060000, null], // Caimar's Battlestaff
-        [10060000, null], // Caimar's Battlestaff
-        [10070000, null], // Godwyn's Cragblades
-        [10100000, null], // Palm-Ax Twinblades
-        [10110000, null], // Gilded Quarterstaff
-        [11020000, null], // Leaden Maul
-        [11160000, null], // Zamor Star Mace
-        [11180000, null], // Hammer of Virtue
-        [12030000, null], // Underworld Greatmace
-        [12040000, null], // Crimson Briar-Bough
-        [12070000, null], // Sigur's Greatmace
-        [13050000, null], // Mohgwyn Censer
-        [13060000, null], // Seething Flail
-        [14070000, null], // Glintstone Cleaver
-        [14090000, null], // Axe of Epiphany
-        [14130000, null], // Axe of Fell Prophecy
-        [14150000, null], // Bloodhound Hookblade
-        [14160000, null], // Rimeheart
-        [15090000, null], // Axe of Rust
-        [16100000, null], // Spear of Tranquility
-        [18120000, null], // Glaive of the Ancients
-        [18170000, null], // Reaver's Odachi
-        [19040000, null], // War Scythe
-        [19050000, null], // Rosus' Harvester
-        [21020000, null], // Daergraf's Opus
-        [22040000, null], // Stone Claws
-        [23160000, null], // Lodestone of Gelmir
-        [30300000, null], // Crest of the Dragon Cult
-        [33060000, null], // Blighted Branch
-        [33290000, null], // Dragonkin Scepter
-        [33300000, null], // Ranni's Staff
-        [33310000, null], // Snow Witch Staff
-        [33320000, null], // Staff of Briar
-        [33330000, null], // Lavastone Staff
-        [33340000, null], // Tempestcaller Staff
-        [33350000, null], // Stormcaller Staff
-        [34100000, null], // Godskin Seal
-        [34110000, null], // Fire Monk's Seal
-        [34120000, null], // Dragon Cult Seal
-        [34130000, null], // Earthbreaker Seal
-        [34140000, null], // Fingerprint Seal
-        [34150000, null], // Mohgwyn Seal
-        [34160000, null], // War Surgeon's Seal
-        [34170000, null], // Seal of Rot
-        [34180000, null], // Pest's Seal
-        [34190000, null], // Spiritshaper Seal
-        [34200000, null], // Mystic Seal
+        [1120000, convergence10NotesUrl], // Surgeon's Catlinger
+        [1170000, convergence10NotesUrl], // Midnight Dagger
+        [1180000, convergence14NotesUrl], // Deathrite Dagger
+        [2030000, convergence13NotesUrl], // Yura's Kanabo
+        [2100000, convergence13NotesUrl], // Zephyr Blades
+        [2120000, convergence14NotesUrl], // Blade of Valor
+        [3110000, convergence10NotesUrl], // Celestial Blade
+        [3120000, convergence10NotesUrl], // Sword of the Cyclops
+        [3230000, convergence10NotesUrl], // Sword of Hadea
+        [4120000, convergence13NotesUrl], // Gravelstone Arcblades
+        [4130000, convergence13NotesUrl], // Osian's Greatsword
+        [5070000, convergence10NotesUrl], // Thorn of the Guilty
+        [5080000, convergence10NotesUrl], // Foil of Caddock
+        [5090000, convergence10NotesUrl], // Quicksilver Rapier
+        [6030000, convergence13NotesUrl], // Carwyn's Épée
+        [7160000, convergence10NotesUrl], // Blade of Scarlet Bloom
+        [7170000, convergence13NotesUrl], // Godskin Flayer
+        [7170000, convergence10NotesUrl], // Matriarch's Shotel
+        [7180000, convergence10NotesUrl], // Nomad's Kilij
+        [8090000, convergence10NotesUrl], // Three Finger Blade
+        [9050000, convergence14NotesUrl], // Star Shadow
+        [10020000, convergence10NotesUrl], // Sulien's Razors
+        [10040000, convergence10NotesUrl], // Frozen Twinshards
+        [10060000, convergence10NotesUrl], // Caimar's Battlestaff
+        [10060000, convergence10NotesUrl], // Caimar's Battlestaff
+        [10070000, convergence10NotesUrl], // Godwyn's Cragblades
+        [10100000, convergence13NotesUrl], // Palm-Ax Twinblades
+        [10110000, convergence13NotesUrl], // Gilded Quarterstaff
+        [11020000, convergence10NotesUrl], // Leaden Maul
+        [11160000, convergence10NotesUrl], // Zamor Star Mace
+        [11180000, convergence14NotesUrl], // Hammer of Virtue
+        [12030000, convergence10NotesUrl], // Underworld Greatmace
+        [12040000, convergence10NotesUrl], // Crimson Briar-Bough
+        [12070000, convergence13NotesUrl], // Sigur's Greatmace
+        [13050000, convergence10NotesUrl], // Mohgwyn Censer
+        [13060000, convergence10NotesUrl], // Seething Flail
+        [14070000, convergence10NotesUrl], // Glintstone Cleaver
+        [14090000, convergence10NotesUrl], // Axe of Epiphany
+        [14130000, convergence10NotesUrl], // Axe of Fell Prophecy
+        [14150000, convergence13NotesUrl], // Bloodhound Hookblade
+        [14160000, convergence14NotesUrl], // Rimeheart
+        [15090000, convergence10NotesUrl], // Axe of Rust
+        [16100000, convergence13NotesUrl], // Spear of Tranquility
+        [18120000, convergence10NotesUrl], // Glaive of the Ancients
+        [18170000, convergence13NotesUrl], // Reaver's Odachi
+        [19040000, convergence13NotesUrl], // War Scythe
+        [19050000, convergence14NotesUrl], // Rosus' Harvester
+        [21020000, convergence14NotesUrl], // Daergraf's Opus
+        [22040000, convergence10NotesUrl], // Stone Claws
+        [23160000, convergence13NotesUrl], // Lodestone of Gelmir
+        [30300000, convergence10NotesUrl], // Crest of the Dragon Cult
+        [33060000, convergence10NotesUrl], // Blighted Branch
+        [33290000, convergence10NotesUrl], // Dragonkin Scepter
+        [33300000, convergence10NotesUrl], // Ranni's Staff
+        [33310000, convergence10NotesUrl], // Snow Witch Staff
+        [33320000, convergence10NotesUrl], // Staff of Briar
+        [33330000, convergence10NotesUrl], // Lavastone Staff
+        [33340000, convergence10NotesUrl], // Tempestcaller Staff
+        [33350000, convergence10NotesUrl], // Stormcaller Staff
+        [34100000, convergence10NotesUrl], // Godskin Seal
+        [34110000, convergence10NotesUrl], // Fire Monk's Seal
+        [34120000, convergence10NotesUrl], // Dragon Cult Seal
+        [34130000, convergence10NotesUrl], // Earthbreaker Seal
+        [34140000, convergence10NotesUrl], // Fingerprint Seal
+        [34150000, convergence10NotesUrl], // Mohgwyn Seal
+        [34160000, convergence10NotesUrl], // War Surgeon's Seal
+        [34170000, convergence10NotesUrl], // Seal of Rot
+        [34180000, convergence10NotesUrl], // Pest's Seal
+        [34190000, convergence10NotesUrl], // Spiritshaper Seal
+        [34200000, convergence10NotesUrl], // Mystic Seal
         [1050000, "https://eldenring.fandom.com/Crystal_Knife"], // Underworld Dagger
         [2070000, "https://eldenring.fandom.com/Golden_Epitaph"], // Draconic Epitaph
         [2140000, "https://eldenring.fandom.com/Sword_of_Night_and_Flame"], // Sword of the Cosmos
