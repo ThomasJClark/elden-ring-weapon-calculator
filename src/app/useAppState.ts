@@ -86,11 +86,13 @@ function getInitialAppState() {
  */
 function onAppStateChanged(appState: AppState) {
   localStorage.setItem("appState", JSON.stringify(appState));
+}
 
+function updateUrl(regulationVersionName: RegulationVersionName) {
   window.history.replaceState(
     null,
     "",
-    `/${appState.regulationVersionName === "latest" ? "" : appState.regulationVersionName}`,
+    `/${regulationVersionName === "latest" ? "" : regulationVersionName}`,
   );
 }
 
@@ -105,7 +107,17 @@ export default function useAppState() {
 
   useEffect(() => {
     onAppStateChanged(appState);
+    updateUrl(appState.regulationVersionName);
   }, [appState]);
+
+  useEffect(() => {
+    function onPopState() {
+      updateUrl(appState.regulationVersionName);
+    }
+
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [appState.regulationVersionName]);
 
   const changeHandlers = useMemo<Omit<UpdateAppState, keyof AppState>>(
     () => ({
