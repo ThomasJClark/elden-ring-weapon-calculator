@@ -166,11 +166,13 @@ function readFmgXml(filename: string): Map<number, string | null> {
 
 const reforgedWeaponsUrl = "https://err.fandom.com/wiki/Weapons#New_Weapons";
 const convergence10NotesUrl =
-  "https://docs.google.com/document/d/1JHX3bMxnIIct8MSZnXkyqpmhYKLPt8p8HY9FUcXKUNE/edit#heading=h.79qlt4tgl68h";
+  "https://docs.google.com/document/d/1JHX3bMxnIIct8MSZnXkyqpmhYKLPt8p8HY9FUcXKUNE/preview#heading=h.79qlt4tgl68h";
 const convergence13NotesUrl =
-  "https://docs.google.com/document/d/1turQis8MDvZOCVeY0hrTGXtGtBoGurZBXTUUIuu2CcA/edit#heading=h.z5p5qg2guq5o";
+  "https://docs.google.com/document/d/12q9PLwWQDZZfKfpu-MQD-QK7GfiAFw6YNYKrPYiDrUg/preview#heading=h.9jtgsttalig";
 const convergence14NotesUrl =
-  "https://docs.google.com/document/d/12q9PLwWQDZZfKfpu-MQD-QK7GfiAFw6YNYKrPYiDrUg/edit#heading=h.9jtgsttalig";
+  "https://docs.google.com/document/d/12q9PLwWQDZZfKfpu-MQD-QK7GfiAFw6YNYKrPYiDrUg/preview#heading=h.9jtgsttalig";
+const convergence141NotesUrl =
+  "https://docs.google.com/document/d/1HhTcVvPG1V9lK8AL90USQCCgc7Z4lBWrmCEmXV6XHHw/preview#heading=h.4qcy1ray1wky";
 
 const urlOverrides = new Map<number, string | null>([
   ...(isReforged
@@ -246,12 +248,15 @@ const urlOverrides = new Map<number, string | null>([
         [14160000, convergence14NotesUrl], // Rimeheart
         [15090000, convergence10NotesUrl], // Axe of Rust
         [16100000, convergence13NotesUrl], // Spear of Tranquility
+        [16170000, convergence141NotesUrl], // Phalanx Pike
         [18120000, convergence10NotesUrl], // Glaive of the Ancients
         [18170000, convergence13NotesUrl], // Reaver's Odachi
         [19040000, convergence13NotesUrl], // War Scythe
         [19050000, convergence14NotesUrl], // Rosus' Harvester
         [21020000, convergence14NotesUrl], // Daergraf's Opus
         [22040000, convergence10NotesUrl], // Stone Claws
+        [22050000, convergence141NotesUrl], // Emyr's Great Talons
+        [23090000, convergence141NotesUrl], // Greatstaff of Decay
         [23160000, convergence13NotesUrl], // Lodestone of Gelmir
         [30300000, convergence10NotesUrl], // Crest of the Dragon Cult
         [33060000, convergence10NotesUrl], // Blighted Branch
