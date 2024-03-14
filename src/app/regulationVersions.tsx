@@ -84,7 +84,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
     affinityOptions: convergenceAffinityOptions,
     maxUpgradeLevel: maxSpecialUpgradeLevel,
     splitSpellScaling: true,
-    fetch: () => fetch(`/regulation-convergence-v1.4.1.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-convergence-v1.4.1b.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
 };
 

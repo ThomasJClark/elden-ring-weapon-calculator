@@ -43,7 +43,7 @@
     "buildData": "ts-node-esm src/buildData.ts",
     "buildData:v1.10": "ts-node-esm src/buildData.ts vanilla public/regulation-vanilla-v1.09.js",
     "buildData:reforged": "ts-node-esm src/buildData.ts reforged public/regulation-reforged-v0.11.97B.js",
-    "buildData:convergence": "ts-node-esm src/buildData.ts convergence public/regulation-convergence-v1.4.1.js",
+    "buildData:convergence": "ts-node-esm src/buildData.ts convergence public/regulation-convergence-v1.4.1b.js",
     "rebuildWeaponData": "yarn buildData:v1.10 && yarn buildData:reforged && yarn buildData:convergence"
   },
   "eslintConfig": {

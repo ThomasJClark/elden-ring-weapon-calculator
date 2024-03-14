@@ -228,8 +228,6 @@ const urlOverrides = new Map<number, string | null>([
         [9050000, convergence14NotesUrl], // Star Shadow
         [10020000, convergence10NotesUrl], // Sulien's Razors
         [10040000, convergence10NotesUrl], // Frozen Twinshards
-        [10060000, convergence10NotesUrl], // Caimar's Battlestaff
-        [10060000, convergence10NotesUrl], // Caimar's Battlestaff
         [10070000, convergence10NotesUrl], // Godwyn's Cragblades
         [10100000, convergence13NotesUrl], // Palm-Ax Twinblades
         [10110000, convergence13NotesUrl], // Gilded Quarterstaff
@@ -358,6 +356,7 @@ const unobtainableWeapons = new Set(
     ? [
         // These aren't mentioned in the notes for the public alpha, likely WIP
         6050000, // Estoc of the Serpent Priest
+        10060000, // Caimar's Battlestaff
         19030000, // Moon Breaker Scythe
 
         // Removed vanilla
