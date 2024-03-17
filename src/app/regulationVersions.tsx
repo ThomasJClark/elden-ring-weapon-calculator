@@ -43,6 +43,20 @@ export interface RegulationVersion {
 const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
   latest: {
     name: "Patch 1.10 (latest)",
+    info: import.meta.env.VITE_IS_DLC_RELEASED ? (
+      <>
+        <Link
+          href="https://en.bandainamcoent.eu/elden-ring/elden-ring/shadow-of-the-erdtree"
+          target="_blank"
+          rel="noopener noreferer"
+        >
+          ELDEN RING Shadow of the Erdtree
+        </Link>
+        {` has arrived!`}
+        <br />
+        {`If you'd like to hide weapons from the new expansion, uncheck “Include DLC weapons”.`}
+      </>
+    ) : null,
     affinityOptions,
     fetch: () => fetch(`/regulation-vanilla-v1.09.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },

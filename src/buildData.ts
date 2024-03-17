@@ -373,6 +373,9 @@ const unobtainableWeapons = new Set(
     : [],
 );
 
+// TODO: add DLC weapon IDs when DLC releases
+const dlcWeapons = new Set<number>([]);
+
 const wepTypeOverrides = new Map([
   // Categorize unarmed as a fist weapon I guess
   [110000, WeaponType.FIST],
@@ -614,6 +617,7 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     paired: ifNotDefault(row.isDualBlade === 1, false),
     sorceryTool: ifNotDefault(row.enableMagic === 1, false),
     incantationTool: ifNotDefault(row.enableMiracle === 1, false),
+    dlc: ifNotDefault(dlcWeapons.has(row.ID), false),
   };
 }
 

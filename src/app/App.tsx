@@ -104,6 +104,7 @@ export default function App() {
     affinityIds,
     weaponTypes,
     attributes,
+    includeDLC,
     effectiveOnly,
     splitDamage,
     twoHanding,
@@ -117,6 +118,7 @@ export default function App() {
     setAffinityIds,
     setWeaponTypes,
     setAttribute,
+    setIncludeDLC,
     setEffectiveOnly,
     setSplitDamage,
     setTwoHanding,
@@ -213,7 +215,12 @@ export default function App() {
         regulationVersionName={regulationVersionName}
         onRegulationVersionNameChanged={setRegulationVersionName}
       />
-      <MiscFilterPicker effectiveOnly={effectiveOnly} onEffectiveOnlyChanged={setEffectiveOnly} />
+      <MiscFilterPicker
+        includeDLC={includeDLC}
+        effectiveOnly={effectiveOnly}
+        onIncludeDLCChanged={setIncludeDLC}
+        onEffectiveOnlyChanged={setEffectiveOnly}
+      />
       <AffinityPicker
         affinityOptions={regulationVersion.affinityOptions}
         selectedAffinityIds={affinityIds}

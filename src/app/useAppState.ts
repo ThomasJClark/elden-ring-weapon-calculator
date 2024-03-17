@@ -12,6 +12,7 @@ interface AppState {
   readonly upgradeLevel: number;
   readonly weaponTypes: readonly WeaponType[];
   readonly affinityIds: readonly number[];
+  readonly includeDLC: boolean;
   readonly effectiveOnly: boolean;
   readonly splitDamage: boolean;
   readonly groupWeaponTypes: boolean;
@@ -28,6 +29,7 @@ interface UpdateAppState extends AppState {
   setUpgradeLevel(upgradeLevel: number): void;
   setWeaponTypes(weaponTypes: readonly WeaponType[]): void;
   setAffinityIds(affinityIds: readonly number[]): void;
+  setIncludeDLC(includeDLC: boolean): void;
   setEffectiveOnly(effectiveOnly: boolean): void;
   setSplitDamage(splitDamage: boolean): void;
   setGroupWeaponTypes(groupWeaponTypes: boolean): void;
@@ -50,6 +52,7 @@ const defaultAppState: AppState = {
   upgradeLevel: 25,
   weaponTypes: [WeaponType.AXE],
   affinityIds: [0, -1], // Standard and Special
+  includeDLC: true,
   effectiveOnly: false,
   splitDamage: true,
   groupWeaponTypes: false,
@@ -144,6 +147,9 @@ export default function useAppState() {
       },
       setAffinityIds(affinityIds) {
         setAppState((prevAppState) => ({ ...prevAppState, affinityIds }));
+      },
+      setIncludeDLC(includeDLC) {
+        setAppState((prevAppState) => ({ ...prevAppState, includeDLC }));
       },
       setEffectiveOnly(effectiveOnly) {
         setAppState((prevAppState) => ({ ...prevAppState, effectiveOnly }));

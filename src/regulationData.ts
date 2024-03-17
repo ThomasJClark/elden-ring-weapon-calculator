@@ -66,6 +66,7 @@ export interface EncodedWeaponJson {
   paired?: boolean;
   sorceryTool?: boolean;
   incantationTool?: boolean;
+  dlc?: boolean;
 }
 
 /**
