@@ -178,6 +178,7 @@ const urlOverrides = new Map<number, string | null>([
   ...(isReforged
     ? ([
         [1120000, reforgedWeaponsUrl], // Iron Spike
+        [1150000, "https://eldenring.fandom.com/wiki/Erdsteel_Dagger"], // Brass Dagger
         [1170000, "https://err.fandom.com/wiki/Nightmaiden%27s_Edge"], // Nightmaiden's Edge
         [2030000, reforgedWeaponsUrl], // Sun Realm Sword
         [2100000, reforgedWeaponsUrl], // Marionette Short Sword
