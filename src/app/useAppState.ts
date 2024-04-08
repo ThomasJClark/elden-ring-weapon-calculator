@@ -6,7 +6,6 @@ import regulationVersions from "./regulationVersions";
 
 interface AppState {
   readonly regulationVersionName: RegulationVersionName;
-  readonly darkMode: boolean;
   readonly attributes: Attributes;
   readonly twoHanding: boolean;
   readonly upgradeLevel: number;
@@ -23,7 +22,6 @@ interface AppState {
 
 interface UpdateAppState extends AppState {
   setRegulationVersionName(regulationVersionName: RegulationVersionName): void;
-  setDarkMode(darkMode: boolean): void;
   setAttribute(attribute: Attribute, value: number): void;
   setTwoHanding(twoHanding: boolean): void;
   setUpgradeLevel(upgradeLevel: number): void;
@@ -40,7 +38,6 @@ interface UpdateAppState extends AppState {
 
 const defaultAppState: AppState = {
   regulationVersionName: "latest",
-  darkMode: true,
   attributes: {
     str: 30,
     dex: 30,
@@ -126,9 +123,6 @@ export default function useAppState() {
     () => ({
       setRegulationVersionName(regulationVersionName) {
         setAppState((prevAppState) => ({ ...prevAppState, regulationVersionName }));
-      },
-      setDarkMode(darkMode) {
-        setAppState((prevAppState) => ({ ...prevAppState, darkMode }));
       },
       setAttribute(attribute, value) {
         setAppState((prevAppState) => ({

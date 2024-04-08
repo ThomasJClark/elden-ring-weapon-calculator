@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Link } from "@mui/material";
+import { AlertTitle, Link } from "@mui/material";
 import {
   affinityOptions,
   reforgedAffinityOptions,
@@ -45,18 +45,34 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
     name: "Patch 1.10 (latest)",
     info: import.meta.env.VITE_IS_DLC_RELEASED ? (
       <>
-        <Link
-          href="https://en.bandainamcoent.eu/elden-ring/elden-ring/shadow-of-the-erdtree"
-          target="_blank"
-          rel="noopener noreferer"
-        >
-          ELDEN RING Shadow of the Erdtree
-        </Link>
-        {` has arrived!`}
-        <br />
-        {`If you'd like to hide weapons from the new expansion, uncheck “Include DLC weapons”.`}
+        <AlertTitle>
+          <Link
+            href="https://en.bandainamcoent.eu/elden-ring/elden-ring/shadow-of-the-erdtree"
+            target="_blank"
+            rel="noopener noreferer"
+          >
+            ELDEN RING Shadow of the Erdtree
+          </Link>{" "}
+          has been released!
+        </AlertTitle>
       </>
-    ) : null,
+    ) : (
+      <>
+        <AlertTitle>
+          <Link
+            href="https://en.bandainamcoent.eu/elden-ring/elden-ring/shadow-of-the-erdtree"
+            target="_blank"
+            rel="noopener noreferer"
+          >
+            ELDEN RING Shadow of the Erdtree
+          </Link>{" "}
+          releases on June 21st!
+        </AlertTitle>
+        This calculator will be updated to include items from the new expansion, but depending on a
+        variety of factors this might take some time to get right. A checkbox will be added to
+        optionally hide DLC items.
+      </>
+    ),
     affinityOptions,
     fetch: () => fetch(`/regulation-vanilla-v1.09.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },

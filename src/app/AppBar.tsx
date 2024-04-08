@@ -1,5 +1,4 @@
 import { IconButton, Toolbar, Typography } from "@mui/material";
-import DarkModeIcon from "@mui/icons-material/DarkModeRounded";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LightModeIcon from "@mui/icons-material/LightModeRounded";
 import MenuIcon from "@mui/icons-material/MenuRounded";
@@ -7,15 +6,13 @@ import { memo } from "react";
 
 interface Props {
   menuOpen: boolean;
-  darkMode: boolean;
   onMenuOpenChanged(menuOpen: boolean): void;
-  onDarkModeChanged(darkMode: boolean): void;
 }
 
 /**
  * The main toolbar that has the app name, dark mode toggle, and a link to the GitHub repository
  */
-function AppBar({ menuOpen, darkMode, onMenuOpenChanged, onDarkModeChanged }: Props) {
+function AppBar({ menuOpen, onMenuOpenChanged }: Props) {
   return (
     <Toolbar>
       <IconButton
@@ -34,17 +31,6 @@ function AppBar({ menuOpen, darkMode, onMenuOpenChanged, onDarkModeChanged }: Pr
       <Typography variant="h1" component="span" sx={{ flexGrow: 1 }}>
         Elden&nbsp;Ring Weapon&nbsp;Calculator
       </Typography>
-
-      <IconButton
-        size="large"
-        color="inherit"
-        role="checkbox"
-        aria-label="Dark Mode"
-        aria-checked={darkMode}
-        onClick={() => onDarkModeChanged(!darkMode)}
-      >
-        {darkMode ? <DarkModeIcon /> : <LightModeIcon />}
-      </IconButton>
 
       <IconButton
         size="large"

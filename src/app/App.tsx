@@ -18,7 +18,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBackRounded";
 import WeaponListSettings from "./WeaponListSettings";
 import WeaponTable from "./weaponTable/WeaponTable";
 import useWeaponTableRows from "./weaponTable/useWeaponTableRows";
-import { darkTheme, lightTheme } from "./theme";
+import theme from "./theme";
 import regulationVersions from "./regulationVersions";
 import useWeapons from "./useWeapons";
 import useAppState from "./useAppState";
@@ -91,7 +91,7 @@ function RegulationVersionAlert({ children }: { children: ReactNode }) {
   }
 
   return (
-    <Alert severity="info" onClose={() => setDismissed(true)}>
+    <Alert icon={false} severity="info" onClose={() => setDismissed(true)}>
       {children}
     </Alert>
   );
@@ -100,7 +100,6 @@ function RegulationVersionAlert({ children }: { children: ReactNode }) {
 export default function App() {
   const {
     regulationVersionName,
-    darkMode,
     affinityIds,
     weaponTypes,
     attributes,
@@ -114,7 +113,6 @@ export default function App() {
     sortBy,
     reverse,
     setRegulationVersionName,
-    setDarkMode,
     setAffinityIds,
     setWeaponTypes,
     setAttribute,
@@ -231,14 +229,12 @@ export default function App() {
   );
 
   return (
-    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
 
       <AppBar
         menuOpen={isMobile ? menuOpenMobile : menuOpen}
-        darkMode={darkMode}
         onMenuOpenChanged={onMenuOpenChanged}
-        onDarkModeChanged={setDarkMode}
       />
 
       <Divider />

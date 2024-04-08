@@ -34,15 +34,15 @@ const typography: TypographyOptions = {
   fontWeightBold: 500,
 };
 
-export const darkTheme = createTheme({
+export default createTheme({
   palette: {
     mode: "dark",
-    divider: "#5c5c50",
+    divider: "#ffffff3b",
     text: {
-      primary: "#f2f2f2",
+      primary: "#fff",
     },
     primary: {
-      main: "#f5bd63",
+      main: "#ffb452",
     },
     secondary: {
       main: "#cf8563",
@@ -57,12 +57,7 @@ export const darkTheme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          backgroundImage: `
-            linear-gradient(
-              to bottom,
-              #59584a 0%,
-              #4d4d3d 100%
-            )`,
+          backgroundImage: `linear-gradient(to bottom, #624c2c 0%, #624c2c 100%)`,
         },
       },
     },
@@ -74,62 +69,31 @@ export const darkTheme = createTheme({
           backgroundImage: `
             radial-gradient(
               circle at 50% 50%,
-              ${alpha("#1f1d17", 0)} 0%,
-              ${alpha("#1f1d17", 0)} 60%,
-              ${alpha("#1f1d17", 0.2)} 80%,
-              ${alpha("#1f1d17", 0.6)} 100%
+              ${alpha("#251b11", 0)} 0%,
+              ${alpha("#251b11", 0)} 60%,
+              ${alpha("#251b11", 0.2)} 80%,
+              ${alpha("#251b11", 0.6)} 100%
             ),
             linear-gradient(
               to right,
-              ${alpha("#3a3a30", 0.3)} 0%,
-              ${alpha("#3a3a30", 0)} 20%,
-              ${alpha("#3a3a30", 0)} 80%,
-              ${alpha("#3a3a30", 0.3)} 100%
+              ${alpha("#402f25", 0.3)} 0%,
+              ${alpha("#402f25", 0)} 20%,
+              ${alpha("#402f25", 0)} 80%,
+              ${alpha("#402f25", 0.3)} 100%
               ),
             url(${backgroundStars}),
             linear-gradient(
               to top,
-              #0c0c09 0%,
-              #1f1d17 40%,
-              #353328 80%,
-              #454536 100%
+              #120a04 0%,
+              #2e1f15 40%,
+              #43342a 80%,
+              #4c432f 100%
             )`,
           backgroundAttachment: "fixed",
         },
         "::selection": {
-          backgroundColor: "#f5bd63",
-          color: "#454536",
-        },
-      },
-    },
-  },
-});
-
-export const lightTheme = createTheme({
-  palette: {
-    mode: "light",
-    divider: "#e0e0e0",
-    text: {
-      primary: "#111",
-    },
-    primary: {
-      main: "#895602",
-    },
-    secondary: {
-      main: "#cf8563",
-    },
-    background: {
-      default: "#edf0f2",
-    },
-  },
-  typography,
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: {
-        "@font-face": fontDefinition,
-        body: {
-          minHeight: "100vh",
-          background: "#fff",
+          backgroundColor: "#ffb452",
+          color: "#3c3122",
         },
       },
     },
