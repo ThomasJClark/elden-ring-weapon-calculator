@@ -61,7 +61,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
     fetch: () => fetch(`/regulation-vanilla-v1.09.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   reforged: {
-    name: "Elden Ring Reforged (mod)",
+    name: "ELDEN RING Reforged (mod)",
     info: (
       <>
         Using regulation data from the{" "}
@@ -70,7 +70,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
           target="_blank"
           rel="noopener noreferer"
         >
-          Elden Ring Reforged
+          ELDEN RING Reforged
         </Link>{" "}
         mod v0.12.5
       </>
