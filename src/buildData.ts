@@ -196,6 +196,7 @@ const urlOverrides = new Map<number, string | null>([
         [18120000, reforgedWeaponsUrl], // Avionette Pig Sticker
         [18170000, reforgedWeaponsUrl], // Starcaller Spire
         [21050000, reforgedWeaponsUrl], // Nox Flowing Fist
+        [21140000, "https://err.fandom.com/wiki/Fellthorn_Clutches"], // Fellthorn Clutches
         [22040000, reforgedWeaponsUrl], // Crude Iron Claws
         [11110000, "https://eldenring.fandom.com/Scepter_of_the_All-Knowing"], // Scepter of the All-Knowing Staff
         [16140000, "https://eldenring.fandom.com/wiki/Spiked_Spear"], // Marionette Spiked Spear
@@ -391,6 +392,7 @@ const wepTypeOverrides = new Map([
         [16100000, WeaponType.SPEAR], // Disciple's Rotten Branch
         [18100000, WeaponType.HALBERD], // Loretta's War Sickle
         [18170000, WeaponType.HALBERD], // Starcaller Spire
+        [21140000, WeaponType.FIST], // Fellthorn Clutches
       ] as const)
     : []),
 ]);
@@ -450,7 +452,8 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
 
   const weaponType = wepTypeOverrides.get(row.id) ?? row.wepType;
   if (!isSupportedWeaponType(weaponType)) {
-    if (weaponType) {
+    // Log a message if this is something other than ammunition or other placeholder weapon types
+    if (![0, 81, 83, 85, 86].includes(weaponType)) {
       debug(`Unknown weapon type ${weaponType} on "${name}", ignoring`);
     }
     return null;
