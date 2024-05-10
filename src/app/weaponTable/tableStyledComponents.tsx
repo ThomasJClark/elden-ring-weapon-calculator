@@ -9,7 +9,7 @@ import { styled } from "@mui/system";
 export const WeaponTableBody = styled("div", { skipSx: true, skipVariantsResolver: true })(
   ({ theme }) => ({
     display: "grid",
-    overflowX: "auto",
+    overflow: "hidden",
     [theme.breakpoints.only("xs")]: {
       marginLeft: theme.spacing(-2),
       marginRight: theme.spacing(-2),
@@ -132,3 +132,38 @@ export const WeaponTableColumn = styled("div", {
   alignItems: "center",
   justifyContent: "center",
 });
+
+export const Scrollbar = styled("div", {
+  skipSx: true,
+  skipVariantsResolver: true,
+})(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  height: 10,
+  userSelect: "none",
+  touchAction: "none",
+  padding: 2,
+  backgroundColor: theme.palette.background.paper,
+  transition: "background-color 160ms ease-out",
+}));
+
+export const ScrollbarThumb = styled("div", {
+  skipSx: true,
+  skipVariantsResolver: true,
+})(({ theme }) => ({
+  flex: 1,
+  backgroundColor: theme.palette.divider,
+  borderRadius: 99999,
+  position: "relative",
+  "::before": {
+    content: '""',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "100%",
+    height: "100%",
+    minWidth: 40,
+    minHeight: 40,
+  },
+}));

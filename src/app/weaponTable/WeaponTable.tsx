@@ -1,4 +1,5 @@
 import { memo, type ReactNode, useMemo } from "react";
+import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { Box, Typography } from "@mui/material";
 import { type SystemStyleObject, type Theme } from "@mui/system";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -7,6 +8,8 @@ import { AttackPowerType, type Weapon, type WeaponAttackResult } from "../../cal
 import type { SortBy } from "../../search/sortWeapons";
 import getWeaponTableColumns from "./getWeaponTableColumns";
 import {
+  Scrollbar,
+  ScrollbarThumb,
   WeaponTableBody,
   WeaponTableColumn,
   WeaponTableColumnGroup,
@@ -214,60 +217,71 @@ function WeaponTable({
   );
 
   return (
-    <WeaponTableBody role="table">
-      <WeaponTableColumnGroupHeaderRow role="row">
-        {columnGroups.map(({ key, sx, header }) => (
-          <WeaponTableColumnGroup
-            key={key}
-            sx={[sx ?? {}, { alignItems: "center", justifyContent: "center" }]}
-          >
-            {header && (
-              <Typography component="span" variant="subtitle2" role="columnheader">
-                {header}
-              </Typography>
-            )}
-          </WeaponTableColumnGroup>
-        ))}
-      </WeaponTableColumnGroupHeaderRow>
-
-      <ColumnHeaderRow
-        columnGroups={columnGroups}
-        sortBy={sortBy}
-        reverse={reverse}
-        onSortByChanged={onSortByChanged}
-        onReverseChanged={onReverseChanged}
-      />
-      {rowGroups.length > 0 ? (
-        rowGroups.map(({ key, name, rows }) => (
-          <WeaponTableGroup key={key} role="rowgroup">
-            {name != null && (
-              <WeaponTableGroupHeaderRow role="row">
-                <Typography component="span" variant="subtitle2" role="columnheader">
-                  {name}
-                </Typography>
-              </WeaponTableGroupHeaderRow>
-            )}
-
-            {rows.map((row) => (
-              <DataRow
-                key={`${row[0].weaponName},${row[0].affinityId}`}
-                columnGroups={columnGroups}
-                row={row}
-              />
+    <ScrollArea.Root asChild>
+      <WeaponTableBody role="table">
+        <ScrollArea.Viewport>
+          <WeaponTableColumnGroupHeaderRow role="row">
+            {columnGroups.map(({ key, sx, header }) => (
+              <WeaponTableColumnGroup
+                key={key}
+                sx={[sx ?? {}, { alignItems: "center", justifyContent: "center" }]}
+              >
+                {header && (
+                  <Typography component="span" variant="subtitle2" role="columnheader">
+                    {header}
+                  </Typography>
+                )}
+              </WeaponTableColumnGroup>
             ))}
-          </WeaponTableGroup>
-        ))
-      ) : (
-        <Box display="grid" sx={{ minHeight: "480px", px: "10px", gap: 3 }}>
-          {placeholder}
-        </Box>
-      )}
-      {footer != null && (
-        <Box display="grid" sx={{ minHeight: "36px", px: "10px" }}>
-          {footer}
-        </Box>
-      )}
-    </WeaponTableBody>
+          </WeaponTableColumnGroupHeaderRow>
+
+          <ColumnHeaderRow
+            columnGroups={columnGroups}
+            sortBy={sortBy}
+            reverse={reverse}
+            onSortByChanged={onSortByChanged}
+            onReverseChanged={onReverseChanged}
+          />
+          {rowGroups.length > 0 ? (
+            rowGroups.map(({ key, name, rows }) => (
+              <WeaponTableGroup key={key} role="rowgroup">
+                {name != null && (
+                  <WeaponTableGroupHeaderRow role="row">
+                    <Typography component="span" variant="subtitle2" role="columnheader">
+                      {name}
+                    </Typography>
+                  </WeaponTableGroupHeaderRow>
+                )}
+
+                {rows.map((row) => (
+                  <DataRow
+                    key={`${row[0].weaponName},${row[0].affinityId}`}
+                    columnGroups={columnGroups}
+                    row={row}
+                  />
+                ))}
+              </WeaponTableGroup>
+            ))
+          ) : (
+            <Box display="grid" sx={{ minHeight: "480px", px: "10px", gap: 3 }}>
+              {placeholder}
+            </Box>
+          )}
+          {footer != null && (
+            <Box display="grid" sx={{ minHeight: "36px", px: "10px" }}>
+              {footer}
+            </Box>
+          )}
+        </ScrollArea.Viewport>
+        <ScrollArea.Scrollbar asChild orientation="horizontal">
+          <Scrollbar>
+            <ScrollArea.Thumb asChild>
+              <ScrollbarThumb />
+            </ScrollArea.Thumb>
+          </Scrollbar>
+        </ScrollArea.Scrollbar>
+      </WeaponTableBody>
+    </ScrollArea.Root>
   );
 }
 
