@@ -1,6 +1,5 @@
 import { IconButton, Toolbar, Typography } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import LightModeIcon from "@mui/icons-material/LightModeRounded";
 import MenuIcon from "@mui/icons-material/MenuRounded";
 import { memo } from "react";
 

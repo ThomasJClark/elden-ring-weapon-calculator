@@ -109,23 +109,30 @@ function unpackFiles() {
   cpSync(join(dataDir, "msg", "engus", "item.msgbnd.dcx"), itemMsgFile);
   cpSync(join(dataDir, "msg", "engus", "menu.msgbnd.dcx"), menuMsgFile);
 
-  const { error } = spawnSync(
+  let { error } = spawnSync(
+    join(getWitchyDir(), "WitchyBND.exe"),
+    [regulationBinFile, itemMsgFile, menuMsgFile],
+    { stdio: "inherit", windowsHide: true },
+  );
+
+  if (error) {
+    throw error;
+  }
+
+  ({ error } = spawnSync(
     join(getWitchyDir(), "WitchyBND.exe"),
     [
-      regulationBinFile,
       attackElementCorrectFile,
       calcCorrectGraphFile,
       equipParamWeaponFile,
       reinforceParamWeaponFile,
       spEffectFile,
       menuValueTableFile,
-      itemMsgFile,
       weaponNameFmgFile,
-      menuMsgFile,
       menuTextFmgFile,
     ],
     { stdio: "inherit", windowsHide: true },
-  );
+  ));
 
   if (error) {
     throw error;
@@ -173,6 +180,8 @@ const convergence14NotesUrl =
   "https://docs.google.com/document/d/12q9PLwWQDZZfKfpu-MQD-QK7GfiAFw6YNYKrPYiDrUg/preview#heading=h.9jtgsttalig";
 const convergence141NotesUrl =
   "https://docs.google.com/document/d/1HhTcVvPG1V9lK8AL90USQCCgc7Z4lBWrmCEmXV6XHHw/preview#heading=h.4qcy1ray1wky";
+const convergence142NotesUrl =
+  "https://docs.google.com/document/d/1G0aHybk5yH2h-9s8X0tEzriZTfYwLcE0ZGXKzAHo3XY/preview#heading=h.4qcy1ray1wky";
 
 const urlOverrides = new Map<number, string | null>([
   ...(isReforged
@@ -211,17 +220,18 @@ const urlOverrides = new Map<number, string | null>([
         [1170000, convergence10NotesUrl], // Midnight Dagger
         [1180000, convergence14NotesUrl], // Deathrite Dagger
         [2030000, convergence13NotesUrl], // Yura's Kanabo
-        [2100000, convergence13NotesUrl], // Zephyr Blades
         [2120000, convergence14NotesUrl], // Blade of Valor
         [3110000, convergence10NotesUrl], // Celestial Blade
         [3120000, convergence10NotesUrl], // Sword of the Cyclops
         [3230000, convergence10NotesUrl], // Sword of Hadea
+        [3240000, convergence142NotesUrl], // Dyru's Greatsword
         [4120000, convergence13NotesUrl], // Gravelstone Arcblades
         [4130000, convergence13NotesUrl], // Osian's Greatsword
         [5070000, convergence10NotesUrl], // Thorn of the Guilty
         [5080000, convergence10NotesUrl], // Foil of Caddock
         [5090000, convergence10NotesUrl], // Quicksilver Rapier
         [6030000, convergence13NotesUrl], // Carwyn's Épée
+        [7090000, convergence13NotesUrl], // Zephyr Blades
         [7160000, convergence10NotesUrl], // Blade of Scarlet Bloom
         [7170000, convergence13NotesUrl], // Godskin Flayer
         [7170000, convergence10NotesUrl], // Matriarch's Shotel
@@ -246,6 +256,7 @@ const urlOverrides = new Map<number, string | null>([
         [14130000, convergence10NotesUrl], // Axe of Fell Prophecy
         [14150000, convergence13NotesUrl], // Bloodhound Hookblade
         [14160000, convergence14NotesUrl], // Rimeheart
+        [14170000, convergence142NotesUrl], // Bloodflame Kamas
         [15090000, convergence10NotesUrl], // Axe of Rust
         [16100000, convergence13NotesUrl], // Spear of Tranquility
         [16170000, convergence141NotesUrl], // Phalanx Pike
