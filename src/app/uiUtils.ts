@@ -3,6 +3,7 @@ import {
   AttackPowerType,
   WeaponType,
   type Attribute,
+  type Agg,
 } from "../calculator/calculator";
 import specialWeaponIcon from "./img/specialWeapon.webp";
 import standardAffinityIcon from "./img/standardAffinity.webp";
@@ -276,6 +277,17 @@ export function getShortAttributeLabel(attribute: Attribute) {
       return "Fai";
     case "arc":
       return "Arc";
+  }
+}
+
+export function getShortAggLabel(agg: Agg) {
+  switch (agg) {
+    case "sum":
+      return "Sum";
+    case "max":
+      return "Max";
+    case "min":
+      return "Min";
   }
 }
 

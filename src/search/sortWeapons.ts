@@ -1,6 +1,7 @@
 import { getTotalDamageAttackPower } from "../app/uiUtils";
 import { type WeaponTableRowData } from "../app/weaponTable/WeaponTable";
-import { type Attribute, AttackPowerType } from "../calculator/calculator";
+import { getAggScalingValue } from "../app/weaponTable/tableRenderers";
+import { type Attribute, allAttributes, type Agg, AttackPowerType } from "../calculator/calculator";
 
 export type SortBy =
   | "name"
@@ -9,6 +10,7 @@ export type SortBy =
   | "sortBy"
   | `${AttackPowerType}SpellScaling`
   | `${Attribute}Scaling`
+  | `${Agg}Agg`
   | `${Attribute}Requirement`;
 
 /**
@@ -42,6 +44,11 @@ export function sortWeapons(
       const attribute = sortBy.slice(0, -1 * "Scaling".length) as Attribute;
       return ([weapon, { upgradeLevel }]) =>
         -(weapon.attributeScaling[upgradeLevel][attribute] ?? 0);
+    }
+
+    if (sortBy.endsWith("Agg")) {
+      const agg = sortBy.slice(0, -1 * "Agg".length) as Agg;
+      return ([weapon, { upgradeLevel }]) => getAggScalingValue(weapon.attributeScaling, upgradeLevel, agg);
     }
 
     if (sortBy.endsWith("Requirement")) {

@@ -3,6 +3,7 @@ import {
   AttackPowerType,
   allAttackPowerTypes,
   allAttributes,
+  allAggs,
   allDamageTypes,
   allStatusTypes,
 } from "../../calculator/calculator";
@@ -11,6 +12,7 @@ import {
   damageTypeLabels,
   getAttributeLabel,
   getShortAttributeLabel,
+  getShortAggLabel,
   getTotalDamageAttackPower,
 } from "../uiUtils";
 import type { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
@@ -99,7 +101,7 @@ const spellScalingColumn: WeaponTableColumnDef = {
   sortBy: `${AttackPowerType.MAGIC}SpellScaling`,
   header: (
     <Typography component="span" variant="subtitle2">
-      Spell scaling
+      Spell Scaling
     </Typography>
   ),
   render([weapon, { spellScaling, ineffectiveAttackPowerTypes }]) {
@@ -178,7 +180,8 @@ const scalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => 
   },
 }));
 
-const numericalScalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => ({
+
+const attributeScalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => ({
   key: `${attribute}Scaling`,
   sortBy: `${attribute}Scaling`,
   header: (
@@ -200,7 +203,34 @@ const numericalScalingColumns: WeaponTableColumnDef[] = allAttributes.map((attri
       />
     );
   },
-}));
+}))
+
+const aggScalingColumns: WeaponTableColumnDef[] = allAggs.map((agg) => ({
+  key: `${agg}Agg`,
+  sortBy: `${agg}Agg`,
+  header: (
+    <Typography 
+      component="span" 
+      variant="subtitle2"
+      title={`${getShortAggLabel(agg)} Scaling`}
+    >
+      {getShortAggLabel(agg)}
+    </Typography>
+  ),
+  render([weapon, { upgradeLevel }]) {
+    return (
+      <ScalingRenderer
+        weapon={weapon}
+        upgradeLevel={upgradeLevel}
+        attribute={agg}
+        numerical
+      />
+    );
+  },
+}))
+
+const numericalScalingColumns: WeaponTableColumnDef[] = attributeScalingColumns.concat(aggScalingColumns);
+
 
 const requirementColumns = allAttributes.map(
   (attribute): WeaponTableColumnDef => ({

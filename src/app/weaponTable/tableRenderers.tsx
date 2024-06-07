@@ -8,7 +8,7 @@
 import { memo } from "react";
 import { Box, Link, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { type Weapon, type Attribute } from "../../calculator/calculator";
+import { type Weapon, type Attribute, allAttributes, type Agg, allAggs } from "../../calculator/calculator";
 import { getAttributeLabel } from "../uiUtils";
 
 export const blankIcon = <RemoveIcon color="disabled" fontSize="small" />;
@@ -19,6 +19,29 @@ export const blankIcon = <RemoveIcon color="disabled" fontSize="small" />;
 export function round(value: number) {
   // Add a small offset to prevent off-by-ones due to floating point error
   return Math.floor(value + 0.000000001);
+}
+
+export function getAggScalingValue(attributeScaling: any, upgradeLevel: any, attribute: any) {
+  switch(attribute) {
+    case "sum":
+      return allAttributes.reduce((acc, currentValue) => {
+        return acc + (attributeScaling[upgradeLevel][currentValue] ?? 0);
+      }, 0);
+    case "max":
+      return Math.max(...allAttributes.map((currentValue) => attributeScaling[upgradeLevel][currentValue] ?? 0));
+    case "min":
+      return Math.min(...allAttributes.map((currentValue) => attributeScaling[upgradeLevel][currentValue] ?? Infinity));
+    default:
+      return 0;
+  }
+}
+
+function getScalingValue(attributeScaling: any, upgradeLevel: any, attribute: Attribute | Agg) {
+  if (allAggs.find((agg) => agg === attribute)) {
+    return getAggScalingValue(attributeScaling, upgradeLevel, attribute);
+  } else {
+    return attributeScaling[upgradeLevel][attribute];
+  }
 }
 
 /**
@@ -62,10 +85,10 @@ export const ScalingRenderer = memo(function ScalingRenderer({
 }: {
   weapon: Weapon;
   upgradeLevel: number;
-  attribute: Attribute;
+  attribute: Attribute | Agg;
   numerical?: boolean;
 }) {
-  const scalingValue = attributeScaling[upgradeLevel][attribute];
+  const scalingValue = getScalingValue(attributeScaling, upgradeLevel, attribute);
   return scalingValue ? (
     <span title={`${Math.round(scalingValue! * 100000) / 1000}%`}>
       {numerical
