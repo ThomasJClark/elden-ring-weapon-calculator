@@ -147,6 +147,7 @@ export function decodeRegulationData({
       statusSpEffectParamIds,
       attack: unupgradedAttack,
       attributeScaling: unupgradedAttributeScaling,
+      dlc = false,
       ...weapon
     }): Weapon => {
       const attackElementCorrect = attackElementCorrectsById.get(attackElementCorrectId);
@@ -234,6 +235,7 @@ export function decodeRegulationData({
         attackElementCorrect,
         calcCorrectGraphs: weaponCalcCorrectGraphs,
         scalingTiers,
+        dlc,
       };
     },
   );

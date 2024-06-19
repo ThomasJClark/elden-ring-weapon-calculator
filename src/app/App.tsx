@@ -146,6 +146,7 @@ export default function App() {
     affinityIds,
     weaponTypes,
     attributes,
+    includeDLC,
     effectiveOnly,
     twoHanding,
     upgradeLevel,

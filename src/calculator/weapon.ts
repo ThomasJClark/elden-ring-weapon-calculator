@@ -73,4 +73,9 @@ export interface Weapon {
    * hardcoded for all weapons because it can be changed by mods.
    */
   scalingTiers: [number, string][];
+
+  /**
+   * If true, this weapon is from the Shadow of the Erdtree expansion
+   */
+  dlc: boolean;
 }

@@ -28,6 +28,7 @@ interface WeaponTableRowsOptions {
   affinityIds: readonly number[];
   weaponTypes: readonly WeaponType[];
   attributes: Attributes;
+  includeDLC: boolean;
   effectiveOnly: boolean;
   twoHanding: boolean;
   upgradeLevel: number;
@@ -67,6 +68,7 @@ const useWeaponTableRows = ({
   const weaponTypes = useDeferredValue(options.weaponTypes);
   const affinityIds = useDeferredValue(options.affinityIds);
   const effectiveOnly = useDeferredValue(options.effectiveOnly);
+  const includeDLC = useDeferredValue(options.includeDLC);
 
   const specialUpgradeLevel = toSpecialUpgradeLevel(regularUpgradeLevel);
 
@@ -94,6 +96,7 @@ const useWeaponTableRows = ({
         affinityIds.filter((affinityId) => regulationVersion.affinityOptions.has(affinityId)),
       ),
       effectiveWithAttributes: effectiveOnly ? attributes : undefined,
+      includeDLC,
       twoHanding,
       uninfusableWeaponTypes,
     });
@@ -138,6 +141,7 @@ const useWeaponTableRows = ({
     specialUpgradeLevel,
     weaponTypes,
     affinityIds,
+    includeDLC,
     effectiveOnly,
     uninfusableWeaponTypes,
   ]);

@@ -632,7 +632,7 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     paired: ifNotDefault(row.isDualBlade === 1, false),
     sorceryTool: ifNotDefault(row.enableMagic === 1, false),
     incantationTool: ifNotDefault(row.enableMiracle === 1, false),
-    dlc: ifNotDefault(dlcWeapons.has(row.ID), false),
+    dlc: ifNotDefault(dlcWeapons.has(row.id) || dlcWeapons.has(uninfusedWeapon.id), false),
   };
 }
 

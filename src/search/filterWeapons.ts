@@ -22,6 +22,11 @@ export interface FilterWeaponsOptions {
    */
   effectiveWithAttributes?: Attributes;
 
+  /**
+   * Include weapons from the Shadow of the Erdtree expansion if true
+   */
+  includeDLC?: boolean;
+
   twoHanding?: boolean;
 
   /**
@@ -40,11 +45,16 @@ export default function filterWeapons(
     weaponTypes,
     affinityIds,
     effectiveWithAttributes,
+    includeDLC,
     twoHanding,
     uninfusableWeaponTypes,
   }: FilterWeaponsOptions,
 ): readonly Weapon[] {
   function filterWeapon(weapon: Weapon): boolean {
+    if (!includeDLC && weapon.dlc) {
+      return false;
+    }
+
     if (weaponTypes.size > 0) {
       if (
         !weaponTypes.has(weapon.weaponType) &&
