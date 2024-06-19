@@ -55,6 +55,15 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
           </Link>{" "}
           has been released!
         </AlertTitle>
+        Please report any bugs or missing data{" "}
+        <Link
+          href="https://github.com/ThomasJClark/elden-ring-weapon-calculator/issues/new"
+          target="_blank"
+        >
+          here
+        </Link>
+        . Uncheck the &ldquo;Include DLC weapons&rdquo; checkbox if you wish to avoid seeing items
+        from the new expansion.
       </>
     ) : (
       <>
