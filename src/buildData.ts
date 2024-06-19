@@ -128,8 +128,8 @@ function unpackFiles() {
       reinforceParamWeaponFile,
       spEffectFile,
       menuValueTableFile,
-      weaponNameFmgFile,
-      menuTextFmgFile,
+      // weaponNameFmgFile,
+      // menuTextFmgFile,
     ],
     { stdio: "inherit", windowsHide: true },
   ));
@@ -317,8 +317,14 @@ const equipParamWeapons = readParam(equipParamWeaponFile);
 const reinforceParamWeapons = readParam(reinforceParamWeaponFile);
 const spEffectParams = readParam(spEffectFile);
 const menuValueTableParams = readParam(menuValueTableFile);
-const menuText = readFmgXml(menuTextFmgFile);
-const weaponNames = readFmgXml(weaponNameFmgFile);
+// const menuText = readFmgXml(menuTextFmgFile);
+// const weaponNames = readFmgXml(weaponNameFmgFile);
+const menuText = new Map<number, string>(
+  JSON.parse(readFileSync("../elden-ring-dumper/build/Release/GR_MenuText.json", "utf-8")),
+);
+const weaponNames = new Map<number, string>(
+  JSON.parse(readFileSync("../elden-ring-dumper/build/Release/WeaponName.json", "utf-8")),
+);
 
 function ifNotDefault<T>(value: T, defaultValue: T): T | undefined {
   return value === defaultValue ? undefined : value;
