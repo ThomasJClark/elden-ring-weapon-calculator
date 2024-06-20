@@ -77,9 +77,9 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
           </Link>{" "}
           releases on June 21st!
         </AlertTitle>
-        This calculator will be updated to include items from the new expansion, but depending on a
-        variety of factors this might take some time to get right. A checkbox will be added to
-        optionally hide DLC items.
+        After the expansion unlocks on PC, any new content will be added to the calculator. An
+        &ldquo;Include DLC weapons&rdquo; checkbox will be added if you wish to avoid seeing items
+        from the new expansion.
       </>
     ),
     affinityOptions,
