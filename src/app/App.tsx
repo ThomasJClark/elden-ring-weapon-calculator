@@ -225,7 +225,11 @@ export default function App() {
         selectedAffinityIds={affinityIds}
         onAffinityIdsChanged={setAffinityIds}
       />
-      <WeaponTypePicker weaponTypes={weaponTypes} onWeaponTypesChanged={setWeaponTypes} />
+      <WeaponTypePicker
+        includeDLC={includeDLC}
+        weaponTypes={weaponTypes}
+        onWeaponTypesChanged={setWeaponTypes}
+      />
     </>
   );
 

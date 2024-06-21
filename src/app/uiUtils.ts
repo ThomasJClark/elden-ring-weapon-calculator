@@ -142,10 +142,13 @@ export const shieldTypes = [
   WeaponType.SMALL_SHIELD,
   WeaponType.MEDIUM_SHIELD,
   WeaponType.GREATSHIELD,
+  WeaponType.THRUSTING_SHIELD,
 ];
 
 export const meleeWeaponTypes = [
   WeaponType.AXE,
+  WeaponType.BACKHAND_BLADE,
+  WeaponType.BEAST_CLAW,
   WeaponType.CLAW,
   WeaponType.COLOSSAL_SWORD,
   WeaponType.COLOSSAL_WEAPON,
@@ -154,21 +157,37 @@ export const meleeWeaponTypes = [
   WeaponType.DAGGER,
   WeaponType.FIST,
   WeaponType.FLAIL,
-  WeaponType.GREATAXE,
   WeaponType.GREAT_HAMMER,
+  WeaponType.GREAT_KATANA,
   WeaponType.GREAT_SPEAR,
+  WeaponType.GREATAXE,
   WeaponType.GREATSWORD,
   WeaponType.HALBERD,
   WeaponType.HAMMER,
+  WeaponType.HAND_TO_HAND,
   WeaponType.HEAVY_THRUSTING_SWORD,
   WeaponType.KATANA,
+  WeaponType.LIGHT_GREATSWORD,
+  WeaponType.PERFUME_BOTTLE,
   WeaponType.REAPER,
   WeaponType.SPEAR,
   WeaponType.STRAIGHT_SWORD,
+  WeaponType.THROWING_BLADE,
   WeaponType.THRUSTING_SWORD,
   WeaponType.TORCH,
   WeaponType.TWINBLADE,
   WeaponType.WHIP,
+];
+
+export const dlcWeaponTypes = [
+  WeaponType.HAND_TO_HAND,
+  WeaponType.PERFUME_BOTTLE,
+  WeaponType.THRUSTING_SHIELD,
+  WeaponType.THROWING_BLADE,
+  WeaponType.BACKHAND_BLADE,
+  WeaponType.LIGHT_GREATSWORD,
+  WeaponType.GREAT_KATANA,
+  WeaponType.BEAST_CLAW,
 ];
 
 export const hiddenWeaponTypes = [WeaponType.DUAL_CATALYST];
@@ -217,6 +236,14 @@ export const weaponTypeLabels = new Map([
   [WeaponType.MEDIUM_SHIELD, "Medium Shield"],
   [WeaponType.GREATSHIELD, "Greatshield"],
   [WeaponType.TORCH, "Torch"],
+  [WeaponType.HAND_TO_HAND, "Hand-to-Hand"],
+  [WeaponType.PERFUME_BOTTLE, "Perfume Bottle"],
+  [WeaponType.THRUSTING_SHIELD, "Thrusting Shield"],
+  [WeaponType.THROWING_BLADE, "Throwing Blade"],
+  [WeaponType.BACKHAND_BLADE, "Backhand Blade"],
+  [WeaponType.LIGHT_GREATSWORD, "Light Greatsword"],
+  [WeaponType.GREAT_KATANA, "Great Katana"],
+  [WeaponType.BEAST_CLAW, "Beast Claw"],
 ]);
 
 export const damageTypeLabels = new Map([

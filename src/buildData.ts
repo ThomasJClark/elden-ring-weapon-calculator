@@ -93,6 +93,7 @@ const reinforceParamWeaponFile = join(tmpDir, "regulation-bin", "ReinforceParamW
 const spEffectFile = join(tmpDir, "regulation-bin", "SpEffectParam.param");
 const menuValueTableFile = join(tmpDir, "regulation-bin", "MenuValueTableParam.param");
 const weaponNameFmgFile = join(tmpDir, "item-msgbnd-dcx", "WeaponName.fmg");
+const dlcWeaponNameFmgFile = join(tmpDir, "item-msgbnd-dcx", "WeaponName_dlc01.fmg");
 const menuTextFmgFile = join(tmpDir, "menu-msgbnd-dcx", "GR_MenuText.fmg");
 
 /**
@@ -128,8 +129,9 @@ function unpackFiles() {
       reinforceParamWeaponFile,
       spEffectFile,
       menuValueTableFile,
-      // weaponNameFmgFile,
-      // menuTextFmgFile,
+      weaponNameFmgFile,
+      dlcWeaponNameFmgFile,
+      menuTextFmgFile,
     ],
     { stdio: "inherit", windowsHide: true },
   ));
@@ -317,14 +319,11 @@ const equipParamWeapons = readParam(equipParamWeaponFile);
 const reinforceParamWeapons = readParam(reinforceParamWeaponFile);
 const spEffectParams = readParam(spEffectFile);
 const menuValueTableParams = readParam(menuValueTableFile);
-// const menuText = readFmgXml(menuTextFmgFile);
-// const weaponNames = readFmgXml(weaponNameFmgFile);
-const menuText = new Map<number, string>(
-  JSON.parse(readFileSync("../elden-ring-dumper/build/Release/GR_MenuText.json", "utf-8")),
-);
-const weaponNames = new Map<number, string>(
-  JSON.parse(readFileSync("../elden-ring-dumper/build/Release/WeaponName.json", "utf-8")),
-);
+const menuText = readFmgXml(menuTextFmgFile);
+const weaponNames = readFmgXml(weaponNameFmgFile);
+const dlcWeaponNames = readFmgXml(dlcWeaponNameFmgFile);
+
+// WeaponName_dlc02.fmg
 
 function ifNotDefault<T>(value: T, defaultValue: T): T | undefined {
   return value === defaultValue ? undefined : value;
@@ -450,6 +449,14 @@ const supportedWeaponTypes = new Set([
   WeaponType.MEDIUM_SHIELD,
   WeaponType.GREATSHIELD,
   WeaponType.TORCH,
+  WeaponType.HAND_TO_HAND,
+  WeaponType.PERFUME_BOTTLE,
+  WeaponType.THRUSTING_SHIELD,
+  WeaponType.THROWING_BLADE,
+  WeaponType.BACKHAND_BLADE,
+  WeaponType.LIGHT_GREATSWORD,
+  WeaponType.GREAT_KATANA,
+  WeaponType.BEAST_CLAW,
 ]);
 
 function isSupportedWeaponType(wepType: number): wepType is WeaponType {
@@ -457,8 +464,15 @@ function isSupportedWeaponType(wepType: number): wepType is WeaponType {
 }
 
 function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
-  const name = weaponNames.get(row.id);
-  if (!name) {
+  let name: string;
+  let dlc = false;
+
+  if (weaponNames.has(row.id)) {
+    name = weaponNames.get(row.id)!;
+  } else if (dlcWeaponNames.has(row.id)) {
+    name = dlcWeaponNames.get(row.id)!;
+    dlc = true;
+  } else {
     debug(`No weapon title found for ${row.id}, ignoring`);
     return null;
   }
@@ -610,7 +624,7 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
 
   return {
     name,
-    weaponName: weaponNames.get(uninfusedWeapon.id)!,
+    weaponName: (weaponNames.get(uninfusedWeapon.id) ?? dlcWeaponNames.get(uninfusedWeapon.id))!,
     url: urlOverrides.get(uninfusedWeapon.id),
     affinityId: isUniqueWeapon(row) ? -1 : affinityId,
     weaponType,
@@ -638,7 +652,7 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     paired: ifNotDefault(row.isDualBlade === 1, false),
     sorceryTool: ifNotDefault(row.enableMagic === 1, false),
     incantationTool: ifNotDefault(row.enableMiracle === 1, false),
-    dlc: ifNotDefault(dlcWeapons.has(row.id) || dlcWeapons.has(uninfusedWeapon.id), false),
+    dlc: dlc,
   };
 }
 

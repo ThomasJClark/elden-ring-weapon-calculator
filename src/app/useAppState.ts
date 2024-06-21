@@ -3,6 +3,7 @@ import { type Attribute, type Attributes, WeaponType } from "../calculator/calcu
 import type { SortBy } from "../search/sortWeapons";
 import type { RegulationVersionName } from "./regulationVersions";
 import regulationVersions from "./regulationVersions";
+import { dlcWeaponTypes } from "./uiUtils";
 
 interface AppState {
   readonly regulationVersionName: RegulationVersionName;
@@ -143,7 +144,13 @@ export default function useAppState() {
         setAppState((prevAppState) => ({ ...prevAppState, affinityIds }));
       },
       setIncludeDLC(includeDLC) {
-        setAppState((prevAppState) => ({ ...prevAppState, includeDLC }));
+        setAppState((prevAppState) => ({
+          ...prevAppState,
+          includeDLC,
+          weaponTypes: prevAppState.weaponTypes.filter(
+            (weaponType) => !dlcWeaponTypes.includes(weaponType),
+          ),
+        }));
       },
       setEffectiveOnly(effectiveOnly) {
         setAppState((prevAppState) => ({ ...prevAppState, effectiveOnly }));

@@ -43,7 +43,7 @@ export interface RegulationVersion {
 const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
   latest: {
     name: "Patch 1.12 (latest)",
-    info: import.meta.env.VITE_IS_DLC_RELEASED ? (
+    info: (
       <>
         <AlertTitle>
           <Link
@@ -65,25 +65,9 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
         . Uncheck the &ldquo;Include DLC weapons&rdquo; checkbox if you wish to avoid seeing items
         from the new expansion.
       </>
-    ) : (
-      <>
-        <AlertTitle>
-          <Link
-            href="https://en.bandainamcoent.eu/elden-ring/elden-ring/shadow-of-the-erdtree"
-            target="_blank"
-            rel="noopener noreferer"
-          >
-            ELDEN RING Shadow of the Erdtree
-          </Link>{" "}
-          releases on June 21st!
-        </AlertTitle>
-        After the expansion unlocks on PC, any new content will be added to the calculator. An
-        &ldquo;Include DLC weapons&rdquo; checkbox will be added if you wish to avoid seeing items
-        from the new expansion.
-      </>
     ),
     affinityOptions,
-    fetch: () => fetch(`/regulation-vanilla-v1.12.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-vanilla-v1.12-dlc.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   reforged: {
     name: "ELDEN RING Reforged (mod)",
