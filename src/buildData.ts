@@ -93,7 +93,7 @@ const reinforceParamWeaponFile = join(tmpDir, "regulation-bin", "ReinforceParamW
 const spEffectFile = join(tmpDir, "regulation-bin", "SpEffectParam.param");
 const menuValueTableFile = join(tmpDir, "regulation-bin", "MenuValueTableParam.param");
 const weaponNameFmgFile = join(tmpDir, "item-msgbnd-dcx", "WeaponName.fmg");
-const dlcWeaponNameFmgFile = join(tmpDir, "item-msgbnd-dcx", "WeaponName_dlc01.fmg");
+const dlcWeaponNameFmgFile = join(tmpDir, "item_dlc01-msgbnd-dcx", "WeaponName_dlc01.fmg");
 const menuTextFmgFile = join(tmpDir, "menu-msgbnd-dcx", "GR_MenuText.fmg");
 
 /**
@@ -102,17 +102,19 @@ const menuTextFmgFile = join(tmpDir, "menu-msgbnd-dcx", "GR_MenuText.fmg");
 function unpackFiles() {
   const regulationBinFile = join(tmpDir, "regulation.bin");
   const itemMsgFile = join(tmpDir, "item.msgbnd.dcx");
+  const dlcItemMsgFile = join(tmpDir, "item_dlc01.msgbnd.dcx");
   const menuMsgFile = join(tmpDir, "menu.msgbnd.dcx");
 
   mkdirSync(tmpDir, { recursive: true });
 
   cpSync(join(dataDir, "regulation.bin"), regulationBinFile);
   cpSync(join(dataDir, "msg", "engus", "item.msgbnd.dcx"), itemMsgFile);
+  cpSync(join(dataDir, "msg", "engus", "item_dlc01.msgbnd.dcx"), dlcItemMsgFile);
   cpSync(join(dataDir, "msg", "engus", "menu.msgbnd.dcx"), menuMsgFile);
 
   let { error } = spawnSync(
     join(getWitchyDir(), "WitchyBND.exe"),
-    [regulationBinFile, itemMsgFile, menuMsgFile],
+    [regulationBinFile, itemMsgFile, dlcItemMsgFile, menuMsgFile],
     { stdio: "inherit", windowsHide: true },
   );
 
