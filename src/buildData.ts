@@ -144,6 +144,7 @@ function unpackFiles() {
 
   rmSync(regulationBinFile);
   rmSync(itemMsgFile);
+  rmSync(dlcItemMsgFile);
   rmSync(menuMsgFile);
 }
 
