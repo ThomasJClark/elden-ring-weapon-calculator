@@ -15,6 +15,7 @@ import {
   WeaponType,
   AttackPowerType,
   allDamageTypes,
+  type AttackElementCorrect,
 } from "./calculator/calculator";
 import {
   type EncodedWeaponJson,
@@ -96,6 +97,8 @@ const weaponNameFmgFile = join(tmpDir, "item-msgbnd-dcx", "WeaponName.fmg");
 const dlcWeaponNameFmgFile = join(tmpDir, "item_dlc01-msgbnd-dcx", "WeaponName_dlc01.fmg");
 const menuTextFmgFile = join(tmpDir, "menu-msgbnd-dcx", "GR_MenuText.fmg");
 
+const hasDLC = existsSync(join(dataDir, "msg", "engus", "item_dlc01.msgbnd.dcx"));
+
 /**
  * Unpack the .param and .fmg files from the game or mod into an XML format we can read
  */
@@ -109,12 +112,14 @@ function unpackFiles() {
 
   cpSync(join(dataDir, "regulation.bin"), regulationBinFile);
   cpSync(join(dataDir, "msg", "engus", "item.msgbnd.dcx"), itemMsgFile);
-  cpSync(join(dataDir, "msg", "engus", "item_dlc01.msgbnd.dcx"), dlcItemMsgFile);
   cpSync(join(dataDir, "msg", "engus", "menu.msgbnd.dcx"), menuMsgFile);
+  if (hasDLC) {
+    cpSync(join(dataDir, "msg", "engus", "item_dlc01.msgbnd.dcx"), dlcItemMsgFile);
+  }
 
   let { error } = spawnSync(
     join(getWitchyDir(), "WitchyBND.exe"),
-    [regulationBinFile, itemMsgFile, dlcItemMsgFile, menuMsgFile],
+    [regulationBinFile, itemMsgFile, menuMsgFile, ...(hasDLC ? [dlcItemMsgFile] : [])],
     { stdio: "inherit", windowsHide: true },
   );
 
@@ -132,8 +137,8 @@ function unpackFiles() {
       spEffectFile,
       menuValueTableFile,
       weaponNameFmgFile,
-      dlcWeaponNameFmgFile,
       menuTextFmgFile,
+      ...(hasDLC ? [dlcWeaponNameFmgFile] : []),
     ],
     { stdio: "inherit", windowsHide: true },
   ));
@@ -144,8 +149,10 @@ function unpackFiles() {
 
   rmSync(regulationBinFile);
   rmSync(itemMsgFile);
-  rmSync(dlcItemMsgFile);
   rmSync(menuMsgFile);
+  if (hasDLC) {
+    rmSync(dlcItemMsgFile);
+  }
 }
 
 type ParamRow = Record<string, number>;
@@ -324,9 +331,7 @@ const spEffectParams = readParam(spEffectFile);
 const menuValueTableParams = readParam(menuValueTableFile);
 const menuText = readFmgXml(menuTextFmgFile);
 const weaponNames = readFmgXml(weaponNameFmgFile);
-const dlcWeaponNames = readFmgXml(dlcWeaponNameFmgFile);
-
-// WeaponName_dlc02.fmg
+const dlcWeaponNames = hasDLC ? readFmgXml(dlcWeaponNameFmgFile) : new Map<number, string | null>();
 
 function ifNotDefault<T>(value: T, defaultValue: T): T | undefined {
   return value === defaultValue ? undefined : value;
@@ -393,9 +398,6 @@ const unobtainableWeapons = new Set(
       ]
     : [],
 );
-
-// TODO: add DLC weapon IDs when DLC releases
-const dlcWeapons = new Set<number>([]);
 
 const wepTypeOverrides = new Map([
   // Categorize unarmed as a fist weapon I guess
@@ -689,46 +691,54 @@ function parseCalcCorrectGraph(row: ParamRow): CalcCorrectGraph {
   ];
 }
 
-function parseAttackElementCorrect(row: ParamRow): Partial<Record<AttackPowerType, Attribute[]>> {
-  function attributeArray(...args: (Attribute | 0)[]) {
-    const attributes = args.filter((attribute): attribute is Attribute => !!attribute);
-    return attributes.length ? attributes : undefined;
+function parseAttackElementCorrect(row: ParamRow): AttackElementCorrect {
+  function buildAttackElementCorrect(...args: [Attribute, boolean, number][]) {
+    const entries = args
+      .filter(([, isCorrect]) => isCorrect)
+      .map(([attribute, , overwriteCorrect]): [Attribute, number | true] => [
+        attribute,
+        overwriteCorrect === -1 ? true : overwriteCorrect / 100,
+      ]);
+    return entries.length
+      ? (Object.fromEntries(entries) as AttackElementCorrect[AttackPowerType])
+      : undefined;
   }
+
   return {
-    [AttackPowerType.PHYSICAL]: attributeArray(
-      row.isStrengthCorrect_byPhysics && "str",
-      row.isDexterityCorrect_byPhysics && "dex",
-      row.isFaithCorrect_byPhysics && "fai",
-      row.isMagicCorrect_byPhysics && "int",
-      row.isLuckCorrect_byPhysics && "arc",
+    [AttackPowerType.PHYSICAL]: buildAttackElementCorrect(
+      ["str", !!row.isStrengthCorrect_byPhysics, row.overwriteStrengthCorrectRate_byPhysics],
+      ["dex", !!row.isDexterityCorrect_byPhysics, row.overwriteDexterityCorrectRate_byPhysics],
+      ["fai", !!row.isFaithCorrect_byPhysics, row.overwriteFaithCorrectRate_byPhysics],
+      ["int", !!row.isMagicCorrect_byPhysics, row.overwriteMagicCorrectRate_byPhysics],
+      ["arc", !!row.isLuckCorrect_byPhysics, row.overwriteLuckCorrectRate_byPhysics],
     ),
-    [AttackPowerType.MAGIC]: attributeArray(
-      row.isStrengthCorrect_byMagic && "str",
-      row.isDexterityCorrect_byMagic && "dex",
-      row.isFaithCorrect_byMagic && "fai",
-      row.isMagicCorrect_byMagic && "int",
-      row.isLuckCorrect_byMagic && "arc",
+    [AttackPowerType.MAGIC]: buildAttackElementCorrect(
+      ["str", !!row.isStrengthCorrect_byMagic, row.overwriteStrengthCorrectRate_byMagic],
+      ["dex", !!row.isDexterityCorrect_byMagic, row.overwriteDexterityCorrectRate_byMagic],
+      ["fai", !!row.isFaithCorrect_byMagic, row.overwriteFaithCorrectRate_byMagic],
+      ["int", !!row.isMagicCorrect_byMagic, row.overwriteMagicCorrectRate_byMagic],
+      ["arc", !!row.isLuckCorrect_byMagic, row.overwriteLuckCorrectRate_byMagic],
     ),
-    [AttackPowerType.FIRE]: attributeArray(
-      row.isStrengthCorrect_byFire && "str",
-      row.isDexterityCorrect_byFire && "dex",
-      row.isFaithCorrect_byFire && "fai",
-      row.isMagicCorrect_byFire && "int",
-      row.isLuckCorrect_byFire && "arc",
+    [AttackPowerType.FIRE]: buildAttackElementCorrect(
+      ["str", !!row.isStrengthCorrect_byFire, row.overwriteStrengthCorrectRate_byFire],
+      ["dex", !!row.isDexterityCorrect_byFire, row.overwriteDexterityCorrectRate_byFire],
+      ["fai", !!row.isFaithCorrect_byFire, row.overwriteFaithCorrectRate_byFire],
+      ["int", !!row.isMagicCorrect_byFire, row.overwriteMagicCorrectRate_byFire],
+      ["arc", !!row.isLuckCorrect_byFire, row.overwriteLuckCorrectRate_byFire],
     ),
-    [AttackPowerType.LIGHTNING]: attributeArray(
-      row.isStrengthCorrect_byThunder && "str",
-      row.isDexterityCorrect_byThunder && "dex",
-      row.isFaithCorrect_byThunder && "fai",
-      row.isMagicCorrect_byThunder && "int",
-      row.isLuckCorrect_byThunder && "arc",
+    [AttackPowerType.LIGHTNING]: buildAttackElementCorrect(
+      ["str", !!row.isStrengthCorrect_byThunder, row.overwriteStrengthCorrectRate_byThunder],
+      ["dex", !!row.isDexterityCorrect_byThunder, row.overwriteDexterityCorrectRate_byThunder],
+      ["fai", !!row.isFaithCorrect_byThunder, row.overwriteFaithCorrectRate_byThunder],
+      ["int", !!row.isMagicCorrect_byThunder, row.overwriteMagicCorrectRate_byThunder],
+      ["arc", !!row.isLuckCorrect_byThunder, row.overwriteLuckCorrectRate_byThunder],
     ),
-    [AttackPowerType.HOLY]: attributeArray(
-      row.isStrengthCorrect_byDark && "str",
-      row.isDexterityCorrect_byDark && "dex",
-      row.isFaithCorrect_byDark && "fai",
-      row.isMagicCorrect_byDark && "int",
-      row.isLuckCorrect_byDark && "arc",
+    [AttackPowerType.HOLY]: buildAttackElementCorrect(
+      ["str", !!row.isStrengthCorrect_byDark, row.overwriteStrengthCorrectRate_byDark],
+      ["dex", !!row.isDexterityCorrect_byDark, row.overwriteDexterityCorrectRate_byDark],
+      ["fai", !!row.isFaithCorrect_byDark, row.overwriteFaithCorrectRate_byDark],
+      ["int", !!row.isMagicCorrect_byDark, row.overwriteMagicCorrectRate_byDark],
+      ["arc", !!row.isLuckCorrect_byDark, row.overwriteLuckCorrectRate_byDark],
     ),
   };
 }

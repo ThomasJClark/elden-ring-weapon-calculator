@@ -1,4 +1,4 @@
-import type { Attribute, Attributes } from "./attributes";
+import { allAttributes, type Attribute, type Attributes } from "./attributes";
 import { AttackPowerType, allDamageTypes, allStatusTypes } from "./attackPowerTypes";
 import type { Weapon } from "./weapon";
 import { WeaponType } from "./weaponTypes";
@@ -89,11 +89,11 @@ export default function getWeaponAttack({
     if (baseAttackPower || weapon.sorceryTool || weapon.incantationTool) {
       // This weapon's AttackElementCorrectParam determines what attributes each damage type scales
       // with
-      const scalingAttributes = weapon.attackElementCorrect[attackPowerType] ?? [];
+      const scalingAttributes = weapon.attackElementCorrect[attackPowerType] ?? {};
 
       let totalScaling = 1;
 
-      if (ineffectiveAttributes.some((attribute) => scalingAttributes.includes(attribute))) {
+      if (ineffectiveAttributes.some((attribute) => scalingAttributes[attribute])) {
         // If the requirements for this damage type are not met, a penalty is subtracted instead
         // of a scaling bonus being added
         totalScaling = 1 - ineffectiveAttributePenalty;
@@ -103,11 +103,22 @@ export default function getWeaponAttack({
         // multiplied by the scaling for that attribute
         const effectiveAttributes =
           !disableTwoHandingAttackPowerBonus && isDamageType ? adjustedAttributes : attributes;
-        for (const attribute of scalingAttributes) {
-          const scaling = weapon.attributeScaling[upgradeLevel][attribute];
-          if (scaling) {
-            totalScaling +=
-              weapon.calcCorrectGraphs[attackPowerType][effectiveAttributes[attribute]] * scaling;
+        for (const attribute of allAttributes) {
+          const attributeCorrect = scalingAttributes[attribute];
+          if (attributeCorrect) {
+            let scaling: number;
+            if (attributeCorrect === true) {
+              scaling = weapon.attributeScaling[upgradeLevel][attribute] ?? 0;
+            } else {
+              scaling =
+                (attributeCorrect * (weapon.attributeScaling[upgradeLevel][attribute] ?? 0)) /
+                (weapon.attributeScaling[0][attribute] ?? 0);
+            }
+
+            if (scaling) {
+              totalScaling +=
+                weapon.calcCorrectGraphs[attackPowerType][effectiveAttributes[attribute]] * scaling;
+            }
           }
         }
       }

@@ -4,7 +4,7 @@ import {
   AttackPowerType,
   WeaponType,
 } from "./calculator/calculator";
-import type { Attribute, Weapon } from "./calculator/calculator";
+import type { AttackElementCorrect, Attribute, Weapon } from "./calculator/calculator";
 
 export const defaultDamageCalcCorrectGraphId = 0;
 export const defaultStatusCalcCorrectGraphId = 6;
@@ -34,7 +34,9 @@ export interface EncodedRegulationDataJson {
     readonly [calcCorrectId in number]?: CalcCorrectGraph;
   };
   readonly attackElementCorrects: {
-    readonly [attackElementCorrectId in number]?: Partial<Record<AttackPowerType, Attribute[]>>;
+    readonly [attackElementCorrectId in number]?: Partial<
+      Record<AttackPowerType, Partial<Record<Attribute, number | true>>>
+    >;
   };
   readonly reinforceTypes: {
     readonly [reinforceId in number]?: ReinforceParamWeapon[];
@@ -123,7 +125,7 @@ export function decodeRegulationData({
     ]),
   );
 
-  const attackElementCorrectsById = new Map<number, Partial<Record<AttackPowerType, Attribute[]>>>(
+  const attackElementCorrectsById = new Map<number, AttackElementCorrect>(
     Object.entries(attackElementCorrects).map(([attackElementCorrectId, attackElementCorrect]) => [
       +attackElementCorrectId,
       {
@@ -131,10 +133,10 @@ export function decodeRegulationData({
 
         // Status effects aren't stored in AttackElementCorrectParam because it's the same for all
         // weapons. Manually add it to all entries
-        [AttackPowerType.POISON]: ["arc"],
-        [AttackPowerType.BLEED]: ["arc"],
-        [AttackPowerType.MADNESS]: ["arc"],
-        [AttackPowerType.SLEEP]: ["arc"],
+        [AttackPowerType.POISON]: { arc: true },
+        [AttackPowerType.BLEED]: { arc: true },
+        [AttackPowerType.MADNESS]: { arc: true },
+        [AttackPowerType.SLEEP]: { arc: true },
       },
     ]),
   );

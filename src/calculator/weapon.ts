@@ -2,6 +2,10 @@ import type { Attribute } from "./attributes";
 import type { AttackPowerType } from "./attackPowerTypes";
 import type { WeaponType } from "./weaponTypes";
 
+export type AttackElementCorrect = Partial<
+  Record<AttackPowerType, Partial<Record<Attribute, number | true>>>
+>;
+
 export interface Weapon {
   /**
    * The full unique name of the weapon, e.g. "Heavy Nightrider Glaive"
@@ -46,7 +50,7 @@ export interface Weapon {
   /**
    * Map indicating which damage types scale with which player attributes
    */
-  attackElementCorrect: Partial<Record<AttackPowerType, Attribute[]>>;
+  attackElementCorrect: AttackElementCorrect;
 
   /**
    * Map indicating which scaling curve is used for each damage type, status effect, or spell scaling
