@@ -2,6 +2,7 @@ import { memo } from "react";
 import { Checkbox, FormControlLabel } from "@mui/material";
 
 interface Props {
+  showIncludeDLC: boolean;
   effectiveOnly: boolean;
   includeDLC: boolean;
   onEffectiveOnlyChanged(effectiveOnly: boolean): void;
@@ -12,6 +13,7 @@ interface Props {
  * Other filters in the left shelf
  */
 function MiscFilterPicker({
+  showIncludeDLC,
   effectiveOnly,
   includeDLC,
   onEffectiveOnlyChanged,
@@ -19,7 +21,7 @@ function MiscFilterPicker({
 }: Props) {
   return (
     <div>
-      {!!import.meta.env.VITE_IS_DLC_RELEASED && (
+      {showIncludeDLC && (
         <FormControlLabel
           label="Include DLC weapons"
           sx={{ display: "block", mr: 0, my: "-4px" }}
