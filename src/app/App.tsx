@@ -150,6 +150,7 @@ export default function App() {
     effectiveOnly,
     twoHanding,
     upgradeLevel,
+    maxUpgradeLevel: regulationVersion.maxUpgradeLevel,
     groupWeaponTypes,
   });
 
@@ -208,8 +209,10 @@ export default function App() {
     );
   }
 
-  // Temporary: ELDEN RING Reforged and The Convergence don't have DLC weapons yet
+  // Temporary: ELDEN RING Reforged doesn't have DLC weapons yet
   const canIncludeDLC = regulationVersionName === "latest";
+  const canIncludeDLCWeaponTypes =
+    (regulationVersionName === "latest" && includeDLC) || regulationVersionName === "convergence";
 
   const drawerContent = (
     <>
@@ -230,7 +233,7 @@ export default function App() {
         onAffinityIdsChanged={setAffinityIds}
       />
       <WeaponTypePicker
-        includeDLC={canIncludeDLC && includeDLC}
+        includeDLCWeaponTypes={canIncludeDLCWeaponTypes}
         weaponTypes={weaponTypes}
         onWeaponTypesChanged={setWeaponTypes}
       />

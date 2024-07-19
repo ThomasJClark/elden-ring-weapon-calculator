@@ -10,13 +10,7 @@ import {
 } from "@mui/material";
 import { allAttributes, type Attribute, type Attributes } from "../calculator/calculator";
 import NumberTextField from "./NumberTextField";
-import {
-  getAttributeLabel,
-  maxRegularUpgradeLevel,
-  maxSpecialUpgradeLevel,
-  toRegularUpgradeLevel,
-  toSpecialUpgradeLevel,
-} from "./uiUtils";
+import { getAttributeLabel, maxRegularUpgradeLevel, toSpecialUpgradeLevel } from "./uiUtils";
 
 interface AttributeInputProps {
   attribute: Attribute;
@@ -67,22 +61,14 @@ const WeaponLevelInput = memo(function WeaponLevelInput({
         labelId="upgradeLevelLabel"
         label="Weapon Level"
         size="small"
-        value={
-          maxUpgradeLevel === maxSpecialUpgradeLevel
-            ? toSpecialUpgradeLevel(upgradeLevel)
-            : upgradeLevel
-        }
-        onChange={(evt) =>
-          maxUpgradeLevel === maxSpecialUpgradeLevel
-            ? onUpgradeLevelChanged(toRegularUpgradeLevel(+evt.target.value))
-            : onUpgradeLevelChanged(+evt.target.value)
-        }
+        value={Math.min(upgradeLevel, maxUpgradeLevel)}
+        onChange={(evt) => onUpgradeLevelChanged(+evt.target.value)}
       >
         {Array.from({ length: maxUpgradeLevel + 1 }, (_, upgradeLevelOption) => (
           <MenuItem key={upgradeLevelOption} value={upgradeLevelOption}>
-            {maxUpgradeLevel === maxSpecialUpgradeLevel
-              ? `+${upgradeLevelOption}`
-              : `+${upgradeLevelOption} / +${toSpecialUpgradeLevel(upgradeLevelOption)}`}
+            {maxUpgradeLevel === maxRegularUpgradeLevel
+              ? `+${upgradeLevelOption} / +${toSpecialUpgradeLevel(upgradeLevelOption)}`
+              : `+${upgradeLevelOption}`}
           </MenuItem>
         ))}
       </Select>

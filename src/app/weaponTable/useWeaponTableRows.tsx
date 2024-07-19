@@ -32,6 +32,7 @@ interface WeaponTableRowsOptions {
   effectiveOnly: boolean;
   twoHanding: boolean;
   upgradeLevel: number;
+  maxUpgradeLevel?: number;
   groupWeaponTypes: boolean;
 }
 
@@ -56,6 +57,7 @@ const useWeaponTableRows = ({
   offset,
   limit,
   upgradeLevel: regularUpgradeLevel,
+  maxUpgradeLevel = maxRegularUpgradeLevel,
   groupWeaponTypes,
   sortBy,
   reverse,
@@ -103,10 +105,10 @@ const useWeaponTableRows = ({
 
     const rows = filteredWeapons.map((weapon): WeaponTableRowData => {
       let upgradeLevel = 0;
-      if (weapon.attack.length - 1 === maxRegularUpgradeLevel) {
-        upgradeLevel = regularUpgradeLevel;
-      } else if (weapon.attack.length - 1 === maxSpecialUpgradeLevel) {
+      if (weapon.attack.length - 1 === maxSpecialUpgradeLevel) {
         upgradeLevel = specialUpgradeLevel;
+      } else {
+        upgradeLevel = Math.min(regularUpgradeLevel, weapon.attack.length - 1);
       }
 
       const weaponAttackResult = getWeaponAttack({
@@ -139,6 +141,7 @@ const useWeaponTableRows = ({
     regulationVersion,
     regularUpgradeLevel,
     specialUpgradeLevel,
+    maxUpgradeLevel,
     weaponTypes,
     affinityIds,
     includeDLC,

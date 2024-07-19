@@ -1,8 +1,16 @@
 /*
  * Usage: yarn rebuildWeaponData
  */
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join, parse } from "node:path";
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from "node:fs";
+import { basename, join, parse } from "node:path";
 import { env } from "node:process";
 import { spawnSync } from "node:child_process";
 import { rmSync } from "node:fs";
@@ -87,72 +95,84 @@ const isVanilla = !isReforged && !isConvergence;
 
 const tmpDir = join(tmpdir(), "elden-ring-weapon-calculator", parse(outputFile).name);
 
-const attackElementCorrectFile = join(tmpDir, "regulation-bin", "AttackElementCorrectParam.param");
-const calcCorrectGraphFile = join(tmpDir, "regulation-bin", "CalcCorrectGraph.param");
-const equipParamWeaponFile = join(tmpDir, "regulation-bin", "EquipParamWeapon.param");
-const reinforceParamWeaponFile = join(tmpDir, "regulation-bin", "ReinforceParamWeapon.param");
-const spEffectFile = join(tmpDir, "regulation-bin", "SpEffectParam.param");
-const menuValueTableFile = join(tmpDir, "regulation-bin", "MenuValueTableParam.param");
-const weaponNameFmgFile = join(tmpDir, "item-msgbnd-dcx", "WeaponName.fmg");
-const dlcWeaponNameFmgFile = join(tmpDir, "item_dlc01-msgbnd-dcx", "WeaponName_dlc01.fmg");
-const menuTextFmgFile = join(tmpDir, "menu-msgbnd-dcx", "GR_MenuText.fmg");
-
-const hasDLC = existsSync(join(dataDir, "msg", "engus", "item_dlc01.msgbnd.dcx"));
+const attackElementCorrectFile = "AttackElementCorrectParam.param";
+const calcCorrectGraphFile = "CalcCorrectGraph.param";
+const equipParamWeaponFile = "EquipParamWeapon.param";
+const reinforceParamWeaponFile = "ReinforceParamWeapon.param";
+const spEffectFile = "SpEffectParam.param";
+const menuValueTableFile = "MenuValueTableParam.param";
+const weaponNameFmgFile = "WeaponName.fmg";
+const dlcWeaponNameFmgFile = "WeaponName_dlc01.fmg";
+const menuTextFmgFile = "GR_MenuText.fmg";
 
 /**
  * Unpack the .param and .fmg files from the game or mod into an XML format we can read
  */
 function unpackFiles() {
-  const regulationBinFile = join(tmpDir, "regulation.bin");
-  const itemMsgFile = join(tmpDir, "item.msgbnd.dcx");
-  const dlcItemMsgFile = join(tmpDir, "item_dlc01.msgbnd.dcx");
-  const menuMsgFile = join(tmpDir, "menu.msgbnd.dcx");
+  function witchy(paths: string[]) {
+    const { error } = spawnSync(
+      join(getWitchyDir(), "WitchyBND.exe"),
+      ["--passive", "--parallel", ...paths],
+      {
+        stdio: "inherit",
+        windowsHide: true,
+      },
+    );
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  const files = [
+    attackElementCorrectFile,
+    calcCorrectGraphFile,
+    equipParamWeaponFile,
+    reinforceParamWeaponFile,
+    spEffectFile,
+    menuValueTableFile,
+    weaponNameFmgFile,
+    dlcWeaponNameFmgFile,
+    menuTextFmgFile,
+  ];
+
+  const bndPaths = [
+    "regulation.bin",
+    join("msg", "engus", "menu.msgbnd.dcx"),
+    join("msg", "engus", "menu_dlc01.msgbnd.dcx"),
+    join("msg", "engus", "menu_dlc02.msgbnd.dcx"),
+    join("msg", "engus", "item.msgbnd.dcx"),
+    join("msg", "engus", "item_dlc01.msgbnd.dcx"),
+    join("msg", "engus", "item_dlc02.msgbnd.dcx"),
+  ].filter((path) => existsSync(join(dataDir, path)));
 
   mkdirSync(tmpDir, { recursive: true });
-
-  cpSync(join(dataDir, "regulation.bin"), regulationBinFile);
-  cpSync(join(dataDir, "msg", "engus", "item.msgbnd.dcx"), itemMsgFile);
-  cpSync(join(dataDir, "msg", "engus", "menu.msgbnd.dcx"), menuMsgFile);
-  if (hasDLC) {
-    cpSync(join(dataDir, "msg", "engus", "item_dlc01.msgbnd.dcx"), dlcItemMsgFile);
+  for (const path of bndPaths) {
+    cpSync(join(dataDir, path), join(tmpDir, path));
   }
 
-  let { error } = spawnSync(
-    join(getWitchyDir(), "WitchyBND.exe"),
-    [regulationBinFile, itemMsgFile, menuMsgFile, ...(hasDLC ? [dlcItemMsgFile] : [])],
-    { stdio: "inherit", windowsHide: true },
-  );
+  witchy([...bndPaths.map((path) => join(tmpDir, path))]);
 
-  if (error) {
-    throw error;
+  // Extract any fmg/param files we need, delete the rest of the temporary files
+  const filesToExtract: string[] = [];
+  for (const path of bndPaths) {
+    const bndDir = join(tmpDir, path.replaceAll(".", "-"));
+    for (const file of readdirSync(bndDir)) {
+      if (files.includes(file)) {
+        filesToExtract.push(join(bndDir, file));
+      }
+    }
   }
 
-  ({ error } = spawnSync(
-    join(getWitchyDir(), "WitchyBND.exe"),
-    [
-      attackElementCorrectFile,
-      calcCorrectGraphFile,
-      equipParamWeaponFile,
-      reinforceParamWeaponFile,
-      spEffectFile,
-      menuValueTableFile,
-      weaponNameFmgFile,
-      menuTextFmgFile,
-      ...(hasDLC ? [dlcWeaponNameFmgFile] : []),
-    ],
-    { stdio: "inherit", windowsHide: true },
-  ));
+  witchy(filesToExtract);
 
-  if (error) {
-    throw error;
+  for (const file of filesToExtract) {
+    renameSync(`${file}.xml`, join(tmpDir, `${basename(file)}.xml`));
   }
 
-  rmSync(regulationBinFile);
-  rmSync(itemMsgFile);
-  rmSync(menuMsgFile);
-  if (hasDLC) {
-    rmSync(dlcItemMsgFile);
-  }
+  rmSync(join(tmpDir, "regulation.bin"));
+  rmSync(join(tmpDir, "regulation-bin"), { recursive: true });
+  rmSync(join(tmpDir, "msg"), { recursive: true });
 }
 
 type ParamRow = Record<string, number>;
@@ -323,15 +343,15 @@ if (env.SKIP_UNPACK && env.SKIP_UNPACK !== "0") {
 } else {
   unpackFiles();
 }
-const attackElementCorrectParams = readParam(attackElementCorrectFile);
-const calcCorrectGraphs = readParam(calcCorrectGraphFile);
-const equipParamWeapons = readParam(equipParamWeaponFile);
-const reinforceParamWeapons = readParam(reinforceParamWeaponFile);
-const spEffectParams = readParam(spEffectFile);
-const menuValueTableParams = readParam(menuValueTableFile);
-const menuText = readFmgXml(menuTextFmgFile);
-const weaponNames = readFmgXml(weaponNameFmgFile);
-const dlcWeaponNames = hasDLC ? readFmgXml(dlcWeaponNameFmgFile) : new Map<number, string | null>();
+const attackElementCorrectParams = readParam(join(tmpDir, attackElementCorrectFile));
+const calcCorrectGraphs = readParam(join(tmpDir, calcCorrectGraphFile));
+const equipParamWeapons = readParam(join(tmpDir, equipParamWeaponFile));
+const reinforceParamWeapons = readParam(join(tmpDir, reinforceParamWeaponFile));
+const spEffectParams = readParam(join(tmpDir, spEffectFile));
+const menuValueTableParams = readParam(join(tmpDir, menuValueTableFile));
+const menuText = readFmgXml(join(tmpDir, menuTextFmgFile));
+const weaponNames = readFmgXml(join(tmpDir, weaponNameFmgFile));
+const dlcWeaponNames = readFmgXml(join(tmpDir, dlcWeaponNameFmgFile));
 
 function ifNotDefault<T>(value: T, defaultValue: T): T | undefined {
   return value === defaultValue ? undefined : value;
@@ -476,7 +496,13 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     name = weaponNames.get(row.id)!;
   } else if (dlcWeaponNames.has(row.id)) {
     name = dlcWeaponNames.get(row.id)!;
-    dlc = true;
+    dlc = isVanilla;
+
+    // Temporary: DLC weapons aren't acquirable in Reforged yet
+    if (isReforged) {
+      debug(`DLC weapon ${row.id}, ignoring until obtainable in Reforged`);
+      return null;
+    }
   } else {
     debug(`No weapon title found for ${row.id}, ignoring`);
     return null;
@@ -657,7 +683,7 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     paired: ifNotDefault(row.isDualBlade === 1, false),
     sorceryTool: ifNotDefault(row.enableMagic === 1, false),
     incantationTool: ifNotDefault(row.enableMiracle === 1, false),
-    dlc: dlc,
+    dlc,
   };
 }
 

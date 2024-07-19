@@ -11,7 +11,7 @@ import {
 } from "./uiUtils";
 
 interface Props {
-  includeDLC?: boolean;
+  includeDLCWeaponTypes?: boolean;
   weaponTypes: readonly WeaponType[];
   onWeaponTypesChanged(weaponTypes: WeaponType[]): void;
 }
@@ -19,7 +19,7 @@ interface Props {
 /**
  * Set of checkboxes for selecting weapon types to include in the search results
  */
-function WeaponTypePicker({ includeDLC, weaponTypes, onWeaponTypesChanged }: Props) {
+function WeaponTypePicker({ includeDLCWeaponTypes, weaponTypes, onWeaponTypesChanged }: Props) {
   const renderWeaponCategory = (label: string, weaponTypesInCategory: WeaponType[]) => {
     let checked = false;
     let indeterminate = false;
@@ -56,7 +56,7 @@ function WeaponTypePicker({ includeDLC, weaponTypes, onWeaponTypesChanged }: Pro
   };
 
   const renderWeaponType = (weaponType: WeaponType) => {
-    if (!includeDLC && dlcWeaponTypes.includes(weaponType)) {
+    if (!includeDLCWeaponTypes && dlcWeaponTypes.includes(weaponType)) {
       return null;
     }
 
