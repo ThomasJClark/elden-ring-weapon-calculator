@@ -4,7 +4,6 @@ import {
   affinityOptions,
   reforgedAffinityOptions,
   convergenceAffinityOptions,
-  maxSpecialUpgradeLevel,
   type AffinityOption,
 } from "./uiUtils";
 
@@ -101,14 +100,14 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
         >
           The Convergence Mod
         </Link>{" "}
-        v2.0 Test Build
+        v2.0.2 Test Build
       </>
     ),
     affinityOptions: convergenceAffinityOptions,
     maxUpgradeLevel: 15,
     splitSpellScaling: true,
     fetch: () =>
-      fetch(`/regulation-convergence-v2.0.test-build.js?${import.meta.env.VITE_DATA_FORMAT}`),
+      fetch(`/regulation-convergence-v2.0.2.test-build.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
 };
 
