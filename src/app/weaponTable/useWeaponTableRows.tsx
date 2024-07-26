@@ -32,7 +32,6 @@ interface WeaponTableRowsOptions {
   effectiveOnly: boolean;
   twoHanding: boolean;
   upgradeLevel: number;
-  maxUpgradeLevel?: number;
   groupWeaponTypes: boolean;
 }
 
@@ -57,7 +56,6 @@ const useWeaponTableRows = ({
   offset,
   limit,
   upgradeLevel: regularUpgradeLevel,
-  maxUpgradeLevel = maxRegularUpgradeLevel,
   groupWeaponTypes,
   sortBy,
   reverse,
@@ -141,7 +139,6 @@ const useWeaponTableRows = ({
     regulationVersion,
     regularUpgradeLevel,
     specialUpgradeLevel,
-    maxUpgradeLevel,
     weaponTypes,
     affinityIds,
     includeDLC,

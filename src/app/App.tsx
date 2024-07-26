@@ -150,7 +150,6 @@ export default function App() {
     effectiveOnly,
     twoHanding,
     upgradeLevel,
-    maxUpgradeLevel: regulationVersion.maxUpgradeLevel,
     groupWeaponTypes,
   });
 

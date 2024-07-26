@@ -848,8 +848,10 @@ reinforceParamWeapons.forEach((reinforceParamWeapon, reinforceParamId) => {
   const reinforceTypeId = reinforceParamId - reinforceLevel;
 
   if (reinforceTypeIds.has(reinforceTypeId)) {
-    (reinforceTypesJson[reinforceTypeId] ??= [])[reinforceLevel] =
-      parseReinforceParamWeapon(reinforceParamWeapon);
+    reinforceTypesJson[reinforceTypeId] ??= [];
+    if (reinforceTypesJson[reinforceTypeId].length === reinforceLevel) {
+      reinforceTypesJson[reinforceTypeId].push(parseReinforceParamWeapon(reinforceParamWeapon));
+    }
   }
 });
 
