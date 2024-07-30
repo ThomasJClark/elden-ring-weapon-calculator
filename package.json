@@ -42,7 +42,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "buildData": "ts-node-esm src/buildData.ts",
-    "buildData:latest": "ts-node-esm src/buildData.ts vanilla public/regulation-vanilla-v1.12.3.js",
+    "buildData:latest": "ts-node-esm src/buildData.ts vanilla public/regulation-vanilla-v1.13.js",
     "buildData:reforged": "ts-node-esm src/buildData.ts reforged public/regulation-reforged-v0.13.48.js",
     "buildData:convergence": "ts-node-esm src/buildData.ts convergence public/regulation-convergence-v2.0.2.test-build.js",
     "rebuildWeaponData": "yarn buildData:latest && yarn buildData:reforged && yarn buildData:convergence"

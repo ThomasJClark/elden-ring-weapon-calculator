@@ -13,7 +13,6 @@ import { type RegulationVersion } from "../regulationVersions";
 import {
   allWeaponTypes,
   weaponTypeLabels,
-  maxRegularUpgradeLevel,
   maxSpecialUpgradeLevel,
   toSpecialUpgradeLevel,
 } from "../uiUtils";

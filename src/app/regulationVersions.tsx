@@ -41,7 +41,7 @@ export interface RegulationVersion {
 
 const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
   latest: {
-    name: "Patch 1.12.3 (latest)",
+    name: "Patch 1.13 (latest)",
     info: (
       <>
         <AlertTitle>
@@ -66,7 +66,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
       </>
     ),
     affinityOptions,
-    fetch: () => fetch(`/regulation-vanilla-v1.12.3.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-vanilla-v1.13.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   reforged: {
     name: "ELDEN RING Reforged (mod)",
