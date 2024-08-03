@@ -28,6 +28,7 @@ import WeaponTypePicker from "./WeaponTypePicker";
 import AffinityPicker from "./AffinityPicker";
 import Footer from "./Footer";
 import MiscFilterPicker from "./MiscFilterPicker";
+import WeaponNamePicker from "./WeaponNamePicker";
 
 const useMenuState = () => {
   const theme = useTheme();
@@ -102,6 +103,7 @@ export default function App() {
     regulationVersionName,
     affinityIds,
     weaponTypes,
+    weaponNames,
     attributes,
     includeDLC,
     effectiveOnly,
@@ -115,6 +117,7 @@ export default function App() {
     setRegulationVersionName,
     setAffinityIds,
     setWeaponTypes,
+    setWeaponNames,
     setAttribute,
     setIncludeDLC,
     setEffectiveOnly,
@@ -145,6 +148,7 @@ export default function App() {
     reverse,
     affinityIds,
     weaponTypes,
+    weaponNames,
     attributes,
     includeDLC,
     effectiveOnly,
@@ -230,6 +234,12 @@ export default function App() {
         affinityOptions={regulationVersion.affinityOptions}
         selectedAffinityIds={affinityIds}
         onAffinityIdsChanged={setAffinityIds}
+      />
+      <WeaponNamePicker
+        regulationVersionName={regulationVersionName}
+        includeDLC={includeDLC}
+        weaponNames={weaponNames}
+        onWeaponNamesChanged={setWeaponNames}
       />
       <WeaponTypePicker
         includeDLCWeaponTypes={canIncludeDLCWeaponTypes}
