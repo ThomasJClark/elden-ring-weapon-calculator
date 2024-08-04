@@ -683,7 +683,7 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     paired: ifNotDefault(row.isDualBlade === 1, false),
     sorceryTool: ifNotDefault(row.enableMagic === 1, false),
     incantationTool: ifNotDefault(row.enableMiracle === 1, false),
-    dlc,
+    dlc: ifNotDefault(dlc, false),
   };
 }
 
@@ -849,8 +849,8 @@ reinforceParamWeapons.forEach((reinforceParamWeapon, reinforceParamId) => {
 
   if (reinforceTypeIds.has(reinforceTypeId)) {
     reinforceTypesJson[reinforceTypeId] ??= [];
-    if (reinforceTypesJson[reinforceTypeId].length === reinforceLevel) {
-      reinforceTypesJson[reinforceTypeId].push(parseReinforceParamWeapon(reinforceParamWeapon));
+    if (reinforceTypesJson[reinforceTypeId]!.length === reinforceLevel) {
+      reinforceTypesJson[reinforceTypeId]!.push(parseReinforceParamWeapon(reinforceParamWeapon));
     }
   }
 });
