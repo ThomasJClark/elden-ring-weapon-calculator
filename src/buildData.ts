@@ -203,7 +203,6 @@ function readFmgXml(filename: string): Map<number, string | null> {
   return new Map(data.fmg.entries.text.map((entry: any) => [entry.id, entry["#text"]]));
 }
 
-const reforgedWeaponsUrl = "https://err.fandom.com/wiki/Weapons#New_Weapons";
 const convergence10NotesUrl =
   "https://docs.google.com/document/d/1JHX3bMxnIIct8MSZnXkyqpmhYKLPt8p8HY9FUcXKUNE/preview#heading=h.79qlt4tgl68h";
 const convergence13NotesUrl =
@@ -215,39 +214,40 @@ const convergence141NotesUrl =
 const convergence142NotesUrl =
   "https://docs.google.com/document/d/1G0aHybk5yH2h-9s8X0tEzriZTfYwLcE0ZGXKzAHo3XY/preview#heading=h.4qcy1ray1wky";
 
-const urlOverrides = new Map<number, string | null>([
-  ...(isReforged
-    ? ([
-        [1120000, reforgedWeaponsUrl], // Iron Spike
+const urlOverrides = new Map<number, string | null>(
+  isReforged
+    ? [
+        [1120000, "https://err.fandom.com/wiki/Iron_Spike"], // Iron Spike
         [1150000, "https://eldenring.fandom.com/wiki/Erdsteel_Dagger"], // Brass Dagger
-        [1170000, "https://err.fandom.com/wiki/Nightmaiden%27s_Edge"], // Nightmaiden's Edge
-        [2030000, reforgedWeaponsUrl], // Sun Realm Sword
-        [2100000, reforgedWeaponsUrl], // Marionette Short Sword
-        [2120000, reforgedWeaponsUrl], // Broken Straight Sword
-        [7130000, reforgedWeaponsUrl], // Red Wolf's Fang
-        [7160000, reforgedWeaponsUrl], // Avionette Scimitar
+        [1170000, "https://err.fandom.com/wiki/Night%27s_Edge"], // Night's Edge
+        [2030000, "https://err.fandom.com/wiki/Sun_Realm_Sword"], // Sun Realm Sword
+        [2100000, "https://err.fandom.com/wiki/Marionette_Short_Sword"], // Marionette Short Sword
+        [2120000, "https://err.fandom.com/wiki/Broken_Straight_Sword"], // Broken Straight Sword
+        [4040000, "https://eldenring.fandom.com/wiki/Zweihander"], // Zweihänder
+        [7130000, "https://err.fandom.com/wiki/Red_Wolf%27s_Fang"], // Red Wolf's Fang
+        [7160000, "https://err.fandom.com/wiki/Avionette_Scimitar"], // Avionette Scimitar
         [8090000, "https://err.fandom.com/wiki/Fury_of_Azash"], // Fury of Azash
-        [8110000, reforgedWeaponsUrl], // Makar's Ceremonial Cleaver
-        [10100000, reforgedWeaponsUrl], // Goldvine Branchstaff
-        [12030000, reforgedWeaponsUrl], // Pumpkin Head Sledgehammer
-        [14070000, reforgedWeaponsUrl], // Vulgar Militia Chain Sickle
-        [16100000, reforgedWeaponsUrl], // Disciple's Rotten Branch
-        [16170000, reforgedWeaponsUrl], // Grave Spear
-        [16180000, reforgedWeaponsUrl], // Lordsworn's Spear
-        [18120000, reforgedWeaponsUrl], // Avionette Pig Sticker
-        [18170000, reforgedWeaponsUrl], // Starcaller Spire
-        [21050000, reforgedWeaponsUrl], // Nox Flowing Fist
+        [8110000, "https://err.fandom.com/wiki/Makar%27s_Ceremonial_Cleaver"], // Makar's Ceremonial Cleaver
+        [10100000, "https://err.fandom.com/wiki/Goldvine_Branchstaff"], // Goldvine Branchstaff
+        [12030000, "https://err.fandom.com/wiki/Pumpkin_Sledge"], // Pumpkin Sledge
+        [14070000, "https://err.fandom.com/wiki/Vulgar_Militia_Chain_Sickle"], // Vulgar Militia Chain Sickle
+        [16100000, "https://err.fandom.com/wiki/Disciple%27s_Rotten_Branch"], // Disciple's Rotten Branch
+        [16170000, "https://err.fandom.com/wiki/Grave_Spear"], // Grave Spear
+        [16180000, "https://err.fandom.com/wiki/Lordsworn%27s_Spear"], // Lordsworn's Spear
+        [18120000, "https://err.fandom.com/wiki/Avionette_Pig_Sticker"], // Avionette Pig Sticker
+        [18170000, "https://err.fandom.com/wiki/Starcaller_Spire"], // Starcaller Spire
+        [21050000, "https://err.fandom.com/wiki/Nox_Flowing_Fist"], // Nox Flowing Fist
         [21140000, "https://err.fandom.com/wiki/Fellthorn_Clutches"], // Fellthorn Clutches
-        [22040000, reforgedWeaponsUrl], // Crude Iron Claws
+        [22040000, "https://err.fandom.com/wiki/Crude_Iron_Claws"], // Crude Iron Claws
+        [23090000, "https://err.fandom.com/wiki/Fellthorn_Stake"], // Fellthorn Stake
         [11110000, "https://eldenring.fandom.com/Scepter_of_the_All-Knowing"], // Scepter of the All-Knowing Staff
         [16140000, "https://eldenring.fandom.com/wiki/Spiked_Spear"], // Marionette Spiked Spear
         [18140000, "https://eldenring.fandom.com/wiki/Dragon_Halberd"], // Dragonscale Halberd
         [23150000, "https://eldenring.fandom.com/wiki/Rotten_Greataxe"], // Rotten Duelist Greataxe
         [33210000, "https://eldenring.fandom.com/Carian_Glintstone_Staff"], // Dark Glintstone Staff
-      ] as const)
-    : []),
-  ...(isConvergence
-    ? ([
+      ]
+    : isConvergence
+    ? [
         [1120000, convergence10NotesUrl], // Surgeon's Catlinger
         [1170000, convergence10NotesUrl], // Midnight Dagger
         [1180000, convergence14NotesUrl], // Deathrite Dagger
@@ -259,6 +259,7 @@ const urlOverrides = new Map<number, string | null>([
         [3240000, convergence142NotesUrl], // Dyru's Greatsword
         [4120000, convergence13NotesUrl], // Gravelstone Arcblades
         [4130000, convergence13NotesUrl], // Osian's Greatsword
+        [4530000, "https://eldenring.fandom.com/wiki/Remembrance_of_a_God_and_a_Lord"], // Greatswords of Radahn
         [5070000, convergence10NotesUrl], // Thorn of the Guilty
         [5080000, convergence10NotesUrl], // Foil of Caddock
         [5090000, convergence10NotesUrl], // Quicksilver Rapier
@@ -266,7 +267,6 @@ const urlOverrides = new Map<number, string | null>([
         [7090000, convergence13NotesUrl], // Zephyr Blades
         [7160000, convergence10NotesUrl], // Blade of Scarlet Bloom
         [7170000, convergence13NotesUrl], // Godskin Flayer
-        [7170000, convergence10NotesUrl], // Matriarch's Shotel
         [7180000, convergence10NotesUrl], // Nomad's Kilij
         [8090000, convergence10NotesUrl], // Three Finger Blade
         [9050000, convergence14NotesUrl], // Star Shadow
@@ -308,8 +308,8 @@ const urlOverrides = new Map<number, string | null>([
         [33310000, convergence10NotesUrl], // Snow Witch Staff
         [33320000, convergence10NotesUrl], // Staff of Briar
         [33330000, convergence10NotesUrl], // Lavastone Staff
-        [33340000, convergence10NotesUrl], // Tempestcaller Staff
-        [33350000, convergence10NotesUrl], // Stormcaller Staff
+        [33340000, convergence10NotesUrl], // Tempestcaller's Staff
+        [33350000, convergence10NotesUrl], // Stormcaller's Staff
         [34100000, convergence10NotesUrl], // Godskin Seal
         [34110000, convergence10NotesUrl], // Fire Monk's Seal
         [34120000, convergence10NotesUrl], // Dragon Cult Seal
@@ -328,14 +328,14 @@ const urlOverrides = new Map<number, string | null>([
         [2200000, "https://eldenring.fandom.com/Miquellan_Knight's_Sword"], // Fell Flame Sword
         [2250000, "https://eldenring.fandom.com/Lazuli_Glintstone_Sword"], // Dragonkin Seeker Sword
         [3070000, "https://eldenring.fandom.com/Alabaster_Lord's_Sword"], // Alabaster Lord's Greatsword
-        [18110000, "https://eldenring.fandom.com/Guardian's_Swordspear"], // Guardian Spearblade
+        [18110000, "https://eldenring.fandom.com/Guardian's_Swordspear"], // Guardian's Spearblade
         [18140000, "https://eldenring.fandom.com/Dragon_Halberd"], // Dragonkin Halberd
         [33050000, "https://eldenring.fandom.com/Gelmir_Glintstone_Staff"], // Gelmir Lava Staff
         [33200000, "https://eldenring.fandom.com/Academy_Glintstone_Staff"], // Dragon Student Staff
         [33240000, "https://eldenring.fandom.com/Lusat's_Glintstone_Staff"], // Lusat's Night Staff
-      ] as const)
-    : []),
-]);
+      ]
+    : [],
+);
 
 // Allow skipping the unpack step (which is pretty slow) if it's already been done on a previous run.
 if (env.SKIP_UNPACK && env.SKIP_UNPACK !== "0") {
