@@ -90,7 +90,10 @@ function evaluateCalcCorrectGraph(calcCorrectGraph: CalcCorrectGraph) {
       attributeValue++
     ) {
       if (!arr[attributeValue]) {
-        let ratio = (attributeValue - prevStage.maxVal) / (stage.maxVal - prevStage.maxVal);
+        let ratio = Math.max(
+          0,
+          Math.min(1, (attributeValue - prevStage.maxVal) / (stage.maxVal - prevStage.maxVal)),
+        );
 
         if (prevStage.adjPt > 0) {
           ratio = ratio ** prevStage.adjPt;
