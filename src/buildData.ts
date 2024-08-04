@@ -397,6 +397,8 @@ const unobtainableWeapons = new Set(
         17082100, // Vyke's War Spear NXE [Blessed]
         17082200, // Vyke's War Spear NXE [Bestial]
         17082300, // Vyke's War Spear NXE [Fated]
+        33290000, // ST Staff
+        33300000, // SW Staff
       ]
     : isConvergence
     ? [
