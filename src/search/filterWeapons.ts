@@ -13,6 +13,11 @@ export interface FilterWeaponsOptions {
   weaponTypes: ReadonlySet<WeaponType>;
 
   /**
+   * Only include these weapons
+   */
+  weaponNames: ReadonlySet<string>;
+
+  /**
    * Only include weapons infused with one of these affinities
    */
   affinityIds: ReadonlySet<number>;
@@ -43,6 +48,7 @@ export default function filterWeapons(
   weapons: readonly Weapon[],
   {
     weaponTypes,
+    weaponNames,
     affinityIds,
     effectiveWithAttributes,
     includeDLC,
@@ -53,6 +59,10 @@ export default function filterWeapons(
   function filterWeapon(weapon: Weapon): boolean {
     if (!includeDLC && weapon.dlc) {
       return false;
+    }
+
+    if (weaponNames.size > 0) {
+      if (!weaponNames.has(weapon.weaponName)) return false;
     }
 
     if (weaponTypes.size > 0) {

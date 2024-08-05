@@ -11,6 +11,7 @@ interface AppState {
   readonly twoHanding: boolean;
   readonly upgradeLevel: number;
   readonly weaponTypes: readonly WeaponType[];
+  readonly weaponNames: readonly string[];
   readonly affinityIds: readonly number[];
   readonly includeDLC: boolean;
   readonly effectiveOnly: boolean;
@@ -27,6 +28,7 @@ interface UpdateAppState extends AppState {
   setTwoHanding(twoHanding: boolean): void;
   setUpgradeLevel(upgradeLevel: number): void;
   setWeaponTypes(weaponTypes: readonly WeaponType[]): void;
+  setWeaponNames(weaponNames: readonly string[]): void;
   setAffinityIds(affinityIds: readonly number[]): void;
   setIncludeDLC(includeDLC: boolean): void;
   setEffectiveOnly(effectiveOnly: boolean): void;
@@ -49,6 +51,7 @@ const defaultAppState: AppState = {
   twoHanding: false,
   upgradeLevel: 25,
   weaponTypes: [WeaponType.AXE],
+  weaponNames: [],
   affinityIds: [0, -1], // Standard and Special
   includeDLC: true,
   effectiveOnly: false,
@@ -139,6 +142,9 @@ export default function useAppState() {
       },
       setWeaponTypes(weaponTypes) {
         setAppState((prevAppState) => ({ ...prevAppState, weaponTypes }));
+      },
+      setWeaponNames(weaponNames) {
+        setAppState((prevAppState) => ({ ...prevAppState, weaponNames }));
       },
       setAffinityIds(affinityIds) {
         setAppState((prevAppState) => ({ ...prevAppState, affinityIds }));
