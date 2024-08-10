@@ -408,6 +408,7 @@ const unobtainableWeapons = new Set(
         19030000, // Moon Breaker Scythe
 
         // Removed vanilla
+        4550000, // Greatsword of Radahn (Light)
         33040000, // Crystal Staff
         33090000, // Carian Regal Scepter
         33130000, // Astrologer's Staff
