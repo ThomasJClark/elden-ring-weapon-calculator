@@ -16,6 +16,7 @@ import {
   maxSpecialUpgradeLevel,
   toSpecialUpgradeLevel,
 } from "../uiUtils";
+import type { WeaponOption } from "../WeaponPicker";
 
 interface WeaponTableRowsOptions {
   weapons: readonly Weapon[];
@@ -32,6 +33,7 @@ interface WeaponTableRowsOptions {
   twoHanding: boolean;
   upgradeLevel: number;
   groupWeaponTypes: boolean;
+  selectedWeapons: WeaponOption[];
 }
 
 interface WeaponTableRowsResult {
@@ -68,6 +70,7 @@ const useWeaponTableRows = ({
   const affinityIds = useDeferredValue(options.affinityIds);
   const effectiveOnly = useDeferredValue(options.effectiveOnly);
   const includeDLC = useDeferredValue(options.includeDLC);
+  const selectedWeapons = useDeferredValue(options.selectedWeapons);
 
   const specialUpgradeLevel = toSpecialUpgradeLevel(regularUpgradeLevel);
 
@@ -98,6 +101,10 @@ const useWeaponTableRows = ({
       includeDLC,
       twoHanding,
       uninfusableWeaponTypes,
+      selectedWeapons: selectedWeapons.reduce(
+        (acc, weapon) => (acc.add(weapon.value), acc),
+        new Set<string>(),
+      ),
     });
 
     const rows = filteredWeapons.map((weapon): WeaponTableRowData => {
@@ -143,6 +150,7 @@ const useWeaponTableRows = ({
     includeDLC,
     effectiveOnly,
     uninfusableWeaponTypes,
+    selectedWeapons,
   ]);
 
   const memoizedAttackPowerTypes = useMemo(

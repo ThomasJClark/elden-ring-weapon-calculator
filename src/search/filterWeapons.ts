@@ -34,6 +34,11 @@ export interface FilterWeaponsOptions {
    * filtering purposes since no weapons can have affinities
    */
   uninfusableWeaponTypes?: Set<WeaponType>;
+
+  /**
+   * Weapon Names to apply to the filter. The weapon name will be "Dagger", not "Cold Dagger" for affinities
+   */
+  selectedWeapons?: Set<string>;
 }
 
 /**
@@ -48,11 +53,34 @@ export default function filterWeapons(
     includeDLC,
     twoHanding,
     uninfusableWeaponTypes,
+    selectedWeapons,
   }: FilterWeaponsOptions,
 ): readonly Weapon[] {
   function filterWeapon(weapon: Weapon): boolean {
+    if (affinityIds.size > 0) {
+      if (
+        !affinityIds.has(weapon.affinityId) &&
+        // Treat uninfusable categories of armaments (torches etc.) as either standard or unique,
+        // since the distinction doesn't apply to these categories
+        !(
+          uninfusableWeaponTypes?.has(weapon.weaponType) &&
+          (affinityIds.has(0) || affinityIds.has(-1))
+        )
+      ) {
+        return false;
+      }
+    }
+
     if (!includeDLC && weapon.dlc) {
       return false;
+    }
+
+    // This works differently to the others filters and can result in an early return 'true'.
+    // The justification here, is that
+    // * It's useful to first apply the affinity filter, so that you can look at only the specified affinity for the weapon you're interested in
+    // * Since your're explicitly filtering on a weapon name, it's nice to not need to toggle on all the weapon types or know which type it is.
+    if (selectedWeapons && selectedWeapons.size > 0) {
+      return selectedWeapons.has(weapon.weaponName);
     }
 
     if (weaponTypes.size > 0) {
@@ -63,20 +91,6 @@ export default function filterWeapons(
         // Reforged.
         !(weapon.sorceryTool && weaponTypes.has(WeaponType.GLINTSTONE_STAFF)) &&
         !(weapon.incantationTool && weaponTypes.has(WeaponType.SACRED_SEAL))
-      ) {
-        return false;
-      }
-    }
-
-    if (affinityIds.size > 0) {
-      if (
-        !affinityIds.has(weapon.affinityId) &&
-        // Treat uninfusable categories of armaments (torches etc.) as either standard or unique,
-        // since the distinction doesn't apply to these categories
-        !(
-          uninfusableWeaponTypes?.has(weapon.weaponType) &&
-          (affinityIds.has(0) || affinityIds.has(-1))
-        )
       ) {
         return false;
       }

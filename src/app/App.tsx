@@ -28,6 +28,8 @@ import WeaponTypePicker from "./WeaponTypePicker";
 import AffinityPicker from "./AffinityPicker";
 import Footer from "./Footer";
 import MiscFilterPicker from "./MiscFilterPicker";
+import WeaponPicker, { makeWeaponOptionsFromWeapon } from "./WeaponPicker";
+import type { Weapon } from "../calculator/weapon";
 
 const useMenuState = () => {
   const theme = useTheme();
@@ -112,6 +114,7 @@ export default function App() {
     numericalScaling,
     sortBy,
     reverse,
+    selectedWeapons,
     setRegulationVersionName,
     setAffinityIds,
     setWeaponTypes,
@@ -125,6 +128,7 @@ export default function App() {
     setNumericalScaling,
     setSortBy,
     setReverse,
+    setSelectedWeapons,
   } = useAppState();
 
   const { isMobile, menuOpen, menuOpenMobile, onMenuOpenChanged } = useMenuState();
@@ -151,6 +155,7 @@ export default function App() {
     twoHanding,
     upgradeLevel,
     groupWeaponTypes,
+    selectedWeapons,
   });
 
   const tablePlaceholder = useMemo(
@@ -213,6 +218,18 @@ export default function App() {
   const canIncludeDLCWeaponTypes =
     (regulationVersionName === "latest" && includeDLC) || regulationVersionName === "convergence";
 
+  const weaponPickerOptions = useMemo(() => {
+    const dedupedWeaponsByWeaponName = [
+      ...weapons
+        .reduce((acc, weapon) => {
+          return acc.set(weapon.weaponName, weapon);
+        }, new Map<string, Weapon>())
+        .values(),
+    ];
+
+    return makeWeaponOptionsFromWeapon(dedupedWeaponsByWeaponName);
+  }, [weapons]);
+
   const drawerContent = (
     <>
       <RegulationVersionPicker
@@ -230,6 +247,11 @@ export default function App() {
         affinityOptions={regulationVersion.affinityOptions}
         selectedAffinityIds={affinityIds}
         onAffinityIdsChanged={setAffinityIds}
+      />
+      <WeaponPicker
+        selectedWeapons={selectedWeapons}
+        onSelectedWeaponsChanged={setSelectedWeapons}
+        weaponOptions={weaponPickerOptions}
       />
       <WeaponTypePicker
         includeDLCWeaponTypes={canIncludeDLCWeaponTypes}
