@@ -442,6 +442,7 @@ const wepTypeOverrides = new Map([
         [18100000, WeaponType.HALBERD], // Loretta's War Sickle
         [18170000, WeaponType.HALBERD], // Starcaller Spire
         [21140000, WeaponType.FIST], // Fellthorn Clutches
+        [34500000, WeaponType.HAND_TO_HAND], // Dryleaf Seal
       ] as const)
     : []),
 ]);
@@ -859,18 +860,6 @@ for (const { reinforceTypeId } of weaponsJson) {
       nextReinforceParamId++;
     } else if (reinforceType.length) {
       break;
-    }
-  }
-}
-
-// Reforged includes overlapping reinforce types. Truncate the extended entries so we don't show
-// +12 somber weapons or +26/+27/+28 regular weapons.
-if (isReforged) {
-  for (const reinforceType of Object.values(reinforceTypesJson)) {
-    if (reinforceType!.length < 26) {
-      reinforceType!.splice(11);
-    } else {
-      reinforceType!.splice(26);
     }
   }
 }
