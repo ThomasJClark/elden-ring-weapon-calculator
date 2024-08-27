@@ -200,7 +200,12 @@ function readParam(filename: string): Map<number, ParamRow> {
  */
 function readFmgXml(filename: string): Map<number, string | null> {
   const data = xmlParser.parse(readFileSync(`${filename}.xml`, "utf-8"));
-  return new Map(data.fmg.entries.text.map((entry: any) => [entry.id, entry["#text"]]));
+  const { text } = data.fmg.entries;
+  if (!Array.isArray(text)) {
+    return new Map();
+  }
+
+  return new Map(text.map((entry) => [entry.id, entry["#text"]]));
 }
 
 const convergence10NotesUrl =
@@ -500,12 +505,6 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
   } else if (dlcWeaponNames.has(row.id)) {
     name = dlcWeaponNames.get(row.id)!;
     dlc = isVanilla;
-
-    // Temporary: DLC weapons aren't acquirable in Reforged yet
-    if (isReforged) {
-      debug(`DLC weapon ${row.id}, ignoring until obtainable in Reforged`);
-      return null;
-    }
   } else {
     debug(`No weapon title found for ${row.id}, ignoring`);
     return null;
@@ -844,19 +843,37 @@ const attackElementCorrectsJson = Object.fromEntries(
 );
 
 // Accumulate every ReinforceParamWeapon entry used by at least one weapon
-const reinforceTypeIds = new Set(weaponsJson.map((weapon) => weapon.reinforceTypeId));
-const reinforceTypesJson: { [reinforceId in number]?: ReinforceParamWeapon[] } = {};
-reinforceParamWeapons.forEach((reinforceParamWeapon, reinforceParamId) => {
-  const reinforceLevel = reinforceParamId % 50;
-  const reinforceTypeId = reinforceParamId - reinforceLevel;
+const reinforceTypesJson: { [reinforceTypeId in number]?: ReinforceParamWeapon[] } = {};
 
-  if (reinforceTypeIds.has(reinforceTypeId)) {
-    reinforceTypesJson[reinforceTypeId] ??= [];
-    if (reinforceTypesJson[reinforceTypeId]!.length === reinforceLevel) {
-      reinforceTypesJson[reinforceTypeId]!.push(parseReinforceParamWeapon(reinforceParamWeapon));
+for (const { reinforceTypeId } of weaponsJson) {
+  if (reinforceTypesJson[reinforceTypeId] != null) {
+    continue;
+  }
+
+  const reinforceType: ReinforceParamWeapon[] = (reinforceTypesJson[reinforceTypeId] = []);
+
+  let nextReinforceParamId = reinforceTypeId;
+  for (const [reinforceParamId, reinforceParamWeapon] of reinforceParamWeapons) {
+    if (reinforceParamId === nextReinforceParamId) {
+      reinforceType.push(parseReinforceParamWeapon(reinforceParamWeapon));
+      nextReinforceParamId++;
+    } else if (reinforceType.length) {
+      break;
     }
   }
-});
+}
+
+// Reforged includes overlapping reinforce types. Truncate the extended entries so we don't show
+// +12 somber weapons or +26/+27/+28 regular weapons.
+if (isReforged) {
+  for (const reinforceType of Object.values(reinforceTypesJson)) {
+    if (reinforceType!.length < 26) {
+      reinforceType!.splice(11);
+    } else {
+      reinforceType!.splice(26);
+    }
+  }
+}
 
 // Accumulate every SpEffectParam entry used by at least one weapon to add innate status effect
 // buildup

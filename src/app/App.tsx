@@ -208,10 +208,10 @@ export default function App() {
     );
   }
 
-  // Temporary: ELDEN RING Reforged doesn't have DLC weapons yet
-  const canIncludeDLC = regulationVersionName === "latest";
-  const canIncludeDLCWeaponTypes =
-    (regulationVersionName === "latest" && includeDLC) || regulationVersionName === "convergence";
+  // The Convergence and Reforged don't separate DLC content, so this option is only relevant to
+  // vanilla
+  const showIncludeDLC = regulationVersionName === "latest";
+  const includeDLCWeaponTypes = includeDLC || !showIncludeDLC;
 
   const drawerContent = (
     <>
@@ -220,7 +220,7 @@ export default function App() {
         onRegulationVersionNameChanged={setRegulationVersionName}
       />
       <MiscFilterPicker
-        showIncludeDLC={canIncludeDLC}
+        showIncludeDLC={showIncludeDLC}
         includeDLC={includeDLC}
         effectiveOnly={effectiveOnly}
         onIncludeDLCChanged={setIncludeDLC}
@@ -232,7 +232,7 @@ export default function App() {
         onAffinityIdsChanged={setAffinityIds}
       />
       <WeaponTypePicker
-        includeDLCWeaponTypes={canIncludeDLCWeaponTypes}
+        includeDLCWeaponTypes={includeDLCWeaponTypes}
         weaponTypes={weaponTypes}
         onWeaponTypesChanged={setWeaponTypes}
       />
