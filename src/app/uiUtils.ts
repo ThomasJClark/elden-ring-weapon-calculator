@@ -32,6 +32,19 @@ import errOccultAffinityIcon from "./img/errOccultAffinity.webp";
 import errRottenAffinityIcon from "./img/errRottenAffinity.webp";
 import errSacredAffinityIcon from "./img/errSacredAffinity.webp";
 import errSoporificAffinityIcon from "./img/errSoporificAffinity.webp";
+import cnvAberrantAffinityIcon from "./img/cnvAberrantAffinity.webp";
+import cnvBestialAffinityIcon from "./img/cnvBestialAffinity.webp";
+import cnvDeathAffinityIcon from "./img/cnvDeathAffinity.webp";
+import cnvDragonkinAffinityIcon from "./img/cnvDragonkinAffinity.webp";
+import cnvFlameAffinityIcon from "./img/cnvFlameAffinity.webp";
+import cnvFrenzyAffinityIcon from "./img/cnvFrenzyAffinity.webp";
+import cnvGodslayerAffinityIcon from "./img/cnvGodslayerAffinity.webp";
+import cnvGravityAffinityIcon from "./img/cnvGravityAffinity.webp";
+import cnvLavaAffinityIcon from "./img/cnvLavaAffinity.webp";
+import cnvMysticAffinityIcon from "./img/cnvMysticAffinity.webp";
+import cnvNightAffinityIcon from "./img/cnvNightAffinity.webp";
+import cnvRottenAffinityIcon from "./img/cnvRottenAffinity.webp";
+import cnvStormAffinityIcon from "./img/cnvStormAffinity.webp";
 import scarletRotStatusIcon from "./img/scarletRotStatus.webp";
 import madnessStatusIcon from "./img/madnessStatus.webp";
 import sleepStatusIcon from "./img/sleepStatus.webp";
@@ -99,29 +112,29 @@ export const reforgedAffinityOptions = new Map<number, AffinityOption>([
  * Affinity names from The Convergence mod
  */
 export const convergenceAffinityOptions = new Map<number, AffinityOption>([
-  [0, { text: "Standard" }],
-  [1, { text: "Heavy" }],
-  [2, { text: "Keen" }],
-  [3, { text: "Quality" }],
-  [4, { text: "Glint" }],
-  [5, { text: "Dragonkin" }],
-  [6, { text: "Gravity" }],
-  [7, { text: "Flame" }],
-  [8, { text: "Golden" }],
-  [9, { text: "Draconic" }],
-  [10, { text: "Bestial" }],
-  [11, { text: "Night" }],
-  [12, { text: "Lava" }],
-  [13, { text: "Frenzy" }],
-  [14, { text: "Death" }],
-  [15, { text: "Godslayer" }],
-  [16, { text: "Frost" }],
-  [17, { text: "Aberrant" }],
-  [18, { text: "Bloodflame" }],
-  [19, { text: "Rotten" }],
-  [20, { text: "Storm" }],
-  [21, { text: "Mystic" }],
-  [-1, { text: "Unique" }], // Special fake affinity ID for uninfusable weapons
+  [0, { text: "Standard", icon: standardAffinityIcon }],
+  [1, { text: "Heavy", icon: heavyAffinityIcon }],
+  [2, { text: "Keen", icon: keenAffinityIcon }],
+  [3, { text: "Quality", icon: qualityAffinityIcon }],
+  [4, { text: "Glint", icon: magicAffinityIcon }],
+  [5, { text: "Dragonkin", icon: cnvDragonkinAffinityIcon }],
+  [6, { text: "Gravity", icon: cnvGravityAffinityIcon }],
+  [7, { text: "Flame", icon: cnvFlameAffinityIcon }],
+  [8, { text: "Golden", icon: sacredAffinityIcon }],
+  [9, { text: "Draconic", icon: lightningAffinityIcon }],
+  [10, { text: "Bestial", icon: cnvBestialAffinityIcon }],
+  [11, { text: "Night", icon: cnvNightAffinityIcon }],
+  [12, { text: "Lava", icon: cnvLavaAffinityIcon }],
+  [13, { text: "Frenzy", icon: cnvFrenzyAffinityIcon }],
+  [14, { text: "Death", icon: cnvDeathAffinityIcon }],
+  [15, { text: "Godslayer", icon: cnvGodslayerAffinityIcon }],
+  [16, { text: "Frost", icon: coldAffinityIcon }],
+  [17, { text: "Aberrant", icon: cnvAberrantAffinityIcon }],
+  [18, { text: "Bloodflame", icon: bloodAffinityIcon }],
+  [19, { text: "Rotten", icon: cnvRottenAffinityIcon }],
+  [20, { text: "Storm", icon: cnvStormAffinityIcon }],
+  [21, { text: "Mystic", icon: cnvMysticAffinityIcon }],
+  [-1, { text: "Unique", icon: specialWeaponIcon }], // Special fake affinity ID for uninfusable weapons
 ]);
 
 /**
