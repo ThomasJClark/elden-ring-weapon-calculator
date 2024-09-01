@@ -229,6 +229,7 @@ const urlOverrides = new Map<number, string | null>(
         [2100000, "https://err.fandom.com/wiki/Marionette_Short_Sword"], // Marionette Short Sword
         [2120000, "https://err.fandom.com/wiki/Broken_Straight_Sword"], // Broken Straight Sword
         [4040000, "https://eldenring.fandom.com/wiki/Zweihander"], // Zweihänder
+        [4530000, "https://eldenring.fandom.com/wiki/Remembrance_of_a_God_and_a_Lord"], // Greatswords of Radahn
         [7130000, "https://err.fandom.com/wiki/Red_Wolf%27s_Fang"], // Red Wolf's Fang
         [7160000, "https://err.fandom.com/wiki/Avionette_Scimitar"], // Avionette Scimitar
         [8090000, "https://err.fandom.com/wiki/Fury_of_Azash"], // Fury of Azash
@@ -377,6 +378,7 @@ const unobtainableWeapons = new Set(
   isReforged
     ? [
         1910000, // Reduvia (Esgar- Priest of Blood)
+        4550000, // Greatsword of Radahn (Dumb)
         11170000, // Gideon's Scepter of the All-Knowing
         17080000, // Vyke's War Spear NXE
         17080100, // Vyke's War Spear NXE [Heavy]
