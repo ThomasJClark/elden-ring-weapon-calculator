@@ -28,6 +28,8 @@ import WeaponTypePicker from "./WeaponTypePicker";
 import AffinityPicker from "./AffinityPicker";
 import Footer from "./Footer";
 import MiscFilterPicker from "./MiscFilterPicker";
+import WeaponPicker, { makeWeaponOptionsFromWeapon } from "./WeaponPicker";
+import type { Weapon } from "../calculator/weapon";
 
 const useMenuState = () => {
   const theme = useTheme();
@@ -112,6 +114,7 @@ export default function App() {
     numericalScaling,
     sortBy,
     reverse,
+    selectedWeapons,
     setRegulationVersionName,
     setAffinityIds,
     setWeaponTypes,
@@ -125,6 +128,7 @@ export default function App() {
     setNumericalScaling,
     setSortBy,
     setReverse,
+    setSelectedWeapons,
   } = useAppState();
 
   const { isMobile, menuOpen, menuOpenMobile, onMenuOpenChanged } = useMenuState();
@@ -151,6 +155,7 @@ export default function App() {
     twoHanding,
     upgradeLevel,
     groupWeaponTypes,
+    selectedWeapons,
   });
 
   const tablePlaceholder = useMemo(
@@ -213,6 +218,18 @@ export default function App() {
   const showIncludeDLC = regulationVersionName === "latest";
   const includeDLCWeaponTypes = includeDLC || !showIncludeDLC;
 
+  const weaponPickerOptions = useMemo(() => {
+    const dedupedWeaponsByWeaponName = [
+      ...weapons
+        .reduce((acc, weapon) => {
+          return acc.set(weapon.weaponName, weapon);
+        }, new Map<string, Weapon>())
+        .values(),
+    ].filter((weapon) => (includeDLC ? true : !weapon.dlc));
+
+    return makeWeaponOptionsFromWeapon(dedupedWeaponsByWeaponName);
+  }, [weapons, includeDLC]);
+
   const drawerContent = (
     <>
       <RegulationVersionPicker
@@ -225,6 +242,11 @@ export default function App() {
         effectiveOnly={effectiveOnly}
         onIncludeDLCChanged={setIncludeDLC}
         onEffectiveOnlyChanged={setEffectiveOnly}
+      />
+      <WeaponPicker
+        selectedWeapons={selectedWeapons}
+        onSelectedWeaponsChanged={setSelectedWeapons}
+        weaponOptions={weaponPickerOptions}
       />
       <AffinityPicker
         affinityOptions={regulationVersion.affinityOptions}

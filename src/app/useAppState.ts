@@ -4,6 +4,7 @@ import type { SortBy } from "../search/sortWeapons";
 import type { RegulationVersionName } from "./regulationVersions";
 import regulationVersions from "./regulationVersions";
 import { dlcWeaponTypes } from "./uiUtils";
+import { type WeaponOption } from "./WeaponPicker";
 
 interface AppState {
   readonly regulationVersionName: RegulationVersionName;
@@ -19,6 +20,7 @@ interface AppState {
   readonly numericalScaling: boolean;
   readonly sortBy: SortBy;
   readonly reverse: boolean;
+  readonly selectedWeapons: WeaponOption[];
 }
 
 interface UpdateAppState extends AppState {
@@ -35,6 +37,7 @@ interface UpdateAppState extends AppState {
   setNumericalScaling(numericalScaling: boolean): void;
   setSortBy(sortBy: SortBy): void;
   setReverse(reverse: boolean): void;
+  setSelectedWeapons(weapons: WeaponOption[]): void;
 }
 
 const defaultAppState: AppState = {
@@ -57,6 +60,7 @@ const defaultAppState: AppState = {
   numericalScaling: false,
   sortBy: "totalAttack",
   reverse: false,
+  selectedWeapons: [],
 };
 
 /**
@@ -169,6 +173,9 @@ export default function useAppState() {
       },
       setReverse(reverse) {
         setAppState((prevAppState) => ({ ...prevAppState, reverse }));
+      },
+      setSelectedWeapons(selectedWeapons) {
+        setAppState((prevAppState) => ({ ...prevAppState, selectedWeapons }));
       },
     }),
     [],
