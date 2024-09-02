@@ -225,10 +225,10 @@ export default function App() {
           return acc.set(weapon.weaponName, weapon);
         }, new Map<string, Weapon>())
         .values(),
-    ];
+    ].filter((weapon) => (includeDLC ? true : !weapon.dlc));
 
     return makeWeaponOptionsFromWeapon(dedupedWeaponsByWeaponName);
-  }, [weapons]);
+  }, [weapons, includeDLC]);
 
   const drawerContent = (
     <>
@@ -243,15 +243,15 @@ export default function App() {
         onIncludeDLCChanged={setIncludeDLC}
         onEffectiveOnlyChanged={setEffectiveOnly}
       />
-      <AffinityPicker
-        affinityOptions={regulationVersion.affinityOptions}
-        selectedAffinityIds={affinityIds}
-        onAffinityIdsChanged={setAffinityIds}
-      />
       <WeaponPicker
         selectedWeapons={selectedWeapons}
         onSelectedWeaponsChanged={setSelectedWeapons}
         weaponOptions={weaponPickerOptions}
+      />
+      <AffinityPicker
+        affinityOptions={regulationVersion.affinityOptions}
+        selectedAffinityIds={affinityIds}
+        onAffinityIdsChanged={setAffinityIds}
       />
       <WeaponTypePicker
         includeDLCWeaponTypes={canIncludeDLCWeaponTypes}

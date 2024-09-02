@@ -1,5 +1,5 @@
-import { Autocomplete, Box, TextField, Typography } from "@mui/material";
-import { memo, useCallback, useMemo } from "react";
+import { Autocomplete, Box, TextField } from "@mui/material";
+import { memo, useCallback } from "react";
 import type { Weapon } from "../calculator/weapon";
 import { weaponTypeLabels } from "./uiUtils";
 
@@ -46,9 +46,6 @@ function WeaponPicker({ onSelectedWeaponsChanged, weaponOptions, selectedWeapons
 
   return (
     <Box>
-      <Typography component="h2" variant="h6" sx={{ mb: 1 }}>
-        Weapons
-      </Typography>
       <Autocomplete
         multiple
         options={weaponOptions}
