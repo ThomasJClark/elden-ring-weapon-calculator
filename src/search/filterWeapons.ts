@@ -38,7 +38,7 @@ export interface FilterWeaponsOptions {
   /**
    * Weapon Names to apply to the filter. The weapon name will be "Dagger", not "Cold Dagger" for affinities
    */
-  selectedWeapons?: Set<string>;
+  selectedWeapons: Set<string>;
 }
 
 /**
@@ -56,6 +56,30 @@ export default function filterWeapons(
     selectedWeapons,
   }: FilterWeaponsOptions,
 ): readonly Weapon[] {
+  // True if any affinities other than Unique are selected
+  const anyNonUniqueAffinity = [...affinityIds].some((affinityId) => affinityId !== -1);
+
+  // Filter based on a list of specifric weapons selected by the user, and affinities if any are
+  // chosen
+  function filterWeaponWithSelections(weapon: Weapon): boolean {
+    if (!selectedWeapons.has(weapon.weaponName)) {
+      return false;
+    }
+
+    if (!includeDLC && weapon.dlc) {
+      return false;
+    }
+
+    // If the weapon can be infused and affinities are selected, only include variants with a
+    // selected affinity option
+    if (anyNonUniqueAffinity) {
+      return weapon.affinityId === -1 || affinityIds.has(weapon.affinityId);
+    }
+
+    return true;
+  }
+
+  // Filter based on any chosen affinities and weapon types
   function filterWeapon(weapon: Weapon): boolean {
     if (affinityIds.size > 0) {
       if (
@@ -73,14 +97,6 @@ export default function filterWeapons(
 
     if (!includeDLC && weapon.dlc) {
       return false;
-    }
-
-    // This works differently to the others filters and can result in an early return 'true'.
-    // The justification here, is that
-    // * It's useful to first apply the affinity filter, so that you can look at only the specified affinity for the weapon you're interested in
-    // * Since your're explicitly filtering on a weapon name, it's nice to not need to toggle on all the weapon types or know which type it is.
-    if (selectedWeapons && selectedWeapons.size > 0) {
-      return selectedWeapons.has(weapon.weaponName);
     }
 
     if (weaponTypes.size > 0) {
@@ -115,5 +131,5 @@ export default function filterWeapons(
     return true;
   }
 
-  return weapons.filter(filterWeapon);
+  return weapons.filter(selectedWeapons.size > 0 ? filterWeaponWithSelections : filterWeapon);
 }
