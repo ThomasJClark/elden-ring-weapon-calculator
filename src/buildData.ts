@@ -438,6 +438,7 @@ const wepTypeOverrides = new Map([
         [1070000, WeaponType.DAGGER], // Glintstone Kris
         [2180000, WeaponType.STRAIGHT_SWORD], // Carian Knight's Sword
         [2250000, WeaponType.STRAIGHT_SWORD], // Lazuli Glintstone Sword
+        [2530000, WeaponType.THRUSTING_SWORD], // Carian Sorcery Sword
         [4110000, WeaponType.COLOSSAL_SWORD], // Troll Knight's Sword
         [11060000, WeaponType.HAMMER], // Varre's Bouquet
         [16100000, WeaponType.SPEAR], // Disciple's Rotten Branch
