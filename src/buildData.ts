@@ -437,6 +437,7 @@ const wepTypeOverrides = new Map([
         // Categorized Reforged hybrid casting tools by their melee movesets
         [1070000, WeaponType.DAGGER], // Glintstone Kris
         [2180000, WeaponType.STRAIGHT_SWORD], // Carian Knight's Sword
+        [2200000, WeaponType.STRAIGHT_SWORD], // Miquellan Knight's Sword
         [2250000, WeaponType.STRAIGHT_SWORD], // Lazuli Glintstone Sword
         [2530000, WeaponType.THRUSTING_SWORD], // Carian Sorcery Sword
         [4110000, WeaponType.COLOSSAL_SWORD], // Troll Knight's Sword
@@ -510,11 +511,9 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     name = dlcWeaponNames.get(row.id)!;
     dlc = isVanilla;
   } else {
-    debug(`No weapon title found for ${row.id}, ignoring`);
     return null;
   }
   if (name.includes("[ERROR]") || name.includes("%null%")) {
-    debug(`Excluded weapon title "${name}" for ${row.id}, ignoring`);
     return null;
   }
 
@@ -522,7 +521,7 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
   if (!isSupportedWeaponType(weaponType)) {
     // Log a message if this is something other than ammunition or other placeholder weapon types
     if (![0, 81, 83, 85, 86].includes(weaponType)) {
-      debug(`Unknown weapon type ${weaponType} on "${name}", ignoring`);
+      debug(`Unknown weapon type ${weaponType} on "${name}" ${row.id}, ignoring`);
     }
     return null;
   }
