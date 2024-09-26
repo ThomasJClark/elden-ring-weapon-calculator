@@ -5,11 +5,12 @@
  * of the table does, so it's performant to be able to skip over them when e.g. only attack
  * power changes.
  */
-import { memo } from "react";
-import { Box, Link, Typography } from "@mui/material";
+import { memo, useMemo } from "react";
+import { Box, Checkbox, type CheckboxProps, Link, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { type Weapon, type Attribute } from "../../calculator/calculator";
 import { getAttributeLabel } from "../uiUtils";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
 
 export const blankIcon = <RemoveIcon color="disabled" fontSize="small" />;
 
@@ -137,4 +138,46 @@ export const AttackPowerRenderer = memo(function AttackPowerRenderer({
   }
 
   return <>{round(value)}</>;
+});
+
+export type FavoriteHeaderProps = {
+  shownWeapons: Weapon[];
+  favoriteWeapons: string[];
+  onChange: (weapons: Weapon[], favorite: boolean) => void;
+};
+
+export const FavoriteHeader = memo(function FavoriteHeader({
+  shownWeapons,
+  favoriteWeapons,
+  onChange,
+}: FavoriteHeaderProps) {
+  const { all, some } = useMemo(() => {
+    const shownWeaponNames = shownWeapons.map((weapon) => weapon.name);
+    const all = shownWeaponNames.length > 0 && shownWeaponNames.every((name) => favoriteWeapons.includes(name));
+
+    return {
+      all,
+      some: !all && shownWeaponNames.some((name) => favoriteWeapons.includes(name)),
+    };
+  }, [shownWeapons, favoriteWeapons]);
+
+  const handleChange: CheckboxProps['onChange'] = (_, checked) => {
+    onChange(shownWeapons, checked);
+  }
+
+  return <Checkbox checked={all} indeterminate={some} onChange={handleChange} />;
+});
+
+export type FavoriteRendererProps = {
+  weapon: Weapon;
+  checked: boolean;
+  onChange: (weapon: Weapon, favorite: boolean) => void;
+};
+
+export const FavoriteRenderer = memo(function FavoriteRenderer({ weapon, checked, onChange }: FavoriteRendererProps) {
+  const handleChange: CheckboxProps['onChange'] = (_, checked) => {
+    onChange(weapon, checked);
+  };
+
+  return <Checkbox icon={<FavoriteBorder />} checkedIcon={<Favorite />} checked={checked} onChange={handleChange} />
 });

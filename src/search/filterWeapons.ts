@@ -30,6 +30,11 @@ export interface FilterWeaponsOptions {
   twoHanding?: boolean;
 
   /**
+   * Only include weapons that are marked as favorites
+   */
+  favoritesOnly?: boolean;
+
+  /**
    * Weapon types where the "Standard" vs. "Special" distinction doesn't exist for affinity
    * filtering purposes since no weapons can have affinities
    */
@@ -39,6 +44,11 @@ export interface FilterWeaponsOptions {
    * Weapon Names to apply to the filter. The weapon name will be "Dagger", not "Cold Dagger" for affinities
    */
   selectedWeapons: Set<string>;
+
+  /**
+   * Favorite weapons to apply to the filter
+   */
+  favoriteWeapons: Set<string>;
 }
 
 /**
@@ -52,8 +62,10 @@ export default function filterWeapons(
     effectiveWithAttributes,
     includeDLC,
     twoHanding,
+    favoritesOnly,
     uninfusableWeaponTypes,
     selectedWeapons,
+    favoriteWeapons,
   }: FilterWeaponsOptions,
 ): readonly Weapon[] {
   // True if any affinities other than Unique are selected
@@ -66,6 +78,10 @@ export default function filterWeapons(
       return false;
     }
 
+    if (favoritesOnly && !favoriteWeapons.has(weapon.name)) {
+      return false;
+    }
+
     if (!includeDLC && weapon.dlc) {
       return false;
     }
@@ -74,6 +90,33 @@ export default function filterWeapons(
     // selected affinity option
     if (anyNonUniqueAffinity) {
       return weapon.affinityId === -1 || affinityIds.has(weapon.affinityId);
+    }
+
+    return true;
+  }
+
+  // Filter based on a list of favorite weapons, and affinities if any are chosen
+  function filterWeaponWithFavorites(weapon: Weapon): boolean {
+    if (!favoriteWeapons.has(weapon.name)) {
+      return false;
+    }
+
+    if (!includeDLC && weapon.dlc) {
+      return false;
+    }
+
+    if (affinityIds.size > 0) {
+      if (
+        !affinityIds.has(weapon.affinityId) &&
+        // Treat uninfusable categories of armaments (torches etc.) as either standard or unique,
+        // since the distinction doesn't apply to these categories
+        !(
+          uninfusableWeaponTypes?.has(weapon.weaponType) &&
+          (affinityIds.has(0) || affinityIds.has(-1))
+        )
+      ) {
+        return false;
+      }
     }
 
     return true;
@@ -131,5 +174,15 @@ export default function filterWeapons(
     return true;
   }
 
-  return weapons.filter(selectedWeapons.size > 0 ? filterWeaponWithSelections : filterWeapon);
+  let predicate: (weapon: Weapon) => boolean;
+
+  if (selectedWeapons.size > 0) {
+    predicate = filterWeaponWithSelections;
+  } else if (favoritesOnly) {
+    predicate = filterWeaponWithFavorites;
+  } else {
+    predicate = filterWeapon
+  }
+
+  return weapons.filter(predicate);
 }

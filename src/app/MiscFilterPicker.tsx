@@ -4,8 +4,10 @@ import { Checkbox, FormControlLabel } from "@mui/material";
 interface Props {
   showIncludeDLC: boolean;
   effectiveOnly: boolean;
+  favoritesOnly: boolean;
   includeDLC: boolean;
   onEffectiveOnlyChanged(effectiveOnly: boolean): void;
+  onFavoritesOnlyChanged(favoritesOnly: boolean): void;
   onIncludeDLCChanged(includeDLC: boolean): void;
 }
 
@@ -15,8 +17,10 @@ interface Props {
 function MiscFilterPicker({
   showIncludeDLC,
   effectiveOnly,
+  favoritesOnly,
   includeDLC,
   onEffectiveOnlyChanged,
+  onFavoritesOnlyChanged,
   onIncludeDLCChanged,
 }: Props) {
   return (
@@ -44,6 +48,18 @@ function MiscFilterPicker({
             checked={effectiveOnly}
             name="Effective only"
             onChange={(evt) => onEffectiveOnlyChanged(evt.currentTarget.checked)}
+          />
+        }
+      />
+      <FormControlLabel
+        label="Favorites only"
+        sx={{ display: "block", mr: 0, my: "-4px" }}
+        control={
+          <Checkbox
+            size="small"
+            checked={favoritesOnly}
+            name="Favorites only"
+            onChange={(evt) => onFavoritesOnlyChanged(evt.currentTarget.checked)}
           />
         }
       />
