@@ -55,6 +55,7 @@ export interface EncodedRegulationDataJson {
 export interface EncodedWeaponJson {
   name: string;
   weaponName: string;
+  variant?: string | null;
   url?: string | null;
   affinityId: number;
   weaponType: WeaponType;

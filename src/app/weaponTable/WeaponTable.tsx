@@ -255,7 +255,7 @@ function WeaponTable({
 
                 {rows.map((row) => (
                   <DataRow
-                    key={`${row[0].weaponName},${row[0].affinityId}`}
+                    key={`${row[0].weaponName},${row[0].affinityId},${row[0].variant ?? ""}`}
                     columnGroups={columnGroups}
                     row={row}
                   />

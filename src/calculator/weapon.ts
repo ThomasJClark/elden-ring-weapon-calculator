@@ -18,6 +18,11 @@ export interface Weapon {
   weaponName: string;
 
   /**
+   * A (rarely-used) modifier to differentiate variants of weapons beyond what's shown in-game
+   */
+  variant?: string;
+
+  /**
    * A wiki link for the weapon
    */
   url: string | null;

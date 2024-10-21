@@ -218,6 +218,8 @@ const convergence141NotesUrl =
   "https://docs.google.com/document/d/1HhTcVvPG1V9lK8AL90USQCCgc7Z4lBWrmCEmXV6XHHw/preview#heading=h.4qcy1ray1wky";
 const convergence142NotesUrl =
   "https://docs.google.com/document/d/1G0aHybk5yH2h-9s8X0tEzriZTfYwLcE0ZGXKzAHo3XY/preview#heading=h.4qcy1ray1wky";
+const convergence21NotesUrl =
+  "https://docs.google.com/document/d/1-5k899P5b3lo-4-EDYw9mkM2j4v62xSnnsxZEvwffXo/preview#heading=h.4qcy1ray1wky";
 
 const urlOverrides = new Map<number, string | null>(
   isReforged
@@ -277,17 +279,21 @@ const urlOverrides = new Map<number, string | null>(
         [7180000, convergence10NotesUrl], // Nomad's Kilij
         [8090000, convergence10NotesUrl], // Three Finger Blade
         [9050000, convergence14NotesUrl], // Star Shadow
+        [9090000, convergence21NotesUrl], // Blade of Distant Light
         [10020000, convergence10NotesUrl], // Sulien's Razors
         [10040000, convergence10NotesUrl], // Frozen Twinshards
+        [10060000, convergence21NotesUrl], // Caimar's Battlestaff
         [10070000, convergence10NotesUrl], // Godwyn's Cragblades
         [10100000, convergence13NotesUrl], // Palm-Ax Twinblades
         [10110000, convergence13NotesUrl], // Gilded Quarterstaff
         [11020000, convergence10NotesUrl], // Leaden Maul
         [11160000, convergence10NotesUrl], // Zamor Star Mace
         [11180000, convergence14NotesUrl], // Hammer of Virtue
+        [11190000, convergence21NotesUrl], // Tricia's Pomander
         [12030000, convergence10NotesUrl], // Underworld Greatmace
         [12040000, convergence10NotesUrl], // Crimson Briar-Bough
         [12070000, convergence13NotesUrl], // Sigur's Greatmace
+        [12090000, convergence21NotesUrl], // Einar's Hammer
         [13050000, convergence10NotesUrl], // Mohgwyn Censer
         [13060000, convergence10NotesUrl], // Seething Flail
         [14070000, convergence10NotesUrl], // Glintstone Cleaver
@@ -299,11 +305,14 @@ const urlOverrides = new Map<number, string | null>(
         [15090000, convergence10NotesUrl], // Axe of Rust
         [16100000, convergence13NotesUrl], // Spear of Tranquility
         [16170000, convergence141NotesUrl], // Phalanx Pike
+        [17080000, convergence21NotesUrl], // Spear of the Dreaming
         [18120000, convergence10NotesUrl], // Glaive of the Ancients
         [18170000, convergence13NotesUrl], // Reaver's Odachi
         [19040000, convergence13NotesUrl], // War Scythe
         [19050000, convergence14NotesUrl], // Rosus' Harvester
+        [19070000, convergence21NotesUrl], // Scarlet Triscythe
         [21020000, convergence14NotesUrl], // Daergraf's Opus
+        [21090000, convergence21NotesUrl], // Furnace Fists
         [22040000, convergence10NotesUrl], // Stone Claws
         [22050000, convergence141NotesUrl], // Emyr's Great Talons
         [23090000, convergence141NotesUrl], // Greatstaff of Decay
@@ -328,9 +337,11 @@ const urlOverrides = new Map<number, string | null>(
         [34180000, convergence10NotesUrl], // Pest's Seal
         [34190000, convergence10NotesUrl], // Spiritshaper Seal
         [34200000, convergence10NotesUrl], // Mystic Seal
+        [60520000, convergence21NotesUrl], // Rancor Touch
+        [66530000, convergence21NotesUrl], // Eagle's Edge
+        [67530000, convergence21NotesUrl], // Sword of the Cosmos
         [1050000, "https://eldenring.fandom.com/Crystal_Knife"], // Underworld Dagger
         [2070000, "https://eldenring.fandom.com/Golden_Epitaph"], // Draconic Epitaph
-        [2140000, "https://eldenring.fandom.com/Sword_of_Night_and_Flame"], // Sword of the Cosmos
         [2150000, "https://eldenring.fandom.com/Crystal_Sword"], // Molten Sword
         [2200000, "https://eldenring.fandom.com/Miquellan_Knight's_Sword"], // Fell Flame Sword
         [2250000, "https://eldenring.fandom.com/Lazuli_Glintstone_Sword"], // Dragonkin Seeker Sword
@@ -386,8 +397,9 @@ const unobtainableWeapons = new Set(
     ? [
         // These aren't mentioned in the notes for the public alpha, likely WIP
         6050000, // Estoc of the Serpent Priest
-        10060000, // Caimar's Battlestaff
         19030000, // Moon Breaker Scythe
+        30160000, // Hermit's Buckler
+        31180000, // Shield of Starlight
 
         // Removed vanilla
         4550000, // Greatsword of Radahn (Light)
@@ -796,9 +808,36 @@ function parseStatusSpEffectParams(
   return null;
 }
 
+let additionalWeaponsJson: EncodedWeaponJson[] = [];
+
+// The Convergence has a weapon that dynamically updates. Manually add each possible variation as a
+// separate weapon.
+if (isConvergence) {
+  const triciasPomander = 11190000;
+
+  const row = equipParamWeapons.get(triciasPomander)!;
+  const { attackBaseFire: attack } = row;
+  row.attackBaseFire = 0;
+
+  for (const { variant, ...overrides } of [
+    { variant: "Fire", attackBaseFire: attack, correctLuck: 100, spEffectBehaviorId0: 108501 },
+    { variant: "Lightning", attackBaseThunder: attack, correctLuck: 105, spEffectBehaviorId0: -1 },
+    { variant: "Cold", attackBaseMagic: attack, correctLuck: 95, spEffectBehaviorId0: 6701 },
+    { variant: "Frenzy", attackBaseFire: attack, correctLuck: 95, spEffectBehaviorId0: 6751 },
+  ] as const) {
+    const weaponJson = parseWeapon({ ...row, ...overrides })!;
+    weaponJson.variant = variant;
+    additionalWeaponsJson.push(weaponJson);
+  }
+
+  equipParamWeapons.delete(triciasPomander);
+}
+
 const weaponsJson = [...equipParamWeapons.values()]
   .map(parseWeapon)
   .filter((w): w is EncodedWeaponJson => w != null);
+
+weaponsJson.push(...additionalWeaponsJson);
 
 // Accumulate every CalcCorrectGraph entry used by at least one weapon
 const calcCorrectGraphIds = new Set([

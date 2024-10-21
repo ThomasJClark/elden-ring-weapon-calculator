@@ -47,6 +47,12 @@ export const WeaponNameRenderer = memo(function WeaponNameRenderer({
       ) : (
         <Typography variant="button">{text}</Typography>
       )}
+      {weapon.variant && (
+        <Typography component="span" variant="body2">
+          {" "}
+          ({weapon.variant})
+        </Typography>
+      )}
     </Box>
   );
 });
