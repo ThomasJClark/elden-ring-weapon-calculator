@@ -251,6 +251,7 @@ const urlOverrides = new Map<number, string | null>(
         [18140000, "https://eldenring.fandom.com/wiki/Dragon_Halberd"], // Dragonscale Halberd
         [23150000, "https://eldenring.fandom.com/wiki/Rotten_Greataxe"], // Rotten Duelist Greataxe
         [33210000, "https://eldenring.fandom.com/Carian_Glintstone_Staff"], // Dark Glintstone Staff
+        [33300000, "https://err.fandom.com/wiki/Snow_Witch_Scepter"], // Snow Witch Scepter
       ]
     : isConvergence
     ? [
@@ -377,35 +378,9 @@ function isUniqueWeapon(row: ParamRow) {
 const unobtainableWeapons = new Set(
   isReforged
     ? [
-        1910000, // Reduvia (Esgar- Priest of Blood)
         4550000, // Greatsword of Radahn (Dumb)
-        11170000, // Gideon's Scepter of the All-Knowing
-        17080000, // Vyke's War Spear NXE
-        17080100, // Vyke's War Spear NXE [Heavy]
-        17080200, // Vyke's War Spear NXE [Keen]
-        17080300, // Vyke's War Spear NXE [Quality]
-        17080400, // Vyke's War Spear NXE [Fire]
-        17080500, // Vyke's War Spear NXE [Fell]
-        17080600, // Vyke's War Spear NXE [Lightning]
-        17080700, // Vyke's War Spear NXE [Sacred]
-        17080800, // Vyke's War Spear NXE [Magic]
-        17080900, // Vyke's War Spear NXE [Cold]
-        17081000, // Vyke's War Spear NXE [Poison]
-        17081100, // Vyke's War Spear NXE [Blood]
-        17081200, // Vyke's War Spear NXE [Occult]
-        17081300, // Vyke's War Spear NXE [Bolt]
-        17081400, // Vyke's War Spear NXE [Soporific]
-        17081500, // Vyke's War Spear NXE [Frenzied]
-        17081600, // Vyke's War Spear NXE [Magma]
-        17081700, // Vyke's War Spear NXE [Rotten]
-        17081800, // Vyke's War Spear NXE [Cursed]
-        17081900, // Vyke's War Spear NXE [Night]
-        17082000, // Vyke's War Spear NXE [Gravitational]
-        17082100, // Vyke's War Spear NXE [Blessed]
-        17082200, // Vyke's War Spear NXE [Bestial]
-        17082300, // Vyke's War Spear NXE [Fated]
+        17080000, // Vyke's War Spear
         33290000, // ST Staff
-        33300000, // SW Staff
       ]
     : isConvergence
     ? [
