@@ -30,10 +30,12 @@ interface WeaponTableRowsOptions {
   attributes: Attributes;
   includeDLC: boolean;
   effectiveOnly: boolean;
+  favoritesOnly: boolean;
   twoHanding: boolean;
   upgradeLevel: number;
   groupWeaponTypes: boolean;
   selectedWeapons: WeaponOption[];
+  favoriteWeapons: string[];
 }
 
 interface WeaponTableRowsResult {
@@ -69,8 +71,10 @@ const useWeaponTableRows = ({
   const weaponTypes = useDeferredValue(options.weaponTypes);
   const affinityIds = useDeferredValue(options.affinityIds);
   const effectiveOnly = useDeferredValue(options.effectiveOnly);
+  const favoritesOnly = useDeferredValue(options.favoritesOnly);
   const includeDLC = useDeferredValue(options.includeDLC);
   const selectedWeapons = useDeferredValue(options.selectedWeapons);
+  const favoriteWeapons = useDeferredValue(options.favoriteWeapons);
 
   const specialUpgradeLevel = toSpecialUpgradeLevel(regularUpgradeLevel);
 
@@ -98,6 +102,7 @@ const useWeaponTableRows = ({
         affinityIds.filter((affinityId) => regulationVersion.affinityOptions.has(affinityId)),
       ),
       effectiveWithAttributes: effectiveOnly ? attributes : undefined,
+      favoritesOnly,
       includeDLC,
       twoHanding,
       uninfusableWeaponTypes,
@@ -105,6 +110,7 @@ const useWeaponTableRows = ({
         (acc, weapon) => (acc.add(weapon.value), acc),
         new Set<string>(),
       ),
+      favoriteWeapons: new Set(favoriteWeapons),
     });
 
     const rows = filteredWeapons.map((weapon): WeaponTableRowData => {
@@ -149,8 +155,10 @@ const useWeaponTableRows = ({
     affinityIds,
     includeDLC,
     effectiveOnly,
+    favoritesOnly,
     uninfusableWeaponTypes,
     selectedWeapons,
+    favoriteWeapons,
   ]);
 
   const memoizedAttackPowerTypes = useMemo(

@@ -15,12 +15,14 @@ interface AppState {
   readonly affinityIds: readonly number[];
   readonly includeDLC: boolean;
   readonly effectiveOnly: boolean;
+  readonly favoritesOnly: boolean;
   readonly splitDamage: boolean;
   readonly groupWeaponTypes: boolean;
   readonly numericalScaling: boolean;
   readonly sortBy: SortBy;
   readonly reverse: boolean;
   readonly selectedWeapons: WeaponOption[];
+  readonly favoriteWeapons: string[];
 }
 
 interface UpdateAppState extends AppState {
@@ -32,12 +34,14 @@ interface UpdateAppState extends AppState {
   setAffinityIds(affinityIds: readonly number[]): void;
   setIncludeDLC(includeDLC: boolean): void;
   setEffectiveOnly(effectiveOnly: boolean): void;
+  setFavoritesOnly(favoritesOnly: boolean): void;
   setSplitDamage(splitDamage: boolean): void;
   setGroupWeaponTypes(groupWeaponTypes: boolean): void;
   setNumericalScaling(numericalScaling: boolean): void;
   setSortBy(sortBy: SortBy): void;
   setReverse(reverse: boolean): void;
   setSelectedWeapons(weapons: WeaponOption[]): void;
+  setFavoriteWeapons(weapons: string[]): void;
 }
 
 const defaultAppState: AppState = {
@@ -55,12 +59,14 @@ const defaultAppState: AppState = {
   affinityIds: [0, -1], // Standard and Special
   includeDLC: true,
   effectiveOnly: false,
+  favoritesOnly: false,
   splitDamage: true,
   groupWeaponTypes: false,
   numericalScaling: false,
   sortBy: "totalAttack",
   reverse: false,
   selectedWeapons: [],
+  favoriteWeapons: [],
 };
 
 /**
@@ -159,6 +165,9 @@ export default function useAppState() {
       setEffectiveOnly(effectiveOnly) {
         setAppState((prevAppState) => ({ ...prevAppState, effectiveOnly }));
       },
+      setFavoritesOnly(favoritesOnly: boolean) {
+        setAppState((prevAppState) => ({ ...prevAppState, favoritesOnly }));
+      },
       setSplitDamage(splitDamage) {
         setAppState((prevAppState) => ({ ...prevAppState, splitDamage }));
       },
@@ -176,6 +185,9 @@ export default function useAppState() {
       },
       setSelectedWeapons(selectedWeapons) {
         setAppState((prevAppState) => ({ ...prevAppState, selectedWeapons }));
+      },
+      setFavoriteWeapons(weapons: string[]) {
+        setAppState((prevAppState) => ({ ...prevAppState, favoriteWeapons: weapons }));
       },
     }),
     [],
