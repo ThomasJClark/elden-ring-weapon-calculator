@@ -100,13 +100,13 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
         >
           The Convergence Mod
         </Link>{" "}
-        v2.1
+        v2.1.2
       </>
     ),
     affinityOptions: convergenceAffinityOptions,
     maxUpgradeLevel: 15,
     splitSpellScaling: true,
-    fetch: () => fetch(`/regulation-convergence-v2.1.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-convergence-v2.1.2.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
 };
 
