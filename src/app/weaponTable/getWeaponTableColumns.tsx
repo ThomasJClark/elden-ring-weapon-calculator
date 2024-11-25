@@ -13,18 +13,20 @@ import {
   getShortAttributeLabel,
   getTotalDamageAttackPower,
 } from "../uiUtils";
-import type { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
+import type { WeaponTableColumnDef, WeaponTableColumnGroupDef, WeaponTableHeaderProps } from "./WeaponTable";
 import {
   WeaponNameRenderer,
   ScalingRenderer,
   AttributeRequirementRenderer,
   AttackPowerRenderer,
+  FavoriteRenderer,
+  FavoriteHeader,
 } from "./tableRenderers";
 
 const nameColumn: WeaponTableColumnDef = {
   key: "name",
   sortBy: "name",
-  header: (
+  header: () => (
     <Typography component="span" variant="subtitle2">
       Weapon
     </Typography>
@@ -43,7 +45,7 @@ const attackColumns = Object.fromEntries(
     {
       key: `${attackPowerType}Attack`,
       sortBy: `${attackPowerType}Attack`,
-      header: damageTypeIcons.has(attackPowerType) ? (
+      header: () => damageTypeIcons.has(attackPowerType) ? (
         <img
           src={damageTypeIcons.get(attackPowerType)!}
           alt={damageTypeLabels.get(attackPowerType)!}
@@ -71,7 +73,7 @@ const attackColumns = Object.fromEntries(
 const splitSpellScalingColumns: WeaponTableColumnDef[] = allDamageTypes.map((damageType) => ({
   key: `${damageType}SpellScaling`,
   sortBy: `${damageType}SpellScaling`,
-  header: damageTypeIcons.has(damageType) ? (
+  header: () => damageTypeIcons.has(damageType) ? (
     <img
       src={damageTypeIcons.get(damageType)!}
       alt={damageTypeLabels.get(damageType)!}
@@ -97,7 +99,7 @@ const splitSpellScalingColumns: WeaponTableColumnDef[] = allDamageTypes.map((dam
 const spellScalingColumn: WeaponTableColumnDef = {
   key: "spellScaling",
   sortBy: `${AttackPowerType.MAGIC}SpellScaling`,
-  header: (
+  header: () => (
     <Typography component="span" variant="subtitle2">
       Spell scaling
     </Typography>
@@ -124,7 +126,7 @@ const spellScalingColumn: WeaponTableColumnDef = {
 const totalSplitAttackPowerColumn: WeaponTableColumnDef = {
   key: "totalAttack",
   sortBy: "totalAttack",
-  header: (
+  header: () => (
     <Typography component="span" variant="subtitle2">
       Total
     </Typography>
@@ -144,7 +146,7 @@ const totalSplitAttackPowerColumn: WeaponTableColumnDef = {
 const totalAttackPowerColumn: WeaponTableColumnDef = {
   key: "totalAttack",
   sortBy: "totalAttack",
-  header: (
+  header: () => (
     <Typography component="span" variant="subtitle2">
       Attack Power
     </Typography>
@@ -164,7 +166,7 @@ const totalAttackPowerColumn: WeaponTableColumnDef = {
 const scalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => ({
   key: `${attribute}Scaling`,
   sortBy: `${attribute}Scaling`,
-  header: (
+  header: () => (
     <Typography
       component="span"
       variant="subtitle2"
@@ -181,7 +183,7 @@ const scalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => 
 const numericalScalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => ({
   key: `${attribute}Scaling`,
   sortBy: `${attribute}Scaling`,
-  header: (
+  header: () => (
     <Typography
       component="span"
       variant="subtitle2"
@@ -202,11 +204,25 @@ const numericalScalingColumns: WeaponTableColumnDef[] = allAttributes.map((attri
   },
 }));
 
+const favoriteColumn: WeaponTableColumnDef = {
+  key: "favorite",
+  header({ shownWeapons, favoriteWeapons, onFavoriteChange }: WeaponTableHeaderProps) {
+    return (
+      <FavoriteHeader shownWeapons={shownWeapons} favoriteWeapons={favoriteWeapons} onChange={onFavoriteChange} />
+    );
+  },
+  render([weapon, , favorite, onFavoriteChange]) {
+    return (
+      <FavoriteRenderer weapon={weapon} checked={favorite} onChange={onFavoriteChange} />
+    );
+  },
+};
+
 const requirementColumns = allAttributes.map(
   (attribute): WeaponTableColumnDef => ({
     key: `${attribute}Requirement`,
     sortBy: `${attribute}Requirement`,
-    header: (
+    header: () => (
       <Typography
         component="span"
         variant="subtitle2"
@@ -322,5 +338,13 @@ export default function getWeaponTableColumns({
       header: "Attributes Required",
       columns: requirementColumns,
     },
+    {
+      key: "favorite",
+      sx: {
+        width: 72,
+      },
+      header: 'Favorite',
+      columns: [favoriteColumn],
+    }
   ];
 }

@@ -19,8 +19,16 @@ import {
   WeaponTableGroup,
   WeaponTableGroupHeaderRow,
 } from "./tableStyledComponents";
+import type { FavoriteRendererProps } from "./tableRenderers";
+
+export type WeaponTableHeaderProps = {
+  shownWeapons: Weapon[],
+  favoriteWeapons: string[],
+  onFavoriteChange(weapons: Weapon[], favorite: boolean): void,
+};
 
 export type WeaponTableRowData = [Weapon, WeaponAttackResult];
+export type WeaponTableRendererProps = [...WeaponTableRowData, boolean, FavoriteRendererProps['onChange']];
 
 export interface WeaponTableRowGroup {
   key: string;
@@ -31,8 +39,8 @@ export interface WeaponTableRowGroup {
 export interface WeaponTableColumnDef {
   key: string;
   sortBy?: SortBy;
-  header: ReactNode;
-  render(row: WeaponTableRowData): ReactNode;
+  header(props: WeaponTableHeaderProps): ReactNode;
+  render(props: WeaponTableRendererProps): ReactNode;
   sx?: SystemStyleObject<Theme> | ((theme: Theme) => SystemStyleObject<Theme>);
 }
 
@@ -45,6 +53,7 @@ export interface WeaponTableColumnGroupDef {
 
 interface Props {
   rowGroups: readonly WeaponTableRowGroup[];
+  favoriteWeapons: string[];
   placeholder?: ReactNode;
   footer?: ReactNode;
   sortBy: SortBy;
@@ -77,6 +86,7 @@ interface Props {
 
   onSortByChanged(sortBy: SortBy): void;
   onReverseChanged(reverse: boolean): void;
+  onFavoriteChanged(weapons: string[]): void;
 }
 
 /**
@@ -84,16 +94,22 @@ interface Props {
  */
 const ColumnHeaderRow = memo(function ColumnHeaderRow({
   columnGroups,
+  shownWeapons,
+  favoriteWeapons,
   sortBy,
   reverse,
   onSortByChanged,
   onReverseChanged,
+  onFavoriteChanged,
 }: {
   columnGroups: readonly WeaponTableColumnGroupDef[];
+  shownWeapons: Weapon[],
+  favoriteWeapons: string[],
   sortBy: SortBy;
   reverse: boolean;
   onSortByChanged(sortBy: SortBy): void;
   onReverseChanged(reverse: boolean): void;
+  onFavoriteChanged(weapons: string[]): void;
 }) {
   const onColumnClicked = (column: WeaponTableColumnDef) => {
     if (column.sortBy) {
@@ -104,6 +120,18 @@ const ColumnHeaderRow = memo(function ColumnHeaderRow({
         onReverseChanged(false);
       }
     }
+  };
+
+  const handleFavoriteChanged = (weapons: Weapon[], favorite: boolean): void => {
+    const favorites = new Set(favoriteWeapons);
+
+    if (favorite) {
+      weapons.map((weapon) => favorites.add(weapon.name));
+    } else {
+      weapons.map((weapon) => favorites.delete(weapon.name));
+    }
+
+    onFavoriteChanged([...favorites]);
   };
 
   return (
@@ -150,7 +178,7 @@ const ColumnHeaderRow = memo(function ColumnHeaderRow({
                   : undefined
               }
             >
-              {column.header}
+              {column.header({ shownWeapons, favoriteWeapons, onFavoriteChange: handleFavoriteChanged })}
               {column.sortBy === sortBy &&
                 (reverse ? (
                   <ArrowDropUpIcon sx={{ justifySelf: "center" }} fontSize="small" />
@@ -173,7 +201,7 @@ const DataRow = memo(function DataRow({
   row,
 }: {
   columnGroups: readonly WeaponTableColumnGroupDef[];
-  row: WeaponTableRowData;
+  row: WeaponTableRendererProps;
 }) {
   return (
     <WeaponTableDataRow role="row">
@@ -192,6 +220,7 @@ const DataRow = memo(function DataRow({
 
 function WeaponTable({
   rowGroups,
+  favoriteWeapons,
   placeholder,
   footer,
   sortBy,
@@ -203,6 +232,7 @@ function WeaponTable({
   spellScaling,
   onSortByChanged,
   onReverseChanged,
+  onFavoriteChanged,
 }: Props) {
   const columnGroups = useMemo(
     () =>
@@ -215,6 +245,18 @@ function WeaponTable({
       }),
     [splitDamage, splitSpellScaling, numericalScaling, attackPowerTypes, spellScaling],
   );
+
+  const shownWeapons = rowGroups.flatMap(({ rows }) => rows.map(([weapon]) => weapon));
+
+  const handleFavoriteChanged = (weapon: Weapon, favorite: boolean): void => {
+    if (favorite) {
+      onFavoriteChanged([...favoriteWeapons, weapon.name]);
+    } else {
+      onFavoriteChanged(favoriteWeapons.filter((name) => name !== weapon.name));
+    }
+  };
+
+  const isWeaponFavorite = (weapon: Weapon): boolean => favoriteWeapons.includes(weapon.name);
 
   return (
     <ScrollArea.Root asChild>
@@ -237,10 +279,13 @@ function WeaponTable({
 
           <ColumnHeaderRow
             columnGroups={columnGroups}
+            shownWeapons={shownWeapons}
+            favoriteWeapons={favoriteWeapons}
             sortBy={sortBy}
             reverse={reverse}
             onSortByChanged={onSortByChanged}
             onReverseChanged={onReverseChanged}
+            onFavoriteChanged={onFavoriteChanged}
           />
           {rowGroups.length > 0 ? (
             rowGroups.map(({ key, name, rows }) => (
@@ -257,7 +302,7 @@ function WeaponTable({
                   <DataRow
                     key={`${row[0].weaponName},${row[0].affinityId},${row[0].variant ?? ""}`}
                     columnGroups={columnGroups}
-                    row={row}
+                    row={[...row, isWeaponFavorite(row[0]), handleFavoriteChanged]}
                   />
                 ))}
               </WeaponTableGroup>
