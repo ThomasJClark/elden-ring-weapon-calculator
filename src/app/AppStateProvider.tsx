@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { type Attribute, type Attributes, WeaponType } from "../calculator/calculator";
+import { useEffect, useMemo, useContext, createContext, useReducer } from "react";
+import { type Attributes, WeaponType } from "../calculator/calculator";
 import type { SortBy } from "../search/sortWeapons";
 import type { RegulationVersionName } from "./regulationVersions";
 import regulationVersions from "./regulationVersions";
@@ -21,23 +21,6 @@ interface AppState {
   readonly sortBy: SortBy;
   readonly reverse: boolean;
   readonly selectedWeapons: WeaponOption[];
-}
-
-interface UpdateAppState extends AppState {
-  setRegulationVersionName(regulationVersionName: RegulationVersionName): void;
-  setAttribute(attribute: Attribute, value: number): void;
-  setTwoHanding(twoHanding: boolean): void;
-  setUpgradeLevel(upgradeLevel: number): void;
-  setWeaponTypes(weaponTypes: readonly WeaponType[]): void;
-  setAffinityIds(affinityIds: readonly number[]): void;
-  setIncludeDLC(includeDLC: boolean): void;
-  setEffectiveOnly(effectiveOnly: boolean): void;
-  setSplitDamage(splitDamage: boolean): void;
-  setGroupWeaponTypes(groupWeaponTypes: boolean): void;
-  setNumericalScaling(numericalScaling: boolean): void;
-  setSortBy(sortBy: SortBy): void;
-  setReverse(reverse: boolean): void;
-  setSelectedWeapons(weapons: WeaponOption[]): void;
 }
 
 const defaultAppState: AppState = {
@@ -66,7 +49,7 @@ const defaultAppState: AppState = {
 /**
  * @returns the initial state of the app, restored from localstorage and the URL if available
  */
-function getInitialAppState() {
+function getInitialAppState(): AppState {
   const appState = { ...defaultAppState };
 
   try {
@@ -89,9 +72,6 @@ function getInitialAppState() {
 /**
  * Store the state of the app in localstorage and the URL so it can be restored on future visits
  */
-function onAppStateChanged(appState: AppState) {
-  localStorage.setItem("appState", JSON.stringify(appState));
-}
 
 function updateUrl(regulationVersionName: RegulationVersionName) {
   window.history.replaceState(
@@ -101,85 +81,86 @@ function updateUrl(regulationVersionName: RegulationVersionName) {
   );
 }
 
-/**
- * Manages all of the user selectable filters and display options, and saves/loads them in
- * localStorage for use on future page loads
- */
-export default function useAppState() {
-  const [appState, setAppState] = useState<AppState>(() => {
-    return getInitialAppState();
-  });
+// Create the actions for the associated keys in an object where
+// Record<{ type: setKeyName(value: ValueType), payload: ValueType}> is created from Record<KeyName, ValueType>
+type ActionMap<T extends object> = {
+  [K in keyof T as `set${Capitalize<string & K>}`]: {
+    type: `set${Capitalize<string & K>}`;
+    payload: T[K];
+  };
+};
 
-  useEffect(() => {
-    onAppStateChanged(appState);
-    updateUrl(appState.regulationVersionName);
-  }, [appState]);
+/* Custom actions - Start */
+// It's not convenient to have all actions that are expressed automatically by replacing the state with the same type
+type AttributePatchUpdate = { type: "setAttributes"; payload: Partial<Attributes> };
+/* Custom actions - End */
 
-  useEffect(() => {
-    function onPopState() {
-      updateUrl(appState.regulationVersionName);
-    }
+export type AppAction = ActionMap<AppState>[keyof ActionMap<AppState>] | AttributePatchUpdate;
 
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
-  }, [appState.regulationVersionName]);
+const dlcWeaponSet = new Set(dlcWeaponTypes);
 
-  const changeHandlers = useMemo<Omit<UpdateAppState, keyof AppState>>(
-    () => ({
-      setRegulationVersionName(regulationVersionName) {
-        setAppState((prevAppState) => ({ ...prevAppState, regulationVersionName }));
-      },
-      setAttribute(attribute, value) {
-        setAppState((prevAppState) => ({
-          ...prevAppState,
-          attributes: { ...prevAppState.attributes, [attribute]: value },
-        }));
-      },
-      setTwoHanding(twoHanding) {
-        setAppState((prevAppState) => ({ ...prevAppState, twoHanding }));
-      },
-      setUpgradeLevel(upgradeLevel) {
-        setAppState((prevAppState) => ({ ...prevAppState, upgradeLevel }));
-      },
-      setWeaponTypes(weaponTypes) {
-        setAppState((prevAppState) => ({ ...prevAppState, weaponTypes }));
-      },
-      setAffinityIds(affinityIds) {
-        setAppState((prevAppState) => ({ ...prevAppState, affinityIds }));
-      },
-      setIncludeDLC(includeDLC) {
-        setAppState((prevAppState) => ({
-          ...prevAppState,
-          includeDLC,
-          weaponTypes: prevAppState.weaponTypes.filter(
-            (weaponType) => !dlcWeaponTypes.includes(weaponType),
-          ),
-        }));
-      },
-      setEffectiveOnly(effectiveOnly) {
-        setAppState((prevAppState) => ({ ...prevAppState, effectiveOnly }));
-      },
-      setSplitDamage(splitDamage) {
-        setAppState((prevAppState) => ({ ...prevAppState, splitDamage }));
-      },
-      setGroupWeaponTypes(groupWeaponTypes) {
-        setAppState((prevAppState) => ({ ...prevAppState, groupWeaponTypes }));
-      },
-      setNumericalScaling(numericalScaling) {
-        setAppState((prevAppState) => ({ ...prevAppState, numericalScaling }));
-      },
-      setSortBy(sortBy) {
-        setAppState((prevAppState) => ({ ...prevAppState, sortBy }));
-      },
-      setReverse(reverse) {
-        setAppState((prevAppState) => ({ ...prevAppState, reverse }));
-      },
-      setSelectedWeapons(selectedWeapons) {
-        setAppState((prevAppState) => ({ ...prevAppState, selectedWeapons }));
-      },
-    }),
-    [],
-  );
-
-  return useMemo(() => ({ ...appState, ...changeHandlers }), [appState, changeHandlers]);
+function appReducer(state: AppState, action: AppAction): AppState {
+  switch (action.type) {
+    case "setRegulationVersionName":
+      return { ...state, regulationVersionName: action.payload };
+    case "setAttributes":
+      return { ...state, attributes: { ...state.attributes, ...action.payload } };
+    case "setTwoHanding":
+      return { ...state, twoHanding: action.payload };
+    case "setUpgradeLevel":
+      return { ...state, upgradeLevel: action.payload };
+    case "setWeaponTypes":
+      return { ...state, weaponTypes: action.payload };
+    case "setAffinityIds":
+      return { ...state, affinityIds: action.payload };
+    case "setIncludeDLC":
+      return {
+        ...state,
+        includeDLC: action.payload,
+        weaponTypes: state.weaponTypes.filter((weaponType) => !dlcWeaponSet.has(weaponType)),
+      };
+    case "setEffectiveOnly":
+      return { ...state, effectiveOnly: action.payload };
+    case "setSplitDamage":
+      return { ...state, splitDamage: action.payload };
+    case "setGroupWeaponTypes":
+      return { ...state, groupWeaponTypes: action.payload };
+    case "setNumericalScaling":
+      return { ...state, numericalScaling: action.payload };
+    case "setSortBy":
+      return { ...state, sortBy: action.payload };
+    case "setReverse":
+      return { ...state, reverse: action.payload };
+    case "setSelectedWeapons":
+      return { ...state, selectedWeapons: action.payload };
+    default:
+      return state;
+  }
 }
+
+const AppStateContext = createContext<{
+  state: AppState;
+  dispatch: React.Dispatch<AppAction>;
+}>({
+  state: defaultAppState,
+  dispatch: (state) => state,
+});
+
+export const AppStateProvider = ({ children }: { children: React.ReactNode }) => {
+  const [state, dispatch] = useReducer(appReducer, getInitialAppState());
+
+  useEffect(() => {
+    // On the state changing, set into local storage
+    localStorage.setItem("appState", JSON.stringify(state));
+  }, [state]);
+
+  useEffect(() => {
+    updateUrl(state.regulationVersionName);
+  }, [state.regulationVersionName]);
+
+  const value = useMemo(() => ({ state, dispatch }), [state, dispatch]);
+
+  return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
+};
+
+export const useAppStateContext = () => useContext(AppStateContext);

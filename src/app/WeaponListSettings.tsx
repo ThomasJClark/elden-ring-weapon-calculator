@@ -8,9 +8,10 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { allAttributes, type Attribute, type Attributes } from "../calculator/calculator";
+import { allAttributes, type Attribute } from "../calculator/calculator";
 import NumberTextField from "./NumberTextField";
 import { getAttributeLabel, maxRegularUpgradeLevel, toSpecialUpgradeLevel } from "./uiUtils";
+import { useAppStateContext } from "./AppStateProvider";
 
 interface AttributeInputProps {
   attribute: Attribute;
@@ -104,40 +105,24 @@ const BooleanInput = memo(function BooleanInput({ label, checked, onChange }: Bo
 
 interface Props {
   breakpoint: "md" | "lg";
-  attributes: Attributes;
-  twoHanding: boolean;
-  upgradeLevel: number;
   maxUpgradeLevel?: number;
-  splitDamage: boolean;
-  groupWeaponTypes: boolean;
-  numericalScaling: boolean;
-  onAttributeChanged(attribute: Attribute, value: number): void;
-  onTwoHandingChanged(twoHanding: boolean): void;
-  onUpgradeLevelChanged(upgradeLevel: number): void;
-  onSplitDamageChanged(splitDamage: boolean): void;
-  onGroupWeaponTypesChanged(groupWeaponTypes: boolean): void;
-  onNumericalScalingChanged(numericalScaling: boolean): void;
 }
 
 /**
  * Form controls for entering player attributes, basic filters, and display options
  */
-function WeaponListSettings({
-  breakpoint,
-  attributes,
-  twoHanding,
-  upgradeLevel,
-  maxUpgradeLevel,
-  splitDamage,
-  groupWeaponTypes,
-  numericalScaling,
-  onAttributeChanged,
-  onTwoHandingChanged,
-  onUpgradeLevelChanged,
-  onSplitDamageChanged,
-  onGroupWeaponTypesChanged,
-  onNumericalScalingChanged,
-}: Props) {
+function WeaponListSettings({ breakpoint, maxUpgradeLevel }: Props) {
+  const {
+    state: {
+      twoHanding,
+      groupWeaponTypes,
+      numericalScaling,
+      splitDamage,
+      upgradeLevel,
+      attributes,
+    },
+    dispatch,
+  } = useAppStateContext();
   return (
     <Box
       display="grid"
@@ -156,7 +141,12 @@ function WeaponListSettings({
             key={attribute}
             attribute={attribute}
             value={attributes[attribute]}
-            onAttributeChanged={onAttributeChanged}
+            onAttributeChanged={(attribute, value) => {
+              dispatch({
+                type: "setAttributes",
+                payload: { [attribute]: value },
+              });
+            }}
           />
         ))}
       </Box>
@@ -164,7 +154,12 @@ function WeaponListSettings({
       <WeaponLevelInput
         upgradeLevel={upgradeLevel}
         maxUpgradeLevel={maxUpgradeLevel}
-        onUpgradeLevelChanged={onUpgradeLevelChanged}
+        onUpgradeLevelChanged={(upgradeLevel) => {
+          dispatch({
+            type: "setUpgradeLevel",
+            payload: upgradeLevel,
+          });
+        }}
       />
 
       <Box
@@ -182,21 +177,45 @@ function WeaponListSettings({
           },
         })}
       >
-        <BooleanInput label="Two handing" checked={twoHanding} onChange={onTwoHandingChanged} />
+        <BooleanInput
+          label="Two handing"
+          checked={twoHanding}
+          onChange={(twoHanding) => {
+            dispatch({
+              type: "setTwoHanding",
+              payload: twoHanding,
+            });
+          }}
+        />
         <BooleanInput
           label="Group by type"
           checked={groupWeaponTypes}
-          onChange={onGroupWeaponTypesChanged}
+          onChange={(groupWeaponTypes) => {
+            dispatch({
+              type: "setGroupWeaponTypes",
+              payload: groupWeaponTypes,
+            });
+          }}
         />
         <BooleanInput
           label="Numeric scaling"
           checked={numericalScaling}
-          onChange={onNumericalScalingChanged}
+          onChange={(numericalScaling) => {
+            dispatch({
+              type: "setNumericalScaling",
+              payload: numericalScaling,
+            });
+          }}
         />
         <BooleanInput
           label="Show damage split"
           checked={splitDamage}
-          onChange={onSplitDamageChanged}
+          onChange={(splitDamage) => {
+            dispatch({
+              type: "setSplitDamage",
+              payload: splitDamage,
+            });
+          }}
         />
       </Box>
     </Box>

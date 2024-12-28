@@ -3,12 +3,11 @@ import getWeaponAttack, {
   allAttackPowerTypes,
   AttackPowerType,
   WeaponType,
-  type Attributes,
   type Weapon,
 } from "../../calculator/calculator";
 import filterWeapons from "../../search/filterWeapons";
 import { type WeaponTableRowData, type WeaponTableRowGroup } from "./WeaponTable";
-import { type SortBy, sortWeapons } from "../../search/sortWeapons";
+import { sortWeapons } from "../../search/sortWeapons";
 import { type RegulationVersion } from "../regulationVersions";
 import {
   allWeaponTypes,
@@ -16,24 +15,13 @@ import {
   maxSpecialUpgradeLevel,
   toSpecialUpgradeLevel,
 } from "../uiUtils";
-import type { WeaponOption } from "../WeaponPicker";
+import { useAppStateContext } from "../AppStateProvider";
 
 interface WeaponTableRowsOptions {
   weapons: readonly Weapon[];
   regulationVersion: RegulationVersion;
   offset: number;
   limit: number;
-  sortBy: SortBy;
-  reverse: boolean;
-  affinityIds: readonly number[];
-  weaponTypes: readonly WeaponType[];
-  attributes: Attributes;
-  includeDLC: boolean;
-  effectiveOnly: boolean;
-  twoHanding: boolean;
-  upgradeLevel: number;
-  groupWeaponTypes: boolean;
-  selectedWeapons: WeaponOption[];
 }
 
 interface WeaponTableRowsResult {
@@ -56,21 +44,18 @@ const useWeaponTableRows = ({
   regulationVersion,
   offset,
   limit,
-  upgradeLevel: regularUpgradeLevel,
-  groupWeaponTypes,
-  sortBy,
-  reverse,
-  ...options
 }: WeaponTableRowsOptions): WeaponTableRowsResult => {
+  const { state } = useAppStateContext();
+  const { groupWeaponTypes, sortBy, reverse, upgradeLevel: regularUpgradeLevel } = state;
   // Defer filtering based on app state changes because this can be CPU intensive if done while
   // busy rendering
-  const attributes = useDeferredValue(options.attributes);
-  const twoHanding = useDeferredValue(options.twoHanding);
-  const weaponTypes = useDeferredValue(options.weaponTypes);
-  const affinityIds = useDeferredValue(options.affinityIds);
-  const effectiveOnly = useDeferredValue(options.effectiveOnly);
-  const includeDLC = useDeferredValue(options.includeDLC);
-  const selectedWeapons = useDeferredValue(options.selectedWeapons);
+  const attributes = useDeferredValue(state.attributes);
+  const twoHanding = useDeferredValue(state.twoHanding);
+  const weaponTypes = useDeferredValue(state.weaponTypes);
+  const affinityIds = useDeferredValue(state.affinityIds);
+  const effectiveOnly = useDeferredValue(state.effectiveOnly);
+  const includeDLC = useDeferredValue(state.includeDLC);
+  const selectedWeapons = useDeferredValue(state.selectedWeapons);
 
   const specialUpgradeLevel = toSpecialUpgradeLevel(regularUpgradeLevel);
 

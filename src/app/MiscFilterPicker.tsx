@@ -1,24 +1,16 @@
 import { memo } from "react";
 import { Checkbox, FormControlLabel } from "@mui/material";
-
-interface Props {
-  showIncludeDLC: boolean;
-  effectiveOnly: boolean;
-  includeDLC: boolean;
-  onEffectiveOnlyChanged(effectiveOnly: boolean): void;
-  onIncludeDLCChanged(includeDLC: boolean): void;
-}
+import { useAppStateContext } from "./AppStateProvider";
 
 /**
  * Other filters in the left shelf
  */
-function MiscFilterPicker({
-  showIncludeDLC,
-  effectiveOnly,
-  includeDLC,
-  onEffectiveOnlyChanged,
-  onIncludeDLCChanged,
-}: Props) {
+function MiscFilterPicker() {
+  const {
+    state: { effectiveOnly, regulationVersionName, includeDLC },
+    dispatch,
+  } = useAppStateContext();
+  const showIncludeDLC = regulationVersionName === "latest";
   return (
     <div>
       {showIncludeDLC && (
@@ -30,7 +22,9 @@ function MiscFilterPicker({
               size="small"
               checked={includeDLC}
               name="Include DLC weapons"
-              onChange={(evt) => onIncludeDLCChanged(evt.currentTarget.checked)}
+              onChange={({ currentTarget: { checked } }) => {
+                dispatch({ type: "setIncludeDLC", payload: checked });
+              }}
             />
           }
         />
@@ -43,7 +37,9 @@ function MiscFilterPicker({
             size="small"
             checked={effectiveOnly}
             name="Effective only"
-            onChange={(evt) => onEffectiveOnlyChanged(evt.currentTarget.checked)}
+            onChange={({ currentTarget: { checked } }) => {
+              dispatch({ type: "setEffectiveOnly", payload: checked });
+            }}
           />
         }
       />

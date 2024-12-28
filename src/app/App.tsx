@@ -21,7 +21,7 @@ import useWeaponTableRows from "./weaponTable/useWeaponTableRows";
 import theme from "./theme";
 import regulationVersions from "./regulationVersions";
 import useWeapons from "./useWeapons";
-import useAppState from "./useAppState";
+import { useAppStateContext } from "./AppStateProvider";
 import AppBar from "./AppBar";
 import RegulationVersionPicker from "./RegulationVersionPicker";
 import WeaponTypePicker from "./WeaponTypePicker";
@@ -29,7 +29,6 @@ import AffinityPicker from "./AffinityPicker";
 import Footer from "./Footer";
 import MiscFilterPicker from "./MiscFilterPicker";
 import WeaponPicker, { makeWeaponOptionsFromWeapon } from "./WeaponPicker";
-import type { Weapon } from "../calculator/weapon";
 
 const useMenuState = () => {
   const theme = useTheme();
@@ -100,37 +99,8 @@ function RegulationVersionAlert({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
-  const {
-    regulationVersionName,
-    affinityIds,
-    weaponTypes,
-    attributes,
-    includeDLC,
-    effectiveOnly,
-    splitDamage,
-    twoHanding,
-    upgradeLevel,
-    groupWeaponTypes,
-    numericalScaling,
-    sortBy,
-    reverse,
-    selectedWeapons,
-    setRegulationVersionName,
-    setAffinityIds,
-    setWeaponTypes,
-    setAttribute,
-    setIncludeDLC,
-    setEffectiveOnly,
-    setSplitDamage,
-    setTwoHanding,
-    setUpgradeLevel,
-    setGroupWeaponTypes,
-    setNumericalScaling,
-    setSortBy,
-    setReverse,
-    setSelectedWeapons,
-  } = useAppState();
-
+  const { state } = useAppStateContext();
+  const { regulationVersionName, includeDLC, splitDamage, numericalScaling, affinityIds } = state;
   const { isMobile, menuOpen, menuOpenMobile, onMenuOpenChanged } = useMenuState();
 
   // TODO pagination if there are >200 results
@@ -145,17 +115,6 @@ export default function App() {
     regulationVersion,
     offset,
     limit,
-    sortBy,
-    reverse,
-    affinityIds,
-    weaponTypes,
-    attributes,
-    includeDLC,
-    effectiveOnly,
-    twoHanding,
-    upgradeLevel,
-    groupWeaponTypes,
-    selectedWeapons,
   });
 
   const tablePlaceholder = useMemo(
@@ -200,64 +159,28 @@ export default function App() {
         rowGroups={rowGroups}
         placeholder={tablePlaceholder}
         footer={tableFooter}
-        sortBy={sortBy}
-        reverse={reverse}
         splitDamage={splitDamage}
         splitSpellScaling={!!regulationVersion.splitSpellScaling}
         numericalScaling={numericalScaling}
         attackPowerTypes={attackPowerTypes}
         spellScaling={spellScaling}
-        onSortByChanged={setSortBy}
-        onReverseChanged={setReverse}
       />
     );
   }
 
-  // The Convergence and Reforged don't separate DLC content, so this option is only relevant to
-  // vanilla
-  const showIncludeDLC = regulationVersionName === "latest";
-  const includeDLCWeaponTypes = includeDLC || !showIncludeDLC;
-
-  const weaponPickerOptions = useMemo(() => {
-    const dedupedWeaponsByWeaponName = [
-      ...weapons
-        .reduce((acc, weapon) => {
-          return acc.set(weapon.weaponName, weapon);
-        }, new Map<string, Weapon>())
-        .values(),
-    ].filter((weapon) => (includeDLC ? true : !weapon.dlc));
-
-    return makeWeaponOptionsFromWeapon(dedupedWeaponsByWeaponName);
-  }, [weapons, includeDLC]);
+  const weaponPickerOptions = useMemo(
+    () =>
+      makeWeaponOptionsFromWeapon(weapons.filter((weapon) => (includeDLC ? true : !weapon.dlc))),
+    [weapons, includeDLC],
+  );
 
   const drawerContent = (
     <>
-      <RegulationVersionPicker
-        regulationVersionName={regulationVersionName}
-        onRegulationVersionNameChanged={setRegulationVersionName}
-      />
-      <MiscFilterPicker
-        showIncludeDLC={showIncludeDLC}
-        includeDLC={includeDLC}
-        effectiveOnly={effectiveOnly}
-        onIncludeDLCChanged={setIncludeDLC}
-        onEffectiveOnlyChanged={setEffectiveOnly}
-      />
-      <WeaponPicker
-        selectedWeapons={selectedWeapons}
-        onSelectedWeaponsChanged={setSelectedWeapons}
-        weaponOptions={weaponPickerOptions}
-      />
-      <AffinityPicker
-        affinityOptions={regulationVersion.affinityOptions}
-        selectedAffinityIds={affinityIds}
-        onAffinityIdsChanged={setAffinityIds}
-      />
-      <WeaponTypePicker
-        includeDLCWeaponTypes={includeDLCWeaponTypes}
-        weaponTypes={weaponTypes}
-        onWeaponTypesChanged={setWeaponTypes}
-      />
+      <RegulationVersionPicker />
+      <MiscFilterPicker />
+      <WeaponPicker weaponOptions={weaponPickerOptions} />
+      <AffinityPicker affinityOptions={regulationVersion.affinityOptions} />
+      <WeaponTypePicker />
     </>
   );
 
@@ -337,19 +260,7 @@ export default function App() {
         <Box display="grid" sx={{ gap: 2 }}>
           <WeaponListSettings
             breakpoint={menuOpen ? "lg" : "md"}
-            attributes={attributes}
-            twoHanding={twoHanding}
-            upgradeLevel={upgradeLevel}
             maxUpgradeLevel={regulationVersion.maxUpgradeLevel}
-            splitDamage={splitDamage}
-            groupWeaponTypes={groupWeaponTypes}
-            numericalScaling={numericalScaling}
-            onAttributeChanged={setAttribute}
-            onTwoHandingChanged={setTwoHanding}
-            onUpgradeLevelChanged={setUpgradeLevel}
-            onSplitDamageChanged={setSplitDamage}
-            onGroupWeaponTypesChanged={setGroupWeaponTypes}
-            onNumericalScalingChanged={setNumericalScaling}
           />
 
           <RegulationVersionAlert key={regulationVersionName}>

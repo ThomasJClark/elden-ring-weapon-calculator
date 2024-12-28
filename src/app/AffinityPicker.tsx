@@ -1,17 +1,20 @@
 import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { memo } from "react";
 import type { AffinityOption } from "./uiUtils";
+import { useAppStateContext } from "./AppStateProvider";
 
 interface Props {
   affinityOptions: ReadonlyMap<number, AffinityOption>;
-  selectedAffinityIds: readonly number[];
-  onAffinityIdsChanged(affinityIds: readonly number[]): void;
 }
 
 /**
  * Set of checkboxes for selecting which weapon affinities to show
  */
-function AffinityPicker({ affinityOptions, selectedAffinityIds, onAffinityIdsChanged }: Props) {
+function AffinityPicker({ affinityOptions }: Props) {
+  const {
+    state: { affinityIds },
+    dispatch,
+  } = useAppStateContext();
   function renderAffinityCheckbox([affinityId, { text, icon }]: [number, AffinityOption]) {
     return (
       <FormControlLabel
@@ -34,15 +37,16 @@ function AffinityPicker({ affinityOptions, selectedAffinityIds, onAffinityIdsCha
         control={
           <Checkbox
             size="small"
-            checked={selectedAffinityIds.includes(+affinityId)}
+            checked={affinityIds.includes(+affinityId)}
             name={text}
-            onChange={(evt) =>
-              onAffinityIdsChanged(
-                evt.currentTarget.checked
-                  ? [...selectedAffinityIds, affinityId]
-                  : selectedAffinityIds.filter((value) => value !== affinityId),
-              )
-            }
+            onChange={({ currentTarget: { checked } }) => {
+              dispatch({
+                type: "setAffinityIds",
+                payload: checked
+                  ? [...affinityIds, affinityId]
+                  : affinityIds.filter((value) => value !== affinityId),
+              });
+            }}
           />
         }
       />

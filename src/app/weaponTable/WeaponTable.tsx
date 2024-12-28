@@ -19,6 +19,7 @@ import {
   WeaponTableGroup,
   WeaponTableGroupHeaderRow,
 } from "./tableStyledComponents";
+import { useAppStateContext } from "../AppStateProvider";
 
 export type WeaponTableRowData = [Weapon, WeaponAttackResult];
 
@@ -47,8 +48,6 @@ interface Props {
   rowGroups: readonly WeaponTableRowGroup[];
   placeholder?: ReactNode;
   footer?: ReactNode;
-  sortBy: SortBy;
-  reverse: boolean;
 
   /**
    * If true, include columns for each individual damage type as well as total attack power
@@ -74,9 +73,6 @@ interface Props {
    * Include spell scaling columns in the table
    */
   spellScaling: boolean;
-
-  onSortByChanged(sortBy: SortBy): void;
-  onReverseChanged(reverse: boolean): void;
 }
 
 /**
@@ -86,26 +82,13 @@ const ColumnHeaderRow = memo(function ColumnHeaderRow({
   columnGroups,
   sortBy,
   reverse,
-  onSortByChanged,
-  onReverseChanged,
+  onColumnClicked,
 }: {
   columnGroups: readonly WeaponTableColumnGroupDef[];
   sortBy: SortBy;
   reverse: boolean;
-  onSortByChanged(sortBy: SortBy): void;
-  onReverseChanged(reverse: boolean): void;
+  onColumnClicked: (column: WeaponTableColumnDef) => void;
 }) {
-  const onColumnClicked = (column: WeaponTableColumnDef) => {
-    if (column.sortBy) {
-      if (column.sortBy === sortBy) {
-        onReverseChanged(!reverse);
-      } else {
-        onSortByChanged(column.sortBy);
-        onReverseChanged(false);
-      }
-    }
-  };
-
   return (
     <WeaponTableColumnHeaderRow role="row">
       {columnGroups.map(({ key, sx, columns }) => (
@@ -194,16 +177,24 @@ function WeaponTable({
   rowGroups,
   placeholder,
   footer,
-  sortBy,
-  reverse,
   splitDamage,
   splitSpellScaling,
   numericalScaling,
   attackPowerTypes,
   spellScaling,
-  onSortByChanged,
-  onReverseChanged,
 }: Props) {
+  const { state, dispatch } = useAppStateContext();
+
+  const onColumnClicked = (column: WeaponTableColumnDef) => {
+    if (column.sortBy) {
+      if (column.sortBy === state.sortBy) {
+        dispatch({ type: "setReverse", payload: !state.reverse });
+      } else {
+        dispatch({ type: "setSortBy", payload: column.sortBy });
+        dispatch({ type: "setReverse", payload: false });
+      }
+    }
+  };
   const columnGroups = useMemo(
     () =>
       getWeaponTableColumns({
@@ -237,10 +228,9 @@ function WeaponTable({
 
           <ColumnHeaderRow
             columnGroups={columnGroups}
-            sortBy={sortBy}
-            reverse={reverse}
-            onSortByChanged={onSortByChanged}
-            onReverseChanged={onReverseChanged}
+            onColumnClicked={onColumnClicked}
+            sortBy={state.sortBy}
+            reverse={state.reverse}
           />
           {rowGroups.length > 0 ? (
             rowGroups.map(({ key, name, rows }) => (

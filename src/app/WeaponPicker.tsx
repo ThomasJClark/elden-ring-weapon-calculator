@@ -2,6 +2,7 @@ import { Autocomplete, Box, TextField } from "@mui/material";
 import { memo, useCallback } from "react";
 import type { Weapon } from "../calculator/weapon";
 import { weaponTypeLabels } from "./uiUtils";
+import { useAppStateContext } from "./AppStateProvider";
 
 export type WeaponOption = {
   label: string; // weaponName
@@ -10,8 +11,6 @@ export type WeaponOption = {
 };
 
 interface Props {
-  selectedWeapons: WeaponOption[];
-  onSelectedWeaponsChanged(weapons: WeaponOption[]): void;
   weaponOptions: WeaponOption[];
 }
 
@@ -30,18 +29,32 @@ const makeOption = (weapon: Weapon): WeaponOption => ({
   type: weaponTypeLabels.get(weapon.weaponType) || "",
 });
 
-export const makeWeaponOptionsFromWeapon = (weapons: Weapon[]): WeaponOption[] =>
-  weapons.sort(sortByTypeThenName).map(makeOption);
+export const makeWeaponOptionsFromWeapon = (weapons: Weapon[]): WeaponOption[] => {
+  return [
+    ...weapons
+      .reduce((acc, weapon) => acc.set(weapon.weaponName, weapon), new Map<string, Weapon>())
+      .values(),
+  ]
+    .sort(sortByTypeThenName)
+    .map(makeOption);
+};
 
 /**
  * An Autocomplete to allow for manually specifying weapons
  */
-function WeaponPicker({ onSelectedWeaponsChanged, weaponOptions, selectedWeapons }: Props) {
+function WeaponPicker({ weaponOptions }: Props) {
+  const {
+    state: { selectedWeapons },
+    dispatch,
+  } = useAppStateContext();
   const handleOnChange = useCallback(
     (event: React.SyntheticEvent<Element, Event>, newSelection: WeaponOption[]) => {
-      onSelectedWeaponsChanged(newSelection);
+      dispatch({
+        type: "setSelectedWeapons",
+        payload: newSelection,
+      });
     },
-    [onSelectedWeaponsChanged],
+    [dispatch],
   );
 
   return (

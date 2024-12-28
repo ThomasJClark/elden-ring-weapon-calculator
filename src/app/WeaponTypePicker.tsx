@@ -9,17 +9,17 @@ import {
   weaponTypeLabels,
   dlcWeaponTypes,
 } from "./uiUtils";
-
-interface Props {
-  includeDLCWeaponTypes?: boolean;
-  weaponTypes: readonly WeaponType[];
-  onWeaponTypesChanged(weaponTypes: WeaponType[]): void;
-}
+import { useAppStateContext } from "./AppStateProvider";
 
 /**
  * Set of checkboxes for selecting weapon types to include in the search results
  */
-function WeaponTypePicker({ includeDLCWeaponTypes, weaponTypes, onWeaponTypesChanged }: Props) {
+function WeaponTypePicker() {
+  const {
+    state: { weaponTypes, regulationVersionName, includeDLC },
+    dispatch,
+  } = useAppStateContext();
+  const includeDLCWeaponTypes = includeDLC || !(regulationVersionName === "latest");
   const renderWeaponCategory = (label: string, weaponTypesInCategory: WeaponType[]) => {
     let checked = false;
     let indeterminate = false;
@@ -40,14 +40,14 @@ function WeaponTypePicker({ includeDLCWeaponTypes, weaponTypes, onWeaponTypesCha
             checked={checked}
             indeterminate={indeterminate}
             name={label}
-            onChange={(evt) => {
-              if (evt.currentTarget.checked) {
-                onWeaponTypesChanged([...new Set([...weaponTypes, ...weaponTypesInCategory])]);
-              } else {
-                onWeaponTypesChanged(
-                  weaponTypes.filter((weaponType) => !weaponTypesInCategory.includes(weaponType)),
-                );
-              }
+            onChange={({ currentTarget: { checked } }) => {
+              const newWeaponTypes = checked
+                ? [...new Set([...weaponTypes, ...weaponTypesInCategory])]
+                : weaponTypes.filter((weaponType) => !weaponTypesInCategory.includes(weaponType));
+              dispatch({
+                type: "setWeaponTypes",
+                payload: newWeaponTypes,
+              });
             }}
           />
         }
@@ -71,13 +71,14 @@ function WeaponTypePicker({ includeDLCWeaponTypes, weaponTypes, onWeaponTypesCha
             size="small"
             checked={weaponTypes.includes(weaponType)}
             name={label}
-            onChange={(evt) =>
-              onWeaponTypesChanged(
-                evt.currentTarget.checked
+            onChange={({ currentTarget: { checked } }) => {
+              dispatch({
+                type: "setWeaponTypes",
+                payload: checked
                   ? [...weaponTypes, weaponType]
                   : weaponTypes.filter((value) => value !== weaponType),
-              )
-            }
+              });
+            }}
           />
         }
       />
