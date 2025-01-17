@@ -225,13 +225,13 @@ const urlOverrides = new Map<number, string | null>(
   isReforged
     ? [
         [1120000, "https://err.fandom.com/wiki/Iron_Spike"], // Iron Spike
-        [1150000, "https://eldenring.fandom.com/wiki/Erdsteel_Dagger"], // Brass Dagger
+        [1150000, "https://eldenring.wiki.gg/wiki/Erdsteel_Dagger"], // Brass Dagger
         [1170000, "https://err.fandom.com/wiki/Night%27s_Edge"], // Night's Edge
         [2030000, "https://err.fandom.com/wiki/Sun_Realm_Sword"], // Sun Realm Sword
         [2100000, "https://err.fandom.com/wiki/Marionette_Short_Sword"], // Marionette Short Sword
         [2120000, "https://err.fandom.com/wiki/Broken_Straight_Sword"], // Broken Straight Sword
-        [4040000, "https://eldenring.fandom.com/wiki/Zweihander"], // Zweihänder
-        [4530000, "https://eldenring.fandom.com/wiki/Remembrance_of_a_God_and_a_Lord"], // Greatswords of Radahn
+        [4040000, "https://eldenring.wiki.gg/wiki/Zweihander"], // Zweihänder
+        [4530000, "https://eldenring.wiki.gg/wiki/Remembrance_of_a_God_and_a_Lord"], // Greatswords of Radahn
         [7130000, "https://err.fandom.com/wiki/Red_Wolf%27s_Fang"], // Red Wolf's Fang
         [7160000, "https://err.fandom.com/wiki/Avionette_Scimitar"], // Avionette Scimitar
         [8090000, "https://err.fandom.com/wiki/Fury_of_Azash"], // Fury of Azash
@@ -248,11 +248,11 @@ const urlOverrides = new Map<number, string | null>(
         [21140000, "https://err.fandom.com/wiki/Fellthorn_Clutches"], // Fellthorn Clutches
         [22040000, "https://err.fandom.com/wiki/Crude_Iron_Claws"], // Crude Iron Claws
         [23090000, "https://err.fandom.com/wiki/Fellthorn_Stake"], // Fellthorn Stake
-        [11110000, "https://eldenring.fandom.com/Scepter_of_the_All-Knowing"], // Scepter of the All-Knowing Staff
-        [16140000, "https://eldenring.fandom.com/wiki/Spiked_Spear"], // Marionette Spiked Spear
-        [18140000, "https://eldenring.fandom.com/wiki/Dragon_Halberd"], // Dragonscale Halberd
-        [23150000, "https://eldenring.fandom.com/wiki/Rotten_Greataxe"], // Rotten Duelist Greataxe
-        [33210000, "https://eldenring.fandom.com/Carian_Glintstone_Staff"], // Dark Glintstone Staff
+        [11110000, "https://eldenring.wiki.gg/Scepter_of_the_All-Knowing"], // Scepter of the All-Knowing Staff
+        [16140000, "https://eldenring.wiki.gg/wiki/Spiked_Spear"], // Marionette Spiked Spear
+        [18140000, "https://eldenring.wiki.gg/wiki/Dragon_Halberd"], // Dragonscale Halberd
+        [23150000, "https://eldenring.wiki.gg/wiki/Rotten_Greataxe"], // Rotten Duelist Greataxe
+        [33210000, "https://eldenring.wiki.gg/Carian_Glintstone_Staff"], // Dark Glintstone Staff
         [33300000, "https://err.fandom.com/wiki/Snow_Witch_Scepter"], // Snow Witch Scepter
       ]
     : isConvergence
@@ -268,7 +268,7 @@ const urlOverrides = new Map<number, string | null>(
         [3240000, convergence142NotesUrl], // Dyru's Greatsword
         [4120000, convergence13NotesUrl], // Gravelstone Arcblades
         [4130000, convergence13NotesUrl], // Osian's Greatsword
-        [4530000, "https://eldenring.fandom.com/wiki/Remembrance_of_a_God_and_a_Lord"], // Greatswords of Radahn
+        [4530000, "https://eldenring.wiki.gg/wiki/Remembrance_of_a_God_and_a_Lord"], // Greatswords of Radahn
         [5070000, convergence10NotesUrl], // Thorn of the Guilty
         [5080000, convergence10NotesUrl], // Foil of Caddock
         [5090000, convergence10NotesUrl], // Quicksilver Rapier
@@ -340,17 +340,17 @@ const urlOverrides = new Map<number, string | null>(
         [60520000, convergence21NotesUrl], // Rancor Touch
         [66530000, convergence21NotesUrl], // Eagle's Edge
         [67530000, convergence21NotesUrl], // Sword of the Cosmos
-        [1050000, "https://eldenring.fandom.com/Crystal_Knife"], // Underworld Dagger
-        [2070000, "https://eldenring.fandom.com/Golden_Epitaph"], // Draconic Epitaph
-        [2150000, "https://eldenring.fandom.com/Crystal_Sword"], // Molten Sword
-        [2200000, "https://eldenring.fandom.com/Miquellan_Knight's_Sword"], // Fell Flame Sword
-        [2250000, "https://eldenring.fandom.com/Lazuli_Glintstone_Sword"], // Dragonkin Seeker Sword
-        [3070000, "https://eldenring.fandom.com/Alabaster_Lord's_Sword"], // Alabaster Lord's Greatsword
-        [18110000, "https://eldenring.fandom.com/Guardian's_Swordspear"], // Guardian's Spearblade
-        [18140000, "https://eldenring.fandom.com/Dragon_Halberd"], // Dragonkin Halberd
-        [33050000, "https://eldenring.fandom.com/Gelmir_Glintstone_Staff"], // Gelmir Lava Staff
-        [33200000, "https://eldenring.fandom.com/Academy_Glintstone_Staff"], // Dragon Student Staff
-        [33240000, "https://eldenring.fandom.com/Lusat's_Glintstone_Staff"], // Lusat's Night Staff
+        [1050000, "https://eldenring.wiki.gg/Crystal_Knife"], // Underworld Dagger
+        [2070000, "https://eldenring.wiki.gg/Golden_Epitaph"], // Draconic Epitaph
+        [2150000, "https://eldenring.wiki.gg/Crystal_Sword"], // Molten Sword
+        [2200000, "https://eldenring.wiki.gg/Miquellan_Knight's_Sword"], // Fell Flame Sword
+        [2250000, "https://eldenring.wiki.gg/Lazuli_Glintstone_Sword"], // Dragonkin Seeker Sword
+        [3070000, "https://eldenring.wiki.gg/Alabaster_Lord's_Sword"], // Alabaster Lord's Greatsword
+        [18110000, "https://eldenring.wiki.gg/Guardian's_Swordspear"], // Guardian's Spearblade
+        [18140000, "https://eldenring.wiki.gg/Dragon_Halberd"], // Dragonkin Halberd
+        [33050000, "https://eldenring.wiki.gg/Gelmir_Glintstone_Staff"], // Gelmir Lava Staff
+        [33200000, "https://eldenring.wiki.gg/Academy_Glintstone_Staff"], // Dragon Student Staff
+        [33240000, "https://eldenring.wiki.gg/Lusat's_Glintstone_Staff"], // Lusat's Night Staff
       ]
     : [],
 );

@@ -234,7 +234,7 @@ export function decodeRegulationData({
         ...weapon,
         url:
           weapon.url === undefined
-            ? `https://eldenring.fandom.com/wiki/${weapon.weaponName.replaceAll(" ", "_")}`
+            ? `https://eldenring.wiki.gg/wiki/${weapon.weaponName.replaceAll(" ", "_")}`
             : weapon.url,
         attack,
         attributeScaling,
