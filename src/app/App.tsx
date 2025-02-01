@@ -107,6 +107,7 @@ export default function App() {
     attributes,
     includeDLC,
     effectiveOnly,
+    favoritesOnly,
     splitDamage,
     twoHanding,
     upgradeLevel,
@@ -115,12 +116,14 @@ export default function App() {
     sortBy,
     reverse,
     selectedWeapons,
+    favoriteWeapons,
     setRegulationVersionName,
     setAffinityIds,
     setWeaponTypes,
     setAttribute,
     setIncludeDLC,
     setEffectiveOnly,
+    setFavoritesOnly,
     setSplitDamage,
     setTwoHanding,
     setUpgradeLevel,
@@ -129,6 +132,7 @@ export default function App() {
     setSortBy,
     setReverse,
     setSelectedWeapons,
+    setFavoriteWeapons,
   } = useAppState();
 
   const { isMobile, menuOpen, menuOpenMobile, onMenuOpenChanged } = useMenuState();
@@ -152,10 +156,12 @@ export default function App() {
     attributes,
     includeDLC,
     effectiveOnly,
+    favoritesOnly,
     twoHanding,
     upgradeLevel,
     groupWeaponTypes,
     selectedWeapons,
+    favoriteWeapons,
   });
 
   const tablePlaceholder = useMemo(
@@ -198,6 +204,7 @@ export default function App() {
     mainContent = (
       <WeaponTable
         rowGroups={rowGroups}
+        favoriteWeapons={favoriteWeapons}
         placeholder={tablePlaceholder}
         footer={tableFooter}
         sortBy={sortBy}
@@ -209,6 +216,7 @@ export default function App() {
         spellScaling={spellScaling}
         onSortByChanged={setSortBy}
         onReverseChanged={setReverse}
+        onFavoriteChanged={setFavoriteWeapons}
       />
     );
   }
@@ -240,8 +248,10 @@ export default function App() {
         showIncludeDLC={showIncludeDLC}
         includeDLC={includeDLC}
         effectiveOnly={effectiveOnly}
+        favoritesOnly={favoritesOnly}
         onIncludeDLCChanged={setIncludeDLC}
         onEffectiveOnlyChanged={setEffectiveOnly}
+        onFavoritesOnlyChanged={setFavoritesOnly}
       />
       <WeaponPicker
         selectedWeapons={selectedWeapons}
