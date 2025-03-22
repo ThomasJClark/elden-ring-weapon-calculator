@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { AlertTitle, Link } from "@mui/material";
+import { Link } from "@mui/material";
 import {
   affinityOptions,
   reforgedAffinityOptions,
@@ -42,29 +42,6 @@ export interface RegulationVersion {
 const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
   latest: {
     name: "Patch 1.16 (latest)",
-    info: (
-      <>
-        <AlertTitle>
-          <Link
-            href="https://en.bandainamcoent.eu/elden-ring/elden-ring/shadow-of-the-erdtree"
-            target="_blank"
-            rel="noopener noreferer"
-          >
-            ELDEN RING Shadow of the Erdtree
-          </Link>{" "}
-          has been released!
-        </AlertTitle>
-        Please report any bugs or missing data{" "}
-        <Link
-          href="https://github.com/ThomasJClark/elden-ring-weapon-calculator/issues/new"
-          target="_blank"
-        >
-          here
-        </Link>
-        . Uncheck the &ldquo;Include DLC weapons&rdquo; checkbox if you wish to avoid seeing items
-        from the new expansion.
-      </>
-    ),
     affinityOptions,
     fetch: () => fetch(`/regulation-vanilla-v1.14.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
