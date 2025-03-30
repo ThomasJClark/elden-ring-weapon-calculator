@@ -7,7 +7,10 @@ import {
   type AffinityOption,
 } from "./uiUtils";
 
-export type RegulationVersionName = "latest" | "reforged" | "convergence";
+const now = new Date();
+export const canSeeAprilFools = now.getMonth() === 3 && now.getDate() === 1;
+
+export type RegulationVersionName = "sekiro" | "latest" | "reforged" | "convergence";
 
 export interface RegulationVersion {
   name: string;
@@ -40,6 +43,20 @@ export interface RegulationVersion {
 }
 
 const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
+  sekiro: {
+    name: "Sekiro: Shadows Die Twice",
+    affinityOptions: new Map<number, AffinityOption>(),
+    fetch: () => fetch(`/regulation-sdt.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    info: (
+      <>
+        Using regulation data from{" "}
+        <Link href="https://youtu.be/dQw4w9WgXcQ" target="_blank" rel="noopener noreferer">
+          Sekiro: Shadows Die Twice
+        </Link>{" "}
+        patch v1.06
+      </>
+    ),
+  },
   latest: {
     name: "Patch 1.16 (latest)",
     affinityOptions,

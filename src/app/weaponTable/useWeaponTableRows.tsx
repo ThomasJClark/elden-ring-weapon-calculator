@@ -19,6 +19,7 @@ import {
 import type { WeaponOption } from "../WeaponPicker";
 
 interface WeaponTableRowsOptions {
+  aprilFools: boolean;
   weapons: readonly Weapon[];
   regulationVersion: RegulationVersion;
   offset: number;
@@ -52,6 +53,7 @@ interface WeaponTableRowsResult {
  * Filter, sort, and paginate the weapon list based on the current selections
  */
 const useWeaponTableRows = ({
+  aprilFools,
   weapons,
   regulationVersion,
   offset,
@@ -92,20 +94,24 @@ const useWeaponTableRows = ({
     const includedDamageTypes = new Set<AttackPowerType>();
     let includeSpellScaling = false;
 
-    const filteredWeapons = filterWeapons(weapons, {
-      weaponTypes: new Set(weaponTypes.filter((weaponType) => allWeaponTypes.includes(weaponType))),
-      affinityIds: new Set(
-        affinityIds.filter((affinityId) => regulationVersion.affinityOptions.has(affinityId)),
-      ),
-      effectiveWithAttributes: effectiveOnly ? attributes : undefined,
-      includeDLC,
-      twoHanding,
-      uninfusableWeaponTypes,
-      selectedWeapons: selectedWeapons.reduce(
-        (acc, weapon) => (acc.add(weapon.value), acc),
-        new Set<string>(),
-      ),
-    });
+    const filteredWeapons = aprilFools
+      ? weapons
+      : filterWeapons(weapons, {
+          weaponTypes: new Set(
+            weaponTypes.filter((weaponType) => allWeaponTypes.includes(weaponType)),
+          ),
+          affinityIds: new Set(
+            affinityIds.filter((affinityId) => regulationVersion.affinityOptions.has(affinityId)),
+          ),
+          effectiveWithAttributes: effectiveOnly ? attributes : undefined,
+          includeDLC,
+          twoHanding,
+          uninfusableWeaponTypes,
+          selectedWeapons: selectedWeapons.reduce(
+            (acc, weapon) => (acc.add(weapon.value), acc),
+            new Set<string>(),
+          ),
+        });
 
     const rows = filteredWeapons.map((weapon): WeaponTableRowData => {
       let upgradeLevel = 0;

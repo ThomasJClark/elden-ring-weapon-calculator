@@ -1,8 +1,12 @@
 import { memo, useId } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import regulationVersions, { type RegulationVersionName } from "./regulationVersions";
+import regulationVersions, {
+  canSeeAprilFools,
+  type RegulationVersionName,
+} from "./regulationVersions";
 
 interface Props {
+  aprilFools: boolean;
   regulationVersionName: RegulationVersionName;
   onRegulationVersionNameChanged(regulationVersionName: RegulationVersionName): void;
 }
@@ -10,7 +14,11 @@ interface Props {
 /**
  * Dropdown used to select the version of the game (e.g. a specific patch or mod)
  */
-function RegulationVersionPicker({ regulationVersionName, onRegulationVersionNameChanged }: Props) {
+function RegulationVersionPicker({
+  aprilFools,
+  regulationVersionName,
+  onRegulationVersionNameChanged,
+}: Props) {
   const id = useId();
   return (
     <FormControl fullWidth>
@@ -24,11 +32,20 @@ function RegulationVersionPicker({ regulationVersionName, onRegulationVersionNam
           onRegulationVersionNameChanged(evt.target.value as RegulationVersionName);
         }}
       >
-        {Object.entries(regulationVersions).map(([key, { name }]) => (
-          <MenuItem key={key} value={key}>
-            {name}
-          </MenuItem>
-        ))}
+        {Object.entries(regulationVersions)
+          .filter(([key]) => canSeeAprilFools || key !== "sekiro")
+          .map(([key, { name }], index) => (
+            <MenuItem key={key} value={key}>
+              {aprilFools
+                ? [
+                    "Sekiro: Shadows Die Twice",
+                    "ELDEN RING",
+                    "Sekiro Reforged (mod)",
+                    "Sekiro Convergence (mod)",
+                  ][index]
+                : name}
+            </MenuItem>
+          ))}
       </Select>
     </FormControl>
   );

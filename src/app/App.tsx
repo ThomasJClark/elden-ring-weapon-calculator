@@ -18,8 +18,11 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBackRounded";
 import WeaponListSettings from "./WeaponListSettings";
 import WeaponTable from "./weaponTable/WeaponTable";
 import useWeaponTableRows from "./weaponTable/useWeaponTableRows";
-import theme from "./theme";
-import regulationVersions from "./regulationVersions";
+import theme, { aprilFoolsTheme } from "./theme";
+import regulationVersions, {
+  canSeeAprilFools,
+  type RegulationVersionName,
+} from "./regulationVersions";
 import useWeapons from "./useWeapons";
 import useAppState from "./useAppState";
 import AppBar from "./AppBar";
@@ -30,6 +33,7 @@ import Footer from "./Footer";
 import MiscFilterPicker from "./MiscFilterPicker";
 import WeaponPicker, { makeWeaponOptionsFromWeapon } from "./WeaponPicker";
 import type { Weapon } from "../calculator/weapon";
+import { WeaponType } from "../calculator/weaponTypes";
 
 const useMenuState = () => {
   const theme = useTheme();
@@ -101,7 +105,7 @@ function RegulationVersionAlert({ children }: { children: ReactNode }) {
 
 export default function App() {
   const {
-    regulationVersionName,
+    regulationVersionName: actualRegulationVersionName,
     affinityIds,
     weaponTypes,
     attributes,
@@ -115,7 +119,7 @@ export default function App() {
     sortBy,
     reverse,
     selectedWeapons,
-    setRegulationVersionName,
+    setRegulationVersionName: actualSetRegulationVersionName,
     setAffinityIds,
     setWeaponTypes,
     setAttribute,
@@ -131,6 +135,28 @@ export default function App() {
     setSelectedWeapons,
   } = useAppState();
 
+  const [sawAprilFools, setSawAprilFools] = useState(() => !!localStorage.getItem("sawAprilFools"));
+  const [aprilFools, setIsAprilFools] = useState(canSeeAprilFools && !sawAprilFools);
+  const regulationVersionName = aprilFools ? "sekiro" : actualRegulationVersionName;
+  useEffect(() => {
+    document.title = aprilFools ? "Sekiro Weapon Calculator" : "Elden Ring Weapon Calculator";
+  }, [aprilFools]);
+
+  const setRegulationVersionName = useCallback(
+    (newRegulationVersionName: RegulationVersionName) => {
+      setIsAprilFools(newRegulationVersionName === "sekiro");
+      actualSetRegulationVersionName(
+        newRegulationVersionName !== "sekiro" ? newRegulationVersionName : "latest",
+      );
+
+      if (canSeeAprilFools && newRegulationVersionName !== "sekiro") {
+        localStorage.setItem("sawAprilFools", "true");
+        setSawAprilFools(true);
+      }
+    },
+    [actualSetRegulationVersionName],
+  );
+
   const { isMobile, menuOpen, menuOpenMobile, onMenuOpenChanged } = useMenuState();
 
   // TODO pagination if there are >200 results
@@ -141,6 +167,7 @@ export default function App() {
   const regulationVersion = regulationVersions[regulationVersionName];
 
   const { rowGroups, attackPowerTypes, spellScaling, total } = useWeaponTableRows({
+    aprilFools,
     weapons,
     regulationVersion,
     offset,
@@ -233,39 +260,51 @@ export default function App() {
   const drawerContent = (
     <>
       <RegulationVersionPicker
+        aprilFools={aprilFools}
         regulationVersionName={regulationVersionName}
         onRegulationVersionNameChanged={setRegulationVersionName}
       />
-      <MiscFilterPicker
-        showIncludeDLC={showIncludeDLC}
-        includeDLC={includeDLC}
-        effectiveOnly={effectiveOnly}
-        onIncludeDLCChanged={setIncludeDLC}
-        onEffectiveOnlyChanged={setEffectiveOnly}
-      />
-      <WeaponPicker
-        selectedWeapons={selectedWeapons}
-        onSelectedWeaponsChanged={setSelectedWeapons}
-        weaponOptions={weaponPickerOptions}
-      />
-      <AffinityPicker
-        affinityOptions={regulationVersion.affinityOptions}
-        selectedAffinityIds={affinityIds}
-        onAffinityIdsChanged={setAffinityIds}
-      />
+      {!aprilFools && (
+        <>
+          <MiscFilterPicker
+            showIncludeDLC={showIncludeDLC}
+            includeDLC={includeDLC}
+            effectiveOnly={effectiveOnly}
+            onIncludeDLCChanged={setIncludeDLC}
+            onEffectiveOnlyChanged={setEffectiveOnly}
+          />
+          <WeaponPicker
+            selectedWeapons={selectedWeapons}
+            onSelectedWeaponsChanged={setSelectedWeapons}
+            weaponOptions={weaponPickerOptions}
+          />
+          <AffinityPicker
+            affinityOptions={regulationVersion.affinityOptions}
+            selectedAffinityIds={affinityIds}
+            onAffinityIdsChanged={setAffinityIds}
+          />
+        </>
+      )}
       <WeaponTypePicker
         includeDLCWeaponTypes={includeDLCWeaponTypes}
-        weaponTypes={weaponTypes}
-        onWeaponTypesChanged={setWeaponTypes}
+        weaponTypes={aprilFools ? [WeaponType.KATANA] : weaponTypes}
+        onWeaponTypesChanged={
+          aprilFools
+            ? () => {
+                /* empty */
+              }
+            : setWeaponTypes
+        }
       />
     </>
   );
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={aprilFools ? aprilFoolsTheme : theme}>
       <CssBaseline />
 
       <AppBar
+        aprilFools={aprilFools}
         menuOpen={isMobile ? menuOpenMobile : menuOpen}
         onMenuOpenChanged={onMenuOpenChanged}
       />
@@ -336,6 +375,7 @@ export default function App() {
 
         <Box display="grid" sx={{ gap: 2 }}>
           <WeaponListSettings
+            aprilFools={aprilFools}
             breakpoint={menuOpen ? "lg" : "md"}
             attributes={attributes}
             twoHanding={twoHanding}
@@ -358,7 +398,7 @@ export default function App() {
 
           {mainContent}
 
-          <Footer />
+          <Footer aprilFools={aprilFools} />
         </Box>
       </Box>
     </ThemeProvider>

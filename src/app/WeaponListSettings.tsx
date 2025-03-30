@@ -103,6 +103,7 @@ const BooleanInput = memo(function BooleanInput({ label, checked, onChange }: Bo
 });
 
 interface Props {
+  aprilFools: boolean;
   breakpoint: "md" | "lg";
   attributes: Attributes;
   twoHanding: boolean;
@@ -123,6 +124,7 @@ interface Props {
  * Form controls for entering player attributes, basic filters, and display options
  */
 function WeaponListSettings({
+  aprilFools,
   breakpoint,
   attributes,
   twoHanding,
@@ -182,7 +184,15 @@ function WeaponListSettings({
           },
         })}
       >
-        <BooleanInput label="Two handing" checked={twoHanding} onChange={onTwoHandingChanged} />
+        {aprilFools ? (
+          <FormControlLabel
+            label="Two handing"
+            sx={{ mr: 0 }}
+            control={<Checkbox disabled size="small" checked={false} name="Two handing" />}
+          />
+        ) : (
+          <BooleanInput label="Two handing" checked={twoHanding} onChange={onTwoHandingChanged} />
+        )}
         <BooleanInput
           label="Group by type"
           checked={groupWeaponTypes}

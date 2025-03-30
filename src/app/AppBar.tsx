@@ -4,6 +4,7 @@ import MenuIcon from "@mui/icons-material/MenuRounded";
 import { memo } from "react";
 
 interface Props {
+  aprilFools: boolean;
   menuOpen: boolean;
   onMenuOpenChanged(menuOpen: boolean): void;
 }
@@ -11,7 +12,7 @@ interface Props {
 /**
  * The main toolbar that has the app name, dark mode toggle, and a link to the GitHub repository
  */
-function AppBar({ menuOpen, onMenuOpenChanged }: Props) {
+function AppBar({ aprilFools, menuOpen, onMenuOpenChanged }: Props) {
   return (
     <Toolbar>
       <IconButton
@@ -28,7 +29,8 @@ function AppBar({ menuOpen, onMenuOpenChanged }: Props) {
       </IconButton>
 
       <Typography variant="h1" component="span" sx={{ flexGrow: 1 }}>
-        Elden&nbsp;Ring Weapon&nbsp;Calculator
+        {aprilFools ? "Sekiro" : "Elden Ring"}
+        &nbsp;Weapon&nbsp;Calculator
       </Typography>
 
       <IconButton
@@ -36,7 +38,11 @@ function AppBar({ menuOpen, onMenuOpenChanged }: Props) {
         color="inherit"
         edge="end"
         aria-label="GitHub Repository"
-        href="https://github.com/ThomasJClark/elden-ring-weapon-calculator"
+        href={
+          aprilFools
+            ? "https://youtu.be/dQw4w9WgXcQ"
+            : "https://github.com/ThomasJClark/elden-ring-weapon-calculator"
+        }
         target="_blank"
         rel="noopener noreferrer"
       >
