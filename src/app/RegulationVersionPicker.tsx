@@ -40,8 +40,8 @@ function RegulationVersionPicker({
                 ? [
                     "Sekiro: Shadows Die Twice",
                     "ELDEN RING",
-                    "Sekiro Reforged (mod)",
-                    "Sekiro Convergence (mod)",
+                    "Sekiro: Reforged (mod)",
+                    "The Shinobi Convergence (mod)",
                   ][index]
                 : name}
             </MenuItem>
