@@ -18,11 +18,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBackRounded";
 import WeaponListSettings from "./WeaponListSettings";
 import WeaponTable from "./weaponTable/WeaponTable";
 import useWeaponTableRows from "./weaponTable/useWeaponTableRows";
-import theme, { aprilFoolsTheme } from "./theme";
-import regulationVersions, {
-  canSeeAprilFools,
-  type RegulationVersionName,
-} from "./regulationVersions";
+import theme from "./theme";
+import regulationVersions from "./regulationVersions";
 import useWeapons from "./useWeapons";
 import useAppState from "./useAppState";
 import AppBar from "./AppBar";
@@ -33,7 +30,6 @@ import Footer from "./Footer";
 import MiscFilterPicker from "./MiscFilterPicker";
 import WeaponPicker, { makeWeaponOptionsFromWeapon } from "./WeaponPicker";
 import type { Weapon } from "../calculator/weapon";
-import { WeaponType } from "../calculator/weaponTypes";
 
 const useMenuState = () => {
   const theme = useTheme();
@@ -103,203 +99,9 @@ function RegulationVersionAlert({ children }: { children: ReactNode }) {
   );
 }
 
-const aprilFoolsWeapons: Weapon[] = [
-  {
-    name: "Kusabimaru",
-    weaponName: "Kusabimaru",
-    affinityId: 0,
-    weaponType: 13,
-    requirements: {},
-    paired: true,
-    url: "https://youtu.be/dQw4w9WgXcQ",
-    attack: [
-      {
-        "0": 80,
-      },
-    ],
-    attributeScaling: [
-      {
-        str: 1,
-      },
-    ],
-    attackElementCorrect: {
-      "0": {
-        str: true,
-      },
-      "5": {
-        arc: true,
-      },
-      "7": {
-        arc: true,
-      },
-      "9": {
-        arc: true,
-      },
-      "10": {
-        arc: true,
-      },
-    },
-    calcCorrectGraphs: {
-      "0": [
-        null,
-        0,
-        0.25,
-        0.5,
-        0.75,
-        1,
-        1.25,
-        1.5,
-        1.75,
-        2,
-        2.25,
-        2.5,
-        2.75,
-        3,
-        3.25,
-        3.35,
-        3.45,
-        3.55,
-        3.65,
-        3.75,
-        3.85,
-        3.95,
-        4.05,
-        4.15,
-        4.25,
-        4.35,
-        4.45,
-        4.55,
-        4.6,
-        4.65,
-        4.7,
-        4.75,
-        4.8,
-        4.85,
-        4.9,
-        4.95,
-        5,
-        5.05,
-        5.1,
-        5.15,
-        5.2,
-        5.25,
-        5.3,
-        5.35,
-        5.4,
-        5.45,
-        5.5,
-        5.55,
-        5.6,
-        5.65,
-        5.7,
-        5.75,
-        5.775,
-        5.77,
-        5.78,
-        5.79,
-        5.8,
-        5.81,
-        5.82,
-        5.83,
-        5.84,
-        5.85,
-        5.86,
-        5.87,
-        5.88,
-        5.89,
-        5.9,
-        5.91,
-        5.92,
-        5.93,
-        5.94,
-        5.95,
-        5.96,
-        5.97,
-        5.98,
-        5.99,
-        6,
-        6.01,
-        6.02,
-        6.03,
-        6.04,
-        6.05,
-        6.06,
-        6.07,
-        6.08,
-        6.09,
-        6.1,
-        6.11,
-        6.12,
-        6.13,
-        6.14,
-        6.15,
-        6.16,
-        6.17,
-        6.18,
-        6.19,
-        6.2,
-        6.21,
-        6.22,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-        6.23,
-      ],
-    },
-    scalingTiers: [[0.01, "S"]],
-    dlc: false,
-  },
-];
-
 export default function App() {
   const {
-    regulationVersionName: actualRegulationVersionName,
+    regulationVersionName,
     affinityIds,
     weaponTypes,
     attributes,
@@ -313,7 +115,7 @@ export default function App() {
     sortBy,
     reverse,
     selectedWeapons,
-    setRegulationVersionName: actualSetRegulationVersionName,
+    setRegulationVersionName,
     setAffinityIds,
     setWeaponTypes,
     setAttribute,
@@ -329,41 +131,16 @@ export default function App() {
     setSelectedWeapons,
   } = useAppState();
 
-  const [sawAprilFools, setSawAprilFools] = useState(() => !!localStorage.getItem("sawAprilFools"));
-  const [aprilFools, setIsAprilFools] = useState(canSeeAprilFools && !sawAprilFools);
-  const regulationVersionName = aprilFools ? "sekiro" : actualRegulationVersionName;
-  useEffect(() => {
-    document.title = aprilFools ? "Sekiro Weapon Calculator" : "Elden Ring Weapon Calculator";
-  }, [aprilFools]);
-
-  const setRegulationVersionName = useCallback(
-    (newRegulationVersionName: RegulationVersionName) => {
-      setIsAprilFools(newRegulationVersionName === "sekiro");
-      actualSetRegulationVersionName(
-        newRegulationVersionName !== "sekiro" ? newRegulationVersionName : "latest",
-      );
-
-      if (canSeeAprilFools && newRegulationVersionName !== "sekiro") {
-        localStorage.setItem("sawAprilFools", "true");
-        setSawAprilFools(true);
-      }
-    },
-    [actualSetRegulationVersionName],
-  );
-
   const { isMobile, menuOpen, menuOpenMobile, onMenuOpenChanged } = useMenuState();
 
   // TODO pagination if there are >200 results
   const offset = 0;
   const limit = 200;
-  const { weapons: actualWeapons, loading, error } = useWeapons(actualRegulationVersionName);
-
-  const weapons = aprilFools ? aprilFoolsWeapons : actualWeapons;
+  const { weapons, loading, error } = useWeapons(regulationVersionName);
 
   const regulationVersion = regulationVersions[regulationVersionName];
 
   const { rowGroups, attackPowerTypes, spellScaling, total } = useWeaponTableRows({
-    aprilFools,
     weapons,
     regulationVersion,
     offset,
@@ -456,51 +233,39 @@ export default function App() {
   const drawerContent = (
     <>
       <RegulationVersionPicker
-        aprilFools={aprilFools}
         regulationVersionName={regulationVersionName}
         onRegulationVersionNameChanged={setRegulationVersionName}
       />
-      {!aprilFools && (
-        <>
-          <MiscFilterPicker
-            showIncludeDLC={showIncludeDLC}
-            includeDLC={includeDLC}
-            effectiveOnly={effectiveOnly}
-            onIncludeDLCChanged={setIncludeDLC}
-            onEffectiveOnlyChanged={setEffectiveOnly}
-          />
-          <WeaponPicker
-            selectedWeapons={selectedWeapons}
-            onSelectedWeaponsChanged={setSelectedWeapons}
-            weaponOptions={weaponPickerOptions}
-          />
-          <AffinityPicker
-            affinityOptions={regulationVersion.affinityOptions}
-            selectedAffinityIds={affinityIds}
-            onAffinityIdsChanged={setAffinityIds}
-          />
-        </>
-      )}
+      <MiscFilterPicker
+        showIncludeDLC={showIncludeDLC}
+        includeDLC={includeDLC}
+        effectiveOnly={effectiveOnly}
+        onIncludeDLCChanged={setIncludeDLC}
+        onEffectiveOnlyChanged={setEffectiveOnly}
+      />
+      <WeaponPicker
+        selectedWeapons={selectedWeapons}
+        onSelectedWeaponsChanged={setSelectedWeapons}
+        weaponOptions={weaponPickerOptions}
+      />
+      <AffinityPicker
+        affinityOptions={regulationVersion.affinityOptions}
+        selectedAffinityIds={affinityIds}
+        onAffinityIdsChanged={setAffinityIds}
+      />
       <WeaponTypePicker
         includeDLCWeaponTypes={includeDLCWeaponTypes}
-        weaponTypes={aprilFools ? [WeaponType.KATANA] : weaponTypes}
-        onWeaponTypesChanged={
-          aprilFools
-            ? () => {
-                /* empty */
-              }
-            : setWeaponTypes
-        }
+        weaponTypes={weaponTypes}
+        onWeaponTypesChanged={setWeaponTypes}
       />
     </>
   );
 
   return (
-    <ThemeProvider theme={aprilFools ? aprilFoolsTheme : theme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
 
       <AppBar
-        aprilFools={aprilFools}
         menuOpen={isMobile ? menuOpenMobile : menuOpen}
         onMenuOpenChanged={onMenuOpenChanged}
       />
@@ -571,7 +336,6 @@ export default function App() {
 
         <Box display="grid" sx={{ gap: 2 }}>
           <WeaponListSettings
-            aprilFools={aprilFools}
             breakpoint={menuOpen ? "lg" : "md"}
             attributes={attributes}
             twoHanding={twoHanding}
@@ -594,7 +358,7 @@ export default function App() {
 
           {mainContent}
 
-          <Footer aprilFools={aprilFools} />
+          <Footer />
         </Box>
       </Box>
     </ThemeProvider>
