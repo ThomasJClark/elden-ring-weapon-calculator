@@ -1,12 +1,13 @@
 import { memo, type ReactNode, useMemo } from "react";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { Box, Typography } from "@mui/material";
-import { type SystemStyleObject, type Theme } from "@mui/system";
+import type { SystemStyleObject, Theme } from "@mui/system";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import { AttackPowerType, type Weapon, type WeaponAttackResult } from "../../calculator/calculator";
-import type { SortBy } from "../../search/sortWeapons";
-import getWeaponTableColumns from "./getWeaponTableColumns";
+import { AttackPowerType } from "../../calculator/calculator.ts";
+import type { Weapon, WeaponAttackResult } from "../../calculator/calculator.ts";
+import type { SortBy } from "../../search/sortWeapons.ts";
+import getWeaponTableColumns from "./getWeaponTableColumns.tsx";
 import {
   Scrollbar,
   ScrollbarThumb,
@@ -18,7 +19,7 @@ import {
   WeaponTableDataRow,
   WeaponTableGroup,
   WeaponTableGroupHeaderRow,
-} from "./tableStyledComponents";
+} from "./tableStyledComponents.tsx";
 
 export type WeaponTableRowData = [Weapon, WeaponAttackResult];
 

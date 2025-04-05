@@ -1,7 +1,7 @@
-import { allAttributes, type Attribute, type Attributes } from "./attributes";
-import { AttackPowerType, allDamageTypes, allStatusTypes } from "./attackPowerTypes";
-import type { Weapon } from "./weapon";
-import { WeaponType } from "./weaponTypes";
+import { allAttributes, type Attribute, type Attributes } from "./attributes.ts";
+import { AttackPowerType, allDamageTypes, allStatusTypes } from "./attackPowerTypes.ts";
+import type { Weapon } from "./weapon.ts";
+import { WeaponType } from "./weaponTypes.ts";
 
 interface WeaponAttackOptions {
   weapon: Weapon;
@@ -144,7 +144,7 @@ export default function getWeaponAttack({
   };
 }
 
-export * from "./attributes";
-export * from "./attackPowerTypes";
-export * from "./weapon";
-export * from "./weaponTypes";
+export * from "./attributes.ts";
+export * from "./attackPowerTypes.ts";
+export * from "./weapon.ts";
+export * from "./weaponTypes.ts";

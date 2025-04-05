@@ -1,20 +1,21 @@
-export const enum AttackPowerType {
-  PHYSICAL = 0,
-  MAGIC = 1,
-  FIRE = 2,
-  LIGHTNING = 3,
-  HOLY = 4,
+export const AttackPowerType = {
+  PHYSICAL: 0,
+  MAGIC: 1,
+  FIRE: 2,
+  LIGHTNING: 3,
+  HOLY: 4,
+  POISON: 5,
+  SCARLET_ROT: 6,
+  BLEED: 7,
+  FROST: 8,
+  SLEEP: 9,
+  MADNESS: 10,
+  DEATH_BLIGHT: 11,
+} as const;
 
-  POISON = 5,
-  SCARLET_ROT = 6,
-  BLEED = 7,
-  FROST = 8,
-  SLEEP = 9,
-  MADNESS = 10,
-  DEATH_BLIGHT = 11,
-}
+export type AttackPowerType = typeof AttackPowerType[keyof typeof AttackPowerType];
 
-export const allDamageTypes = [
+export const allDamageTypes: AttackPowerType[] = [
   AttackPowerType.PHYSICAL,
   AttackPowerType.MAGIC,
   AttackPowerType.FIRE,
@@ -22,7 +23,7 @@ export const allDamageTypes = [
   AttackPowerType.HOLY,
 ];
 
-export const allStatusTypes = [
+export const allStatusTypes: AttackPowerType[] = [
   AttackPowerType.POISON,
   AttackPowerType.SCARLET_ROT,
   AttackPowerType.BLEED,

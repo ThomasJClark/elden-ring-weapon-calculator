@@ -15,21 +15,21 @@ import {
   type Theme,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBackRounded";
-import WeaponListSettings from "./WeaponListSettings";
-import WeaponTable from "./weaponTable/WeaponTable";
-import useWeaponTableRows from "./weaponTable/useWeaponTableRows";
-import theme from "./theme";
-import regulationVersions from "./regulationVersions";
-import useWeapons from "./useWeapons";
-import useAppState from "./useAppState";
-import AppBar from "./AppBar";
-import RegulationVersionPicker from "./RegulationVersionPicker";
-import WeaponTypePicker from "./WeaponTypePicker";
-import AffinityPicker from "./AffinityPicker";
-import Footer from "./Footer";
-import MiscFilterPicker from "./MiscFilterPicker";
-import WeaponPicker, { makeWeaponOptionsFromWeapon } from "./WeaponPicker";
-import type { Weapon } from "../calculator/weapon";
+import WeaponListSettings from "./WeaponListSettings.tsx";
+import WeaponTable from "./weaponTable/WeaponTable.tsx";
+import useWeaponTableRows from "./weaponTable/useWeaponTableRows.tsx";
+import theme from "./theme.ts";
+import regulationVersions from "./regulationVersions.tsx";
+import useWeapons from "./useWeapons.ts";
+import useAppState from "./useAppState.ts";
+import AppBar from "./AppBar.tsx";
+import RegulationVersionPicker from "./RegulationVersionPicker.tsx";
+import WeaponTypePicker from "./WeaponTypePicker.tsx";
+import AffinityPicker from "./AffinityPicker.tsx";
+import Footer from "./Footer.tsx";
+import MiscFilterPicker from "./MiscFilterPicker.tsx";
+import WeaponPicker, { makeWeaponOptionsFromWeapon } from "./WeaponPicker.tsx";
+import type { Weapon } from "../calculator/weapon.ts";
 
 const useMenuState = () => {
   const theme = useTheme();

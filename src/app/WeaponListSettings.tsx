@@ -8,9 +8,9 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { allAttributes, type Attribute, type Attributes } from "../calculator/calculator";
-import NumberTextField from "./NumberTextField";
-import { getAttributeLabel, maxRegularUpgradeLevel, toSpecialUpgradeLevel } from "./uiUtils";
+import { allAttributes, type Attribute, type Attributes } from "../calculator/calculator.ts";
+import NumberTextField from "./NumberTextField.tsx";
+import { getAttributeLabel, maxRegularUpgradeLevel, toSpecialUpgradeLevel } from "./uiUtils.ts";
 
 interface AttributeInputProps {
   attribute: Attribute;

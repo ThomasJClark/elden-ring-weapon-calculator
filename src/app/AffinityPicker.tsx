@@ -1,6 +1,6 @@
 import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { memo } from "react";
-import type { AffinityOption } from "./uiUtils";
+import type { AffinityOption } from "./uiUtils.ts";
 
 interface Props {
   affinityOptions: ReadonlyMap<number, AffinityOption>;

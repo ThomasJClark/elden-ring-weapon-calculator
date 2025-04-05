@@ -5,21 +5,21 @@ import {
   allAttributes,
   allDamageTypes,
   allStatusTypes,
-} from "../../calculator/calculator";
+} from "../../calculator/calculator.ts";
 import {
   damageTypeIcons,
   damageTypeLabels,
   getAttributeLabel,
   getShortAttributeLabel,
   getTotalDamageAttackPower,
-} from "../uiUtils";
-import type { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable";
+} from "../uiUtils.ts";
+import type { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable.tsx";
 import {
   WeaponNameRenderer,
   ScalingRenderer,
   AttributeRequirementRenderer,
   AttackPowerRenderer,
-} from "./tableRenderers";
+} from "./tableRenderers.tsx";
 
 const nameColumn: WeaponTableColumnDef = {
   key: "name",

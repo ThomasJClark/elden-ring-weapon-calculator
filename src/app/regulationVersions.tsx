@@ -5,7 +5,7 @@ import {
   reforgedAffinityOptions,
   convergenceAffinityOptions,
   type AffinityOption,
-} from "./uiUtils";
+} from "./uiUtils.ts";
 
 export type RegulationVersionName = "latest" | "reforged" | "convergence";
 

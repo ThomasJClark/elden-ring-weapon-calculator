@@ -5,18 +5,18 @@ import getWeaponAttack, {
   WeaponType,
   type Attributes,
   type Weapon,
-} from "../../calculator/calculator";
-import filterWeapons from "../../search/filterWeapons";
-import { type WeaponTableRowData, type WeaponTableRowGroup } from "./WeaponTable";
-import { type SortBy, sortWeapons } from "../../search/sortWeapons";
-import { type RegulationVersion } from "../regulationVersions";
+} from "../../calculator/calculator.ts";
+import filterWeapons from "../../search/filterWeapons.ts";
+import { type WeaponTableRowData, type WeaponTableRowGroup } from "./WeaponTable.tsx";
+import { type SortBy, sortWeapons } from "../../search/sortWeapons.ts";
+import { type RegulationVersion } from "../regulationVersions.tsx";
 import {
   allWeaponTypes,
   weaponTypeLabels,
   maxSpecialUpgradeLevel,
   toSpecialUpgradeLevel,
-} from "../uiUtils";
-import type { WeaponOption } from "../WeaponPicker";
+} from "../uiUtils.ts";
+import type { WeaponOption } from "../WeaponPicker.tsx";
 
 interface WeaponTableRowsOptions {
   weapons: readonly Weapon[];

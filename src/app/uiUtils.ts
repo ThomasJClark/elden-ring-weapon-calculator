@@ -1,9 +1,5 @@
-import {
-  allDamageTypes,
-  AttackPowerType,
-  WeaponType,
-  type Attribute,
-} from "../calculator/calculator";
+import { allDamageTypes, AttackPowerType, WeaponType } from "../calculator/calculator.ts";
+import type { Attribute } from "../calculator/calculator.ts";
 import specialWeaponIcon from "./img/specialWeapon.webp";
 import standardAffinityIcon from "./img/standardAffinity.webp";
 import heavyAffinityIcon from "./img/heavyAffinity.webp";
@@ -141,7 +137,7 @@ export const convergenceAffinityOptions = new Map<number, AffinityOption>([
  * Might as well hide these by default. If you really need to know which small shield has the
  * highest AR... good luck.
  */
-export const rangedWeaponTypes = [
+export const rangedWeaponTypes: WeaponType[] = [
   WeaponType.LIGHT_BOW,
   WeaponType.BOW,
   WeaponType.GREATBOW,
@@ -149,16 +145,16 @@ export const rangedWeaponTypes = [
   WeaponType.BALLISTA,
 ];
 
-export const catalystTypes = [WeaponType.GLINTSTONE_STAFF, WeaponType.SACRED_SEAL];
+export const catalystTypes: WeaponType[] = [WeaponType.GLINTSTONE_STAFF, WeaponType.SACRED_SEAL];
 
-export const shieldTypes = [
+export const shieldTypes: WeaponType[] = [
   WeaponType.SMALL_SHIELD,
   WeaponType.MEDIUM_SHIELD,
   WeaponType.GREATSHIELD,
   WeaponType.THRUSTING_SHIELD,
 ];
 
-export const meleeWeaponTypes = [
+export const meleeWeaponTypes: WeaponType[] = [
   WeaponType.AXE,
   WeaponType.BACKHAND_BLADE,
   WeaponType.BEAST_CLAW,
@@ -192,7 +188,7 @@ export const meleeWeaponTypes = [
   WeaponType.WHIP,
 ];
 
-export const dlcWeaponTypes = [
+export const dlcWeaponTypes: WeaponType[] = [
   WeaponType.HAND_TO_HAND,
   WeaponType.PERFUME_BOTTLE,
   WeaponType.THRUSTING_SHIELD,
@@ -203,7 +199,7 @@ export const dlcWeaponTypes = [
   WeaponType.BEAST_CLAW,
 ];
 
-export const hiddenWeaponTypes = [WeaponType.DUAL_CATALYST];
+export const hiddenWeaponTypes: WeaponType[] = [WeaponType.DUAL_CATALYST];
 
 export const allWeaponTypes = [
   ...meleeWeaponTypes,
@@ -213,7 +209,7 @@ export const allWeaponTypes = [
   ...hiddenWeaponTypes,
 ];
 
-export const weaponTypeLabels = new Map([
+export const weaponTypeLabels = new Map<WeaponType, string>([
   [WeaponType.DAGGER, "Dagger"],
   [WeaponType.STRAIGHT_SWORD, "Straight Sword"],
   [WeaponType.GREATSWORD, "Greatsword"],
@@ -320,7 +316,7 @@ export function getShortAttributeLabel(attribute: Attribute) {
 }
 
 export function getTotalDamageAttackPower(attackPower: Partial<Record<AttackPowerType, number>>) {
-  return allDamageTypes.reduce(
+  return allDamageTypes.reduce<number>(
     (totalAttackPower, damageType) => totalAttackPower + (attackPower[damageType] ?? 0),
     0,
   );

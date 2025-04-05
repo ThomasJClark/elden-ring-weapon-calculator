@@ -24,7 +24,7 @@ import {
   AttackPowerType,
   allDamageTypes,
   type AttackElementCorrect,
-} from "./calculator/calculator";
+} from "./calculator/calculator.ts";
 import {
   type EncodedWeaponJson,
   type EncodedRegulationDataJson,
@@ -32,7 +32,7 @@ import {
   type CalcCorrectGraph,
   defaultStatusCalcCorrectGraphId,
   defaultDamageCalcCorrectGraphId,
-} from "./regulationData";
+} from "./regulationData.ts";
 
 const debug = makeDebug("buildData");
 
@@ -438,51 +438,7 @@ const wepTypeOverrides = new Map([
     : []),
 ]);
 
-const supportedWeaponTypes = new Set([
-  WeaponType.DAGGER,
-  WeaponType.STRAIGHT_SWORD,
-  WeaponType.GREATSWORD,
-  WeaponType.COLOSSAL_SWORD,
-  WeaponType.CURVED_SWORD,
-  WeaponType.CURVED_GREATSWORD,
-  WeaponType.KATANA,
-  WeaponType.TWINBLADE,
-  WeaponType.THRUSTING_SWORD,
-  WeaponType.HEAVY_THRUSTING_SWORD,
-  WeaponType.AXE,
-  WeaponType.GREATAXE,
-  WeaponType.HAMMER,
-  WeaponType.GREAT_HAMMER,
-  WeaponType.FLAIL,
-  WeaponType.SPEAR,
-  WeaponType.GREAT_SPEAR,
-  WeaponType.HALBERD,
-  WeaponType.REAPER,
-  WeaponType.FIST,
-  WeaponType.CLAW,
-  WeaponType.WHIP,
-  WeaponType.COLOSSAL_WEAPON,
-  WeaponType.LIGHT_BOW,
-  WeaponType.BOW,
-  WeaponType.GREATBOW,
-  WeaponType.CROSSBOW,
-  WeaponType.BALLISTA,
-  WeaponType.GLINTSTONE_STAFF,
-  WeaponType.DUAL_CATALYST,
-  WeaponType.SACRED_SEAL,
-  WeaponType.SMALL_SHIELD,
-  WeaponType.MEDIUM_SHIELD,
-  WeaponType.GREATSHIELD,
-  WeaponType.TORCH,
-  WeaponType.HAND_TO_HAND,
-  WeaponType.PERFUME_BOTTLE,
-  WeaponType.THRUSTING_SHIELD,
-  WeaponType.THROWING_BLADE,
-  WeaponType.BACKHAND_BLADE,
-  WeaponType.LIGHT_GREATSWORD,
-  WeaponType.GREAT_KATANA,
-  WeaponType.BEAST_CLAW,
-]);
+const supportedWeaponTypes = new Set<number>(Object.values(WeaponType));
 
 function isSupportedWeaponType(wepType: number): wepType is WeaponType {
   return supportedWeaponTypes.has(wepType);

@@ -7,6 +7,8 @@
     "name": "Tom Clark",
     "email": "tom@tclark.io"
   },
+  "type": "module",
+  "packageManager": "yarn@4.8.1",
   "dependencies": {
     "@emotion/react": "11.10.6",
     "@emotion/styled": "11.10.6",
@@ -32,7 +34,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "fast-xml-parser": "^4.2.7",
     "prettier": "2.7.1",
-    "ts-node": "10.8.1",
     "typescript": "5.0.4",
     "vite": "^4.2.0",
     "vite-plugin-eslint": "^1.8.1"
@@ -41,10 +42,10 @@
     "start": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "buildData": "ts-node-esm src/buildData.ts",
-    "buildData:latest": "ts-node-esm src/buildData.ts vanilla public/regulation-vanilla-v1.14.js",
-    "buildData:reforged": "ts-node-esm src/buildData.ts reforged public/regulation-reforged-v1.2.9.js",
-    "buildData:convergence": "ts-node-esm src/buildData.ts convergence public/regulation-convergence-v2.2.js",
+    "buildData": "node src/buildData.ts",
+    "buildData:latest": "node src/buildData.ts vanilla public/regulation-vanilla-v1.14.js",
+    "buildData:reforged": "node src/buildData.ts reforged public/regulation-reforged-v1.2.9.js",
+    "buildData:convergence": "node src/buildData.ts convergence public/regulation-convergence-v2.2.js",
     "rebuildWeaponData": "yarn buildData:latest && yarn buildData:reforged && yarn buildData:convergence"
   },
   "eslintConfig": {

@@ -1,7 +1,7 @@
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { memo, useCallback } from "react";
-import type { Weapon } from "../calculator/weapon";
-import { weaponTypeLabels } from "./uiUtils";
+import type { Weapon } from "../calculator/weapon.ts";
+import { weaponTypeLabels } from "./uiUtils.ts";
 
 export type WeaponOption = {
   label: string; // weaponName

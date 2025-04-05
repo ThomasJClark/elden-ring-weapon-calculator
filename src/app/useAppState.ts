@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { type Attribute, type Attributes, WeaponType } from "../calculator/calculator";
-import type { SortBy } from "../search/sortWeapons";
-import type { RegulationVersionName } from "./regulationVersions";
-import regulationVersions from "./regulationVersions";
-import { dlcWeaponTypes } from "./uiUtils";
-import { type WeaponOption } from "./WeaponPicker";
+import { type Attribute, type Attributes, WeaponType } from "../calculator/calculator.ts";
+import type { SortBy } from "../search/sortWeapons.ts";
+import type { RegulationVersionName } from "./regulationVersions.tsx";
+import regulationVersions from "./regulationVersions.tsx";
+import { dlcWeaponTypes } from "./uiUtils.ts";
+import { type WeaponOption } from "./WeaponPicker.tsx";
 
 interface AppState {
   readonly regulationVersionName: RegulationVersionName;

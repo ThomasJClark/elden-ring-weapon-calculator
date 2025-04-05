@@ -8,8 +8,8 @@
 import { memo } from "react";
 import { Box, Link, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { type Weapon, type Attribute } from "../../calculator/calculator";
-import { getAttributeLabel } from "../uiUtils";
+import type { Weapon, Attribute } from "../../calculator/calculator.ts";
+import { getAttributeLabel } from "../uiUtils.ts";
 
 export const blankIcon = <RemoveIcon color="disabled" fontSize="small" />;
 

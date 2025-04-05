@@ -4,7 +4,7 @@ import {
   type Attribute,
   type Attributes,
   type Weapon,
-} from "../calculator/calculator";
+} from "../calculator/calculator.ts";
 
 export interface FilterWeaponsOptions {
   /**

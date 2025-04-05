@@ -1,6 +1,6 @@
-import type { Attribute } from "./attributes";
-import type { AttackPowerType } from "./attackPowerTypes";
-import type { WeaponType } from "./weaponTypes";
+import type { Attribute } from "./attributes.ts";
+import type { AttackPowerType } from "./attackPowerTypes.ts";
+import type { WeaponType } from "./weaponTypes.ts";
 
 export type AttackElementCorrect = Partial<
   Record<AttackPowerType, Partial<Record<Attribute, number | true>>>

@@ -3,8 +3,8 @@ import {
   allStatusTypes,
   AttackPowerType,
   WeaponType,
-} from "./calculator/calculator";
-import type { AttackElementCorrect, Attribute, Weapon } from "./calculator/calculator";
+} from "./calculator/calculator.ts";
+import type { AttackElementCorrect, Attribute, Weapon } from "./calculator/calculator.ts";
 
 export const defaultDamageCalcCorrectGraphId = 0;
 export const defaultStatusCalcCorrectGraphId = 6;

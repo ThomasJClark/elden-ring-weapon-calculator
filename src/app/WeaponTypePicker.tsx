@@ -1,6 +1,6 @@
 import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { memo } from "react";
-import { WeaponType } from "../calculator/calculator";
+import { WeaponType } from "../calculator/calculator.ts";
 import {
   meleeWeaponTypes,
   rangedWeaponTypes,
@@ -8,7 +8,7 @@ import {
   shieldTypes,
   weaponTypeLabels,
   dlcWeaponTypes,
-} from "./uiUtils";
+} from "./uiUtils.ts";
 
 interface Props {
   includeDLCWeaponTypes?: boolean;
