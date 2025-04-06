@@ -155,6 +155,7 @@ export default function App() {
     twoHanding,
     upgradeLevel,
     groupWeaponTypes,
+    disableWeaponTypeFilter: regulationVersion.disableWeaponTypeFilter,
     selectedWeapons,
   });
 
@@ -253,11 +254,13 @@ export default function App() {
         selectedAffinityIds={affinityIds}
         onAffinityIdsChanged={setAffinityIds}
       />
-      <WeaponTypePicker
-        includeDLCWeaponTypes={includeDLCWeaponTypes}
-        weaponTypes={weaponTypes}
-        onWeaponTypesChanged={setWeaponTypes}
-      />
+      {!regulationVersion.disableWeaponTypeFilter && (
+        <WeaponTypePicker
+          includeDLCWeaponTypes={includeDLCWeaponTypes}
+          weaponTypes={weaponTypes}
+          onWeaponTypesChanged={setWeaponTypes}
+        />
+      )}
     </>
   );
 

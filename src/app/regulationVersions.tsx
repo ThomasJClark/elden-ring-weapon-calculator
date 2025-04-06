@@ -7,7 +7,7 @@ import {
   type AffinityOption,
 } from "./uiUtils.ts";
 
-export type RegulationVersionName = "latest" | "reforged" | "convergence";
+export type RegulationVersionName = "latest" | "reforged" | "convergence" | "clevers";
 
 export interface RegulationVersion {
   name: string;
@@ -36,6 +36,12 @@ export interface RegulationVersion {
    */
   ineffectiveAttributePenalty?: number;
 
+  /**
+   * Don't filter based on weapon type. Used for mods with a small number of weapons and 0 weapons
+   * in some categories.
+   */
+  disableWeaponTypeFilter?: boolean;
+
   fetch(): Promise<Response>;
 }
 
@@ -46,7 +52,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
     fetch: () => fetch(`/regulation-vanilla-v1.14.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   reforged: {
-    name: "ELDEN RING Reforged (mod)",
+    name: "ELDEN RING Reforged",
     info: (
       <>
         Using regulation data from the{" "}
@@ -66,7 +72,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
     fetch: () => fetch(`/regulation-reforged-v1.2.9.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   convergence: {
-    name: "The Convergence (mod)",
+    name: "The Convergence Mod",
     info: (
       <>
         Using regulation data from{" "}
@@ -84,6 +90,25 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
     maxUpgradeLevel: 15,
     splitSpellScaling: true,
     fetch: () => fetch(`/regulation-convergence-v2.2.js?${import.meta.env.VITE_DATA_FORMAT}`),
+  },
+  clevers: {
+    name: "Clever's Moveset Modpack",
+    info: (
+      <>
+        Using regulation data from{" "}
+        <Link
+          href="https://www.nexusmods.com/eldenring/mods/1928"
+          target="_blank"
+          rel="noopener noreferer"
+        >
+          Clever&apos;s Moveset Modpack
+        </Link>{" "}
+        v25.0
+      </>
+    ),
+    affinityOptions,
+    disableWeaponTypeFilter: true,
+    fetch: () => fetch(`/regulation-clevers-v25.0.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
 };
 

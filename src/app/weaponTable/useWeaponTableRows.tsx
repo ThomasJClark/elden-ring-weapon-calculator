@@ -33,6 +33,7 @@ interface WeaponTableRowsOptions {
   twoHanding: boolean;
   upgradeLevel: number;
   groupWeaponTypes: boolean;
+  disableWeaponTypeFilter?: boolean;
   selectedWeapons: WeaponOption[];
 }
 
@@ -58,6 +59,7 @@ const useWeaponTableRows = ({
   limit,
   upgradeLevel: regularUpgradeLevel,
   groupWeaponTypes,
+  disableWeaponTypeFilter,
   sortBy,
   reverse,
   ...options
@@ -93,7 +95,9 @@ const useWeaponTableRows = ({
     let includeSpellScaling = false;
 
     const filteredWeapons = filterWeapons(weapons, {
-      weaponTypes: new Set(weaponTypes.filter((weaponType) => allWeaponTypes.includes(weaponType))),
+      weaponTypes: disableWeaponTypeFilter
+        ? new Set()
+        : new Set(weaponTypes.filter((weaponType) => allWeaponTypes.includes(weaponType))),
       affinityIds: new Set(
         affinityIds.filter((affinityId) => regulationVersion.affinityOptions.has(affinityId)),
       ),
@@ -151,6 +155,7 @@ const useWeaponTableRows = ({
     effectiveOnly,
     uninfusableWeaponTypes,
     selectedWeapons,
+    disableWeaponTypeFilter,
   ]);
 
   const memoizedAttackPowerTypes = useMemo(

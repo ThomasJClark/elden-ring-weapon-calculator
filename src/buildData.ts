@@ -33,6 +33,7 @@ import {
   defaultStatusCalcCorrectGraphId,
   defaultDamageCalcCorrectGraphId,
 } from "./regulationData.ts";
+import vanillaWeaponIds from "./vanillaWeaponIds.ts";
 
 const debug = makeDebug("buildData");
 
@@ -91,7 +92,19 @@ const dataDir = getDataDir();
 const outputFile = process.argv[3];
 const isReforged = outputFile.includes("reforged");
 const isConvergence = outputFile.includes("convergence");
-const isVanilla = !isReforged && !isConvergence;
+const isClevers = outputFile.includes("clevers");
+const isVanilla = !isReforged && !isConvergence && !isClevers;
+
+if (isClevers) {
+  // Don't exclude vanilla weapons that are reworked in the mod
+  vanillaWeaponIds.delete(3150000); // Marais Dancing Blade
+  vanillaWeaponIds.delete(4050000); // Masterworked Starscourge Greatswords
+  vanillaWeaponIds.delete(8100000); // Morgott's Holy Armaments
+  vanillaWeaponIds.delete(9030000); // Voidwalker Meteoric Ore Blade
+  vanillaWeaponIds.delete(9082200); // God-Hunting Nagamaki
+  vanillaWeaponIds.delete(17500000); // Masterworked Spear of the Impaler
+  vanillaWeaponIds.delete(23060000); // Awakened Dragon Greatclaw
+}
 
 const tmpDir = join(tmpdir(), "elden-ring-weapon-calculator", parse(outputFile).name);
 
@@ -352,6 +365,39 @@ const urlOverrides = new Map<number, string | null>(
         [33200000, "https://eldenring.wiki.gg/Academy_Glintstone_Staff"], // Dragon Student Staff
         [33240000, "https://eldenring.wiki.gg/Lusat's_Glintstone_Staff"], // Lusat's Night Staff
       ]
+    : isClevers
+    ? [
+        [1550000, "https://www.nexusmods.com/eldenring/mods/2663"], // Storm Demon
+        [1560000, "https://www.nexusmods.com/eldenring/mods/4649"], // Sacred Arsenal
+        [2800000, "https://www.nexusmods.com/eldenring/mods/2896"], // Vengeance and Glory
+        [3150000, "https://www.nexusmods.com/eldenring/mods/2340"], // Marais Dancing Blade
+        [3650000, "https://www.nexusmods.com/eldenring/mods/2220"], // Deathborne Odachi
+        [3710000, "https://www.nexusmods.com/eldenring/mods/3623"], // God's Bane
+        [4050000, "https://www.nexusmods.com/eldenring/mods/2756"], // Masterworked Starscourge Greatswords
+        [4800000, "https://www.nexusmods.com/eldenring/mods/3248"], // Deathwalker
+        [8100000, "https://www.nexusmods.com/eldenring/mods/1506"], // Morgott's Holy Armaments
+        [9030000, "https://www.nexusmods.com/eldenring/mods/1649"], // Voidwalker Meteoric Ore Blade
+        [9082200, "https://www.nexusmods.com/eldenring/mods/1373"], // God-Hunting Nagamaki
+        [9250000, "https://www.nexusmods.com/eldenring/mods/3661"], // Heaven Splitter
+        [9270000, "https://www.nexusmods.com/eldenring/mods/3322"], // Hinokami
+        [9280000, "https://www.nexusmods.com/eldenring/mods/3751"], // Tachikaze
+        [9940000, "https://www.nexusmods.com/eldenring/mods/2268"], // Moon Lightblade
+        [9950000, "https://www.nexusmods.com/eldenring/mods/2268"], // Blood Lightblade
+        [9960000, "https://www.nexusmods.com/eldenring/mods/2268"], // Dual Blood Lightblade
+        [9970000, "https://www.nexusmods.com/eldenring/mods/2268"], // Dual Moon Lightblade
+        [10600000, "https://www.nexusmods.com/eldenring/mods/2182"], // Airbending Staff
+        [10840000, "https://www.nexusmods.com/eldenring/mods/6805"], // Nonosama Bo
+        [16680000, "https://www.nexusmods.com/eldenring/mods/4344"], // Bloodstarved Spear
+        [17500000, "https://www.nexusmods.com/eldenring/mods/5307"], // Masterworked Spear of the Impaler
+        [19800000, "https://www.nexusmods.com/eldenring/mods/2626"], // Frenzied Reaper
+        [23060000, "https://www.nexusmods.com/eldenring/mods/1519"], // Awakened Dragon Greatclaw
+        [33710000, "https://www.nexusmods.com/eldenring/mods/3833"], // Dark Moon Ring
+        [60650000, "https://www.nexusmods.com/eldenring/mods/4215"], // Meteor Fists
+        [60660000, "https://www.nexusmods.com/eldenring/mods/2051"], // Martial Arts
+        [60670000, "https://www.nexusmods.com/eldenring/mods/1693"], // Firebending
+        [60700000, "https://www.nexusmods.com/eldenring/mods/2464"], // Earthbending
+        [66790000, "https://www.nexusmods.com/eldenring/mods/7154"], // Great Shinobi Blade
+      ]
     : [],
 );
 
@@ -413,6 +459,29 @@ const unobtainableWeapons = new Set(
         34070000, // Erdtree Seal
         34080000, // Dragon Communion Seal
       ]
+    : isClevers
+    ? vanillaWeaponIds
+    : [],
+);
+
+const affinityOverrides = new Map(
+  isClevers
+    ? [
+        [9082200, 0], // God-Hunting Nagamaki
+      ]
+    : [],
+);
+
+const nameOverrides = new Map(
+  isClevers
+    ? [
+        [3150000, "Marais Dancing Blade"],
+        [4050000, "Masterworked Starscourge Greatswords"],
+        [8100000, "Morgott's Holy Armaments"],
+        [9030000, "Voidwalker Meteoric Ore Blade"],
+        [17500000, "Masterworked Spear of the Impaler"],
+        [23060000, "Awakened Dragon Greatclaw"],
+      ]
     : [],
 );
 
@@ -448,6 +517,12 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
   let name: string;
   let dlc = false;
 
+  const affinityId = affinityOverrides.get(row.id) ?? (row.id % 10000) / 100;
+  const uninfusedWeaponId = row.id - 100 * affinityId;
+  if (unobtainableWeapons.has(row.id) || unobtainableWeapons.has(uninfusedWeaponId)) {
+    return null;
+  }
+
   if (weaponNames.has(row.id)) {
     name = weaponNames.get(row.id)!;
   } else if (dlcWeaponNames.has(row.id)) {
@@ -469,10 +544,6 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     return null;
   }
 
-  if (unobtainableWeapons.has(row.id)) {
-    return null;
-  }
-
   if (!reinforceParamWeapons.has(row.reinforceTypeId)) {
     debug(`Unknown reinforceTypeId ${row.reinforceTypeId} on "${name}", ignoring`);
     return null;
@@ -483,8 +554,7 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     return null;
   }
 
-  const affinityId = (row.id % 10000) / 100;
-  const uninfusedWeapon = equipParamWeapons.get(row.id - 100 * affinityId)!;
+  const uninfusedWeapon = equipParamWeapons.get(uninfusedWeaponId);
   if (!uninfusedWeapon) {
     throw new Error(`No uninfused weapon ${row.id - 100 * affinityId} for ${row.id} ${name}`);
   }
@@ -603,8 +673,8 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
 
   return {
     name,
-    weaponName: (weaponNames.get(uninfusedWeapon.id) ?? dlcWeaponNames.get(uninfusedWeapon.id))!,
-    url: urlOverrides.get(uninfusedWeapon.id),
+    weaponName: (weaponNames.get(uninfusedWeaponId) ?? dlcWeaponNames.get(uninfusedWeaponId))!,
+    url: urlOverrides.get(uninfusedWeaponId),
     affinityId: isUniqueWeapon(row) ? -1 : affinityId,
     weaponType,
     requirements: {
@@ -787,6 +857,10 @@ if (isConvergence) {
   }
 
   equipParamWeapons.delete(triciasPomander);
+}
+
+for (const [id, name] of nameOverrides) {
+  weaponNames.set(id, name);
 }
 
 const weaponsJson = [...equipParamWeapons.values()]
