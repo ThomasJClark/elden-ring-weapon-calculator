@@ -221,20 +221,7 @@ function readFmgXml(filename: string): Map<number, string | null> {
   return new Map(text.map((entry) => [entry.id, entry["#text"]]));
 }
 
-const convergence10NotesUrl =
-  "https://docs.google.com/document/d/1JHX3bMxnIIct8MSZnXkyqpmhYKLPt8p8HY9FUcXKUNE/preview#heading=h.79qlt4tgl68h";
-const convergence13NotesUrl =
-  "https://docs.google.com/document/d/1turQis8MDvZOCVeY0hrTGXtGtBoGurZBXTUUIuu2CcA/preview#heading=h.z5p5qg2guq5o";
-const convergence14NotesUrl =
-  "https://docs.google.com/document/d/12q9PLwWQDZZfKfpu-MQD-QK7GfiAFw6YNYKrPYiDrUg/preview#heading=h.9jtgsttalig";
-const convergence141NotesUrl =
-  "https://docs.google.com/document/d/1HhTcVvPG1V9lK8AL90USQCCgc7Z4lBWrmCEmXV6XHHw/preview#heading=h.4qcy1ray1wky";
-const convergence142NotesUrl =
-  "https://docs.google.com/document/d/1G0aHybk5yH2h-9s8X0tEzriZTfYwLcE0ZGXKzAHo3XY/preview#heading=h.4qcy1ray1wky";
-const convergence21NotesUrl =
-  "https://docs.google.com/document/d/1-5k899P5b3lo-4-EDYw9mkM2j4v62xSnnsxZEvwffXo/preview#heading=h.4qcy1ray1wky";
-
-const urlOverrides = new Map<number, string | null>(
+const urlOverrides = new Map<number, string | undefined>(
   isReforged
     ? [
         [1120000, "https://err.fandom.com/wiki/Iron_Spike"], // Iron Spike
@@ -270,100 +257,109 @@ const urlOverrides = new Map<number, string | null>(
       ]
     : isConvergence
     ? [
-        [1120000, convergence10NotesUrl], // Surgeon's Catlinger
-        [1170000, convergence10NotesUrl], // Midnight Dagger
-        [1180000, convergence14NotesUrl], // Deathrite Dagger
-        [2030000, convergence13NotesUrl], // Yura's Kanabo
-        [2120000, convergence14NotesUrl], // Blade of Valor
-        [3110000, convergence10NotesUrl], // Celestial Blade
-        [3120000, convergence10NotesUrl], // Sword of the Cyclops
-        [3230000, convergence10NotesUrl], // Sword of Hadea
-        [3240000, convergence142NotesUrl], // Dyru's Greatsword
-        [4120000, convergence13NotesUrl], // Gravelstone Arcblades
-        [4130000, convergence13NotesUrl], // Osian's Greatsword
-        [4530000, "https://eldenring.wiki.gg/wiki/Remembrance_of_a_God_and_a_Lord"], // Greatswords of Radahn
-        [5070000, convergence10NotesUrl], // Thorn of the Guilty
-        [5080000, convergence10NotesUrl], // Foil of Caddock
-        [5090000, convergence10NotesUrl], // Quicksilver Rapier
-        [6030000, convergence13NotesUrl], // Carwyn's Épée
-        [7090000, convergence13NotesUrl], // Zephyr Blades
-        [7160000, convergence10NotesUrl], // Blade of Scarlet Bloom
-        [7170000, convergence13NotesUrl], // Godskin Flayer
-        [7180000, convergence10NotesUrl], // Nomad's Kilij
-        [8090000, convergence10NotesUrl], // Three Finger Blade
-        [9050000, convergence14NotesUrl], // Star Shadow
-        [9090000, convergence21NotesUrl], // Blade of Distant Light
-        [10020000, convergence10NotesUrl], // Sulien's Razors
-        [10040000, convergence10NotesUrl], // Frozen Twinshards
-        [10060000, convergence21NotesUrl], // Caimar's Battlestaff
-        [10070000, convergence10NotesUrl], // Godwyn's Cragblades
-        [10100000, convergence13NotesUrl], // Palm-Ax Twinblades
-        [10110000, convergence13NotesUrl], // Gilded Quarterstaff
-        [11020000, convergence10NotesUrl], // Leaden Maul
-        [11160000, convergence10NotesUrl], // Zamor Star Mace
-        [11180000, convergence14NotesUrl], // Hammer of Virtue
-        [11190000, convergence21NotesUrl], // Tricia's Pomander
-        [12030000, convergence10NotesUrl], // Underworld Greatmace
-        [12040000, convergence10NotesUrl], // Crimson Briar-Bough
-        [12070000, convergence13NotesUrl], // Sigur's Greatmace
-        [12090000, convergence21NotesUrl], // Einar's Hammer
-        [13050000, convergence10NotesUrl], // Mohgwyn Censer
-        [13060000, convergence10NotesUrl], // Seething Flail
-        [14070000, convergence10NotesUrl], // Glintstone Cleaver
-        [14090000, convergence10NotesUrl], // Axe of Epiphany
-        [14130000, convergence10NotesUrl], // Axe of Fell Prophecy
-        [14150000, convergence13NotesUrl], // Bloodhound Hookblade
-        [14160000, convergence14NotesUrl], // Rimeheart
-        [14170000, convergence142NotesUrl], // Bloodflame Kamas
-        [15090000, convergence10NotesUrl], // Axe of Rust
-        [16100000, convergence13NotesUrl], // Spear of Tranquility
-        [16170000, convergence141NotesUrl], // Phalanx Pike
-        [17080000, convergence21NotesUrl], // Spear of the Dreaming
-        [18120000, convergence10NotesUrl], // Glaive of the Ancients
-        [18170000, convergence13NotesUrl], // Reaver's Odachi
-        [19040000, convergence13NotesUrl], // War Scythe
-        [19050000, convergence14NotesUrl], // Rosus' Harvester
-        [19070000, convergence21NotesUrl], // Scarlet Triscythe
-        [21020000, convergence14NotesUrl], // Daergraf's Opus
-        [21090000, convergence21NotesUrl], // Furnace Fists
-        [22040000, convergence10NotesUrl], // Stone Claws
-        [22050000, convergence141NotesUrl], // Emyr's Great Talons
-        [23090000, convergence141NotesUrl], // Greatstaff of Decay
-        [23160000, convergence13NotesUrl], // Lodestone of Gelmir
-        [30300000, convergence10NotesUrl], // Crest of the Dragon Cult
-        [33060000, convergence10NotesUrl], // Blighted Branch
-        [33290000, convergence10NotesUrl], // Dragonkin Scepter
-        [33300000, convergence10NotesUrl], // Ranni's Staff
-        [33310000, convergence10NotesUrl], // Snow Witch Staff
-        [33320000, convergence10NotesUrl], // Staff of Briar
-        [33330000, convergence10NotesUrl], // Lavastone Staff
-        [33340000, convergence10NotesUrl], // Tempestcaller's Staff
-        [33350000, convergence10NotesUrl], // Stormcaller's Staff
-        [34100000, convergence10NotesUrl], // Godskin Seal
-        [34110000, convergence10NotesUrl], // Fire Monk's Seal
-        [34120000, convergence10NotesUrl], // Dragon Cult Seal
-        [34130000, convergence10NotesUrl], // Earthbreaker Seal
-        [34140000, convergence10NotesUrl], // Fingerprint Seal
-        [34150000, convergence10NotesUrl], // Mohgwyn Seal
-        [34160000, convergence10NotesUrl], // War Surgeon's Seal
-        [34170000, convergence10NotesUrl], // Seal of Rot
-        [34180000, convergence10NotesUrl], // Pest's Seal
-        [34190000, convergence10NotesUrl], // Spiritshaper Seal
-        [34200000, convergence10NotesUrl], // Mystic Seal
-        [60520000, convergence21NotesUrl], // Rancor Touch
-        [66530000, convergence21NotesUrl], // Eagle's Edge
-        [67530000, convergence21NotesUrl], // Sword of the Cosmos
-        [1050000, "https://eldenring.wiki.gg/Crystal_Knife"], // Underworld Dagger
-        [2070000, "https://eldenring.wiki.gg/Golden_Epitaph"], // Draconic Epitaph
-        [2150000, "https://eldenring.wiki.gg/Crystal_Sword"], // Molten Sword
-        [2200000, "https://eldenring.wiki.gg/Miquellan_Knight's_Sword"], // Fell Flame Sword
-        [2250000, "https://eldenring.wiki.gg/Lazuli_Glintstone_Sword"], // Dragonkin Seeker Sword
-        [3070000, "https://eldenring.wiki.gg/Alabaster_Lord's_Sword"], // Alabaster Lord's Greatsword
-        [18110000, "https://eldenring.wiki.gg/Guardian's_Swordspear"], // Guardian's Spearblade
-        [18140000, "https://eldenring.wiki.gg/Dragon_Halberd"], // Dragonkin Halberd
-        [33050000, "https://eldenring.wiki.gg/Gelmir_Glintstone_Staff"], // Gelmir Lava Staff
-        [33200000, "https://eldenring.wiki.gg/Academy_Glintstone_Staff"], // Dragon Student Staff
-        [33240000, "https://eldenring.wiki.gg/Lusat's_Glintstone_Staff"], // Lusat's Night Staff
+        [110000, "https://eldenring.wiki.gg/wiki/Unarmed"], // Unarmed
+        [3070000, "https://www.convergencemod.com/weapons/greatswords/alabaster-lords-sword/"], // Alabaster Lord's Greatsword
+        [8500000, "https://www.convergencemod.com/weapons/greataxes/putrescent-cleaver/"], // // Putrescence Cleaver
+        [10080000, "https://www.convergencemod.com/weapons/twinblades/gargoyles-twinblades/"], // Gargoyle's Twinblade
+        [10110000, "https://www.convergencemod.com/gilded-quarterstaff/"], // Gilded Quarterstaff
+        [31350000, "https://www.convergencemod.com/spell-casting-tools/aegis-of-hadea/"], // Aegis of Hadea
+        [34030000, "https://www.convergencemod.com/spell-casting-tools/grave-stone-seal/"], // Gravel Stone Seal
+        [34110000, "https://www.convergencemod.com/spell-casting-tools/fire-monk-seal/"], // Fire Monk's Seal
+        [60530000, "https://www.convergencemod.com/weapons/hand-to-hand-arts/bracelets-of-shadow/"], // Braetlet of Shadow
+        [68500000, "https://www.convergencemod.com/weapons/beast-claws/beast-claws/"], // Beast Claw
+        [10100000, "https://www.convergencemod.com/weapons/twinblades/palm-ax-twinblade/"], // Palm-Ax Twinblades
+        [
+          30300000,
+          "https://docs.google.com/document/d/1JHX3bMxnIIct8MSZnXkyqpmhYKLPt8p8HY9FUcXKUNE/preview#heading=h.79qlt4tgl68h", // Crest of the Dragon Cult
+        ],
+        [21550000, undefined], // Shield of Night
+        [30000000, undefined], // Buckler
+        [30010000, undefined], // Perfumer's Shield
+        [30020000, undefined], // Man-Serpent's Shield
+        [30030000, undefined], // Rickety Shield
+        [30040000, undefined], // Pillory Shield
+        [30060000, undefined], // Beastman's Jar-Shield
+        [30070000, undefined], // Red Thorn Roundshield
+        [30080000, undefined], // Scripture Wooden Shield
+        [30090000, undefined], // Riveted Wooden Shield
+        [30100000, undefined], // Blue-White Wooden Shield
+        [30110000, undefined], // Rift Shield
+        [30120000, undefined], // Iron Roundshield
+        [30130000, undefined], // Gilded Iron Shield
+        [30140000, undefined], // Ice Crest Shield
+        [30150000, undefined], // Smoldering Shield
+        [
+          30160000,
+          "https://docs.google.com/document/d/1-5k899P5b3lo-4-EDYw9mkM2j4v62xSnnsxZEvwffXo/edit?tab=t.0#heading=h.4qcy1ray1wky", // Hermit's Buckler
+        ],
+        [30170000, undefined], // Shield of Alacrity
+        [30190000, undefined], // Spiralhorn Shield
+        [30200000, undefined], // Coil Shield
+        [30510000, undefined], // Smithscript Shield
+        [31000000, undefined], // Kite Shield
+        [31010000, undefined], // Marred Leather Shield
+        [31020000, undefined], // Marred Wooden Shield
+        [31030000, undefined], // Banished Knight's Shield
+        [31040000, undefined], // Albinauric Shield
+        [31050000, undefined], // Sun Realm Shield
+        [31060000, undefined], // Silver Mirrorshield
+        [31070000, undefined], // Round Shield
+        [31080000, undefined], // Scorpion Kite Shield
+        [31090000, undefined], // Twinbird Kite Shield
+        [31100000, undefined], // Blue-Gold Kite Shield
+        [31130000, undefined], // Brass Shield
+        [31140000, undefined], // Great Turtle Shell
+        [31170000, undefined], // Shield of the Guilty
+        [
+          31180000,
+          "https://docs.google.com/document/d/1-5k899P5b3lo-4-EDYw9mkM2j4v62xSnnsxZEvwffXo/edit?tab=t.0#heading=h.4qcy1ray1wky", // Shield of Starlight
+        ],
+        [31190000, undefined], // Carian Knight's Shield
+        [31230000, undefined], // Large Leather Shield
+        [31240000, undefined], // Horse Crest Wooden Shield
+        [31250000, undefined], // Candletree Wooden Shield
+        [31260000, undefined], // Flame Crest Wooden Shield
+        [31270000, undefined], // Hawk Crest Wooden Shield
+        [31280000, undefined], // Beast Crest Heater Shield
+        [31290000, undefined], // Red Crest Heater Shield
+        [31300000, undefined], // Blue Crest Heater Shield
+        [31310000, undefined], // Eclipse Crest Heater Shield
+        [31320000, undefined], // Inverted Hawk Heater Shield
+        [31330000, undefined], // Heater Shield
+        [31340000, undefined], // Black Leather Shield
+        [31500000, undefined], // Messmer Soldier Shield
+        [31510000, undefined], // Wolf Crest Shield
+        [31520000, undefined], // Serpent Crest Shield
+        [31530000, undefined], // Golden Lion Shield
+        [32000000, undefined], // Dragon Towershield
+        [32020000, undefined], // Distinguished Greatshield
+        [32030000, undefined], // Crucible Hornshield
+        [32040000, undefined], // Dragonclaw Shield
+        [32050000, undefined], // Briar Greatshield
+        [32080000, undefined], // Erdtree Greatshield
+        [32090000, undefined], // Golden Beast Crest Shield
+        [32120000, undefined], // Jellyfish Shield
+        [32130000, undefined], // Fingerprint Stone Shield
+        [32140000, undefined], // Icon Shield
+        [32150000, undefined], // One-Eyed Shield
+        [32160000, undefined], // Visage Shield
+        [32170000, undefined], // Spiked Palisade Shield
+        [32190000, undefined], // Manor Towershield
+        [32200000, undefined], // Crossed-Tree Towershield
+        [32210000, undefined], // Inverted Hawk Towershield
+        [32220000, undefined], // Ant's Skull Plate
+        [32230000, undefined], // Redmane Greatshield
+        [32240000, undefined], // Eclipse Crest Greatshield
+        [32250000, undefined], // Cuckoo Greatshield
+        [32260000, undefined], // Golden Greatshield
+        [32270000, undefined], // Gilded Greatshield
+        [32280000, undefined], // Haligtree Crest Greatshield
+        [32290000, undefined], // Wooden Greatshield
+        [32300000, undefined], // Lordsworn's Shield
+        [32500000, undefined], // Black Steel Greatshield
+        [32520000, undefined], // Verdigris Greatshield
+        [62500000, undefined], // Dueling Shield
+        [62510000, undefined], // Carian Thrusting Shield
       ]
     : isClevers
     ? [
@@ -400,6 +396,65 @@ const urlOverrides = new Map<number, string | null>(
       ]
     : [],
 );
+
+const convergenceWikiWeaponTypePaths = new Map<WeaponType, string>([
+  [WeaponType.DAGGER, "/weapons/daggers"],
+  [WeaponType.STRAIGHT_SWORD, "/weapons/straight-swords"],
+  [WeaponType.GREATSWORD, "/weapons/greatswords"],
+  [WeaponType.COLOSSAL_SWORD, "/weapons/colossal-swords"],
+  [WeaponType.CURVED_SWORD, "/weapons/curved-swords"],
+  [WeaponType.CURVED_GREATSWORD, "/weapons/curved-greatswords"],
+  [WeaponType.KATANA, "/weapons/katanas"],
+  [WeaponType.TWINBLADE, "/weapons/twinblades"],
+  [WeaponType.THRUSTING_SWORD, "/weapons/thrusting-swords"],
+  [WeaponType.HEAVY_THRUSTING_SWORD, "/weapons/heavy-thrusting-swords"],
+  [WeaponType.AXE, "/weapons/axes"],
+  [WeaponType.GREATAXE, "/weapons/greataxes"],
+  [WeaponType.HAMMER, "/weapons/hammers"],
+  [WeaponType.GREAT_HAMMER, "/weapons/greathammers"],
+  [WeaponType.FLAIL, "/weapons/flails"],
+  [WeaponType.SPEAR, "/weapons/spears"],
+  [WeaponType.GREAT_SPEAR, "/weapons/greatspears"],
+  [WeaponType.HALBERD, "/weapons/halberds"],
+  [WeaponType.REAPER, "/weapons/reapers"],
+  [WeaponType.FIST, "/weapons/fist-weapons"],
+  [WeaponType.CLAW, "/weapons/claws"],
+  [WeaponType.WHIP, "/weapons/whips"],
+  [WeaponType.COLOSSAL_WEAPON, "/weapons/colossal-weapons"],
+  [WeaponType.LIGHT_BOW, "/weapons/lightbows"],
+  [WeaponType.BOW, "/weapons/longbows"],
+  [WeaponType.GREATBOW, "/weapons/greatbows"],
+  [WeaponType.CROSSBOW, "/weapons/crossbows"],
+  [WeaponType.BALLISTA, "/weapons/ballistas"],
+  [WeaponType.GLINTSTONE_STAFF, "/spell-casting-tools"],
+  [WeaponType.DUAL_CATALYST, "/spell-casting-tools"],
+  [WeaponType.SACRED_SEAL, "/spell-casting-tools"],
+  [WeaponType.SMALL_SHIELD, "/shields"],
+  [WeaponType.MEDIUM_SHIELD, "/shields"],
+  [WeaponType.GREATSHIELD, "/shields"],
+  [WeaponType.TORCH, "/weapons/torches"],
+  [WeaponType.HAND_TO_HAND, "/weapons/hand-to-hand-arts"],
+  [WeaponType.PERFUME_BOTTLE, "/weapons/perfume-bottles"],
+  [WeaponType.THRUSTING_SHIELD, "/shields"],
+  [WeaponType.THROWING_BLADE, "/weapons/throwing-daggers"],
+  [WeaponType.BACKHAND_BLADE, "/weapons/backhand-blades"],
+  [WeaponType.LIGHT_GREATSWORD, "/weapons/light-greatswords"],
+  [WeaponType.GREAT_KATANA, "/weapons/great-katanas"],
+  [WeaponType.BEAST_CLAW, "/weapons/beast-claws"],
+]);
+
+function getConvergenceWeaponUrl(weaponType: WeaponType, weaponName: string) {
+  const weaponTypePath = convergenceWikiWeaponTypePaths.get(weaponType);
+  if (!weaponTypePath) {
+    return undefined;
+  }
+  const weaponNamePath = weaponName
+    .toLowerCase()
+    .replaceAll(" ", "-")
+    .replaceAll("é", "e")
+    .replaceAll(/[^a-z0-9-]/g, "");
+  return `https://www.convergencemod.com${weaponTypePath}/${weaponNamePath}/`;
+}
 
 // Allow skipping the unpack step (which is pretty slow) if it's already been done on a previous run.
 if (env.SKIP_UNPACK && env.SKIP_UNPACK !== "0") {
@@ -444,8 +499,6 @@ const unobtainableWeapons = new Set(
         // These aren't mentioned in the notes for the public alpha, likely WIP
         6050000, // Estoc of the Serpent Priest
         19030000, // Moon Breaker Scythe
-        30160000, // Hermit's Buckler
-        31180000, // Shield of Starlight
 
         // Removed vanilla
         4550000, // Greatsword of Radahn (Light)
@@ -456,8 +509,12 @@ const unobtainableWeapons = new Set(
         33190000, // Albinauric Staff
         33210000, // Carian Glintstone Staff
         33270000, // Rotten Crystal Staff
+        33520000, // Maternal Staff
         34070000, // Erdtree Seal
         34080000, // Dragon Communion Seal
+        34500000, // Dryleaf Seal
+        34510000, // Fire Knight's Seal
+        34520000, // Spiraltree Seal
       ]
     : isClevers
     ? vanillaWeaponIds
@@ -671,10 +728,16 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     }
   }
 
+  const weaponName = (weaponNames.get(uninfusedWeaponId) ?? dlcWeaponNames.get(uninfusedWeaponId))!;
+
   return {
     name,
-    weaponName: (weaponNames.get(uninfusedWeaponId) ?? dlcWeaponNames.get(uninfusedWeaponId))!,
-    url: urlOverrides.get(uninfusedWeaponId),
+    weaponName,
+    url: urlOverrides.has(uninfusedWeaponId)
+      ? urlOverrides.get(uninfusedWeaponId)
+      : isConvergence
+      ? getConvergenceWeaponUrl(weaponType, weaponName, uninfusedWeaponId)
+      : undefined,
     affinityId: isUniqueWeapon(row) ? -1 : affinityId,
     weaponType,
     requirements: {
