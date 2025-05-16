@@ -44,7 +44,7 @@
     "preview": "vite preview",
     "buildData": "node src/buildData.ts",
     "buildData:latest": "node src/buildData.ts vanilla public/regulation-vanilla-v1.14.js",
-    "buildData:reforged": "node src/buildData.ts reforged public/regulation-reforged-v1.3.0.js",
+    "buildData:reforged": "node src/buildData.ts reforged public/regulation-reforged-v1.3.1D.js",
     "buildData:convergence": "node src/buildData.ts convergence public/regulation-convergence-v2.2.3.js",
     "rebuildWeaponData": "yarn buildData:latest && yarn buildData:reforged && yarn buildData:convergence"
   },
