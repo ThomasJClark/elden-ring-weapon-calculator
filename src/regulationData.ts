@@ -62,6 +62,8 @@ export interface EncodedWeaponJson {
   requirements: Partial<Record<Attribute, number>>;
   attributeScaling: (readonly [Attribute, number])[];
   attack: (readonly [AttackPowerType, number])[];
+  critical: number;
+  criticalMultiplier?: Partial<Record<AttackPowerType, number>>;
   statusSpEffectParamIds?: number[];
   reinforceTypeId: number;
   attackElementCorrectId: number;
@@ -241,6 +243,8 @@ export function decodeRegulationData({
         attackElementCorrect,
         calcCorrectGraphs: weaponCalcCorrectGraphs,
         scalingTiers,
+        critical: weapon.critical,
+        criticalMultiplier: weapon.criticalMultiplier,
         dlc,
       };
     },

@@ -140,7 +140,7 @@ export default function App() {
 
   const regulationVersion = regulationVersions[regulationVersionName];
 
-  const { rowGroups, attackPowerTypes, spellScaling, total } = useWeaponTableRows({
+  const { rowGroups, attackPowerTypes, spellScaling, critical, total } = useWeaponTableRows({
     weapons,
     regulationVersion,
     offset,
@@ -208,6 +208,7 @@ export default function App() {
         numericalScaling={numericalScaling}
         attackPowerTypes={attackPowerTypes}
         spellScaling={spellScaling}
+        critical={critical}
         onSortByChanged={setSortBy}
         onReverseChanged={setReverse}
       />
