@@ -8,7 +8,7 @@
 import { memo } from "react";
 import { Box, Link, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
-import type { Weapon, Attribute } from "../../calculator/calculator.ts";
+import type { Weapon, Attribute, AttackPowerType } from "../../calculator/calculator.ts";
 import { getAttributeLabel } from "../uiUtils.ts";
 
 export const blankIcon = <RemoveIcon color="disabled" fontSize="small" />;
@@ -143,4 +143,45 @@ export const AttackPowerRenderer = memo(function AttackPowerRenderer({
   }
 
   return <>{round(value)}</>;
+});
+
+/**
+ * Component that displays the critical multiplier of a weapon category.
+ * It actually displays the weighted average across damage types, but they're typically all the same anyway.
+ */
+export const CriticalMultiplierRenderer = memo(function CriticalMultiplierRenderer({
+  multiplier,
+  attackPower,
+}: {
+  multiplier?: Partial<Record<AttackPowerType, number>>;
+  attackPower: Partial<Record<AttackPowerType, number>>;
+}) {
+  if (multiplier == null) {
+    return blankIcon;
+  }
+
+  // Determine relevant keys (i.e., those that have a value > 0 in attackPower)
+  const relevantAttackTypes = Object.keys(attackPower)
+    .map(k => Number(k) as AttackPowerType)
+    .filter(k => (attackPower[k] ?? 0) > 0);
+
+  const values = Object.values(multiplier).filter((v): v is number => typeof v === "number");
+  if (values.length === 0 || relevantAttackTypes.length === 0) {
+    return blankIcon;
+  }
+
+  let weightedSum = 0;
+  let totalWeight = 0;
+  for (const atkType of relevantAttackTypes) {
+    const mult = multiplier[atkType];
+    const weight = attackPower[atkType];
+    if (typeof mult === "number" && typeof weight === "number") {
+      weightedSum += mult * weight;
+      totalWeight += weight;
+    }
+  }
+
+  if (totalWeight === 0) return blankIcon;
+
+  return <>{Number((weightedSum / totalWeight).toFixed(2))}x</>;
 });

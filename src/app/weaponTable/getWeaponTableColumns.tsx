@@ -19,6 +19,7 @@ import {
   ScalingRenderer,
   AttributeRequirementRenderer,
   AttackPowerRenderer,
+  CriticalMultiplierRenderer,
 } from "./tableRenderers.tsx";
 
 const nameColumn: WeaponTableColumnDef = {
@@ -161,6 +162,78 @@ const totalAttackPowerColumn: WeaponTableColumnDef = {
   },
 };
 
+const criticalAttackPowerColumn: WeaponTableColumnDef = {
+	key: "criticalAttack",
+	sortBy: "criticalAttack",
+	header: (
+		<Typography
+      component="span"
+      variant="subtitle2"
+      title="Critical Attack"
+    >
+      Crit
+		</Typography>
+	),
+  render([,, criticalAttackResult]) {
+    const attackPower = criticalAttackResult?.attackPower;
+    const ineffective = criticalAttackResult?.ineffectiveAttackPowerTypes ?? [];
+    return (
+      <AttackPowerRenderer
+        value={attackPower ? getTotalDamageAttackPower(attackPower) : undefined}
+        ineffective={ineffective.some((attackPowerType) =>
+          allDamageTypes.includes(attackPowerType),
+        )}
+      />
+    );
+  },
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const criticalStatColumn: WeaponTableColumnDef = {
+	key: "criticalStat",
+	sortBy: "criticalStat",
+	header: (
+		<Typography
+      component="span"
+      variant="subtitle2"
+      title="Weapon's Critical Stat"
+    >
+			Wep
+		</Typography>
+	),
+  render([weapon]) {
+    return (
+      <AttackPowerRenderer
+        value={weapon.critical}
+        ineffective={false}
+      />
+    );
+  },
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const criticalCategoryColumn: WeaponTableColumnDef = {
+	key: "criticalCategory",
+	sortBy: "criticalCategory",
+	header: (
+		<Typography
+      component="span"
+      variant="subtitle2"
+      title="Weapon Category Critical Multiplier"
+    >
+			Cat
+		</Typography>
+	),
+  render([weapon, { attackPower }]) {
+    return (
+      <CriticalMultiplierRenderer
+        multiplier={weapon.criticalMultiplier}
+        attackPower={attackPower}
+      />
+    );
+  },
+};
+
 const scalingColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => ({
   key: `${attribute}Scaling`,
   sortBy: `${attribute}Scaling`,
@@ -233,6 +306,7 @@ interface WeaponTableColumnsOptions {
   numericalScaling: boolean;
   attackPowerTypes: ReadonlySet<AttackPowerType>;
   spellScaling: boolean;
+  critical: boolean;
 }
 
 export default function getWeaponTableColumns({
@@ -241,6 +315,7 @@ export default function getWeaponTableColumns({
   numericalScaling,
   attackPowerTypes,
   spellScaling,
+  critical,
 }: WeaponTableColumnsOptions): WeaponTableColumnGroupDef[] {
   const includedStatusTypes = allStatusTypes.filter((statusType) =>
     attackPowerTypes.has(statusType),
@@ -279,12 +354,13 @@ export default function getWeaponTableColumns({
       ? {
           key: "attack",
           sx: {
-            width: 40 * (allDamageTypes.length + 1) + 27,
+            width: 40 * (allDamageTypes.length + 2) + 30,
           },
           header: "Attack Power",
           columns: [
             ...allDamageTypes.map((damageType) => attackColumns[damageType]),
             totalSplitAttackPowerColumn,
+            ...(critical ? [criticalAttackPowerColumn] : []),
           ],
         }
       : {
@@ -322,5 +398,18 @@ export default function getWeaponTableColumns({
       header: "Attributes Required",
       columns: requirementColumns,
     },
+    // Comment this last column group out if you don't want the critical stat columns
+    ...(critical
+      ? [
+        {
+          key: "critical",
+          sx: {
+            width: 42 * 2 + 21,
+          },
+          header: "Critical",
+          columns: [criticalStatColumn, criticalCategoryColumn],
+        },
+      ]
+    : []),
   ];
 }

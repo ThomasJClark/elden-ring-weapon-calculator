@@ -1,5 +1,6 @@
 import { useDeferredValue, useMemo } from "react";
 import getWeaponAttack, {
+  getCriticalAttack,
   allAttackPowerTypes,
   AttackPowerType,
   WeaponType,
@@ -46,6 +47,9 @@ interface WeaponTableRowsResult {
   /**True if at least one weapon in the filtered results can cast spells */
   spellScaling: boolean;
 
+  /** True if at least one weapon in the filtered results can crit */
+  critical: boolean;
+
   total: number;
 }
 
@@ -88,11 +92,12 @@ const useWeaponTableRows = ({
     return tmp;
   }, [weapons]);
 
-  const [filteredRows, attackPowerTypes, spellScaling] = useMemo<
-    [WeaponTableRowData[], Set<AttackPowerType>, boolean]
+  const [filteredRows, attackPowerTypes, spellScaling, critical] = useMemo<
+    [WeaponTableRowData[], Set<AttackPowerType>, boolean, boolean]
   >(() => {
     const includedDamageTypes = new Set<AttackPowerType>();
     let includeSpellScaling = false;
+    let critical = false;
 
     const filteredWeapons = filterWeapons(weapons, {
       weaponTypes: disableWeaponTypeFilter
@@ -128,6 +133,14 @@ const useWeaponTableRows = ({
         ineffectiveAttributePenalty: regulationVersion.ineffectiveAttributePenalty,
       });
 
+      const critAttackResult = getCriticalAttack({
+        weapon,
+        attributes,
+        upgradeLevel,
+        ineffectiveAttributePenalty: regulationVersion.ineffectiveAttributePenalty,
+      });
+      critical ||= !!critAttackResult;
+
       for (const statusType of allAttackPowerTypes) {
         if (weaponAttackResult.attackPower[statusType]) {
           includedDamageTypes.add(statusType);
@@ -138,10 +151,10 @@ const useWeaponTableRows = ({
         includeSpellScaling = true;
       }
 
-      return [weapon, weaponAttackResult];
+      return [weapon, weaponAttackResult, critAttackResult];
     });
 
-    return [rows, includedDamageTypes, includeSpellScaling];
+    return [rows, includedDamageTypes, includeSpellScaling, critical];
   }, [
     attributes,
     twoHanding,
@@ -199,6 +212,7 @@ const useWeaponTableRows = ({
     rowGroups,
     attackPowerTypes: memoizedAttackPowerTypes,
     spellScaling,
+    critical,
     total: filteredRows.length,
   };
 };

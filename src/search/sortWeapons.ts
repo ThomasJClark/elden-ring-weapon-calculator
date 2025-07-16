@@ -5,11 +5,14 @@ import { type Attribute, AttackPowerType } from "../calculator/calculator.ts";
 export type SortBy =
   | "name"
   | "totalAttack"
+  | "criticalAttack"
   | `${AttackPowerType}Attack`
   | "sortBy"
   | `${AttackPowerType}SpellScaling`
   | `${Attribute}Scaling`
-  | `${Attribute}Requirement`;
+  | `${Attribute}Requirement`
+  | "criticalStat"
+  | "criticalCategory";
 
 /**
  * Sort and paginate a filtered list of weapons for display in the weapon table
@@ -26,6 +29,10 @@ export function sortWeapons(
 
     if (sortBy === "totalAttack") {
       return ([, { attackPower }]) => -getTotalDamageAttackPower(attackPower);
+    }
+
+    if (sortBy === "criticalAttack") {
+      return ([,, criticalAttackResult]) => -(criticalAttackResult ? getTotalDamageAttackPower(criticalAttackResult.attackPower) : 0);
     }
 
     if (sortBy.endsWith("Attack")) {
@@ -47,6 +54,14 @@ export function sortWeapons(
     if (sortBy.endsWith("Requirement")) {
       const attribute = sortBy.slice(0, -1 * "Requirement".length) as Attribute;
       return ([weapon]) => -(weapon.requirements[attribute] ?? 0);
+    }
+
+    if (sortBy === "criticalStat") {
+      return ([weapon]) => -weapon.critical;
+    }
+
+    if (sortBy === "criticalCategory") {
+      return ([weapon]) => -(weapon.criticalMultiplier?.[AttackPowerType.PHYSICAL] ?? 0);
     }
 
     return () => "";

@@ -108,6 +108,7 @@ if (isClevers) {
 
 const tmpDir = join(tmpdir(), "elden-ring-weapon-calculator", parse(outputFile).name);
 
+const atkParamPcFile = "AtkParam_Pc.param";
 const attackElementCorrectFile = "AttackElementCorrectParam.param";
 const calcCorrectGraphFile = "CalcCorrectGraph.param";
 const equipParamWeaponFile = "EquipParamWeapon.param";
@@ -138,6 +139,7 @@ function unpackFiles() {
   }
 
   const files = [
+    atkParamPcFile,
     attackElementCorrectFile,
     calcCorrectGraphFile,
     equipParamWeaponFile,
@@ -462,6 +464,7 @@ if (env.SKIP_UNPACK && env.SKIP_UNPACK !== "0") {
 } else {
   unpackFiles();
 }
+const atkParamPc = readParam(join(tmpDir, atkParamPcFile));
 const attackElementCorrectParams = readParam(join(tmpDir, attackElementCorrectFile));
 const calcCorrectGraphs = readParam(join(tmpDir, calcCorrectGraphFile));
 const equipParamWeapons = readParam(join(tmpDir, equipParamWeaponFile));
@@ -562,6 +565,16 @@ const wepTypeOverrides = new Map([
         [34500000, WeaponType.HAND_TO_HAND], // Dryleaf Seal
       ] as const)
     : []),
+]);
+
+const wepCritMultiplierOverrides = new Map([
+  [67520000, {  // Rellana's Twin Blades have their own crit, which doesn't match the Light Greatsword category
+		[AttackPowerType.PHYSICAL]: 3,
+		[AttackPowerType.MAGIC]: 3,
+		[AttackPowerType.FIRE]: 0,
+		[AttackPowerType.LIGHTNING]: 3,
+		[AttackPowerType.HOLY]: 3,
+	}],
 ]);
 
 const supportedWeaponTypes = new Set<number>(Object.values(WeaponType));
@@ -748,6 +761,8 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
       arc: ifNotDefault(row.properLuck, 0),
     },
     attack,
+    critical: row.throwAtkRate + 100,
+    criticalMultiplier: wepCritMultiplierOverrides.get(row.id) ?? wepTypeCritMultipliers.get(weaponType),
     attributeScaling: (
       [
         ["str", row.correctStrength / 100],
@@ -924,6 +939,85 @@ if (isConvergence) {
 
 for (const [id, name] of nameOverrides) {
   weaponNames.set(id, name);
+}
+
+const wepTypeIDsAtkParamPc = new Map<number, WeaponType>([
+	[1, WeaponType.DAGGER],
+	[2, WeaponType.STRAIGHT_SWORD],
+	[3, WeaponType.GREATSWORD],
+	[4, WeaponType.COLOSSAL_SWORD],
+	[5, WeaponType.THRUSTING_SWORD],
+	[6, WeaponType.HEAVY_THRUSTING_SWORD],
+	[7, WeaponType.CURVED_SWORD],
+	[8, WeaponType.CURVED_GREATSWORD],
+	[9, WeaponType.KATANA],
+	[10, WeaponType.TWINBLADE],
+	[11, WeaponType.HAMMER],
+	[12, WeaponType.GREAT_HAMMER],
+	[13, WeaponType.FLAIL],
+	[14, WeaponType.AXE],
+	[15, WeaponType.GREATAXE],
+	[16, WeaponType.SPEAR],
+	[17, WeaponType.GREAT_SPEAR],
+	[18, WeaponType.HALBERD],
+	[19, WeaponType.REAPER],
+	[21, WeaponType.FIST],
+	[22, WeaponType.CLAW],
+	[23, WeaponType.COLOSSAL_WEAPON],
+	[24, WeaponType.TORCH],
+  [61, WeaponType.THRUSTING_SHIELD],
+  [62, WeaponType.THROWING_BLADE],
+  [63, WeaponType.HAND_TO_HAND],
+  [64, WeaponType.BACKHAND_BLADE],
+  [66, WeaponType.GREAT_KATANA],
+  [67, WeaponType.LIGHT_GREATSWORD],
+  [68, WeaponType.BEAST_CLAW],
+]);
+
+const wepTypeCritMultipliers = new Map<WeaponType, Partial<Record<AttackPowerType, number>>>();
+
+function getTypeCorrection(atkType: AttackPowerType, row: ParamRow): number {
+  switch (atkType) {
+    case AttackPowerType.PHYSICAL:
+      return row.atkPhysCorrection;
+    case AttackPowerType.MAGIC:
+      return row.atkMagCorrection;
+    case AttackPowerType.FIRE:
+      return row.atkFireCorrection;
+    case AttackPowerType.LIGHTNING:
+      return row.atkThunCorrection;
+    case AttackPowerType.HOLY:
+      return row.atkDarkCorrection;
+  }
+  return 0;
+}
+
+// Parse crit multipliers
+for (const [id, row] of atkParamPc) {
+  /**
+   * ID = <wepTypeID [1-2]><wepID [2])><atkID [3]>; where [n] means n digits
+   * Weapons with the same type have the same multipliers (aside from Rellana's Twin Blades, which we special-case in uiUtils.ts).
+   * (Cross)bows and perfume bottles have crits in the file, but they are not used in-game so we can safely ignore them.
+   */
+  const wepID = Math.floor(id / 1000 % 100)
+  if (wepID > 0) continue;  // For each weapon type, only count the default weapon (see above)
+
+  const atkID = id % 1000;
+  if (atkID < 510 || atkID >= 515) continue;  // Riposte hits are between 510 and 514
+
+  const wepTypeID = Math.floor(id / 100000);
+  const wepType = wepTypeIDsAtkParamPc.get(wepTypeID);
+  if (wepType == null) continue;  // Spells and non-crit weapons
+
+  if (!wepTypeCritMultipliers.has(wepType))
+    wepTypeCritMultipliers.set(wepType, {});
+  const currentMultiplier = wepTypeCritMultipliers.get(wepType)!;
+  for (const atkType of allDamageTypes) {
+    const typeCorrection = getTypeCorrection(atkType, row);
+    if (typeCorrection === 0) continue;  // Skip types that don't have crit multipliers
+    currentMultiplier[atkType] ??= 0
+    currentMultiplier[atkType] += typeCorrection / 100;
+  }
 }
 
 const weaponsJson = [...equipParamWeapons.values()]

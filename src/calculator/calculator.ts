@@ -144,6 +144,33 @@ export default function getWeaponAttack({
   };
 }
 
+/**
+ * Determine the critical attack for a weapon with the given player stats
+ */
+export function getCriticalAttack({
+  weapon,
+  attributes,
+  upgradeLevel,
+  ineffectiveAttributePenalty = 0.4,
+}: WeaponAttackOptions): WeaponAttackResult | undefined {
+  if (weapon.criticalMultiplier == null) return undefined;
+
+  const result = getWeaponAttack({
+    weapon,
+    attributes,
+    twoHanding: false,
+    upgradeLevel,
+    ineffectiveAttributePenalty: ineffectiveAttributePenalty,
+  });
+
+  for (const [type, value] of Object.entries(result.attackPower)) {
+    const typedType = type as unknown as AttackPowerType;
+    result.attackPower[typedType] = value * (weapon.critical / 100) * (weapon.criticalMultiplier[typedType] ?? 0);
+  }
+
+  return result;
+}
+
 export * from "./attributes.ts";
 export * from "./attackPowerTypes.ts";
 export * from "./weapon.ts";
