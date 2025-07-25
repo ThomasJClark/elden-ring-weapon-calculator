@@ -4,11 +4,8 @@ import {
   affinityOptions,
   reforgedAffinityOptions,
   convergenceAffinityOptions,
-  getEnemyTypeLabel,
-  getReforgedEnemyTypeLabel,
   type AffinityOption,
 } from "./uiUtils.ts";
-import { WeakRateType } from "../calculator/weakRates.ts";
 
 export type RegulationVersionName = "latest" | "reforged" | "convergence" | "clevers";
 
@@ -18,8 +15,6 @@ export interface RegulationVersion {
   info?: ReactNode;
 
   affinityOptions: Map<number, AffinityOption>;
-
-  getEnemyTypeLabel: (type: WeakRateType) => string;
 
   /**
    * Hack: in Elden Ring Reforged there is no attack power bonus for two handing
@@ -47,20 +42,14 @@ export interface RegulationVersion {
    */
   disableWeaponTypeFilter?: boolean;
 
-  /**
-   * Additional CalcCorrectGraph to use for status buildup Arcane scaling (Reforged)
-   */
-  statusAdditionalCalcCorrectGraphId?: number;
-
   fetch(): Promise<Response>;
 }
 
 const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
   latest: {
-    name: "Patch 1.16.1 (latest)",
+    name: "Patch 1.16 (latest)",
     affinityOptions,
-    getEnemyTypeLabel,
-    fetch: () => fetch(`./regulation-vanilla-v1.16.1.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-vanilla-v1.14.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   reforged: {
     name: "ELDEN RING Reforged",
@@ -74,15 +63,13 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
         >
           ELDEN RING Reforged
         </Link>{" "}
-        mod v2.2.3.4
+        mod v1.4.8G
       </>
     ),
     affinityOptions: reforgedAffinityOptions,
-    getEnemyTypeLabel : getReforgedEnemyTypeLabel,
     disableTwoHandingAttackPowerBonus: true,
     ineffectiveAttributePenalty: 0.5,
-    statusAdditionalCalcCorrectGraphId: 1007,
-    fetch: () => fetch(`./regulation-reforged-v2.2.3.4.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-reforged-v1.4.8G.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   convergence: {
     name: "The Convergence Mod",
@@ -96,14 +83,13 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
         >
           The Convergence Mod
         </Link>{" "}
-        v2.2.3A
+        v2.2.3
       </>
     ),
     affinityOptions: convergenceAffinityOptions,
-    getEnemyTypeLabel,
     maxUpgradeLevel: 15,
     splitSpellScaling: true,
-    fetch: () => fetch(`./regulation-convergence-v2.2.3A.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-convergence-v2.2.3.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   clevers: {
     name: "Clever's Moveset Modpack",
@@ -121,9 +107,8 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
       </>
     ),
     affinityOptions,
-    getEnemyTypeLabel,
     disableWeaponTypeFilter: true,
-    fetch: () => fetch(`./regulation-clevers-v25.0.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-clevers-v25.0.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
 };
 

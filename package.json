@@ -10,17 +10,14 @@
   "type": "module",
   "packageManager": "yarn@4.8.1",
   "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
+    "@emotion/react": "11.10.6",
+    "@emotion/styled": "11.10.6",
     "@mui/icons-material": "5.11.16",
-    "@mui/material": "^5.12.2",
-    "@mui/styled-engine": "^7.2.0",
-    "@mui/system": "^5.12.1",
-    "@mui/utils": "^7.2.0",
+    "@mui/material": "5.12.2",
+    "@mui/system": "5.12.1",
     "@radix-ui/react-scroll-area": "^1.0.5",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "yarn": "^1.22.22"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
@@ -36,7 +33,6 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "fast-xml-parser": "^4.2.7",
-    "gh-pages": "^6.3.0",
     "prettier": "2.7.1",
     "typescript": "5.0.4",
     "vite": "^4.2.0",
@@ -47,12 +43,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "buildData": "node src/buildData.ts",
-    "buildData:latest": "node src/buildData.ts vanilla public/regulation-vanilla-v1.16.1.js",
-    "buildData:reforged": "node src/buildData.ts reforged public/regulation-reforged-v2.2.3.4.js",
-    "buildData:convergence": "node src/buildData.ts convergence public/regulation-convergence-v2.2.3A.js",
-    "rebuildWeaponData": "yarn buildData:latest buildData:reforged buildData:convergence",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "buildData:latest": "node src/buildData.ts vanilla public/regulation-vanilla-v1.14.js",
+    "buildData:reforged": "node src/buildData.ts reforged public/regulation-reforged-v1.4.8G.js",
+    "buildData:convergence": "node src/buildData.ts convergence public/regulation-convergence-v2.2.3.js",
+    "rebuildWeaponData": "yarn buildData:latest && yarn buildData:reforged && yarn buildData:convergence"
   },
   "eslintConfig": {
     "extends": [
@@ -79,6 +73,5 @@
   "prettier": {
     "printWidth": 100,
     "trailingComma": "all"
-  },
-  "homepage": "https://mandude.github.io/elden-ring-weapon-calculator"
+  }
 }
