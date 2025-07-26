@@ -221,189 +221,186 @@ function readFmgXml(filename: string): Map<number, string | null> {
   return new Map(text.map((entry) => [entry.id, entry["#text"]]));
 }
 
-const urlOverrides = new Map<number, string | undefined>(
-  isReforged
-    ? [
-        [1120000, "https://err.fandom.com/wiki/Iron_Spike"], // Iron Spike
-        [1150000, "https://eldenring.wiki.gg/wiki/Erdsteel_Dagger"], // Brass Dagger
-        [1170000, "https://err.fandom.com/wiki/Night%27s_Edge"], // Night's Edge
-        [2030000, "https://err.fandom.com/wiki/Sun_Realm_Sword"], // Sun Realm Sword
-        [2100000, "https://err.fandom.com/wiki/Marionette_Short_Sword"], // Marionette Short Sword
-        [2120000, "https://err.fandom.com/wiki/Broken_Straight_Sword"], // Broken Straight Sword
-        [4040000, "https://eldenring.wiki.gg/wiki/Zweihander"], // Zweihänder
-        [4530000, "https://eldenring.wiki.gg/wiki/Remembrance_of_a_God_and_a_Lord"], // Greatswords of Radahn
-        [7130000, "https://err.fandom.com/wiki/Red_Wolf%27s_Fang"], // Red Wolf's Fang
-        [7160000, "https://err.fandom.com/wiki/Avionette_Scimitar"], // Avionette Scimitar
-        [8090000, "https://err.fandom.com/wiki/Fury_of_Azash"], // Fury of Azash
-        [8110000, "https://err.fandom.com/wiki/Makar%27s_Ceremonial_Cleaver"], // Makar's Ceremonial Cleaver
-        [10100000, "https://err.fandom.com/wiki/Goldvine_Branchstaff"], // Goldvine Branchstaff
-        [12030000, "https://err.fandom.com/wiki/Pumpkin_Sledge"], // Pumpkin Sledge
-        [14070000, "https://err.fandom.com/wiki/Vulgar_Militia_Chain_Sickle"], // Vulgar Militia Chain Sickle
-        [16100000, "https://err.fandom.com/wiki/Disciple%27s_Rotten_Branch"], // Disciple's Rotten Branch
-        [16170000, "https://err.fandom.com/wiki/Grave_Spear"], // Grave Spear
-        [16180000, "https://err.fandom.com/wiki/Lordsworn%27s_Spear"], // Lordsworn's Spear
-        [18120000, "https://err.fandom.com/wiki/Avionette_Pig_Sticker"], // Avionette Pig Sticker
-        [18170000, "https://err.fandom.com/wiki/Starcaller_Spire"], // Starcaller Spire
-        [21050000, "https://err.fandom.com/wiki/Nox_Flowing_Fist"], // Nox Flowing Fist
-        [21140000, "https://err.fandom.com/wiki/Fellthorn_Clutches"], // Fellthorn Clutches
-        [22040000, "https://err.fandom.com/wiki/Crude_Iron_Claws"], // Crude Iron Claws
-        [23090000, "https://err.fandom.com/wiki/Fellthorn_Stake"], // Fellthorn Stake
-        [11110000, "https://eldenring.wiki.gg/Scepter_of_the_All-Knowing"], // Scepter of the All-Knowing Staff
-        [16140000, "https://eldenring.wiki.gg/wiki/Spiked_Spear"], // Marionette Spiked Spear
-        [18140000, "https://eldenring.wiki.gg/wiki/Dragon_Halberd"], // Dragonscale Halberd
-        [23150000, "https://eldenring.wiki.gg/wiki/Rotten_Greataxe"], // Rotten Duelist Greataxe
-        [33210000, "https://eldenring.wiki.gg/Carian_Glintstone_Staff"], // Dark Glintstone Staff
-        [33300000, "https://err.fandom.com/wiki/Snow_Witch_Scepter"], // Snow Witch Scepter
-        [2270000, "https://err.fandom.com/wiki/Gladius_of_Ophidion"], // Gladius of Ophidion
-        [2280000, "https://err.fandom.com/wiki/Coilheart"], // Coilheart
-        [2130000, "https://err.fandom.com/wiki/Flamelost_War_Sword"], // Flamelost War Sword
-        [4090000, "https://err.fandom.com/wiki/Flamelost_Greatblades"], // Flamelost Greatblades
-        [16190000, "https://err.fandom.com/wiki/Flamelost_War_Spear"], // Flamelost War Spear
-        [31200000, "https://err.fandom.com/wiki/Mad_Sun_Shield"], // Mad Sun Shield
-        [33310000, "https://err.fandom.com/wiki/Twinbird_Caduceus"], // Twinbird Caduceus
-        [8120000, "https://err.fandom.com/wiki/Putrescent_Bonesmasher"], // Putrescent Bonesmasher
-      ]
-    : isConvergence
-    ? [
-        [110000, "https://eldenring.wiki.gg/wiki/Unarmed"], // Unarmed
-        [3070000, "https://www.convergencemod.com/weapons/greatswords/alabaster-lords-sword/"], // Alabaster Lord's Greatsword
-        [8500000, "https://www.convergencemod.com/weapons/greataxes/putrescent-cleaver/"], // // Putrescence Cleaver
-        [10080000, "https://www.convergencemod.com/weapons/twinblades/gargoyles-twinblades/"], // Gargoyle's Twinblade
-        [10110000, "https://www.convergencemod.com/gilded-quarterstaff/"], // Gilded Quarterstaff
-        [31350000, "https://www.convergencemod.com/spell-casting-tools/aegis-of-hadea/"], // Aegis of Hadea
-        [34030000, "https://www.convergencemod.com/spell-casting-tools/grave-stone-seal/"], // Gravel Stone Seal
-        [34110000, "https://www.convergencemod.com/spell-casting-tools/fire-monk-seal/"], // Fire Monk's Seal
-        [60530000, "https://www.convergencemod.com/weapons/hand-to-hand-arts/bracelets-of-shadow/"], // Braetlet of Shadow
-        [68500000, "https://www.convergencemod.com/weapons/beast-claws/beast-claws/"], // Beast Claw
-        [10100000, "https://www.convergencemod.com/weapons/twinblades/palm-ax-twinblade/"], // Palm-Ax Twinblades
-        [
-          30300000,
-          "https://docs.google.com/document/d/1JHX3bMxnIIct8MSZnXkyqpmhYKLPt8p8HY9FUcXKUNE/preview#heading=h.79qlt4tgl68h", // Crest of the Dragon Cult
-        ],
-        [21550000, undefined], // Shield of Night
-        [30000000, undefined], // Buckler
-        [30010000, undefined], // Perfumer's Shield
-        [30020000, undefined], // Man-Serpent's Shield
-        [30030000, undefined], // Rickety Shield
-        [30040000, undefined], // Pillory Shield
-        [30060000, undefined], // Beastman's Jar-Shield
-        [30070000, undefined], // Red Thorn Roundshield
-        [30080000, undefined], // Scripture Wooden Shield
-        [30090000, undefined], // Riveted Wooden Shield
-        [30100000, undefined], // Blue-White Wooden Shield
-        [30110000, undefined], // Rift Shield
-        [30120000, undefined], // Iron Roundshield
-        [30130000, undefined], // Gilded Iron Shield
-        [30140000, undefined], // Ice Crest Shield
-        [30150000, undefined], // Smoldering Shield
-        [
-          30160000,
-          "https://docs.google.com/document/d/1-5k899P5b3lo-4-EDYw9mkM2j4v62xSnnsxZEvwffXo/edit?tab=t.0#heading=h.4qcy1ray1wky", // Hermit's Buckler
-        ],
-        [30170000, undefined], // Shield of Alacrity
-        [30190000, undefined], // Spiralhorn Shield
-        [30200000, undefined], // Coil Shield
-        [30510000, undefined], // Smithscript Shield
-        [31000000, undefined], // Kite Shield
-        [31010000, undefined], // Marred Leather Shield
-        [31020000, undefined], // Marred Wooden Shield
-        [31030000, undefined], // Banished Knight's Shield
-        [31040000, undefined], // Albinauric Shield
-        [31050000, undefined], // Sun Realm Shield
-        [31060000, undefined], // Silver Mirrorshield
-        [31070000, undefined], // Round Shield
-        [31080000, undefined], // Scorpion Kite Shield
-        [31090000, undefined], // Twinbird Kite Shield
-        [31100000, undefined], // Blue-Gold Kite Shield
-        [31130000, undefined], // Brass Shield
-        [31140000, undefined], // Great Turtle Shell
-        [31170000, undefined], // Shield of the Guilty
-        [
-          31180000,
-          "https://docs.google.com/document/d/1-5k899P5b3lo-4-EDYw9mkM2j4v62xSnnsxZEvwffXo/edit?tab=t.0#heading=h.4qcy1ray1wky", // Shield of Starlight
-        ],
-        [31190000, undefined], // Carian Knight's Shield
-        [31230000, undefined], // Large Leather Shield
-        [31240000, undefined], // Horse Crest Wooden Shield
-        [31250000, undefined], // Candletree Wooden Shield
-        [31260000, undefined], // Flame Crest Wooden Shield
-        [31270000, undefined], // Hawk Crest Wooden Shield
-        [31280000, undefined], // Beast Crest Heater Shield
-        [31290000, undefined], // Red Crest Heater Shield
-        [31300000, undefined], // Blue Crest Heater Shield
-        [31310000, undefined], // Eclipse Crest Heater Shield
-        [31320000, undefined], // Inverted Hawk Heater Shield
-        [31330000, undefined], // Heater Shield
-        [31340000, undefined], // Black Leather Shield
-        [31500000, undefined], // Messmer Soldier Shield
-        [31510000, undefined], // Wolf Crest Shield
-        [31520000, undefined], // Serpent Crest Shield
-        [31530000, undefined], // Golden Lion Shield
-        [32000000, undefined], // Dragon Towershield
-        [32020000, undefined], // Distinguished Greatshield
-        [32030000, undefined], // Crucible Hornshield
-        [32040000, undefined], // Dragonclaw Shield
-        [32050000, undefined], // Briar Greatshield
-        [32080000, undefined], // Erdtree Greatshield
-        [32090000, undefined], // Golden Beast Crest Shield
-        [32120000, undefined], // Jellyfish Shield
-        [32130000, undefined], // Fingerprint Stone Shield
-        [32140000, undefined], // Icon Shield
-        [32150000, undefined], // One-Eyed Shield
-        [32160000, undefined], // Visage Shield
-        [32170000, undefined], // Spiked Palisade Shield
-        [32190000, undefined], // Manor Towershield
-        [32200000, undefined], // Crossed-Tree Towershield
-        [32210000, undefined], // Inverted Hawk Towershield
-        [32220000, undefined], // Ant's Skull Plate
-        [32230000, undefined], // Redmane Greatshield
-        [32240000, undefined], // Eclipse Crest Greatshield
-        [32250000, undefined], // Cuckoo Greatshield
-        [32260000, undefined], // Golden Greatshield
-        [32270000, undefined], // Gilded Greatshield
-        [32280000, undefined], // Haligtree Crest Greatshield
-        [32290000, undefined], // Wooden Greatshield
-        [32300000, undefined], // Lordsworn's Shield
-        [32500000, undefined], // Black Steel Greatshield
-        [32520000, undefined], // Verdigris Greatshield
-        [62500000, undefined], // Dueling Shield
-        [62510000, undefined], // Carian Thrusting Shield
-      ]
-    : isClevers
-    ? [
-        [1550000, "https://www.nexusmods.com/eldenring/mods/2663"], // Storm Demon
-        [1560000, "https://www.nexusmods.com/eldenring/mods/4649"], // Sacred Arsenal
-        [2800000, "https://www.nexusmods.com/eldenring/mods/2896"], // Vengeance and Glory
-        [3150000, "https://www.nexusmods.com/eldenring/mods/2340"], // Marais Dancing Blade
-        [3650000, "https://www.nexusmods.com/eldenring/mods/2220"], // Deathborne Odachi
-        [3710000, "https://www.nexusmods.com/eldenring/mods/3623"], // God's Bane
-        [4050000, "https://www.nexusmods.com/eldenring/mods/2756"], // Masterworked Starscourge Greatswords
-        [4800000, "https://www.nexusmods.com/eldenring/mods/3248"], // Deathwalker
-        [8100000, "https://www.nexusmods.com/eldenring/mods/1506"], // Morgott's Holy Armaments
-        [9030000, "https://www.nexusmods.com/eldenring/mods/1649"], // Voidwalker Meteoric Ore Blade
-        [9082200, "https://www.nexusmods.com/eldenring/mods/1373"], // God-Hunting Nagamaki
-        [9250000, "https://www.nexusmods.com/eldenring/mods/3661"], // Heaven Splitter
-        [9270000, "https://www.nexusmods.com/eldenring/mods/3322"], // Hinokami
-        [9280000, "https://www.nexusmods.com/eldenring/mods/3751"], // Tachikaze
-        [9940000, "https://www.nexusmods.com/eldenring/mods/2268"], // Moon Lightblade
-        [9950000, "https://www.nexusmods.com/eldenring/mods/2268"], // Blood Lightblade
-        [9960000, "https://www.nexusmods.com/eldenring/mods/2268"], // Dual Blood Lightblade
-        [9970000, "https://www.nexusmods.com/eldenring/mods/2268"], // Dual Moon Lightblade
-        [10600000, "https://www.nexusmods.com/eldenring/mods/2182"], // Airbending Staff
-        [10840000, "https://www.nexusmods.com/eldenring/mods/6805"], // Nonosama Bo
-        [16680000, "https://www.nexusmods.com/eldenring/mods/4344"], // Bloodstarved Spear
-        [17500000, "https://www.nexusmods.com/eldenring/mods/5307"], // Masterworked Spear of the Impaler
-        [19800000, "https://www.nexusmods.com/eldenring/mods/2626"], // Frenzied Reaper
-        [23060000, "https://www.nexusmods.com/eldenring/mods/1519"], // Awakened Dragon Greatclaw
-        [33710000, "https://www.nexusmods.com/eldenring/mods/3833"], // Dark Moon Ring
-        [60650000, "https://www.nexusmods.com/eldenring/mods/4215"], // Meteor Fists
-        [60660000, "https://www.nexusmods.com/eldenring/mods/2051"], // Martial Arts
-        [60670000, "https://www.nexusmods.com/eldenring/mods/1693"], // Firebending
-        [60700000, "https://www.nexusmods.com/eldenring/mods/2464"], // Earthbending
-        [66790000, "https://www.nexusmods.com/eldenring/mods/7154"], // Great Shinobi Blade
-      ]
-    : [],
-);
+const urlOverrides = new Map<number, string | undefined>([
+  [21530000, "https://eldenring.wiki.gg/wiki/Madding_Hand_(weapon)"],
+]);
+if (isReforged) {
+  urlOverrides.set(1120000, "https://err.fandom.com/wiki/Iron_Spike"); // Iron Spike
+  urlOverrides.set(1150000, "https://eldenring.wiki.gg/wiki/Erdsteel_Dagger"); // Brass Dagger
+  urlOverrides.set(1170000, "https://err.fandom.com/wiki/Night%27s_Edge"); // Night's Edge
+  urlOverrides.set(2030000, "https://err.fandom.com/wiki/Sun_Realm_Sword"); // Sun Realm Sword
+  urlOverrides.set(2100000, "https://err.fandom.com/wiki/Marionette_Short_Sword"); // Marionette Short Sword
+  urlOverrides.set(2120000, "https://err.fandom.com/wiki/Broken_Straight_Sword"); // Broken Straight Sword
+  urlOverrides.set(4040000, "https://eldenring.wiki.gg/wiki/Zweihander"); // Zweihänder
+  urlOverrides.set(4530000, "https://eldenring.wiki.gg/wiki/Remembrance_of_a_God_and_a_Lord"); // Greatswords of Radahn
+  urlOverrides.set(7130000, "https://err.fandom.com/wiki/Red_Wolf%27s_Fang"); // Red Wolf's Fang
+  urlOverrides.set(7160000, "https://err.fandom.com/wiki/Avionette_Scimitar"); // Avionette Scimitar
+  urlOverrides.set(8090000, "https://err.fandom.com/wiki/Fury_of_Azash"); // Fury of Azash
+  urlOverrides.set(8110000, "https://err.fandom.com/wiki/Makar%27s_Ceremonial_Cleaver"); // Makar's Ceremonial Cleaver
+  urlOverrides.set(10100000, "https://err.fandom.com/wiki/Goldvine_Branchstaff"); // Goldvine Branchstaff
+  urlOverrides.set(12030000, "https://err.fandom.com/wiki/Pumpkin_Sledge"); // Pumpkin Sledge
+  urlOverrides.set(14070000, "https://err.fandom.com/wiki/Vulgar_Militia_Chain_Sickle"); // Vulgar Militia Chain Sickle
+  urlOverrides.set(16100000, "https://err.fandom.com/wiki/Disciple%27s_Rotten_Branch"); // Disciple's Rotten Branch
+  urlOverrides.set(16170000, "https://err.fandom.com/wiki/Grave_Spear"); // Grave Spear
+  urlOverrides.set(16180000, "https://err.fandom.com/wiki/Lordsworn%27s_Spear"); // Lordsworn's Spear
+  urlOverrides.set(18120000, "https://err.fandom.com/wiki/Avionette_Pig_Sticker"); // Avionette Pig Sticker
+  urlOverrides.set(18170000, "https://err.fandom.com/wiki/Starcaller_Spire"); // Starcaller Spire
+  urlOverrides.set(21050000, "https://err.fandom.com/wiki/Nox_Flowing_Fist"); // Nox Flowing Fist
+  urlOverrides.set(21140000, "https://err.fandom.com/wiki/Fellthorn_Clutches"); // Fellthorn Clutches
+  urlOverrides.set(22040000, "https://err.fandom.com/wiki/Crude_Iron_Claws"); // Crude Iron Claws
+  urlOverrides.set(23090000, "https://err.fandom.com/wiki/Fellthorn_Stake"); // Fellthorn Stake
+  urlOverrides.set(11110000, "https://eldenring.wiki.gg/Scepter_of_the_All-Knowing"); // Scepter of the All-Knowing Staff
+  urlOverrides.set(16140000, "https://eldenring.wiki.gg/wiki/Spiked_Spear"); // Marionette Spiked Spear
+  urlOverrides.set(18140000, "https://eldenring.wiki.gg/wiki/Dragon_Halberd"); // Dragonscale Halberd
+  urlOverrides.set(23150000, "https://eldenring.wiki.gg/wiki/Rotten_Greataxe"); // Rotten Duelist Greataxe
+  urlOverrides.set(33210000, "https://eldenring.wiki.gg/Carian_Glintstone_Staff"); // Dark Glintstone Staff
+  urlOverrides.set(33300000, "https://err.fandom.com/wiki/Snow_Witch_Scepter"); // Snow Witch Scepter
+} else if (isConvergence) {
+  const convergenceAlphaNotes =
+    "https://docs.google.com/document/d/1JHX3bMxnIIct8MSZnXkyqpmhYKLPt8p8HY9FUcXKUNE/preview?tab=t.0#heading=h.79qlt4tgl68h";
+  const convergence21notes =
+    "https://docs.google.com/document/d/1-5k899P5b3lo-4-EDYw9mkM2j4v62xSnnsxZEvwffXo/edit?tab=t.0#heading=h.4qcy1ray1wky";
+  urlOverrides.set(110000, "https://eldenring.wiki.gg/wiki/Unarmed"); // Unarmed
+  urlOverrides.set(
+    3070000,
+    "https://www.convergencemod.com/weapons/greatswords/alabaster-lords-sword/",
+  ); // Alabaster Lord's Greatsword
+  urlOverrides.set(8500000, "https://www.convergencemod.com/weapons/greataxes/putrescent-cleaver/"); // Putrescence Cleaver
+  urlOverrides.set(
+    10080000,
+    "https://www.convergencemod.com/weapons/twinblades/gargoyles-twinblades/",
+  ); // Gargoyle's Twinblade
+  urlOverrides.set(10110000, "https://www.convergencemod.com/gilded-quarterstaff/"); // Gilded Quarterstaff
+  urlOverrides.set(31350000, "https://www.convergencemod.com/spell-casting-tools/aegis-of-hadea/"); // Aegis of Hadea
+  urlOverrides.set(
+    34030000,
+    "https://www.convergencemod.com/spell-casting-tools/grave-stone-seal/",
+  ); // Gravel Stone Seal
+  urlOverrides.set(34110000, "https://www.convergencemod.com/spell-casting-tools/fire-monk-seal/"); // Fire Monk's Seal
+  urlOverrides.set(
+    60530000,
+    "https://www.convergencemod.com/weapons/hand-to-hand-arts/bracelets-of-shadow/",
+  ); // Braetlet of Shadow
+  urlOverrides.set(68500000, "https://www.convergencemod.com/weapons/beast-claws/beast-claws/"); // Beast Claw
+  urlOverrides.set(
+    10100000,
+    "https://www.convergencemod.com/weapons/twinblades/palm-ax-twinblade/",
+  ); // Palm-Ax Twinblades
+  urlOverrides.set(30300000, convergenceAlphaNotes); // Crest of the Dragon Cult
+  urlOverrides.set(21550000, undefined); // Shield of Night
+  urlOverrides.set(30000000, undefined); // Buckler
+  urlOverrides.set(30010000, undefined); // Perfumer's Shield
+  urlOverrides.set(30020000, undefined); // Man-Serpent's Shield
+  urlOverrides.set(30030000, undefined); // Rickety Shield
+  urlOverrides.set(30040000, undefined); // Pillory Shield
+  urlOverrides.set(30060000, undefined); // Beastman's Jar-Shield
+  urlOverrides.set(30070000, undefined); // Red Thorn Roundshield
+  urlOverrides.set(30080000, undefined); // Scripture Wooden Shield
+  urlOverrides.set(30090000, undefined); // Riveted Wooden Shield
+  urlOverrides.set(30100000, undefined); // Blue-White Wooden Shield
+  urlOverrides.set(30110000, undefined); // Rift Shield
+  urlOverrides.set(30120000, undefined); // Iron Roundshield
+  urlOverrides.set(30130000, undefined); // Gilded Iron Shield
+  urlOverrides.set(30140000, undefined); // Ice Crest Shield
+  urlOverrides.set(30150000, undefined); // Smoldering Shield
+  urlOverrides.set(30160000, convergence21notes); // Hermit's Buckler
+  urlOverrides.set(30170000, convergence21notes); // Shield of Alacrity
+  urlOverrides.set(30190000, undefined); // Spiralhorn Shield
+  urlOverrides.set(30200000, undefined); // Coil Shield
+  urlOverrides.set(30510000, undefined); // Smithscript Shield
+  urlOverrides.set(31000000, undefined); // Kite Shield
+  urlOverrides.set(31010000, undefined); // Marred Leather Shield
+  urlOverrides.set(31020000, undefined); // Marred Wooden Shield
+  urlOverrides.set(31030000, undefined); // Banished Knight's Shield
+  urlOverrides.set(31040000, undefined); // Albinauric Shield
+  urlOverrides.set(31050000, undefined); // Sun Realm Shield
+  urlOverrides.set(31060000, undefined); // Silver Mirrorshield
+  urlOverrides.set(31070000, undefined); // Round Shield
+  urlOverrides.set(31080000, undefined); // Scorpion Kite Shield
+  urlOverrides.set(31090000, undefined); // Twinbird Kite Shield
+  urlOverrides.set(31100000, undefined); // Blue-Gold Kite Shield
+  urlOverrides.set(31130000, undefined); // Brass Shield
+  urlOverrides.set(31140000, undefined); // Great Turtle Shell
+  urlOverrides.set(31170000, undefined); // Shield of the Guilty
+  urlOverrides.set(31180000, convergence21notes); // Shield of Starlight
+  urlOverrides.set(31190000, undefined); // Carian Knight's Shield
+  urlOverrides.set(31230000, undefined); // Large Leather Shield
+  urlOverrides.set(31240000, undefined); // Horse Crest Wooden Shield
+  urlOverrides.set(31250000, undefined); // Candletree Wooden Shield
+  urlOverrides.set(31260000, undefined); // Flame Crest Wooden Shield
+  urlOverrides.set(31270000, undefined); // Hawk Crest Wooden Shield
+  urlOverrides.set(31280000, undefined); // Beast Crest Heater Shield
+  urlOverrides.set(31290000, undefined); // Red Crest Heater Shield
+  urlOverrides.set(31300000, undefined); // Blue Crest Heater Shield
+  urlOverrides.set(31310000, undefined); // Eclipse Crest Heater Shield
+  urlOverrides.set(31320000, undefined); // Inverted Hawk Heater Shield
+  urlOverrides.set(31330000, undefined); // Heater Shield
+  urlOverrides.set(31340000, undefined); // Black Leather Shield
+  urlOverrides.set(31500000, undefined); // Messmer Soldier Shield
+  urlOverrides.set(31510000, undefined); // Wolf Crest Shield
+  urlOverrides.set(31520000, undefined); // Serpent Crest Shield
+  urlOverrides.set(31530000, undefined); // Golden Lion Shield
+  urlOverrides.set(32000000, undefined); // Dragon Towershield
+  urlOverrides.set(32020000, undefined); // Distinguished Greatshield
+  urlOverrides.set(32030000, undefined); // Crucible Hornshield
+  urlOverrides.set(32040000, undefined); // Dragonclaw Shield
+  urlOverrides.set(32050000, undefined); // Briar Greatshield
+  urlOverrides.set(32080000, undefined); // Erdtree Greatshield
+  urlOverrides.set(32090000, undefined); // Golden Beast Crest Shield
+  urlOverrides.set(32120000, undefined); // Jellyfish Shield
+  urlOverrides.set(32130000, undefined); // Fingerprint Stone Shield
+  urlOverrides.set(32140000, undefined); // Icon Shield
+  urlOverrides.set(32150000, undefined); // One-Eyed Shield
+  urlOverrides.set(32160000, undefined); // Visage Shield
+  urlOverrides.set(32170000, undefined); // Spiked Palisade Shield
+  urlOverrides.set(32190000, undefined); // Manor Towershield
+  urlOverrides.set(32200000, undefined); // Crossed-Tree Towershield
+  urlOverrides.set(32210000, undefined); // Inverted Hawk Towershield
+  urlOverrides.set(32220000, undefined); // Ant's Skull Plate
+  urlOverrides.set(32230000, undefined); // Redmane Greatshield
+  urlOverrides.set(32240000, undefined); // Eclipse Crest Greatshield
+  urlOverrides.set(32250000, undefined); // Cuckoo Greatshield
+  urlOverrides.set(32260000, undefined); // Golden Greatshield
+  urlOverrides.set(32270000, undefined); // Gilded Greatshield
+  urlOverrides.set(32280000, undefined); // Haligtree Crest Greatshield
+  urlOverrides.set(32290000, undefined); // Wooden Greatshield
+  urlOverrides.set(32300000, undefined); // Lordsworn's Shield
+  urlOverrides.set(32500000, undefined); // Black Steel Greatshield
+  urlOverrides.set(32520000, undefined); // Verdigris Greatshield
+  urlOverrides.set(62500000, undefined); // Dueling Shield
+  urlOverrides.set(62510000, undefined); // Carian Thrusting Shield
+} else if (isClevers) {
+  urlOverrides.set(1550000, "https://www.nexusmods.com/eldenring/mods/2663"); // Storm Demon
+  urlOverrides.set(1560000, "https://www.nexusmods.com/eldenring/mods/4649"); // Sacred Arsenal
+  urlOverrides.set(2800000, "https://www.nexusmods.com/eldenring/mods/2896"); // Vengeance and Glory
+  urlOverrides.set(3150000, "https://www.nexusmods.com/eldenring/mods/2340"); // Marais Dancing Blade
+  urlOverrides.set(3650000, "https://www.nexusmods.com/eldenring/mods/2220"); // Deathborne Odachi
+  urlOverrides.set(3710000, "https://www.nexusmods.com/eldenring/mods/3623"); // God's Bane
+  urlOverrides.set(4050000, "https://www.nexusmods.com/eldenring/mods/2756"); // Masterworked Starscourge Greatswords
+  urlOverrides.set(4800000, "https://www.nexusmods.com/eldenring/mods/3248"); // Deathwalker
+  urlOverrides.set(8100000, "https://www.nexusmods.com/eldenring/mods/1506"); // Morgott's Holy Armaments
+  urlOverrides.set(9030000, "https://www.nexusmods.com/eldenring/mods/1649"); // Voidwalker Meteoric Ore Blade
+  urlOverrides.set(9082200, "https://www.nexusmods.com/eldenring/mods/1373"); // God-Hunting Nagamaki
+  urlOverrides.set(9250000, "https://www.nexusmods.com/eldenring/mods/3661"); // Heaven Splitter
+  urlOverrides.set(9270000, "https://www.nexusmods.com/eldenring/mods/3322"); // Hinokami
+  urlOverrides.set(9280000, "https://www.nexusmods.com/eldenring/mods/3751"); // Tachikaze
+  urlOverrides.set(9940000, "https://www.nexusmods.com/eldenring/mods/2268"); // Moon Lightblade
+  urlOverrides.set(9950000, "https://www.nexusmods.com/eldenring/mods/2268"); // Blood Lightblade
+  urlOverrides.set(9960000, "https://www.nexusmods.com/eldenring/mods/2268"); // Dual Blood Lightblade
+  urlOverrides.set(9970000, "https://www.nexusmods.com/eldenring/mods/2268"); // Dual Moon Lightblade
+  urlOverrides.set(10600000, "https://www.nexusmods.com/eldenring/mods/2182"); // Airbending Staff
+  urlOverrides.set(10840000, "https://www.nexusmods.com/eldenring/mods/6805"); // Nonosama Bo
+  urlOverrides.set(16680000, "https://www.nexusmods.com/eldenring/mods/4344"); // Bloodstarved Spear
+  urlOverrides.set(17500000, "https://www.nexusmods.com/eldenring/mods/5307"); // Masterworked Spear of the Impaler
+  urlOverrides.set(19800000, "https://www.nexusmods.com/eldenring/mods/2626"); // Frenzied Reaper
+  urlOverrides.set(23060000, "https://www.nexusmods.com/eldenring/mods/1519"); // Awakened Dragon Greatclaw
+  urlOverrides.set(33710000, "https://www.nexusmods.com/eldenring/mods/3833"); // Dark Moon Ring
+  urlOverrides.set(60650000, "https://www.nexusmods.com/eldenring/mods/4215"); // Meteor Fists
+  urlOverrides.set(60660000, "https://www.nexusmods.com/eldenring/mods/2051"); // Martial Arts
+  urlOverrides.set(60670000, "https://www.nexusmods.com/eldenring/mods/1693"); // Firebending
+  urlOverrides.set(60700000, "https://www.nexusmods.com/eldenring/mods/2464"); // Earthbending
+  urlOverrides.set(66790000, "https://www.nexusmods.com/eldenring/mods/7154"); // Great Shinobi Blade
+}
 
 const convergenceWikiWeaponTypePaths = new Map<WeaponType, string>([
   [WeaponType.DAGGER, "/weapons/daggers"],
@@ -498,25 +495,9 @@ function isUniqueWeapon(row: ParamRow) {
 const unobtainableWeapons = new Set(
   isReforged
     ? [
-        4540000, // Moonrithyll Knight's Sword
         4550000, // Greatsword of Radahn (Dumb)
         17080000, // Vyke's War Spear
         33290000, // ST Staff
-        // Fletched Arrows and Greatarrows
-        50030000,
-        50060000,
-        50080000,
-        50130000,
-        50150000,
-        50170000,
-        50200000,
-        50260000,
-        50280000,
-        50300000,
-        50320000,
-        50340000,
-        50540000,
-        51050000,
       ]
     : isConvergence
     ? [
@@ -584,22 +565,14 @@ const wepTypeOverrides = new Map([
         [18170000, WeaponType.HALBERD], // Starcaller Spire
         [21140000, WeaponType.FIST], // Fellthorn Clutches
         [34500000, WeaponType.HAND_TO_HAND], // Dryleaf Seal
-        [67520000, WeaponType.LIGHT_GREATSWORD], // Rellana's Twin Blades
       ] as const)
     : []),
 ]);
 
 const supportedWeaponTypes = new Set<number>(Object.values(WeaponType));
 
-export const excludedWeaponTypes: WeaponType[] = [
-  WeaponType.ARROW,
-  WeaponType.GREATARROW,
-  WeaponType.BOLT,
-  WeaponType.BALLISTA_BOLT,
-];
-
 function isSupportedWeaponType(wepType: number): wepType is WeaponType {
-  return supportedWeaponTypes.has(wepType) && !excludedWeaponTypes.includes(wepType as WeaponType);
+  return supportedWeaponTypes.has(wepType);
 }
 
 function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
@@ -707,28 +680,6 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     return false;
   });
 
-  const guardCutRate: (readonly [AttackPowerType, number])[] = (
-    [
-      [AttackPowerType.PHYSICAL, row.physGuardCutRate],
-      [AttackPowerType.MAGIC, row.magGuardCutRate],
-      [AttackPowerType.FIRE, row.thunGuardCutRate],
-      [AttackPowerType.LIGHTNING, row.thunGuardCutRate],
-      [AttackPowerType.HOLY, row.darkGuardCutRate],
-      [AttackPowerType.POISON, row.poisonGuardResist],
-      [AttackPowerType.SCARLET_ROT, row.diseaseGuardResist],
-      [AttackPowerType.BLEED, row.bloodGuardResist],
-      [AttackPowerType.DEATH_BLIGHT, row.curseGuardResist],
-      [AttackPowerType.FROST, row.freezeGuardResist],
-      [AttackPowerType.MADNESS, row.madnessGuardResist],
-      [AttackPowerType.SLEEP, row.sleepGuardResist],
-    ] as const
-  ).filter(([, attackPower]) => {
-    if (attackPower) {
-      return true;
-    }
-    return false;
-  });
-
   // Spells use a CalcCorrectGraph based on the type of damage they deal. These are normally the
   // same, but The Convergence has different CalcCorrectGraphs to give spell tools varying
   // effectiveness with different damage types.
@@ -815,23 +766,6 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     reinforceTypeId: row.reinforceTypeId,
     attackElementCorrectId: row.attackElementCorrectId,
     calcCorrectGraphIds,
-    poise: row.saWeaponDamage,
-    stamDmg: row.attackBaseStamina,
-    stamCost: row.staminaConsumptionRate,
-    weight: row.weight,
-    weightRate: row.weaponWeightRate,
-    bowDist: row.bowDistRate,
-    crit: row.throwAtkRate,
-    guardCutRate,
-    stability: row.staminaGuardDef,
-    weakRate: [
-      row.weakA_DamageRate,
-      row.weakB_DamageRate,
-      row.weakC_DamageRate,
-      row.weakD_DamageRate,
-      row.weakE_DamageRate,
-      row.weakF_DamageRate,
-    ],
     paired: ifNotDefault(row.isDualBlade === 1, false),
     sorceryTool: ifNotDefault(row.enableMagic === 1, false),
     incantationTool: ifNotDefault(row.enableMiracle === 1, false),
@@ -930,21 +864,6 @@ function parseReinforceParamWeapon(row: ParamRow): ReinforceParamWeapon {
       [AttackPowerType.LIGHTNING]: row.thunderAtkRate,
       [AttackPowerType.HOLY]: row.darkAtkRate,
     },
-    guardCutRate: {
-      [AttackPowerType.PHYSICAL]: row.physicsGuardCutRate,
-      [AttackPowerType.MAGIC]: row.magicGuardCutRate,
-      [AttackPowerType.FIRE]: row.fireGuardCutRate,
-      [AttackPowerType.LIGHTNING]: row.thunderGuardCutRate,
-      [AttackPowerType.HOLY]: row.darkGuardCutRate,
-      [AttackPowerType.POISON]: row.poisonGuardResistRate,
-      [AttackPowerType.SCARLET_ROT]: row.diseaseGuardResistRate,
-      [AttackPowerType.BLEED]: row.bloodGuardResistRate,
-      [AttackPowerType.DEATH_BLIGHT]: row.curseGuardResistRate,
-      [AttackPowerType.FROST]: row.freezeGuardDefRate,
-      [AttackPowerType.MADNESS]: row.madnessGuardDefRate,
-      [AttackPowerType.SLEEP]: row.sleepGuardDefRate,
-    },
-    stability: row.staminaGuardDefRate,
     attributeScaling: {
       str: row.correctStrengthRate,
       dex: row.correctAgilityRate,
@@ -1024,9 +943,6 @@ const calcCorrectGraphIds = new Set([
   defaultStatusCalcCorrectGraphId,
   ...weaponsJson.flatMap((weapon) => Object.values(weapon.calcCorrectGraphIds ?? {})),
 ]);
-if(isReforged) {
-  calcCorrectGraphIds.add(1007); // Arcane status buildup 'bonus' (actually reduces enemy status absorption by this)
-}
 const calcCorrectGraphsJson = Object.fromEntries(
   [...calcCorrectGraphs.entries()]
     .filter(([id]) => calcCorrectGraphIds.has(id))
