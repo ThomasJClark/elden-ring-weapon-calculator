@@ -53,6 +53,16 @@ export interface Weapon {
   attack: Partial<Record<AttackPowerType, number>>[];
 
   /**
+   * Critical stat of the weapon, used for critical damage calculations
+   */
+  critical: number;
+
+  /**
+   * Critical damage multiplier, typically determined by the weapon type
+   */
+  criticalMultiplier?: Partial<Record<AttackPowerType, number>>;
+
+  /**
    * Map indicating which damage types scale with which player attributes
    */
   attackElementCorrect: AttackElementCorrect;

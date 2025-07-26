@@ -21,7 +21,7 @@ import {
   WeaponTableGroupHeaderRow,
 } from "./tableStyledComponents.tsx";
 
-export type WeaponTableRowData = [Weapon, WeaponAttackResult];
+export type WeaponTableRowData = [Weapon, WeaponAttackResult, WeaponAttackResult?];
 
 export interface WeaponTableRowGroup {
   key: string;
@@ -75,6 +75,11 @@ interface Props {
    * Include spell scaling columns in the table
    */
   spellScaling: boolean;
+
+  /**
+   * If true, include critical damage columns in the table
+   */
+  critical: boolean;
 
   onSortByChanged(sortBy: SortBy): void;
   onReverseChanged(reverse: boolean): void;
@@ -202,6 +207,7 @@ function WeaponTable({
   numericalScaling,
   attackPowerTypes,
   spellScaling,
+  critical,
   onSortByChanged,
   onReverseChanged,
 }: Props) {
@@ -213,8 +219,9 @@ function WeaponTable({
         numericalScaling,
         attackPowerTypes,
         spellScaling,
+        critical,
       }),
-    [splitDamage, splitSpellScaling, numericalScaling, attackPowerTypes, spellScaling],
+    [splitDamage, splitSpellScaling, numericalScaling, attackPowerTypes, spellScaling, critical],
   );
 
   return (
