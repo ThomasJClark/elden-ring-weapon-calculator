@@ -565,6 +565,7 @@ const wepTypeOverrides = new Map([
         [18170000, WeaponType.HALBERD], // Starcaller Spire
         [21140000, WeaponType.FIST], // Fellthorn Clutches
         [34500000, WeaponType.HAND_TO_HAND], // Dryleaf Seal
+        [67520000, WeaponType.LIGHT_GREATSWORD], // Rellana's Twin Blades
       ] as const)
     : []),
 ]);
