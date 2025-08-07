@@ -1,0 +1,37 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "Install Environment",
+				"type": "shell",
+				"command": "yarn install",
+				"group": "build",
+			},
+			{
+				"label": "Build Item Database",
+				"type": "shell",
+				"command": "yarn buildData:latest",
+				"group": {
+					"kind": "build",
+					"isDefault": true
+				},
+			},
+			{
+				"label": "Run",
+				"type": "shell",
+				"command": "yarn start",
+				"group": {
+					"kind": "test",
+					"isDefault": true
+				},
+			},
+		]
+	}
+}
