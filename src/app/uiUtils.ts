@@ -335,11 +335,11 @@ export function getEnemyTypeLabel(type: WeakRateType) {
     case WeakRateType.B:
       return "Undead";
     case WeakRateType.C:
-      return "DragonA";
+      return "Anc.Dragon";
     case WeakRateType.D:
-      return "DragonB";
+      return "Dragon";
     case WeakRateType.E:
-      return "DragonC";
+      return "unused Dragon"; // used on weapons, unused on enemies
     case WeakRateType.F:
       return "unused";
   }

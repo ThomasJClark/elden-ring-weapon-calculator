@@ -605,10 +605,10 @@ export default function getWeaponTableColumns({
   spellScaling,
 }: WeaponTableColumnsOptions): WeaponTableColumnGroupDef[] {
   const includedStatusTypes = allStatusTypes.filter((statusType) =>
-    attackPowerTypes.has(statusType),
+    attackPowerTypes.has(statusType)
   );
   const includedWeakRateTypes = allWeakRateTypes.filter((weakRateType) =>
-    weakRateTypes.has(weakRateType),
+    weakRateTypes.has(weakRateType) && !getEnemyTypeLabel(weakRateType).includes("unused")
   );
 
   let spellScalingColumnGroup: WeaponTableColumnGroupDef | undefined;
