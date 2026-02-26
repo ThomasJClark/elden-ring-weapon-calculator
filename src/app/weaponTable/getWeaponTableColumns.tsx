@@ -231,7 +231,7 @@ const stabilityColumn: WeaponTableColumnDef = {
   render([, { stability }]) {
     return (
       <CutRateRenderer
-        value={stability}
+        value={Math.floor(stability)}
       />
     );
   },
