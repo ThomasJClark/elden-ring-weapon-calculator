@@ -362,6 +362,13 @@ export function getReforgedEnemyTypeLabel(type: WeakRateType) {
   }
 }
 
+export const enemyTypeLabelFuncByRegulation: Record<string, (type: WeakRateType) => string> = {
+  latest: getEnemyTypeLabel,
+  reforged: getReforgedEnemyTypeLabel,
+  convergence: getEnemyTypeLabel,
+  clevers: getEnemyTypeLabel,
+} as const;
+
 export function getTotalDamageAttackPower(attackPower: Partial<Record<AttackPowerType, number>>) {
   return allDamageTypes.reduce<number>(
     (totalAttackPower, damageType) => totalAttackPower + (attackPower[damageType] ?? 0),

@@ -12,6 +12,7 @@ import {
   getAttributeLabel,
   getEnemyTypeLabel,
   getReforgedEnemyTypeLabel,
+  enemyTypeLabelFuncByRegulation,
   getShortAttributeLabel,
   getTotalDamageAttackPower,
 } from "../uiUtils.ts";
@@ -608,7 +609,7 @@ export default function getWeaponTableColumns({
     attackPowerTypes.has(statusType)
   );
   const includedWeakRateTypes = allWeakRateTypes.filter((weakRateType) =>
-    weakRateTypes.has(weakRateType) && !getEnemyTypeLabel(weakRateType).includes("unused")
+    weakRateTypes.has(weakRateType) && !enemyTypeLabelFuncByRegulation[regulationVersionName](weakRateType).includes("unused")
   );
 
   let spellScalingColumnGroup: WeaponTableColumnGroupDef | undefined;
