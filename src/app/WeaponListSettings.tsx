@@ -7,10 +7,24 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Typography,
 } from "@mui/material";
-import { allAttributes, type Attribute, type Attributes } from "../calculator/calculator.ts";
+import {
+  allAttributes,
+  allDamageTypes,
+  allStatusTypes,
+  AttackPowerType,
+  type Attribute,
+  type Attributes,
+} from "../calculator/calculator.ts";
+import type { OptimizeMode, OptimizationWeights } from "../calculator/optimization.ts";
 import NumberTextField from "./NumberTextField.tsx";
-import { getAttributeLabel, maxRegularUpgradeLevel, toSpecialUpgradeLevel } from "./uiUtils.ts";
+import {
+  damageTypeLabels,
+  getAttributeLabel,
+  maxRegularUpgradeLevel,
+  toSpecialUpgradeLevel,
+} from "./uiUtils.ts";
 
 interface AttributeInputProps {
   attribute: Attribute;
@@ -105,6 +119,13 @@ const BooleanInput = memo(function BooleanInput({ label, checked, onChange }: Bo
 interface Props {
   breakpoint: "md" | "lg";
   attributes: Attributes;
+  freeStatPoints: number;
+  freeStatPointsMax: number;
+  optimizeMode: OptimizeMode;
+  optimizeAttackPowerType: AttackPowerType;
+  optimizationWeights: OptimizationWeights;
+  spellScalingWeight: number;
+  showOptimizedAttributes: boolean;
   twoHanding: boolean;
   upgradeLevel: number;
   maxUpgradeLevel?: number;
@@ -112,6 +133,12 @@ interface Props {
   groupWeaponTypes: boolean;
   numericalScaling: boolean;
   onAttributeChanged(attribute: Attribute, value: number): void;
+  onFreeStatPointsChanged(value: number): void;
+  onOptimizeModeChanged(mode: OptimizeMode): void;
+  onOptimizeAttackPowerTypeChanged(attackPowerType: AttackPowerType): void;
+  onOptimizationWeightChanged(attackPowerType: AttackPowerType, weight: number): void;
+  onSpellScalingWeightChanged(weight: number): void;
+  onShowOptimizedAttributesChanged(value: boolean): void;
   onTwoHandingChanged(twoHanding: boolean): void;
   onUpgradeLevelChanged(upgradeLevel: number): void;
   onSplitDamageChanged(splitDamage: boolean): void;
@@ -125,6 +152,13 @@ interface Props {
 function WeaponListSettings({
   breakpoint,
   attributes,
+  freeStatPoints,
+  freeStatPointsMax,
+  optimizeMode,
+  optimizeAttackPowerType,
+  optimizationWeights,
+  spellScalingWeight,
+  showOptimizedAttributes,
   twoHanding,
   upgradeLevel,
   maxUpgradeLevel,
@@ -132,12 +166,22 @@ function WeaponListSettings({
   groupWeaponTypes,
   numericalScaling,
   onAttributeChanged,
+  onFreeStatPointsChanged,
+  onOptimizeModeChanged,
+  onOptimizeAttackPowerTypeChanged,
+  onOptimizationWeightChanged,
+  onSpellScalingWeightChanged,
+  onShowOptimizedAttributesChanged,
   onTwoHandingChanged,
   onUpgradeLevelChanged,
   onSplitDamageChanged,
   onGroupWeaponTypesChanged,
   onNumericalScalingChanged,
 }: Props) {
+  const showSpecificAttackPower = optimizeMode === "specificAttackPower";
+  const showStatusBuildup = optimizeMode === "statusBuildup";
+  const showWeights = optimizeMode === "weighted";
+
   return (
     <Box
       display="grid"
@@ -159,6 +203,15 @@ function WeaponListSettings({
             onAttributeChanged={onAttributeChanged}
           />
         ))}
+        <NumberTextField
+          label="Free Stat Points"
+          size="small"
+          variant="outlined"
+          value={freeStatPoints}
+          min={0}
+          max={freeStatPointsMax}
+          onChange={(newValue) => onFreeStatPointsChanged(newValue)}
+        />
       </Box>
 
       <WeaponLevelInput
@@ -198,6 +251,133 @@ function WeaponListSettings({
           checked={splitDamage}
           onChange={onSplitDamageChanged}
         />
+        <BooleanInput
+          label="Show optimized stats"
+          checked={showOptimizedAttributes}
+          onChange={onShowOptimizedAttributesChanged}
+        />
+      </Box>
+
+      <Box
+        sx={{
+          mt: 1,
+          pt: 2,
+          borderTop: 1,
+          borderColor: "divider",
+          gridColumn: "1 / -1",
+        }}
+      >
+        <Box
+          display="grid"
+          sx={{
+            gap: 2,
+            gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+          }}
+        >
+          <FormControl fullWidth size="small">
+            <InputLabel id="optimizeModeLabel">Optimize</InputLabel>
+            <Select
+              labelId="optimizeModeLabel"
+              label="Optimize"
+              value={optimizeMode}
+              onChange={(evt) => onOptimizeModeChanged(evt.target.value as OptimizeMode)}
+            >
+              <MenuItem value="none">None</MenuItem>
+              <MenuItem value="totalAttackPower">Total Attack Power</MenuItem>
+              <MenuItem value="specificAttackPower">Specific Attack Power</MenuItem>
+              <MenuItem value="statusBuildup">Status Buildup</MenuItem>
+              <MenuItem value="spellScaling">Spell Scaling</MenuItem>
+              <MenuItem value="weighted">Weighted</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl
+            fullWidth
+            size="small"
+            disabled={!showSpecificAttackPower && !showStatusBuildup}
+            sx={{ gridColumn: { xs: "1 / -1", sm: "auto" } }}
+          >
+            <InputLabel id="optimizationTypeLabel">Type</InputLabel>
+            <Select
+              labelId="optimizationTypeLabel"
+              label="Type"
+              value={optimizeAttackPowerType}
+              onChange={(evt) => onOptimizeAttackPowerTypeChanged(+evt.target.value as AttackPowerType)}
+            >
+              {(showSpecificAttackPower ? allDamageTypes : allStatusTypes).map((type) => (
+                <MenuItem key={type} value={type}>
+                  {damageTypeLabels.get(type) ?? `Type ${type}`}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+
+        {showWeights && (
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              Weights
+            </Typography>
+
+            <Box
+              sx={{
+                display: "grid",
+                // Make weight fields ~2x narrower than stat fields:
+                // stats use 3 columns; weights use 6 columns (damage + spell scaling).
+                gridTemplateColumns: { xs: "1fr 1fr", sm: "repeat(6, minmax(0, 1fr))" },
+                gap: 2,
+              }}
+            >
+              {allDamageTypes.map((type) => (
+                <NumberTextField
+                  key={type}
+                  label={damageTypeLabels.get(type) ?? `Type ${type}`}
+                  size="small"
+                  variant="outlined"
+                  value={optimizationWeights[type] ?? 1}
+                  min={0}
+                  max={100}
+                  step={0.1}
+                  onChange={(newValue) => onOptimizationWeightChanged(type, newValue)}
+                />
+              ))}
+              <NumberTextField
+                label="Spell Scaling"
+                size="small"
+                variant="outlined"
+                value={spellScalingWeight}
+                min={0}
+                max={100}
+                step={0.1}
+                onChange={(newValue) => onSpellScalingWeightChanged(newValue)}
+              />
+            </Box>
+
+            <Box
+              sx={{
+                mt: 1.5,
+                display: "grid",
+                // Status has 7 fields; use 7 columns to avoid horizontal scrolling.
+                gridTemplateColumns: { xs: "1fr 1fr", sm: "repeat(7, minmax(0, 1fr))" },
+                gap: 2,
+              }}
+            >
+              {allStatusTypes.map((type) => (
+                <NumberTextField
+                  key={type}
+                  label={damageTypeLabels.get(type) ?? `Type ${type}`}
+                  size="small"
+                  variant="outlined"
+                  value={optimizationWeights[type] ?? 1}
+                  min={0}
+                  max={100}
+                  step={0.1}
+                  onChange={(newValue) => onOptimizationWeightChanged(type, newValue)}
+                />
+              ))}
+            </Box>
+          </Box>
+        )}
       </Box>
     </Box>
   );

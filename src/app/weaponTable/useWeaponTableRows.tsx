@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import getWeaponAttack, {
   allAttackPowerTypes,
   AttackPowerType,
@@ -6,6 +6,8 @@ import getWeaponAttack, {
   type Attributes,
   type Weapon,
 } from "../../calculator/calculator.ts";
+import type { OptimizeMode, OptimizationWeights } from "../../calculator/optimization.ts";
+import { optimizeWeaponAttributes } from "../../calculator/optimizeAttributes.ts";
 import filterWeapons from "../../search/filterWeapons.ts";
 import { type WeaponTableRowData, type WeaponTableRowGroup } from "./WeaponTable.tsx";
 import { type SortBy, sortWeapons } from "../../search/sortWeapons.ts";
@@ -28,6 +30,12 @@ interface WeaponTableRowsOptions {
   affinityIds: readonly number[];
   weaponTypes: readonly WeaponType[];
   attributes: Attributes;
+  freeStatPoints: number;
+  optimizeMode: OptimizeMode;
+  optimizeAttackPowerType: AttackPowerType;
+  optimizationWeights: OptimizationWeights;
+  spellScalingWeight: number;
+  showOptimizedAttributes: boolean;
   includeDLC: boolean;
   effectiveOnly: boolean;
   twoHanding: boolean;
@@ -47,7 +55,14 @@ interface WeaponTableRowsResult {
   spellScaling: boolean;
 
   total: number;
+
+  /**
+   * True while a new optimization run is being calculated. Used to show a loading popup.
+   */
+  optimizing: boolean;
 }
+
+const yieldToBrowser = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
 /**
  * Filter, sort, and paginate the weapon list based on the current selections
@@ -73,6 +88,12 @@ const useWeaponTableRows = ({
   const effectiveOnly = useDeferredValue(options.effectiveOnly);
   const includeDLC = useDeferredValue(options.includeDLC);
   const selectedWeapons = useDeferredValue(options.selectedWeapons);
+  const freeStatPoints = useDeferredValue(options.freeStatPoints);
+  const optimizeMode = useDeferredValue(options.optimizeMode);
+  const optimizeAttackPowerType = useDeferredValue(options.optimizeAttackPowerType);
+  const optimizationWeights = useDeferredValue(options.optimizationWeights);
+  const spellScalingWeight = useDeferredValue(options.spellScalingWeight);
+  const showOptimizedAttributes = useDeferredValue(options.showOptimizedAttributes);
 
   const specialUpgradeLevel = toSpecialUpgradeLevel(regularUpgradeLevel);
 
@@ -88,60 +109,130 @@ const useWeaponTableRows = ({
     return tmp;
   }, [weapons]);
 
-  const [filteredRows, attackPowerTypes, spellScaling] = useMemo<
-    [WeaponTableRowData[], Set<AttackPowerType>, boolean]
-  >(() => {
-    const includedDamageTypes = new Set<AttackPowerType>();
-    let includeSpellScaling = false;
+  const [filteredRows, setFilteredRows] = useState<WeaponTableRowData[]>([]);
+  const [attackPowerTypes, setAttackPowerTypes] = useState<Set<AttackPowerType>>(new Set());
+  const [spellScaling, setSpellScaling] = useState(false);
+  const [total, setTotal] = useState(0);
+  const [optimizing, setOptimizing] = useState(false);
+  const runIdRef = useRef(0);
 
-    const filteredWeapons = filterWeapons(weapons, {
-      weaponTypes: disableWeaponTypeFilter
-        ? new Set()
-        : new Set(weaponTypes.filter((weaponType) => allWeaponTypes.includes(weaponType))),
-      affinityIds: new Set(
-        affinityIds.filter((affinityId) => regulationVersion.affinityOptions.has(affinityId)),
-      ),
-      effectiveWithAttributes: effectiveOnly ? attributes : undefined,
-      includeDLC,
-      twoHanding,
-      uninfusableWeaponTypes,
-      selectedWeapons: selectedWeapons.reduce(
-        (acc, weapon) => (acc.add(weapon.value), acc),
-        new Set<string>(),
-      ),
-    });
+  useEffect(() => {
+    let cancelled = false;
+    const runId = ++runIdRef.current;
 
-    const rows = filteredWeapons.map((weapon): WeaponTableRowData => {
-      let upgradeLevel = 0;
-      if (weapon.attack.length - 1 === maxSpecialUpgradeLevel) {
-        upgradeLevel = specialUpgradeLevel;
-      } else {
-        upgradeLevel = Math.min(regularUpgradeLevel, weapon.attack.length - 1);
+    async function recalc() {
+      const shouldOptimize = freeStatPoints > 0 && optimizeMode !== "none";
+      setOptimizing(shouldOptimize);
+
+      // Let the UI paint the popup before doing heavy synchronous work.
+      if (shouldOptimize) {
+        await yieldToBrowser();
       }
 
-      const weaponAttackResult = getWeaponAttack({
-        weapon,
-        attributes,
+      const includedDamageTypes = new Set<AttackPowerType>();
+      let includeSpellScaling = false;
+
+      const filteredWeapons = filterWeapons(weapons, {
+        weaponTypes: disableWeaponTypeFilter
+          ? new Set()
+          : new Set(weaponTypes.filter((weaponType) => allWeaponTypes.includes(weaponType))),
+        affinityIds: new Set(
+          affinityIds.filter((affinityId) => regulationVersion.affinityOptions.has(affinityId)),
+        ),
+        effectiveWithAttributes: effectiveOnly ? attributes : undefined,
+        includeDLC,
         twoHanding,
-        upgradeLevel,
-        disableTwoHandingAttackPowerBonus: regulationVersion.disableTwoHandingAttackPowerBonus,
-        ineffectiveAttributePenalty: regulationVersion.ineffectiveAttributePenalty,
+        uninfusableWeaponTypes,
+        selectedWeapons: selectedWeapons.reduce(
+          (acc, weapon) => (acc.add(weapon.value), acc),
+          new Set<string>(),
+        ),
       });
 
-      for (const statusType of allAttackPowerTypes) {
-        if (weaponAttackResult.attackPower[statusType]) {
-          includedDamageTypes.add(statusType);
+      const rows: WeaponTableRowData[] = [];
+      rows.length = filteredWeapons.length;
+
+      for (let idx = 0; idx < filteredWeapons.length; idx++) {
+        if (cancelled || runId !== runIdRef.current) {
+          return;
+        }
+
+        const weapon = filteredWeapons[idx];
+
+        let upgradeLevel = 0;
+        if (weapon.attack.length - 1 === maxSpecialUpgradeLevel) {
+          upgradeLevel = specialUpgradeLevel;
+        } else {
+          upgradeLevel = Math.min(regularUpgradeLevel, weapon.attack.length - 1);
+        }
+
+        let weaponAttackResult = getWeaponAttack({
+          weapon,
+          attributes,
+          twoHanding,
+          upgradeLevel,
+          disableTwoHandingAttackPowerBonus: regulationVersion.disableTwoHandingAttackPowerBonus,
+          ineffectiveAttributePenalty: regulationVersion.ineffectiveAttributePenalty,
+        });
+
+        let optimizedAttributes: Attributes | undefined;
+        if (shouldOptimize) {
+          const optimized = optimizeWeaponAttributes({
+            weapon,
+            attributes,
+            freeStatPoints,
+            twoHanding,
+            upgradeLevel,
+            disableTwoHandingAttackPowerBonus: regulationVersion.disableTwoHandingAttackPowerBonus,
+            ineffectiveAttributePenalty: regulationVersion.ineffectiveAttributePenalty,
+            optimizeMode,
+            optimizeAttackPowerType,
+            weights: optimizationWeights,
+            spellScalingWeight,
+          });
+
+          weaponAttackResult = optimized.optimizedAttackResult;
+          if (showOptimizedAttributes) {
+            optimizedAttributes = optimized.optimizedAttributes;
+          }
+        }
+
+        for (const statusType of allAttackPowerTypes) {
+          if (weaponAttackResult.attackPower[statusType]) {
+            includedDamageTypes.add(statusType);
+          }
+        }
+
+        if (weapon.sorceryTool || weapon.incantationTool) {
+          includeSpellScaling = true;
+        }
+
+        rows[idx] = optimizedAttributes
+          ? [weapon, weaponAttackResult, { optimizedAttributes }]
+          : [weapon, weaponAttackResult];
+
+        // Yield occasionally to keep the UI responsive during large computations.
+        if (shouldOptimize && idx % 25 === 24) {
+          await yieldToBrowser();
         }
       }
 
-      if (weapon.sorceryTool || weapon.incantationTool) {
-        includeSpellScaling = true;
+      if (cancelled || runId !== runIdRef.current) {
+        return;
       }
 
-      return [weapon, weaponAttackResult];
-    });
+      setFilteredRows(rows);
+      setAttackPowerTypes(includedDamageTypes);
+      setSpellScaling(includeSpellScaling);
+      setTotal(rows.length);
+      setOptimizing(false);
+    }
 
-    return [rows, includedDamageTypes, includeSpellScaling];
+    void recalc();
+
+    return () => {
+      cancelled = true;
+    };
   }, [
     attributes,
     twoHanding,
@@ -156,13 +247,13 @@ const useWeaponTableRows = ({
     uninfusableWeaponTypes,
     selectedWeapons,
     disableWeaponTypeFilter,
+    freeStatPoints,
+    optimizeMode,
+    optimizeAttackPowerType,
+    optimizationWeights,
+    spellScalingWeight,
+    showOptimizedAttributes,
   ]);
-
-  const memoizedAttackPowerTypes = useMemo(
-    () => attackPowerTypes,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [[...attackPowerTypes].sort().join(",")],
-  );
 
   const rowGroups = useMemo<WeaponTableRowGroup[]>(() => {
     if (groupWeaponTypes) {
@@ -197,9 +288,10 @@ const useWeaponTableRows = ({
 
   return {
     rowGroups,
-    attackPowerTypes: memoizedAttackPowerTypes,
+    attackPowerTypes,
     spellScaling,
-    total: filteredRows.length,
+    total,
+    optimizing,
   };
 };
 

@@ -5,7 +5,7 @@ import type { SystemStyleObject, Theme } from "@mui/system";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { AttackPowerType } from "../../calculator/calculator.ts";
-import type { Weapon, WeaponAttackResult } from "../../calculator/calculator.ts";
+import type { Attributes, Weapon, WeaponAttackResult } from "../../calculator/calculator.ts";
 import type { SortBy } from "../../search/sortWeapons.ts";
 import getWeaponTableColumns from "./getWeaponTableColumns.tsx";
 import {
@@ -21,7 +21,11 @@ import {
   WeaponTableGroupHeaderRow,
 } from "./tableStyledComponents.tsx";
 
-export type WeaponTableRowData = [Weapon, WeaponAttackResult];
+export interface WeaponTableRowOptimizationInfo {
+  optimizedAttributes: Attributes;
+}
+
+export type WeaponTableRowData = [Weapon, WeaponAttackResult, WeaponTableRowOptimizationInfo?];
 
 export interface WeaponTableRowGroup {
   key: string;
@@ -65,6 +69,11 @@ interface Props {
    * If true, show scaling as integers instead of S/A/B/C/D/E ranks
    */
   numericalScaling: boolean;
+
+  /**
+   * If true, include columns for optimized attribute values (when available)
+   */
+  showOptimizedAttributes: boolean;
 
   /**
    * Attack power types that must be included as columns in the table
@@ -200,6 +209,7 @@ function WeaponTable({
   splitDamage,
   splitSpellScaling,
   numericalScaling,
+  showOptimizedAttributes,
   attackPowerTypes,
   spellScaling,
   onSortByChanged,
@@ -211,10 +221,11 @@ function WeaponTable({
         splitDamage,
         splitSpellScaling,
         numericalScaling,
+        showOptimizedAttributes,
         attackPowerTypes,
         spellScaling,
       }),
-    [splitDamage, splitSpellScaling, numericalScaling, attackPowerTypes, spellScaling],
+    [splitDamage, splitSpellScaling, numericalScaling, showOptimizedAttributes, attackPowerTypes, spellScaling],
   );
 
   return (

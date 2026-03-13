@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { type Attribute, type Attributes, WeaponType } from "../calculator/calculator.ts";
+import {
+  allDamageTypes,
+  allStatusTypes,
+  AttackPowerType,
+  type Attribute,
+  type Attributes,
+  WeaponType,
+} from "../calculator/calculator.ts";
+import type { OptimizeMode, OptimizationWeights } from "../calculator/optimization.ts";
 import type { SortBy } from "../search/sortWeapons.ts";
 import type { RegulationVersionName } from "./regulationVersions.tsx";
 import regulationVersions from "./regulationVersions.tsx";
@@ -9,6 +17,12 @@ import { type WeaponOption } from "./WeaponPicker.tsx";
 interface AppState {
   readonly regulationVersionName: RegulationVersionName;
   readonly attributes: Attributes;
+  readonly freeStatPoints: number;
+  readonly optimizeMode: OptimizeMode;
+  readonly optimizeAttackPowerType: AttackPowerType;
+  readonly optimizationWeights: OptimizationWeights;
+  readonly spellScalingWeight: number;
+  readonly showOptimizedAttributes: boolean;
   readonly twoHanding: boolean;
   readonly upgradeLevel: number;
   readonly weaponTypes: readonly WeaponType[];
@@ -26,6 +40,12 @@ interface AppState {
 interface UpdateAppState extends AppState {
   setRegulationVersionName(regulationVersionName: RegulationVersionName): void;
   setAttribute(attribute: Attribute, value: number): void;
+  setFreeStatPoints(value: number): void;
+  setOptimizeMode(mode: OptimizeMode): void;
+  setOptimizeAttackPowerType(attackPowerType: AttackPowerType): void;
+  setOptimizationWeight(attackPowerType: AttackPowerType, weight: number): void;
+  setSpellScalingWeight(weight: number): void;
+  setShowOptimizedAttributes(value: boolean): void;
   setTwoHanding(twoHanding: boolean): void;
   setUpgradeLevel(upgradeLevel: number): void;
   setWeaponTypes(weaponTypes: readonly WeaponType[]): void;
@@ -40,6 +60,21 @@ interface UpdateAppState extends AppState {
   setSelectedWeapons(weapons: WeaponOption[]): void;
 }
 
+function computeMaxFreeStatPoints(attributes: Attributes) {
+  return Math.max(
+    0,
+    99 * 5 - (attributes.str + attributes.dex + attributes.int + attributes.fai + attributes.arc),
+  );
+}
+
+function defaultWeights(): OptimizationWeights {
+  const weights: OptimizationWeights = {};
+  for (const type of [...allDamageTypes, ...allStatusTypes]) {
+    weights[type] = 1;
+  }
+  return weights;
+}
+
 const defaultAppState: AppState = {
   regulationVersionName: "latest",
   attributes: {
@@ -49,6 +84,12 @@ const defaultAppState: AppState = {
     fai: 30,
     arc: 30,
   },
+  freeStatPoints: 0,
+  optimizeMode: "totalAttackPower",
+  optimizeAttackPowerType: AttackPowerType.PHYSICAL,
+  optimizationWeights: defaultWeights(),
+  spellScalingWeight: 1,
+  showOptimizedAttributes: false,
   twoHanding: false,
   upgradeLevel: 25,
   weaponTypes: [WeaponType.AXE],
@@ -76,6 +117,43 @@ function getInitialAppState() {
     }
   } catch {
     /* ignored */
+  }
+
+  // Backwards compatibility for older saved app state keys
+  const legacy = appState as unknown as {
+    optimizationDomain?: string;
+    optimizationMetric?: string;
+    optimizationAttackPowerType?: AttackPowerType;
+    optimizationWeights?: OptimizationWeights;
+  };
+  if (
+    (appState as unknown as { optimizeMode?: OptimizeMode }).optimizeMode == null &&
+    legacy.optimizationDomain
+  ) {
+    const legacyType = legacy.optimizationAttackPowerType ?? defaultAppState.optimizeAttackPowerType;
+
+    let optimizeMode: OptimizeMode = "totalAttackPower";
+    if (legacy.optimizationDomain === "none") {
+      optimizeMode = "none";
+    } else if (legacy.optimizationDomain === "spellScaling") {
+      optimizeMode = legacy.optimizationMetric === "weighted" ? "weighted" : "spellScaling";
+    } else if (legacy.optimizationDomain === "attackPower") {
+      if (legacy.optimizationMetric === "weighted") {
+        optimizeMode = "weighted";
+      } else if (legacy.optimizationMetric === "type") {
+        optimizeMode = allStatusTypes.includes(legacyType) ? "statusBuildup" : "specificAttackPower";
+      } else {
+        optimizeMode = "totalAttackPower";
+      }
+    }
+
+    (appState as unknown as { optimizeMode: OptimizeMode }).optimizeMode = optimizeMode;
+    (appState as unknown as { optimizeAttackPowerType: AttackPowerType }).optimizeAttackPowerType =
+      legacyType;
+    if (legacy.optimizationWeights) {
+      (appState as unknown as { optimizationWeights: OptimizationWeights }).optimizationWeights =
+        legacy.optimizationWeights;
+    }
   }
 
   const regulationVersionName = window.location.pathname.substring(1);
@@ -133,7 +211,47 @@ export default function useAppState() {
         setAppState((prevAppState) => ({
           ...prevAppState,
           attributes: { ...prevAppState.attributes, [attribute]: value },
+          freeStatPoints: Math.min(
+            prevAppState.freeStatPoints,
+            computeMaxFreeStatPoints({ ...prevAppState.attributes, [attribute]: value } as Attributes),
+          ),
         }));
+      },
+      setFreeStatPoints(value) {
+        setAppState((prevAppState) => ({
+          ...prevAppState,
+          freeStatPoints: Math.min(value, computeMaxFreeStatPoints(prevAppState.attributes)),
+        }));
+      },
+      setOptimizeMode(optimizeMode) {
+        setAppState((prevAppState) => {
+          let optimizeAttackPowerType = prevAppState.optimizeAttackPowerType;
+          if (optimizeMode === "specificAttackPower") {
+            if (!allDamageTypes.includes(optimizeAttackPowerType)) {
+              optimizeAttackPowerType = AttackPowerType.PHYSICAL;
+            }
+          } else if (optimizeMode === "statusBuildup") {
+            if (!allStatusTypes.includes(optimizeAttackPowerType)) {
+              optimizeAttackPowerType = AttackPowerType.BLEED;
+            }
+          }
+          return { ...prevAppState, optimizeMode, optimizeAttackPowerType };
+        });
+      },
+      setOptimizeAttackPowerType(optimizeAttackPowerType) {
+        setAppState((prevAppState) => ({ ...prevAppState, optimizeAttackPowerType }));
+      },
+      setOptimizationWeight(attackPowerType, weight) {
+        setAppState((prevAppState) => ({
+          ...prevAppState,
+          optimizationWeights: { ...prevAppState.optimizationWeights, [attackPowerType]: weight },
+        }));
+      },
+      setSpellScalingWeight(spellScalingWeight) {
+        setAppState((prevAppState) => ({ ...prevAppState, spellScalingWeight }));
+      },
+      setShowOptimizedAttributes(showOptimizedAttributes) {
+        setAppState((prevAppState) => ({ ...prevAppState, showOptimizedAttributes }));
       },
       setTwoHanding(twoHanding) {
         setAppState((prevAppState) => ({ ...prevAppState, twoHanding }));

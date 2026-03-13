@@ -13,12 +13,13 @@ import {
   getShortAttributeLabel,
   getTotalDamageAttackPower,
 } from "../uiUtils.ts";
-import type { WeaponTableColumnDef, WeaponTableColumnGroupDef } from "./WeaponTable.tsx";
+import type { WeaponTableColumnDef, WeaponTableColumnGroupDef, WeaponTableRowData } from "./WeaponTable.tsx";
 import {
   WeaponNameRenderer,
   ScalingRenderer,
   AttributeRequirementRenderer,
   AttackPowerRenderer,
+  blankIcon,
 } from "./tableRenderers.tsx";
 
 const nameColumn: WeaponTableColumnDef = {
@@ -36,6 +37,24 @@ const nameColumn: WeaponTableColumnDef = {
     return <WeaponNameRenderer weapon={weapon} upgradeLevel={upgradeLevel} />;
   },
 };
+
+const optimizedAttributeColumns: WeaponTableColumnDef[] = allAttributes.map((attribute) => ({
+  key: `optimized_${attribute}`,
+  header: (
+    <Typography
+      component="span"
+      variant="subtitle2"
+      title={`${getAttributeLabel(attribute)} (Optimized)`}
+    >
+      {getShortAttributeLabel(attribute)}
+    </Typography>
+  ),
+  render(row: WeaponTableRowData) {
+    const optimized = row[2]?.optimizedAttributes;
+    const value = optimized?.[attribute];
+    return value != null ? <>{value}</> : blankIcon;
+  },
+}));
 
 const attackColumns = Object.fromEntries(
   allAttackPowerTypes.map((attackPowerType): [AttackPowerType, WeaponTableColumnDef] => [
@@ -231,6 +250,7 @@ interface WeaponTableColumnsOptions {
   splitDamage: boolean;
   splitSpellScaling: boolean;
   numericalScaling: boolean;
+  showOptimizedAttributes: boolean;
   attackPowerTypes: ReadonlySet<AttackPowerType>;
   spellScaling: boolean;
 }
@@ -239,6 +259,7 @@ export default function getWeaponTableColumns({
   splitDamage,
   splitSpellScaling,
   numericalScaling,
+  showOptimizedAttributes,
   attackPowerTypes,
   spellScaling,
 }: WeaponTableColumnsOptions): WeaponTableColumnGroupDef[] {
@@ -274,6 +295,16 @@ export default function getWeaponTableColumns({
       sx: { flex: 1, minWidth: 320 },
       columns: [nameColumn],
     },
+    ...(showOptimizedAttributes
+      ? [
+          {
+            key: "optimizedStats",
+            sx: { width: 40 * optimizedAttributeColumns.length + 21 },
+            header: "Optimized Stats",
+            columns: optimizedAttributeColumns,
+          },
+        ]
+      : []),
     ...(spellScalingColumnGroup ? [spellScalingColumnGroup] : []),
     splitDamage
       ? {

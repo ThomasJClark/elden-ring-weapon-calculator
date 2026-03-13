@@ -30,6 +30,7 @@ import Footer from "./Footer.tsx";
 import MiscFilterPicker from "./MiscFilterPicker.tsx";
 import WeaponPicker, { makeWeaponOptionsFromWeapon } from "./WeaponPicker.tsx";
 import type { Weapon } from "../calculator/weapon.ts";
+import OptimizationPopup from "./OptimizationPopup.tsx";
 
 const useMenuState = () => {
   const theme = useTheme();
@@ -105,6 +106,12 @@ export default function App() {
     affinityIds,
     weaponTypes,
     attributes,
+    freeStatPoints,
+    optimizeMode,
+    optimizeAttackPowerType,
+    optimizationWeights,
+    spellScalingWeight,
+    showOptimizedAttributes,
     includeDLC,
     effectiveOnly,
     splitDamage,
@@ -119,6 +126,12 @@ export default function App() {
     setAffinityIds,
     setWeaponTypes,
     setAttribute,
+    setFreeStatPoints,
+    setOptimizeMode,
+    setOptimizeAttackPowerType,
+    setOptimizationWeight,
+    setSpellScalingWeight,
+    setShowOptimizedAttributes,
     setIncludeDLC,
     setEffectiveOnly,
     setSplitDamage,
@@ -140,7 +153,16 @@ export default function App() {
 
   const regulationVersion = regulationVersions[regulationVersionName];
 
-  const { rowGroups, attackPowerTypes, spellScaling, total } = useWeaponTableRows({
+  const freeStatPointsMax = useMemo(
+    () =>
+      Math.max(
+        0,
+        99 * 5 - (attributes.str + attributes.dex + attributes.int + attributes.fai + attributes.arc),
+      ),
+    [attributes],
+  );
+
+  const { rowGroups, attackPowerTypes, spellScaling, total, optimizing } = useWeaponTableRows({
     weapons,
     regulationVersion,
     offset,
@@ -150,6 +172,12 @@ export default function App() {
     affinityIds,
     weaponTypes,
     attributes,
+    freeStatPoints,
+    optimizeMode,
+    optimizeAttackPowerType,
+    optimizationWeights,
+    spellScalingWeight,
+    showOptimizedAttributes,
     includeDLC,
     effectiveOnly,
     twoHanding,
@@ -206,6 +234,7 @@ export default function App() {
         splitDamage={splitDamage}
         splitSpellScaling={!!regulationVersion.splitSpellScaling}
         numericalScaling={numericalScaling}
+        showOptimizedAttributes={showOptimizedAttributes}
         attackPowerTypes={attackPowerTypes}
         spellScaling={spellScaling}
         onSortByChanged={setSortBy}
@@ -267,6 +296,11 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <OptimizationPopup
+        open={optimizing}
+        optimizeMode={optimizeMode}
+        optimizeAttackPowerType={optimizeAttackPowerType}
+      />
 
       <AppBar
         menuOpen={isMobile ? menuOpenMobile : menuOpen}
@@ -341,6 +375,13 @@ export default function App() {
           <WeaponListSettings
             breakpoint={menuOpen ? "lg" : "md"}
             attributes={attributes}
+            freeStatPoints={freeStatPoints}
+            freeStatPointsMax={freeStatPointsMax}
+            optimizeMode={optimizeMode}
+            optimizeAttackPowerType={optimizeAttackPowerType}
+            optimizationWeights={optimizationWeights}
+            spellScalingWeight={spellScalingWeight}
+            showOptimizedAttributes={showOptimizedAttributes}
             twoHanding={twoHanding}
             upgradeLevel={upgradeLevel}
             maxUpgradeLevel={regulationVersion.maxUpgradeLevel}
@@ -348,6 +389,12 @@ export default function App() {
             groupWeaponTypes={groupWeaponTypes}
             numericalScaling={numericalScaling}
             onAttributeChanged={setAttribute}
+            onFreeStatPointsChanged={setFreeStatPoints}
+            onOptimizeModeChanged={setOptimizeMode}
+            onOptimizeAttackPowerTypeChanged={setOptimizeAttackPowerType}
+            onOptimizationWeightChanged={setOptimizationWeight}
+            onSpellScalingWeightChanged={setSpellScalingWeight}
+            onShowOptimizedAttributesChanged={setShowOptimizedAttributes}
             onTwoHandingChanged={setTwoHanding}
             onUpgradeLevelChanged={setUpgradeLevel}
             onSplitDamageChanged={setSplitDamage}
