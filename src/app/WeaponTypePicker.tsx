@@ -90,16 +90,16 @@ function WeaponTypePicker({ includeDLCWeaponTypes, weaponTypes, onWeaponTypesCha
         Weapon Type
       </Typography>
 
-      {renderWeaponCategory("Melee Weapons", meleeWeaponTypes)}
+      {renderWeaponCategory("Jellyfish Nets", meleeWeaponTypes)}
       <Box sx={{ ml: 3 }}>{meleeWeaponTypes.map(renderWeaponType)}</Box>
 
-      {renderWeaponCategory("Ranged Weapons", rangedWeaponTypes)}
+      {renderWeaponCategory("Bubble Powers", rangedWeaponTypes)}
       <Box sx={{ ml: 3 }}>{rangedWeaponTypes.map(renderWeaponType)}</Box>
 
-      {renderWeaponCategory("Catalysts", catalystTypes)}
+      {renderWeaponCategory("Spatulas ", catalystTypes)}
       <Box sx={{ ml: 3 }}>{catalystTypes.map(renderWeaponType)}</Box>
 
-      {renderWeaponCategory("Shields", shieldTypes)}
+      {renderWeaponCategory("Underwear", shieldTypes)}
       <Box sx={{ ml: 3 }}>{shieldTypes.map(renderWeaponType)}</Box>
     </Box>
   );
