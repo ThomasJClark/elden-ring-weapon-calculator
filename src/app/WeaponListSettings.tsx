@@ -30,6 +30,9 @@ const AttributeInput = memo(function AttributeInput({
     <NumberTextField
       key={attribute}
       label={getAttributeLabel(attribute)}
+      InputLabelProps={{
+        sx: { overflow: "visible" },
+      }}
       size="small"
       variant="outlined"
       value={value}
@@ -56,10 +59,10 @@ const WeaponLevelInput = memo(function WeaponLevelInput({
 }: WeaponLevelInputProps) {
   return (
     <FormControl fullWidth>
-      <InputLabel id="upgradeLevelLabel">Weapon Level</InputLabel>
+      <InputLabel id="upgradeLevelLabel">Weapon Lvl</InputLabel>
       <Select
         labelId="upgradeLevelLabel"
-        label="Weapon Level"
+        label="Weapon Lvl"
         size="small"
         value={Math.min(upgradeLevel, maxUpgradeLevel)}
         onChange={(evt) => onUpgradeLevelChanged(+evt.target.value)}

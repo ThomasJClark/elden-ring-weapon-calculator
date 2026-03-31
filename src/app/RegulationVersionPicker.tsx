@@ -18,6 +18,11 @@ function RegulationVersionPicker({ regulationVersionName, onRegulationVersionNam
       <Select
         labelId={id}
         label="Game Version / Mod"
+        sx={{
+          "> label": {
+            overflow: "visible",
+          },
+        }}
         size="small"
         value={regulationVersionName}
         onChange={(evt) => {
