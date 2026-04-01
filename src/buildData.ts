@@ -228,33 +228,45 @@ if (isReforged) {
   urlOverrides.set(1120000, "https://err.fandom.com/wiki/Iron_Spike"); // Iron Spike
   urlOverrides.set(1150000, "https://eldenring.wiki.gg/wiki/Erdsteel_Dagger"); // Brass Dagger
   urlOverrides.set(1170000, "https://err.fandom.com/wiki/Night%27s_Edge"); // Night's Edge
+  urlOverrides.set(1210000, "https://err.fandom.com/wiki/Gracebound_Dagger"); // Gracebound Dagger
   urlOverrides.set(2030000, "https://err.fandom.com/wiki/Sun_Realm_Sword"); // Sun Realm Sword
   urlOverrides.set(2100000, "https://err.fandom.com/wiki/Marionette_Short_Sword"); // Marionette Short Sword
   urlOverrides.set(2120000, "https://err.fandom.com/wiki/Broken_Straight_Sword"); // Broken Straight Sword
+  urlOverrides.set(3240000, "https://err.fandom.com/wiki/Gracebound_Greatsword"); // Gracebound Greatsword
   urlOverrides.set(4040000, "https://eldenring.wiki.gg/wiki/Zweihander"); // Zweihänder
   urlOverrides.set(4530000, "https://eldenring.wiki.gg/wiki/Remembrance_of_a_God_and_a_Lord"); // Greatswords of Radahn
+  urlOverrides.set(5070000, "https://err.fandom.com/wiki/Gracebound_Cane_Sword"); // Gracebound Cane Sword
   urlOverrides.set(7130000, "https://err.fandom.com/wiki/Red_Wolf%27s_Fang"); // Red Wolf's Fang
   urlOverrides.set(7160000, "https://err.fandom.com/wiki/Avionette_Scimitar"); // Avionette Scimitar
   urlOverrides.set(8090000, "https://err.fandom.com/wiki/Fury_of_Azash"); // Fury of Azash
   urlOverrides.set(8110000, "https://err.fandom.com/wiki/Makar%27s_Ceremonial_Cleaver"); // Makar's Ceremonial Cleaver
+  urlOverrides.set(9090000, "https://err.fandom.com/wiki/Gracebound_Katana"); // Gracebound Katana
   urlOverrides.set(10100000, "https://err.fandom.com/wiki/Goldvine_Branchstaff"); // Goldvine Branchstaff
+  urlOverrides.set(11110000, "https://eldenring.wiki.gg/Scepter_of_the_All-Knowing"); // Scepter of the All-Knowing Staff
+  urlOverrides.set(11180000, "https://err.fandom.com/wiki/Gracebound_Mace"); // Gracebound Mace
   urlOverrides.set(12030000, "https://err.fandom.com/wiki/Pumpkin_Sledge"); // Pumpkin Sledge
   urlOverrides.set(14070000, "https://err.fandom.com/wiki/Vulgar_Militia_Chain_Sickle"); // Vulgar Militia Chain Sickle
   urlOverrides.set(16100000, "https://err.fandom.com/wiki/Disciple%27s_Rotten_Branch"); // Disciple's Rotten Branch
+  urlOverrides.set(16140000, "https://eldenring.wiki.gg/wiki/Spiked_Spear"); // Marionette Spiked Spear
   urlOverrides.set(16170000, "https://err.fandom.com/wiki/Grave_Spear"); // Grave Spear
   urlOverrides.set(16180000, "https://err.fandom.com/wiki/Lordsworn%27s_Spear"); // Lordsworn's Spear
   urlOverrides.set(18120000, "https://err.fandom.com/wiki/Avionette_Pig_Sticker"); // Avionette Pig Sticker
+  urlOverrides.set(18140000, "https://eldenring.wiki.gg/wiki/Dragon_Halberd"); // Dragonscale Halberd
   urlOverrides.set(18170000, "https://err.fandom.com/wiki/Starcaller_Spire"); // Starcaller Spire
+  urlOverrides.set(18180000, "https://err.fandom.com/wiki/Gracebound_Halberd"); // Gracebound Halberd
   urlOverrides.set(21050000, "https://err.fandom.com/wiki/Nox_Flowing_Fist"); // Nox Flowing Fist
   urlOverrides.set(21140000, "https://err.fandom.com/wiki/Fellthorn_Clutches"); // Fellthorn Clutches
   urlOverrides.set(22040000, "https://err.fandom.com/wiki/Crude_Iron_Claws"); // Crude Iron Claws
+  urlOverrides.set(22050000, "https://err.fandom.com/wiki/Gracebound_Claws"); // Gracebound Claws
   urlOverrides.set(23090000, "https://err.fandom.com/wiki/Fellthorn_Stake"); // Fellthorn Stake
-  urlOverrides.set(11110000, "https://eldenring.wiki.gg/Scepter_of_the_All-Knowing"); // Scepter of the All-Knowing Staff
-  urlOverrides.set(16140000, "https://eldenring.wiki.gg/wiki/Spiked_Spear"); // Marionette Spiked Spear
-  urlOverrides.set(18140000, "https://eldenring.wiki.gg/wiki/Dragon_Halberd"); // Dragonscale Halberd
   urlOverrides.set(23150000, "https://eldenring.wiki.gg/wiki/Rotten_Greataxe"); // Rotten Duelist Greataxe
+  urlOverrides.set(23160000, "https://err.fandom.com/wiki/Gracebound_Greataxe"); // Gracebound Greataxe
+  urlOverrides.set(30210000, "https://err.fandom.com/wiki/Gracebound_Round_Shield"); // Gracebound Round Shield
+  urlOverrides.set(32320000, "https://err.fandom.com/wiki/Gracebound_Greatshield"); // Gracebound Greatshield
   urlOverrides.set(33210000, "https://eldenring.wiki.gg/Carian_Glintstone_Staff"); // Dark Glintstone Staff
   urlOverrides.set(33300000, "https://err.fandom.com/wiki/Snow_Witch_Scepter"); // Snow Witch Scepter
+  urlOverrides.set(33330000, "https://err.fandom.com/wiki/Gracebound_Staff"); // Gracebound Staff
+  urlOverrides.set(41080000, "https://err.fandom.com/wiki/Gracebound_Longbow"); // Gracebound Longbow
 } else if (isConvergence) {
   const convergenceAlphaNotes =
     "https://docs.google.com/document/d/1JHX3bMxnIIct8MSZnXkyqpmhYKLPt8p8HY9FUcXKUNE/preview?tab=t.0#heading=h.79qlt4tgl68h";
