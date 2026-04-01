@@ -5,8 +5,8 @@ function Footer() {
   return (
     <Typography component="div" variant="body1" align="center">
       <h1 style={{ display: "inline", font: "inherit", margin: 0, padding: 0 }}>
-        Elden Ring Weapon Attack Calculator - optimize any weapon or build for ELDEN RING Shadow of
-        the Erdtree, ELDEN RING Reforged, or The Convergence Mod.
+        Battle for Bikini Bottom Weapon Calculator - optimize any weapon or build for Spongebob
+        Squarepants: Battle for Bikini Bottom.
       </h1>
       <br />
       Found a bug?{" "}
@@ -23,7 +23,7 @@ function Footer() {
       <Link href="mailto:tom@tclark.io" target="_blank" rel="noopener noreferer">
         tom@tclark.io
       </Link>
-      ). ELDEN RING is a trademark of FromSoftware.
+      ). Spongebob Squarepants is a trademark of Viacom International Inc.
     </Typography>
   );
 }
