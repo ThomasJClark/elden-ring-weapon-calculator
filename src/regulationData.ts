@@ -265,26 +265,6 @@ export function decodeRegulationData({
 
       return {
         ...weapon,
-        name: weapon.name
-          .replace("sword", "spatula")
-          .replace("Sword", "Spatula")
-          .replace("Spear", "Spatula")
-          .replace("spear", "spatula")
-          .replace("Epitaph", "Spatula")
-          .replace("Staff", "Bubble Wand")
-          .replace("Rivers of Blood", "Rivers of Bubbles")
-          .replace("Bloodhound", "Bubblehound")
-          .replace("Bloody Helice", "Bubbly Helice")
-          .replace("Serpent", "Jellyfish")
-          .replace("Dragon", "Jellyfish")
-          .replace("Starscourge", "Squidscourge")
-          .replace("Finger", "Fin")
-          .replace("Winged", "Finned")
-          .replace("Wing", "Fin")
-          .replace("Tree", "Kelp")
-          .replace("Perfume Bottle", "Krabby Patty")
-          .replace("Regalia", "Spatula")
-          .replace("Talon", "Spatula"),
         url:
           weapon.url === undefined
             ? `https://eldenring.wiki.gg/wiki/${weapon.weaponName.replaceAll(" ", "_")}`

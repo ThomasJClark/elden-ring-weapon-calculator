@@ -52,7 +52,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
     fetch: () => fetch(`/regulation-vanilla-v1.14.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   reforged: {
-    name: "Rehydrated",
+    name: "ELDEN RING Reforged",
     info: (
       <>
         Using regulation data from the{" "}
@@ -61,7 +61,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
           target="_blank"
           rel="noopener noreferer"
         >
-          Rehydrated
+          ELDEN RING Reforged
         </Link>{" "}
         mod v2.2.3.4
       </>
@@ -72,7 +72,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
     fetch: () => fetch(`/regulation-reforged-v2.2.3.4.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   convergence: {
-    name: "The Krabvergence Mod",
+    name: "The Convergence Mod",
     info: (
       <>
         Using regulation data from{" "}
@@ -81,7 +81,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
           target="_blank"
           rel="noopener noreferer"
         >
-          The Krabvergence Mod
+          The Convergence Mod
         </Link>{" "}
         v2.2.3
       </>
@@ -92,7 +92,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
     fetch: () => fetch(`/regulation-convergence-v2.2.3.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   clevers: {
-    name: "Plankton's Moveset Modpack",
+    name: "Clever's Moveset Modpack",
     info: (
       <>
         Using regulation data from{" "}
@@ -101,7 +101,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
           target="_blank"
           rel="noopener noreferer"
         >
-          Plankton&apos;s Moveset Modpack
+          Clever&apos;s Moveset Modpack
         </Link>{" "}
         v25.0
       </>

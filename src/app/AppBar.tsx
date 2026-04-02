@@ -28,7 +28,7 @@ function AppBar({ menuOpen, onMenuOpenChanged }: Props) {
       </IconButton>
 
       <Typography variant="h1" component="span" sx={{ flexGrow: 1 }}>
-        Battle&nbsp;for&nbsp;Bikini&nbsp;Bottom Weapon&nbsp;Calculator
+        Elden&nbsp;Ring Weapon&nbsp;Calculator
       </Typography>
 
       <IconButton
