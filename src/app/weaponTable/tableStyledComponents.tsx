@@ -10,8 +10,6 @@ export const WeaponTableBody = styled("div", { skipSx: true, skipVariantsResolve
   ({ theme }) => ({
     display: "grid",
     overflow: "hidden",
-    backgroundColor: "#e5e4d57f",
-    backdropFilter: "blur(4px)",
     [theme.breakpoints.only("xs")]: {
       marginLeft: theme.spacing(-2),
       marginRight: theme.spacing(-2),
@@ -71,7 +69,8 @@ export const WeaponTableGroupHeaderRow = styled("div", {
   minHeight: 37,
   paddingLeft: 13,
   paddingRight: 13,
-  backgroundColor: "#ffffff33",
+  backgroundColor:
+    theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
   borderBottom: `solid 1px ${theme.palette.divider}`,
 }));
 
@@ -98,10 +97,12 @@ export const WeaponTableDataRow = styled("div", {
   alignItems: "stretch",
   minHeight: 36,
   ":nth-of-type(2n+1)": {
-    backgroundColor: "#ffffff33",
+    backgroundColor:
+      theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
   },
   ":hover": {
-    backgroundColor: "#e6d0b77f",
+    backgroundColor:
+      theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
   },
 }));
 

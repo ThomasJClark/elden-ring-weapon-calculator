@@ -94,7 +94,7 @@ export const reforgedAffinityOptions = new Map<number, AffinityOption>([
   [11, { text: "Blood", icon: bloodAffinityIcon }],
   [12, { text: "Occult", icon: errOccultAffinityIcon }],
   [22, { text: "Bestial", icon: errBestialAffinityIcon }],
-  [20, { text: "Bubble", icon: errGravitationalAffinityIcon }],
+  [20, { text: "Gravitational", icon: errGravitationalAffinityIcon }],
   [17, { text: "Rotten", icon: errRottenAffinityIcon }],
   [18, { text: "Cursed", icon: errCursedAffinityIcon }],
   [9, { text: "Cold", icon: coldAffinityIcon }],
@@ -126,7 +126,7 @@ export const convergenceAffinityOptions = new Map<number, AffinityOption>([
   [15, { text: "Godslayer", icon: cnvGodslayerAffinityIcon }],
   [16, { text: "Frost", icon: coldAffinityIcon }],
   [17, { text: "Aberrant", icon: cnvAberrantAffinityIcon }],
-  [18, { text: "Bubble", icon: bloodAffinityIcon }],
+  [18, { text: "Bloodflame", icon: bloodAffinityIcon }],
   [19, { text: "Rotten", icon: cnvRottenAffinityIcon }],
   [20, { text: "Storm", icon: cnvStormAffinityIcon }],
   [21, { text: "Mystic", icon: cnvMysticAffinityIcon }],
@@ -211,22 +211,22 @@ export const allWeaponTypes = [
 
 export const weaponTypeLabels = new Map<WeaponType, string>([
   [WeaponType.DAGGER, "Dagger"],
-  [WeaponType.STRAIGHT_SWORD, "Straight Spatula"],
-  [WeaponType.GREATSWORD, "Greatspatula"],
-  [WeaponType.COLOSSAL_SWORD, "Colossal Spatula"],
-  [WeaponType.CURVED_SWORD, "Curved Spatula"],
-  [WeaponType.CURVED_GREATSWORD, "Curved Greatspatula"],
+  [WeaponType.STRAIGHT_SWORD, "Straight Sword"],
+  [WeaponType.GREATSWORD, "Greatsword"],
+  [WeaponType.COLOSSAL_SWORD, "Colossal Sword"],
+  [WeaponType.CURVED_SWORD, "Curved Sword"],
+  [WeaponType.CURVED_GREATSWORD, "Curved Greatsword"],
   [WeaponType.KATANA, "Katana"],
   [WeaponType.TWINBLADE, "Twinblade"],
-  [WeaponType.THRUSTING_SWORD, "Thrusting Spatula"],
-  [WeaponType.HEAVY_THRUSTING_SWORD, "Heavy Thrusting Spatula"],
+  [WeaponType.THRUSTING_SWORD, "Thrusting Sword"],
+  [WeaponType.HEAVY_THRUSTING_SWORD, "Heavy Thrusting Sword"],
   [WeaponType.AXE, "Axe"],
   [WeaponType.GREATAXE, "Greataxe"],
   [WeaponType.HAMMER, "Hammer"],
   [WeaponType.GREAT_HAMMER, "Great Hammer"],
   [WeaponType.FLAIL, "Flail"],
-  [WeaponType.SPEAR, "Spatula"],
-  [WeaponType.GREAT_SPEAR, "Great Spatula"],
+  [WeaponType.SPEAR, "Spear"],
+  [WeaponType.GREAT_SPEAR, "Great Spear"],
   [WeaponType.HALBERD, "Halberd"],
   [WeaponType.REAPER, "Reaper"],
   [WeaponType.FIST, "Fist"],
@@ -246,11 +246,11 @@ export const weaponTypeLabels = new Map<WeaponType, string>([
   [WeaponType.GREATSHIELD, "Greatshield"],
   [WeaponType.TORCH, "Torch"],
   [WeaponType.HAND_TO_HAND, "Hand-to-Hand"],
-  [WeaponType.PERFUME_BOTTLE, "Krabby Patty"],
+  [WeaponType.PERFUME_BOTTLE, "Perfume Bottle"],
   [WeaponType.THRUSTING_SHIELD, "Thrusting Shield"],
   [WeaponType.THROWING_BLADE, "Throwing Blade"],
   [WeaponType.BACKHAND_BLADE, "Backhand Blade"],
-  [WeaponType.LIGHT_GREATSWORD, "Light Greatspatula"],
+  [WeaponType.LIGHT_GREATSWORD, "Light Greatsword"],
   [WeaponType.GREAT_KATANA, "Great Katana"],
   [WeaponType.BEAST_CLAW, "Beast Claw"],
 ]);
@@ -285,7 +285,20 @@ export const damageTypeIcons = new Map([
   [AttackPowerType.DEATH_BLIGHT, deathBlightStatusIcon],
 ]);
 
-export const getAttributeLabel = getShortAttributeLabel;
+export function getAttributeLabel(attribute: Attribute) {
+  switch (attribute) {
+    case "str":
+      return "Strength";
+    case "dex":
+      return "Dexterity";
+    case "int":
+      return "Intelligence";
+    case "fai":
+      return "Faith";
+    case "arc":
+      return "Arcane";
+  }
+}
 
 export function getShortAttributeLabel(attribute: Attribute) {
   switch (attribute) {

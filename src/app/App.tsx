@@ -93,12 +93,7 @@ function RegulationVersionAlert({ children }: { children: ReactNode }) {
   }
 
   return (
-    <Alert
-      icon={false}
-      severity="info"
-      sx={{ textShadow: "none" }}
-      onClose={() => setDismissed(true)}
-    >
+    <Alert icon={false} severity="info" onClose={() => setDismissed(true)}>
       {children}
     </Alert>
   );
