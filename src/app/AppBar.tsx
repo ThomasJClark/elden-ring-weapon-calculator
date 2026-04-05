@@ -36,7 +36,7 @@ function AppBar({ menuOpen, onMenuOpenChanged }: Props) {
         color="inherit"
         edge="end"
         aria-label="GitHub Repository"
-        href="https://github.com/ManDude/elden-ring-weapon-calculator"
+        href="https://github.com/ThomasJClark/elden-ring-weapon-calculator"
         target="_blank"
         rel="noopener noreferrer"
       >

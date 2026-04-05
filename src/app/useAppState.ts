@@ -24,7 +24,6 @@ interface AppState {
   readonly sortBy: SortBy;
   readonly reverse: boolean;
   readonly selectedWeapons: WeaponOption[];
-  readonly ghPages: boolean;
 }
 
 interface UpdateAppState extends AppState {
@@ -70,8 +69,7 @@ const defaultAppState: AppState = {
   showScalingAsPercent: false,
   sortBy: "totalAttack",
   reverse: false,
-  selectedWeapons: [],
-  ghPages: false
+  selectedWeapons: []
 };
 
 /**
@@ -89,8 +87,7 @@ function getInitialAppState() {
     /* ignored */
   }
 
-  appState.ghPages = window.location.pathname.substring(1) === "elden-ring-weapon-calculator";
-  const regulationVersionName = window.location.pathname.substring(appState.ghPages ? 2 : 1);
+  const regulationVersionName = window.location.pathname.substring(1);
   if (regulationVersionName && regulationVersionName in regulationVersions) {
     appState.regulationVersionName = regulationVersionName as RegulationVersionName;
   }
@@ -105,12 +102,11 @@ function onAppStateChanged(appState: AppState) {
   localStorage.setItem("appState", JSON.stringify(appState));
 }
 
-function updateUrl(regulationVersionName: RegulationVersionName, ghPages: boolean) {
-  return;
+function updateUrl(regulationVersionName: RegulationVersionName) {
   window.history.replaceState(
     null,
     "",
-    ghPages ? `/elden-ring-weapon-calculator/${regulationVersionName === "latest" ? "" : regulationVersionName}` : `/${regulationVersionName === "latest" ? "" : regulationVersionName}`,
+    `/${regulationVersionName === "latest" ? "" : regulationVersionName}`,
   );
 }
 
@@ -125,17 +121,17 @@ export default function useAppState() {
 
   useEffect(() => {
     onAppStateChanged(appState);
-    updateUrl(appState.regulationVersionName, appState.ghPages);
+    updateUrl(appState.regulationVersionName);
   }, [appState]);
 
   useEffect(() => {
     function onPopState() {
-      updateUrl(appState.regulationVersionName, appState.ghPages);
+      updateUrl(appState.regulationVersionName);
     }
 
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
-  }, [appState.regulationVersionName, appState.ghPages]);
+  }, [appState.regulationVersionName]);
 
   const changeHandlers = useMemo<Omit<UpdateAppState, keyof AppState>>(
     () => ({

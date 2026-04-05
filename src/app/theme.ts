@@ -10,7 +10,7 @@ const fontDefinition = [
     fontStyle: "normal",
     fontWeight: 500,
     fontDisplay: "swap",
-    src: `url(./prompt-v10-latin-medium.woff2) format("woff2")`,
+    src: `url(/prompt-v10-latin-medium.woff2) format("woff2")`,
   },
 ];
 
