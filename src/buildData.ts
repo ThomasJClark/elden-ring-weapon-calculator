@@ -232,14 +232,19 @@ if (isReforged) {
   urlOverrides.set(2030000, "https://err.fandom.com/wiki/Sun_Realm_Sword"); // Sun Realm Sword
   urlOverrides.set(2100000, "https://err.fandom.com/wiki/Marionette_Short_Sword"); // Marionette Short Sword
   urlOverrides.set(2120000, "https://err.fandom.com/wiki/Broken_Straight_Sword"); // Broken Straight Sword
+  urlOverrides.set(2130000, "https://err.fandom.com/wiki/Flamelost_War_Sword"); // Flamelost War Sword
+  urlOverrides.set(2270000, "https://err.fandom.com/wiki/Gladius_of_Ophidion"); // Gladius of Ophidion
+  urlOverrides.set(2280000, "https://err.fandom.com/wiki/Coilheart"); // Coilheart
   urlOverrides.set(3240000, "https://err.fandom.com/wiki/Gracebound_Greatsword"); // Gracebound Greatsword
   urlOverrides.set(4040000, "https://eldenring.wiki.gg/wiki/Zweihander"); // Zweihänder
+  urlOverrides.set(4090000, "https://err.fandom.com/wiki/Flamelost_Greatblades"); // Flamelost Greatblades
   urlOverrides.set(4530000, "https://eldenring.wiki.gg/wiki/Remembrance_of_a_God_and_a_Lord"); // Greatswords of Radahn
   urlOverrides.set(5070000, "https://err.fandom.com/wiki/Gracebound_Cane_Sword"); // Gracebound Cane Sword
   urlOverrides.set(7130000, "https://err.fandom.com/wiki/Red_Wolf%27s_Fang"); // Red Wolf's Fang
   urlOverrides.set(7160000, "https://err.fandom.com/wiki/Avionette_Scimitar"); // Avionette Scimitar
   urlOverrides.set(8090000, "https://err.fandom.com/wiki/Fury_of_Azash"); // Fury of Azash
   urlOverrides.set(8110000, "https://err.fandom.com/wiki/Makar%27s_Ceremonial_Cleaver"); // Makar's Ceremonial Cleaver
+  urlOverrides.set(8120000, "https://err.fandom.com/wiki/Putrescent_Bonesmasher"); // Putrescent Bonesmasher
   urlOverrides.set(9090000, "https://err.fandom.com/wiki/Gracebound_Katana"); // Gracebound Katana
   urlOverrides.set(10100000, "https://err.fandom.com/wiki/Goldvine_Branchstaff"); // Goldvine Branchstaff
   urlOverrides.set(11110000, "https://eldenring.wiki.gg/Scepter_of_the_All-Knowing"); // Scepter of the All-Knowing Staff
@@ -250,6 +255,7 @@ if (isReforged) {
   urlOverrides.set(16140000, "https://eldenring.wiki.gg/wiki/Spiked_Spear"); // Marionette Spiked Spear
   urlOverrides.set(16170000, "https://err.fandom.com/wiki/Grave_Spear"); // Grave Spear
   urlOverrides.set(16180000, "https://err.fandom.com/wiki/Lordsworn%27s_Spear"); // Lordsworn's Spear
+  urlOverrides.set(16190000, "https://err.fandom.com/wiki/Flamelost_War_Spear"); // Flamelost War Spear
   urlOverrides.set(18120000, "https://err.fandom.com/wiki/Avionette_Pig_Sticker"); // Avionette Pig Sticker
   urlOverrides.set(18140000, "https://eldenring.wiki.gg/wiki/Dragon_Halberd"); // Dragonscale Halberd
   urlOverrides.set(18170000, "https://err.fandom.com/wiki/Starcaller_Spire"); // Starcaller Spire
@@ -262,9 +268,11 @@ if (isReforged) {
   urlOverrides.set(23150000, "https://eldenring.wiki.gg/wiki/Rotten_Greataxe"); // Rotten Duelist Greataxe
   urlOverrides.set(23160000, "https://err.fandom.com/wiki/Gracebound_Greataxe"); // Gracebound Greataxe
   urlOverrides.set(30210000, "https://err.fandom.com/wiki/Gracebound_Round_Shield"); // Gracebound Round Shield
+  urlOverrides.set(31200000, "https://err.fandom.com/wiki/Mad_Sun_Shield"); // Mad Sun Shield
   urlOverrides.set(32320000, "https://err.fandom.com/wiki/Gracebound_Greatshield"); // Gracebound Greatshield
   urlOverrides.set(33210000, "https://eldenring.wiki.gg/Carian_Glintstone_Staff"); // Dark Glintstone Staff
   urlOverrides.set(33300000, "https://err.fandom.com/wiki/Snow_Witch_Scepter"); // Snow Witch Scepter
+  urlOverrides.set(33310000, "https://err.fandom.com/wiki/Twinbird_Caduceus"); // Twinbird Caduceus
   urlOverrides.set(33330000, "https://err.fandom.com/wiki/Gracebound_Staff"); // Gracebound Staff
   urlOverrides.set(41080000, "https://err.fandom.com/wiki/Gracebound_Longbow"); // Gracebound Longbow
 } else if (isConvergence) {
@@ -507,9 +515,25 @@ function isUniqueWeapon(row: ParamRow) {
 const unobtainableWeapons = new Set(
   isReforged
     ? [
+        4540000, // Moonrithyll Knight's Sword
         4550000, // Greatsword of Radahn (Dumb)
         17080000, // Vyke's War Spear
         33290000, // ST Staff
+        // Fletched Arrows and Greatarrows
+        50030000,
+        50060000,
+        50080000,
+        50130000,
+        50150000,
+        50170000,
+        50200000,
+        50260000,
+        50280000,
+        50300000,
+        50320000,
+        50340000,
+        50540000,
+        51050000,
       ]
     : isConvergence
     ? [
@@ -584,8 +608,15 @@ const wepTypeOverrides = new Map([
 
 const supportedWeaponTypes = new Set<number>(Object.values(WeaponType));
 
+export const excludedWeaponTypes: WeaponType[] = [
+  WeaponType.ARROW,
+  WeaponType.GREATARROW,
+  WeaponType.BOLT,
+  WeaponType.BALLISTA_BOLT,
+];
+
 function isSupportedWeaponType(wepType: number): wepType is WeaponType {
-  return supportedWeaponTypes.has(wepType);
+  return supportedWeaponTypes.has(wepType) && !excludedWeaponTypes.includes(wepType as WeaponType);
 }
 
 function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
@@ -693,6 +724,28 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     return false;
   });
 
+  const guardCutRate: (readonly [AttackPowerType, number])[] = (
+    [
+      [AttackPowerType.PHYSICAL, row.physGuardCutRate],
+      [AttackPowerType.MAGIC, row.magGuardCutRate],
+      [AttackPowerType.FIRE, row.thunGuardCutRate],
+      [AttackPowerType.LIGHTNING, row.thunGuardCutRate],
+      [AttackPowerType.HOLY, row.darkGuardCutRate],
+      [AttackPowerType.POISON, row.poisonGuardResist],
+      [AttackPowerType.SCARLET_ROT, row.diseaseGuardResist],
+      [AttackPowerType.BLEED, row.bloodGuardResist],
+      [AttackPowerType.DEATH_BLIGHT, row.curseGuardResist],
+      [AttackPowerType.FROST, row.freezeGuardResist],
+      [AttackPowerType.MADNESS, row.madnessGuardResist],
+      [AttackPowerType.SLEEP, row.sleepGuardResist],
+    ] as const
+  ).filter(([, attackPower]) => {
+    if (attackPower) {
+      return true;
+    }
+    return false;
+  });
+
   // Spells use a CalcCorrectGraph based on the type of damage they deal. These are normally the
   // same, but The Convergence has different CalcCorrectGraphs to give spell tools varying
   // effectiveness with different damage types.
@@ -779,6 +832,23 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     reinforceTypeId: row.reinforceTypeId,
     attackElementCorrectId: row.attackElementCorrectId,
     calcCorrectGraphIds,
+    poise: row.saWeaponDamage,
+    stamDmg: row.attackBaseStamina,
+    stamCost: row.staminaConsumptionRate,
+    weight: row.weight,
+    weightRate: row.weaponWeightRate,
+    bowDist: row.bowDistRate,
+    crit: row.throwAtkRate,
+    guardCutRate,
+    stability: row.staminaGuardDef,
+    weakRate: [
+      row.weakA_DamageRate,
+      row.weakB_DamageRate,
+      row.weakC_DamageRate,
+      row.weakD_DamageRate,
+      row.weakE_DamageRate,
+      row.weakF_DamageRate,
+    ],
     paired: ifNotDefault(row.isDualBlade === 1, false),
     sorceryTool: ifNotDefault(row.enableMagic === 1, false),
     incantationTool: ifNotDefault(row.enableMiracle === 1, false),
@@ -877,6 +947,21 @@ function parseReinforceParamWeapon(row: ParamRow): ReinforceParamWeapon {
       [AttackPowerType.LIGHTNING]: row.thunderAtkRate,
       [AttackPowerType.HOLY]: row.darkAtkRate,
     },
+    guardCutRate: {
+      [AttackPowerType.PHYSICAL]: row.physicsGuardCutRate,
+      [AttackPowerType.MAGIC]: row.magicGuardCutRate,
+      [AttackPowerType.FIRE]: row.fireGuardCutRate,
+      [AttackPowerType.LIGHTNING]: row.thunderGuardCutRate,
+      [AttackPowerType.HOLY]: row.darkGuardCutRate,
+      [AttackPowerType.POISON]: row.poisonGuardResistRate,
+      [AttackPowerType.SCARLET_ROT]: row.diseaseGuardResistRate,
+      [AttackPowerType.BLEED]: row.bloodGuardResistRate,
+      [AttackPowerType.DEATH_BLIGHT]: row.curseGuardResistRate,
+      [AttackPowerType.FROST]: row.freezeGuardDefRate,
+      [AttackPowerType.MADNESS]: row.madnessGuardDefRate,
+      [AttackPowerType.SLEEP]: row.sleepGuardDefRate,
+    },
+    stability: row.staminaGuardDefRate,
     attributeScaling: {
       str: row.correctStrengthRate,
       dex: row.correctAgilityRate,
@@ -956,6 +1041,9 @@ const calcCorrectGraphIds = new Set([
   defaultStatusCalcCorrectGraphId,
   ...weaponsJson.flatMap((weapon) => Object.values(weapon.calcCorrectGraphIds ?? {})),
 ]);
+if(isReforged) {
+  calcCorrectGraphIds.add(1007); // Arcane status buildup 'bonus' (actually reduces enemy status absorption by this)
+}
 const calcCorrectGraphsJson = Object.fromEntries(
   [...calcCorrectGraphs.entries()]
     .filter(([id]) => calcCorrectGraphIds.has(id))
