@@ -7,7 +7,12 @@ import {
   type AffinityOption,
 } from "./uiUtils.ts";
 
-export type RegulationVersionName = "latest" | "reforged" | "convergence" | "clevers";
+export type RegulationVersionName =
+  | "latest"
+  | "reforged"
+  | "convergence2"
+  | "convergence"
+  | "clevers";
 
 export interface RegulationVersion {
   name: string;
@@ -71,7 +76,7 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
     ineffectiveAttributePenalty: 0.5,
     fetch: () => fetch(`/regulation-reforged-v2.2.3.4.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
-  convergence: {
+  convergence2: {
     name: "The Convergence Mod",
     info: (
       <>
@@ -90,6 +95,26 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
     maxUpgradeLevel: 15,
     splitSpellScaling: true,
     fetch: () => fetch(`/regulation-convergence-v2.2.3.js?${import.meta.env.VITE_DATA_FORMAT}`),
+  },
+  convergence: {
+    name: "The Convergence Mod (Early Access)",
+    info: (
+      <>
+        Using regulation data from{" "}
+        <Link
+          href="https://www.nexusmods.com/eldenring/mods/3419"
+          target="_blank"
+          rel="noopener noreferer"
+        >
+          The Convergence Mod
+        </Link>{" "}
+        v3.0 Early Access
+      </>
+    ),
+    affinityOptions: convergenceAffinityOptions,
+    maxUpgradeLevel: 15,
+    splitSpellScaling: true,
+    fetch: () => fetch(`/regulation-convergence-v2.9.9.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   clevers: {
     name: "Clever's Moveset Modpack",

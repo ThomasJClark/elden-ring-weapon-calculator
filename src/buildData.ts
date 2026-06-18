@@ -107,6 +107,7 @@ if (isClevers) {
 }
 
 const tmpDir = join(tmpdir(), "elden-ring-weapon-calculator", parse(outputFile).name);
+console.log(tmpDir);
 
 const attackElementCorrectFile = "AttackElementCorrectParam.param";
 const calcCorrectGraphFile = "CalcCorrectGraph.param";
@@ -539,7 +540,14 @@ const unobtainableWeapons = new Set(
 );
 
 const affinityOverrides = new Map(
-  isClevers
+  isConvergence
+    ? [
+        [11190000, 0], // Tricia's Pomander (Fire)
+        [11191000, 0], // Tricia's Pomander (Lightning)
+        [11192000, 0], // Tricia's Pomander (Frost)
+        [11193000, 0], // Tricia's Pomander (Frenzy)
+      ]
+    : isClevers
     ? [
         [9082200, 0], // God-Hunting Nagamaki
       ]
@@ -547,7 +555,14 @@ const affinityOverrides = new Map(
 );
 
 const nameOverrides = new Map(
-  isClevers
+  isConvergence
+    ? [
+        [11190000, "Tricia's Pomander"],
+        [11191000, "Tricia's Pomander"],
+        [11192000, "Tricia's Pomander"],
+        [11193000, "Tricia's Pomander"],
+      ]
+    : isClevers
     ? [
         [3150000, "Marais Dancing Blade"],
         [4050000, "Masterworked Starscourge Greatswords"],
@@ -555,6 +570,17 @@ const nameOverrides = new Map(
         [9030000, "Voidwalker Meteoric Ore Blade"],
         [17500000, "Masterworked Spear of the Impaler"],
         [23060000, "Awakened Dragon Greatclaw"],
+      ]
+    : [],
+);
+
+const variantOverrides = new Map(
+  isConvergence
+    ? [
+        [11190000, "Fire"], // Tricia's Pomander (Fire)
+        [11191000, "Lightning"], // Tricia's Pomander (Lightning)
+        [11192000, "Frost"], // Tricia's Pomander (Frost)
+        [11193000, "Frenzy"], // Tricia's Pomander (Frenzy)
       ]
     : [],
 );
@@ -641,8 +667,10 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
 
   // Some weapons have infused versions in EquipParamWeapon even though ashes of war can't be
   // applied to them, e.g. Magic Great Club. Exclude these fake weapons from the list.
-  if (affinityId !== 0 && isUniqueWeapon(uninfusedWeapon)) {
-    debug(`Cannot apply affinity ${affinityId} on unique weapon "${name}", ignoring`);
+  if (affinityId !== 0 && isUniqueWeapon(row) && isUniqueWeapon(uninfusedWeapon)) {
+    debug(
+      `Cannot apply affinity ${affinityId} on unique weapon "${name}" ${uninfusedWeapon.gemMountType} ${uninfusedWeapon.disableGemAttr}, ignoring`,
+    );
     return null;
   }
 
@@ -783,6 +811,7 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     sorceryTool: ifNotDefault(row.enableMagic === 1, false),
     incantationTool: ifNotDefault(row.enableMiracle === 1, false),
     dlc: ifNotDefault(dlc, false),
+    variant: ifNotDefault(variantOverrides.get(row.id), null),
   };
 }
 
@@ -916,29 +945,6 @@ function parseStatusSpEffectParams(
 }
 
 let additionalWeaponsJson: EncodedWeaponJson[] = [];
-
-// The Convergence has a weapon that dynamically updates. Manually add each possible variation as a
-// separate weapon.
-if (isConvergence) {
-  const triciasPomander = 11190000;
-
-  const row = equipParamWeapons.get(triciasPomander)!;
-  const { attackBaseFire: attack } = row;
-  row.attackBaseFire = 0;
-
-  for (const { variant, ...overrides } of [
-    { variant: "Fire", attackBaseFire: attack, correctLuck: 100, spEffectBehaviorId0: 108501 },
-    { variant: "Lightning", attackBaseThunder: attack, correctLuck: 105, spEffectBehaviorId0: -1 },
-    { variant: "Cold", attackBaseMagic: attack, correctLuck: 95, spEffectBehaviorId0: 6701 },
-    { variant: "Frenzy", attackBaseFire: attack, correctLuck: 95, spEffectBehaviorId0: 6751 },
-  ] as const) {
-    const weaponJson = parseWeapon({ ...row, ...overrides })!;
-    weaponJson.variant = variant;
-    additionalWeaponsJson.push(weaponJson);
-  }
-
-  equipParamWeapons.delete(triciasPomander);
-}
 
 for (const [id, name] of nameOverrides) {
   weaponNames.set(id, name);
