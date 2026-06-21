@@ -107,7 +107,6 @@ if (isClevers) {
 }
 
 const tmpDir = join(tmpdir(), "elden-ring-weapon-calculator", parse(outputFile).name);
-console.log(tmpDir);
 
 const attackElementCorrectFile = "AttackElementCorrectParam.param";
 const calcCorrectGraphFile = "CalcCorrectGraph.param";
@@ -667,10 +666,8 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
 
   // Some weapons have infused versions in EquipParamWeapon even though ashes of war can't be
   // applied to them, e.g. Magic Great Club. Exclude these fake weapons from the list.
-  if (affinityId !== 0 && isUniqueWeapon(row) && isUniqueWeapon(uninfusedWeapon)) {
-    debug(
-      `Cannot apply affinity ${affinityId} on unique weapon "${name}" ${uninfusedWeapon.gemMountType} ${uninfusedWeapon.disableGemAttr}, ignoring`,
-    );
+  if (affinityId !== 0 && isUniqueWeapon(uninfusedWeapon)) {
+    debug(`Cannot apply affinity ${affinityId} on unique weapon "${name}", ignoring`);
     return null;
   }
 
