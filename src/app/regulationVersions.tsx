@@ -7,12 +7,7 @@ import {
   type AffinityOption,
 } from "./uiUtils.ts";
 
-export type RegulationVersionName =
-  | "latest"
-  | "reforged"
-  | "convergence2"
-  | "convergence"
-  | "clevers";
+export type RegulationVersionName = "latest" | "reforged" | "convergence" | "clevers";
 
 export interface RegulationVersion {
   name: string;
@@ -52,9 +47,9 @@ export interface RegulationVersion {
 
 const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
   latest: {
-    name: "Patch 1.16 (latest)",
+    name: "Patch 1.17 (latest)",
     affinityOptions,
-    fetch: () => fetch(`/regulation-vanilla-v1.14.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-vanilla-v1.17.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   reforged: {
     name: "ELDEN RING Reforged",

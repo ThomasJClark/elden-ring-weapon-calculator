@@ -23,13 +23,13 @@ function MiscFilterPicker({
     <div>
       {showIncludeDLC && (
         <FormControlLabel
-          label="Include DLC weapons"
+          label="Include Shadow of the Erdtree"
           sx={{ display: "block", mr: 0, my: "-4px" }}
           control={
             <Checkbox
               size="small"
               checked={includeDLC}
-              name="Include DLC weapons"
+              name="Include Shadow of the Erdtree"
               onChange={(evt) => onIncludeDLCChanged(evt.currentTarget.checked)}
             />
           }
