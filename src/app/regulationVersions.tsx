@@ -17,9 +17,10 @@ export interface RegulationVersion {
   affinityOptions: Map<number, AffinityOption>;
 
   /**
-   * Hack: in Elden Ring Reforged there is no attack power bonus for two handing
+   * Hack: in Elden Ring Reforged there is no attack power bonus for two handing, and status
+   * effect scaling is weird in a different way from usual
    */
-  disableTwoHandingAttackPowerBonus?: boolean;
+  reforgedQuirks?: true;
 
   /**
    * The Convergence mod makes all weapons only go up to +10
@@ -63,13 +64,13 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
         >
           ELDEN RING Reforged
         </Link>{" "}
-        mod v2.2.3.4
+        mod v2.3.3.0
       </>
     ),
     affinityOptions: reforgedAffinityOptions,
-    disableTwoHandingAttackPowerBonus: true,
+    reforgedQuirks: true,
     ineffectiveAttributePenalty: 0.5,
-    fetch: () => fetch(`/regulation-reforged-v2.2.3.4.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-reforged-v2.3.3.0.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   convergence: {
     name: "The Convergence Mod",

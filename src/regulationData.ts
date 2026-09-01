@@ -114,14 +114,17 @@ function evaluateCalcCorrectGraph(calcCorrectGraph: CalcCorrectGraph) {
 /**
  * Decode the game regulation data into a convenient JavaScript object used in the React app
  */
-export function decodeRegulationData({
-  calcCorrectGraphs,
-  attackElementCorrects,
-  reinforceTypes,
-  statusSpEffectParams,
-  weapons,
-  scalingTiers,
-}: EncodedRegulationDataJson): Weapon[] {
+export function decodeRegulationData(
+  {
+    calcCorrectGraphs,
+    attackElementCorrects,
+    reinforceTypes,
+    statusSpEffectParams,
+    weapons,
+    scalingTiers,
+  }: EncodedRegulationDataJson,
+  reforgedQuirks?: true,
+): Weapon[] {
   const calcCorrectGraphsById = new Map(
     Object.entries(calcCorrectGraphs).map(([calcCorrectGraphId, calcCorrectGraph]) => [
       +calcCorrectGraphId,
@@ -141,6 +144,9 @@ export function decodeRegulationData({
         [AttackPowerType.BLEED]: { arc: true },
         [AttackPowerType.MADNESS]: { arc: true },
         [AttackPowerType.SLEEP]: { arc: true },
+        [AttackPowerType.SCARLET_ROT]: { arc: reforgedQuirks },
+        [AttackPowerType.FROST]: { arc: reforgedQuirks },
+        [AttackPowerType.DEATH_BLIGHT]: { arc: reforgedQuirks },
       },
     ]),
   );

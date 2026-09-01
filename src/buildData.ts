@@ -24,6 +24,7 @@ import {
   AttackPowerType,
   allDamageTypes,
   type AttackElementCorrect,
+  allStatusTypes,
 } from "./calculator/calculator.ts";
 import {
   type EncodedWeaponJson,
@@ -94,6 +95,16 @@ const isReforged = outputFile.includes("reforged");
 const isConvergence = outputFile.includes("convergence");
 const isClevers = outputFile.includes("clevers");
 const isVanilla = !isReforged && !isConvergence && !isClevers;
+
+// Hardcoded status effect scaling meme in the Reforged DLL. This has some funny differences from
+// vanilla correct graphs:
+//
+// - Values start at 1 and go up by 0.01 for each percentage point instead starting at 0 and going up by 1
+// - The status effect buildup is rounded instead of truncated
+// - The correct graph is not multiplied by the weapon's arcane scaling value (since reforged status effects scale for all weapons)
+//
+// Some limited info is documented here: https://err.fandom.com/wiki/Status_Effects#General_Status_Changes
+const REFORGED_STATUS_EFFECT_CORRECT_TYPE = 1007;
 
 if (isClevers) {
   // Don't exclude vanilla weapons that are reworked in the mod
@@ -725,7 +736,7 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     allDamageTypes.forEach((damageType) => attackPowerTypes.add(damageType));
   }
 
-  const calcCorrectGraphIds = {
+  const calcCorrectGraphIds: Partial<Record<AttackPowerType, number>> = {
     [AttackPowerType.PHYSICAL]: ifNotDefault(
       attackPowerTypes.has(AttackPowerType.PHYSICAL) ? row.correctType_Physics : undefined,
       defaultDamageCalcCorrectGraphId,
@@ -763,6 +774,12 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
       defaultStatusCalcCorrectGraphId,
     ),
   };
+
+  if (isReforged) {
+    for (const attackPowerType of allStatusTypes) {
+      calcCorrectGraphIds[attackPowerType] = REFORGED_STATUS_EFFECT_CORRECT_TYPE;
+    }
+  }
 
   for (const calcCorrectGraphId of Object.values(calcCorrectGraphIds)) {
     if (calcCorrectGraphId !== undefined && !calcCorrectGraphs.has(calcCorrectGraphId)) {
@@ -808,35 +825,39 @@ function parseWeapon(row: ParamRow): EncodedWeaponJson | null {
     sorceryTool: ifNotDefault(row.enableMagic === 1, false),
     incantationTool: ifNotDefault(row.enableMiracle === 1, false),
     dlc: ifNotDefault(dlc, false),
-    variant: ifNotDefault(variantOverrides.get(row.id), null),
+    variant: ifNotDefault(variantOverrides.get(row.id), undefined),
   };
 }
 
 function parseCalcCorrectGraph(row: ParamRow): CalcCorrectGraph {
+  const getNoramlizedMaxGrowVal =
+    isReforged && row.id === REFORGED_STATUS_EFFECT_CORRECT_TYPE
+      ? (value: number) => value - 1
+      : (value: number) => value / 100;
   return [
     {
       maxVal: row.stageMaxVal0,
-      maxGrowVal: row.stageMaxGrowVal0 / 100,
+      maxGrowVal: getNoramlizedMaxGrowVal(row.stageMaxGrowVal0),
       adjPt: row.adjPt_maxGrowVal0,
     },
     {
       maxVal: row.stageMaxVal1,
-      maxGrowVal: row.stageMaxGrowVal1 / 100,
+      maxGrowVal: getNoramlizedMaxGrowVal(row.stageMaxGrowVal1),
       adjPt: row.adjPt_maxGrowVal1,
     },
     {
       maxVal: row.stageMaxVal2,
-      maxGrowVal: row.stageMaxGrowVal2 / 100,
+      maxGrowVal: getNoramlizedMaxGrowVal(row.stageMaxGrowVal2),
       adjPt: row.adjPt_maxGrowVal2,
     },
     {
       maxVal: row.stageMaxVal3,
-      maxGrowVal: row.stageMaxGrowVal3 / 100,
+      maxGrowVal: getNoramlizedMaxGrowVal(row.stageMaxGrowVal3),
       adjPt: row.adjPt_maxGrowVal3,
     },
     {
       maxVal: row.stageMaxVal4,
-      maxGrowVal: row.stageMaxGrowVal4 / 100,
+      maxGrowVal: getNoramlizedMaxGrowVal(row.stageMaxGrowVal4),
       adjPt: row.adjPt_maxGrowVal4,
     },
   ];
@@ -941,8 +962,6 @@ function parseStatusSpEffectParams(
   return null;
 }
 
-let additionalWeaponsJson: EncodedWeaponJson[] = [];
-
 for (const [id, name] of nameOverrides) {
   weaponNames.set(id, name);
 }
@@ -950,8 +969,6 @@ for (const [id, name] of nameOverrides) {
 const weaponsJson = [...equipParamWeapons.values()]
   .map(parseWeapon)
   .filter((w): w is EncodedWeaponJson => w != null);
-
-weaponsJson.push(...additionalWeaponsJson);
 
 // Accumulate every CalcCorrectGraph entry used by at least one weapon
 const calcCorrectGraphIds = new Set([

@@ -11,11 +11,12 @@ export default function useWeapons(regulationVersionName: RegulationVersionName)
   useEffect(() => {
     setWeapons([]);
     setLoading(true);
-    regulationVersions[regulationVersionName]
+    const regulationVersion = regulationVersions[regulationVersionName];
+    regulationVersion
       .fetch()
       .then((res) => res.json())
       .then((data) => {
-        setWeapons(decodeRegulationData(data));
+        setWeapons(decodeRegulationData(data, regulationVersion.reforgedQuirks));
         setLoading(false);
         setError(undefined);
       })

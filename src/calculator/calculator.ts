@@ -8,7 +8,7 @@ interface WeaponAttackOptions {
   attributes: Attributes;
   twoHanding?: boolean;
   upgradeLevel: number;
-  disableTwoHandingAttackPowerBonus?: boolean;
+  reforgedQuirks?: boolean;
   ineffectiveAttributePenalty?: number;
 }
 
@@ -68,7 +68,7 @@ export default function getWeaponAttack({
   attributes,
   twoHanding,
   upgradeLevel,
-  disableTwoHandingAttackPowerBonus,
+  reforgedQuirks,
   ineffectiveAttributePenalty = 0.4,
 }: WeaponAttackOptions): WeaponAttackResult {
   const adjustedAttributes = adjustAttributesForTwoHanding({ twoHanding, weapon, attributes });
@@ -102,12 +102,14 @@ export default function getWeaponAttack({
         // Otherwise, the scaling multiplier is equal to the sum of the corrected attribute values
         // multiplied by the scaling for that attribute
         const effectiveAttributes =
-          !disableTwoHandingAttackPowerBonus && isDamageType ? adjustedAttributes : attributes;
+          !reforgedQuirks && isDamageType ? adjustedAttributes : attributes;
         for (const attribute of allAttributes) {
           const attributeCorrect = scalingAttributes[attribute];
           if (attributeCorrect) {
             let scaling: number;
-            if (attributeCorrect === true) {
+            if (reforgedQuirks && allStatusTypes.includes(attackPowerType)) {
+              scaling = 1; // Reforged doesn't use weapon ARC scaling for status effects
+            } else if (attributeCorrect === true) {
               scaling = weapon.attributeScaling[upgradeLevel][attribute] ?? 0;
             } else {
               scaling =
@@ -127,6 +129,11 @@ export default function getWeaponAttack({
       // percentage boost, e.g. 0.5 adds +50% of the base attack power
       if (baseAttackPower) {
         attackPower[attackPowerType] = baseAttackPower * totalScaling;
+
+        // The Reforged status effect scaling reimplementation uses rounding instead of truncation
+        if (reforgedQuirks && allStatusTypes.includes(attackPowerType)) {
+          attackPower[attackPowerType] = Math.round(attackPower[attackPowerType]!);
+        }
       }
 
       if (isDamageType && (weapon.sorceryTool || weapon.incantationTool)) {

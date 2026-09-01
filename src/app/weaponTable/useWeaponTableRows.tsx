@@ -124,7 +124,7 @@ const useWeaponTableRows = ({
         attributes,
         twoHanding,
         upgradeLevel,
-        disableTwoHandingAttackPowerBonus: regulationVersion.disableTwoHandingAttackPowerBonus,
+        reforgedQuirks: regulationVersion.reforgedQuirks,
         ineffectiveAttributePenalty: regulationVersion.ineffectiveAttributePenalty,
       });
 
