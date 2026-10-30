@@ -84,13 +84,13 @@ const regulationVersions: Record<RegulationVersionName, RegulationVersion> = {
         >
           The Convergence Mod
         </Link>{" "}
-        v3.0.0.1
+        v3.0.4.1
       </>
     ),
     affinityOptions: convergenceAffinityOptions,
     maxUpgradeLevel: 15,
     splitSpellScaling: true,
-    fetch: () => fetch(`/regulation-convergence-v3.0.0.1.js?${import.meta.env.VITE_DATA_FORMAT}`),
+    fetch: () => fetch(`/regulation-convergence-v3.0.4.1.js?${import.meta.env.VITE_DATA_FORMAT}`),
   },
   clevers: {
     name: "Clever's Moveset Modpack",
